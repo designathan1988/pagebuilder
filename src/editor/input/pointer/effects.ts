@@ -296,16 +296,25 @@ export function pointerEffects(p: PointerOwner): Pick<PointerOwner, 'factsOf' | 
     // a marquee's band and a scrub's values go back to what they were before the press; any other drag keeps what its
     // press did. A dragged panel is let go of too (spec floating-panels: Escape cancels the drag and the panel stays
     // where it was), and a dragged panel's press moved nothing, so cancelling is what leaves it where it was.
-    const effect: Effect =
-      ps.marquee !== null || ps.scrubbing !== null || ps.stopping !== null || ps.lighting !== null || ps.gripping !== null || ps.exploring !== null || ps.columning !== null || ps.playheading !== null || ps.keyframing !== null || ps.panelling !== null
-        ? 'cancel'
-        : 'commit';
+    const undone = [ps.marquee, ps.scrubbing, ps.stopping, ps.lighting, ps.gripping, ps.exploring, ps.columning, ps.playheading, ps.keyframing, ps.panelling, ps.splitting];
+    const effect: Effect = undone.some((drag) => drag !== null) ? 'cancel' : 'commit';
     p.stopDragTimers();
     if (ps.dragging?.inserting != null && ps.pressedAt !== null) setGhostReturn({ inserting: ps.dragging.inserting, from: ps.pointerAt, to: ps.pressedAt.screen });
+    // A drag that writes the editor's own state (a splitter's size, the frame edge's width, the quick panel's offset,
+    // the playhead) is not put back by cancelling its gesture, which restores the document, the selection and the
+    // history only (core/store/store.ts, Gesture.cancel). Each of these drags follows the pointer from the press, so
+    // its own move at the press point is what puts back what the press left; the status bar keeps saying the drag was
+    // cancelled.
+    const said = store.getState().message;
+    const back = ps.splitting !== null || ps.gripping !== null || ps.playheading !== null;
+    if (ps.splitting !== null) p.resize(ps.splitting.start);
+    if (ps.gripping !== null) p.moveGrip(ps.gripping.start);
+    if (ps.playheading !== null) p.movePlayhead({ x: ps.playheading.startX, y: ps.pointerAt.y });
     ps.dragging = null;
     ps.pressed = null;
     ps.machine = IDLE;
     p.run(effect);
+    if (back && said !== null) store.notice(said);
   };
   return { factsOf, run, isRoot, capture, underPointer, leaveField, endCancelled };
 }

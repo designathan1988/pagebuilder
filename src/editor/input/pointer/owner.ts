@@ -116,7 +116,8 @@ export interface PointerSession {
   // the drag of the quick panel by its grip: its press, and where the pointer went down on the screen
   gripping: { readonly press: Extract<Press, { on: 'grip' }>; readonly start: Point } | null;
   // The drag of a splitter (spec panel-resize): its press, where the pointer went down, and the size it showed then,
-  // which every move sizes anew from (the gesture cancelled back to it and opened again), so Escape puts it back
+  // which every move sizes anew from; Escape runs the move at the press point, which puts that size back (effects.ts
+  // endCancelled: the size is the editor's state, which a cancelled gesture does not restore)
   splitting: { readonly press: Extract<Press, { on: 'splitter' }>; readonly start: Point; readonly from: number } | null;
   // a panel dragged by its header: the panel it moves. Its hint follows the pointer from the press on; the release
   // runs the door of the place the pointer is in (spec floating-panels)
@@ -133,7 +134,8 @@ export interface PointerSession {
   columning: { readonly press: Extract<Press, { on: 'column' }>; over: { readonly node: string; readonly to: string } | null } | null;
   // The timeline: the drag of the playhead along the ruler and the drag of a keyframe along the track (specs
   // timeline-preview, timeline-keyframes). Each follows the pointer from the press on, dispatching its command in a
-  // gesture of its own opened anew at every move (so Escape puts the playhead, or what the keyframe held, back).
+  // gesture of its own opened anew at every move. Escape puts back what the keyframe held (the gesture cancelled) and
+  // the playhead where the press put it (its move at the press point: effects.ts endCancelled).
   playheading: { readonly press: Extract<Press, { on: 'playhead' }>; readonly startX: number } | null;
   keyframing: { readonly press: Extract<Press, { on: 'keyframe' }>; readonly startX: number } | null;
   // the drag of a shadow's layer row (A3.34): its press; every move dispatches the move door with the index the

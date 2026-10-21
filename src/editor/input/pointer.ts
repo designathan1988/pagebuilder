@@ -46,7 +46,6 @@
 import { reportError } from '../../core/incidents.ts';
 import type { DispatchResult } from '../../core/store/store.ts';
 import type { CommandId } from '../../generated/ids.ts';
-import { snapShown } from '../canvas/snapping.ts';
 import type { EditorStore } from '../store.ts';
 // the gesture state machine lives in its own module (pointer/machine.ts); this owner keeps the installer and the state
 import { IDLE } from './pointer/machine.ts';
@@ -84,11 +83,7 @@ export function installPointer(store: EditorStore, target: Window = window): () 
   OWNERS.set(target, store);
   const shared = sharedOf(store);
   const views = pointerViews(store);
-  const {
-    setBanding,
-    setGuideOnRuler,
-    setPanView,
-  } = views;
+  const { setPanView } = views;
   const ps: PointerSession = {
     machine: IDLE,
     buttons: null,
@@ -153,39 +148,13 @@ export function installPointer(store: EditorStore, target: Window = window): () 
       queueMicrotask(p.dropTool);
       return;
     }
-    // Escape during a band's drag (drag.cancel): the side goes back to where it was
-    if (ps.spacing?.gesture != null && store.getState().ui.drag.cancels !== ps.spacing.cancels) {
-      const cancelled = ps.spacing.gesture;
-      ps.spacing = null;
-      setBanding(null);
-      shared.open = null;
-      queueMicrotask(() => cancelled.cancel());
-      return;
-    }
-    // Escape during a guide drag (drag.cancel): a new guide is not made, a moved one goes back
-    if (ps.guiding?.gesture != null && store.getState().ui.drag.cancels !== ps.guiding.cancels) {
-      const cancelled = ps.guiding.gesture;
-      ps.guiding = null;
-      setGuideOnRuler(null);
-      shared.open = null;
-      queueMicrotask(() => cancelled.cancel());
-      return;
-    }
-    // Escape during a rotation (drag.cancel): the angle goes back to where it was
-    if (ps.rotating?.gesture != null && store.getState().ui.drag.cancels !== ps.rotating.cancels) {
-      const cancelled = ps.rotating.gesture;
-      ps.rotating = null;
-      shared.open = null;
-      queueMicrotask(() => cancelled.cancel());
-      return;
-    }
-    // Escape during a resize (drag.cancel, a newer cancellation): the size goes back to where it was
-    if (ps.resizing?.gesture != null && store.getState().ui.drag.cancels !== ps.resizing.cancels) {
-      const cancelled = ps.resizing.gesture;
-      ps.resizing = null;
-      snapShown.set(null);
-      shared.open = null;
-      queueMicrotask(() => cancelled.cancel());
+    // Escape during a handle's drag (drag.cancel newer than its gesture): a band's side, a guide, a rotation's angle or
+    // a resized box goes back to where it was, and what the drag drew goes with it (the resize's distances, the band,
+    // the guide over its ruler, the snap): the handle gestures are let go of as a cancelled pointer lets them go
+    // (dropHandleGestures), once the dispatch that counted the cancellation has returned
+    const cancels = store.getState().ui.drag.cancels;
+    if ([ps.spacing, ps.guiding, ps.rotating, ps.resizing].some((handle) => handle?.gesture != null && cancels !== handle.cancels)) {
+      queueMicrotask(p.dropHandleGestures);
       return;
     }
     if (shared.open === null) return;

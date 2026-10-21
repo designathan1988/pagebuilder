@@ -2418,3 +2418,9 @@
 - Sintoma: depois da DEF-0762, um carrinho ou uma lista guardados na prévia de um projeto apareciam na prévia de outro projeto aberto, iniciado ou restaurado.
 - Causa: `src/editor/shell/preview.tsx`: `PREVIEW_KEPT` vivia enquanto o editor estivesse aberto, sem ligação com o projeto.
 - Prova: `forgetPreviewValuesOnLoad` assina as mudanças do documento e limpa `PREVIEW_KEPT` quando a carga troca `pages` inteiro (o caminho de carga de `src/core/store/store.ts`), como um visitante de outro site (DCS-063). Sem caso unitário nem foto; o `verify --all` do commit passou.
+
+## DEF-0784 â€” Esc durante o arraste da borda da moldura ou de um divisor mantinha a largura arrastada
+- Status: corrigido (esc-drags, 2026-10-21)
+- Sintoma: arrastar a borda da moldura (Desktop 1440 â†’ 881 px) ou o divisor do inspector e apertar Esc: a barra dizia "Arraste cancelado â€” nada mudou", mas a largura arrastada ficava.
+- Causa: `src/editor/input/pointer/effects.ts` `endCancelled` deixava `ps.splitting` fora do cancelamento, e `Gesture.cancel` (`src/core/store/store.ts`) sÃ³ restaura documento, seleÃ§Ã£o e histÃ³rico, nÃ£o o estado do editor (`ui`) que esses arrastes mudam.
+- Prova: o cancelamento roda o prÃ³prio movimento do arraste no ponto da pressÃ£o (mesma intenÃ§Ã£o, mesmo tratador) antes de fechar o gesto; os quatro ramos de Esc das alÃ§as viram um sÃ³ (`pointer.ts`); `pointer-escape.test.ts` falha antes (240 em vez de 336, 1680 em vez de 1440) e passa depois; uso real: borda 1440 â†’ 881 â†’ 1440, divisor 1105 â†’ 1201 â†’ 1105, alÃ§a 532 â†’ 245 â†’ 532 sem passo de desfazer (fotos `escape/after-*`).
