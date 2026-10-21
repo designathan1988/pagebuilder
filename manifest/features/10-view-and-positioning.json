@@ -1342,15 +1342,15 @@
       ],
       "dependsOn": [],
       "intent": {
-        "title": "Ctrl+wheel zoom, wheel scroll and Space-drag pan",
+        "title": "Ctrl+wheel zoom, wheel pan and Space-drag pan",
         "steps": [
-          "Place the pointer over a heading and scroll the wheel with Ctrl held.",
-          "Scroll the wheel without modifiers, then with Shift.",
+          "Place the pointer over a heading and turn the wheel with Ctrl held (or pinch on a trackpad).",
+          "Turn the wheel without modifiers (or move two fingers on a trackpad), then with Shift.",
           "Hold Space and drag the canvas."
         ],
         "expected": [
-          "Ctrl+wheel zooms around the pointer: the heading stays under the pointer.",
-          "Wheel scrolls vertically and Shift+wheel horizontally; the page can be scrolled to see content below the fold.",
+          "Ctrl+wheel zooms around the pointer on both axes: the heading stays under the pointer.",
+          "The canvas is an artboard: the frame is as tall as the whole page and the page never scrolls inside it. The wheel pans the canvas vertically (and across with a trackpad's sideways travel) and Shift+wheel horizontally, at any zoom, until only 64 px of the page stay inside the stage.",
           "Holding Space shows a grab cursor and dragging pans the view without selecting or moving anything; releasing Space returns to selection."
         ]
       },
@@ -1523,7 +1523,7 @@
           ]
         },
         {
-          "id": "the-wheel-scrolls-the-page",
+          "id": "the-wheel-pans-the-page-down",
           "setup": {
             "fixture": "aurora",
             "selection": [],
@@ -1568,27 +1568,19 @@
               "undoRestores": true,
               "redoRestores": true
             },
-            "render": {
-              "computed": [],
-              "geometry": [
+            "render": null,
+            "editor": {
+              "regions": [
                 {
-                  "node": "/Page/Hero",
+                  "region": "canvas-frame",
                   "measure": "y",
-                  "relation": "less-than",
-                  "value": -260,
-                  "reference": null
-                },
-                {
-                  "node": "/Page/Hero",
-                  "measure": "y",
-                  "relation": "greater-than",
-                  "value": -320,
+                  "relation": "equals",
+                  "value": -1650,
                   "reference": null
                 }
               ],
-              "feedback": []
+              "computed": []
             },
-            "editor": null,
             "persistence": null,
             "export": null
           },
@@ -1797,14 +1789,14 @@
       "intent": {
         "title": "Rulers along the canvas",
         "steps": [
-          "Look at the top and left rulers; zoom in and scroll.",
+          "Look at the top and left rulers; zoom in and pan.",
           "Select an element.",
           "Move the pointer over the page."
         ],
         "expected": [
           "The rulers fill the 20 px bands reserved along the top and left of the canvas; the canvas viewport and the page position do not move.",
           "The rulers show page CSS px with 0 at the page top-left; labelled ticks sit on round values (10, 25, 50, 100, 250, 500...) chosen so neighbouring labels are at least 40 screen px apart at any zoom.",
-          "They update with zoom and scroll.",
+          "They update with zoom and pan.",
           "The selected element's extent is highlighted on both rulers and a marker follows the pointer position."
         ]
       },

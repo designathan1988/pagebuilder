@@ -76,22 +76,33 @@ def fix_styles(styles):
     return out
 
 
-def node(element, styles=None, children=None, tag=None, text_key=None, name_key=None, attributes=None, custom=None):
+# An attribute whose value people read (an alt, an aria-label, a placeholder, a frame's title) is given as
+# (key, English, Portuguese): it becomes a catalogue text the insert writes in the same words as the template's texts
+# (attributeKeys, src/core/structure/insert.ts), never one language's literal.
+def node(element, styles=None, children=None, tag=None, text_key=None, name_key=None, attributes=None, custom=None, days=None):
     if styles:
         styles = fix_styles(styles)
+    attributes = dict(attributes or {})
     if custom:
         custom = dict(custom)
-        attributes = dict(attributes or {})
         if 'aria-label' in custom:
             attributes['ariaLabel'] = custom.pop('aria-label')
         if 'role' in custom:
             attributes['role'] = custom.pop('role')
-    if attributes and 'href' in attributes:
+    keyed = {}
+    for name, value in list(attributes.items()):
+        if isinstance(value, tuple):
+            keyed[name] = text(*value)
+            del attributes[name]
+    # a placeholder link goes to the site's home page and a section link to that section of it, both relative to the
+    # page ("index.html", "index.html#about"): they work from a file on disk, under a sub-path and in the app packages,
+    # where a root-relative "/" leaves the site; a bare "#id" would name an element the person's page may not have
+    if 'href' in attributes:
         h = attributes['href']
         if h == '#':
-            attributes['href'] = '/'
+            attributes['href'] = 'index.html'
         elif h.startswith('#'):
-            attributes['href'] = '/' + h
+            attributes['href'] = 'index.html' + h
     if element == 'summary' and text_key:
         children = [node('paragraph', {'display': 'inline', 'margin-top': '0px', 'margin-bottom': '0px'}, tag='span', text_key=text_key)]
         text_key = None
@@ -106,15 +117,19 @@ def node(element, styles=None, children=None, tag=None, text_key=None, name_key=
         out['styles'] = styles
     if attributes:
         out['attributes'] = attributes
+    if keyed:
+        out['attributeKeys'] = keyed
     if custom:
         out['customAttributes'] = custom
+    if days:
+        out['customDaysAhead'] = days
     if children is not None:
         out['children'] = children
     return out
 
 
 def photo(seed, alt_key, en, pt, ratio='4 / 3', w=1200, h=900, r='12px'):
-    return node('image', PHOTO(ratio, r), attributes={'src': f'https://picsum.photos/seed/{seed}/{w}/{h}', 'alt': pt, 'loading': 'lazy'})
+    return node('image', PHOTO(ratio, r), attributes={'src': f'https://picsum.photos/seed/{seed}/{w}/{h}', 'alt': (alt_key, en, pt), 'loading': 'lazy'})
 
 
 def intro(prefix, title, lead):
@@ -140,7 +155,7 @@ entry('comp-menu', 'menu', ('compMenu', 'Menu that folds on phones', 'Menu que r
       node('header', {**pad('14px', '24px'), 'background-color': WHITE, 'border-bottom-width': '1px', 'border-bottom-style': 'solid', 'border-bottom-color': LINE, 'position': 'sticky', 'top': '0px', 'z-index': '50'}, [
           node('div', {**CONTAINER, 'display': 'flex', 'flex-wrap': 'wrap', 'align-items': 'center', 'justify-content': 'space-between', 'column-gap': '24px', 'row-gap': '12px'}, [
               node('link', {'font-size': '20px', 'font-weight': '700', 'color': INK, 'text-decoration': 'none'}, text_key=text(C + 'menu.brand', 'Your brand', 'Sua marca'), attributes={'href': '#'}),
-              node('button', {**ROUND_BTN, 'display': 'none'}, text_key=text(C + 'menu.toggle', '☰', '☰'), custom={'data-wc-toggle': '', 'aria-label': 'Menu'}),
+              node('button', {**ROUND_BTN, 'display': 'none'}, text_key=text(C + 'menu.toggle', '☰', '☰'), custom={'data-wc-toggle': '', 'aria-label': (C + 'menu.toggleLabel', 'Menu', 'Menu')}),
               node('nav', {'display': 'flex', 'flex-wrap': 'wrap', 'align-items': 'center', 'column-gap': '20px', 'row-gap': '8px', **pad('0px', '0px')}, [
                   node('link', LINK, text_key='template.navbar.home', attributes={'href': '#'}),
                   node('link', LINK, text_key='template.navbar.about', attributes={'href': '#sobre'}),
@@ -168,12 +183,12 @@ entry('comp-carousel', 'gallery-horizontal', ('compCarousel', 'Photo carousel', 
                   slide('three', 'wc-slide-3', 'And what makes you different', 'E o que torna você diferente'),
               ], name_key=text(C + 'carousel.track', 'Slides', 'Slides'), custom={'data-wc-track': ''}),
               node('div', {'display': 'flex', 'align-items': 'center', 'justify-content': 'space-between', 'column-gap': '16px', 'margin-top': '16px', 'color': INK}, [
-                  node('button', ROUND_BTN, text_key=text(C + 'prev', '‹', '‹'), custom={'data-wc-prev': '', 'aria-label': 'Anterior'}),
+                  node('button', ROUND_BTN, text_key=text(C + 'prev', '‹', '‹'), custom={'data-wc-prev': '', 'aria-label': (C + 'prevLabel', 'Previous', 'Anterior')}),
                   node('div', None, [], name_key=text(C + 'carousel.dots', 'Dots', 'Pontos'), custom={'data-wc-dots': ''}),
-                  node('button', ROUND_BTN, text_key=text(C + 'next', '›', '›'), custom={'data-wc-next': '', 'aria-label': 'Próximo'}),
+                  node('button', ROUND_BTN, text_key=text(C + 'next', '›', '›'), custom={'data-wc-next': '', 'aria-label': (C + 'nextLabel', 'Next', 'Próximo')}),
               ], name_key=text(C + 'carousel.controls', 'Controls', 'Controles')),
           ], name_key='comp.container'),
-      ], custom={'data-wc': 'carousel', 'data-wc-autoplay': '6000', 'aria-label': 'Fotos'}))
+      ], custom={'data-wc': 'carousel', 'data-wc-autoplay': '6000', 'aria-label': (C + 'carousel.label', 'Photos', 'Fotos')}))
 
 # ---------------------------------------------------------------- 3. testimonials slider
 def quote(n, en, pt, who):
@@ -193,11 +208,11 @@ entry('comp-testimonials-slider', 'quote', ('compTestimonialsSlider', 'Testimoni
                   quote('three', 'Simple to update: I change the menu myself every week.', 'Simples de atualizar: eu mesma troco o cardápio toda semana.', 'Júlia Reis — Cantina Reis'),
               ], name_key=C + 'carousel.track', custom={'data-wc-track': ''}),
               node('div', {'display': 'flex', 'justify-content': 'center', 'column-gap': '12px', 'margin-top': '24px'}, [
-                  node('button', ROUND_BTN, text_key=C + 'prev', custom={'data-wc-prev': '', 'aria-label': 'Anterior'}),
-                  node('button', ROUND_BTN, text_key=C + 'next', custom={'data-wc-next': '', 'aria-label': 'Próximo'}),
+                  node('button', ROUND_BTN, text_key=C + 'prev', custom={'data-wc-prev': '', 'aria-label': (C + 'prevLabel', 'Previous', 'Anterior')}),
+                  node('button', ROUND_BTN, text_key=C + 'next', custom={'data-wc-next': '', 'aria-label': (C + 'nextLabel', 'Next', 'Próximo')}),
               ], name_key=C + 'carousel.controls'),
           ], name_key='comp.container'),
-      ], custom={'data-wc': 'carousel', 'aria-label': 'Depoimentos'}))
+      ], custom={'data-wc': 'carousel', 'aria-label': (C + 'quotes.label', 'Testimonials', 'Depoimentos')}))
 
 # ---------------------------------------------------------------- 4. gallery with lightbox
 def gallery_item(n, en, pt):
@@ -216,11 +231,11 @@ entry('comp-gallery', 'images', ('compGallery', 'Gallery that opens large', 'Gal
 
 # ---------------------------------------------------------------- 5. tabs
 TAB = {**pad('12px', '18px'), 'background-color': 'transparent', 'color': INK, 'font-size': '16px', 'border-top-width': '0px', 'border-left-width': '0px', 'border-right-width': '0px', 'border-bottom-width': '0px', 'cursor': 'pointer'}
-def tab_panel(n, en_t, pt_t, en_p, pt_p):
+def tab_panel(n, en_n, pt_n, en_t, pt_t, en_p, pt_p):
     return node('div', {**pad('24px', '0px')}, [
         node('heading', H3, tag='h3', text_key=text(f'{C}tabs.{n}.title', en_t, pt_t)),
         node('paragraph', BODY, text_key=text(f'{C}tabs.{n}.text', en_p, pt_p)),
-    ], name_key=text(f'{C}tabs.{n}.panel', f'Panel {n}', f'Painel {n}'), custom={'data-wc-panel': ''})
+    ], name_key=text(f'{C}tabs.{n}.panel', f'Panel {en_n}', f'Painel {pt_n}'), custom={'data-wc-panel': ''})
 
 
 entry('comp-tabs', 'panels-top-left', ('compTabs', 'Tabs that work', 'Abas funcionais'), 'section',
@@ -231,9 +246,9 @@ entry('comp-tabs', 'panels-top-left', ('compTabs', 'Tabs that work', 'Abas funci
                   node('button', TAB, text_key=text(C + 'tabs.two.tab', 'How it works', 'Como funciona'), custom={'data-wc-tab': ''}),
                   node('button', TAB, text_key=text(C + 'tabs.three.tab', 'Prices', 'Preços'), custom={'data-wc-tab': ''}),
               ], name_key=text(C + 'tabs.list', 'Tabs', 'Abas')),
-              tab_panel('one', 'Everything at a glance', 'Tudo num relance', 'Summarise what you offer in two sentences.', 'Resuma o que você oferece em duas frases.'),
-              tab_panel('two', 'Three simple steps', 'Três passos simples', 'Explain how the person goes from first contact to the result.', 'Explique como a pessoa vai do primeiro contato ao resultado.'),
-              tab_panel('three', 'Clear prices', 'Preços claros', 'Say what each option costs and what it includes.', 'Diga quanto custa cada opção e o que inclui.'),
+              tab_panel('one', 'one', 'um', 'Everything at a glance', 'Tudo num relance', 'Summarise what you offer in two sentences.', 'Resuma o que você oferece em duas frases.'),
+              tab_panel('two', 'two', 'dois', 'Three simple steps', 'Três passos simples', 'Explain how the person goes from first contact to the result.', 'Explique como a pessoa vai do primeiro contato ao resultado.'),
+              tab_panel('three', 'three', 'três', 'Clear prices', 'Preços claros', 'Say what each option costs and what it includes.', 'Diga quanto custa cada opção e o que inclui.'),
           ], name_key='comp.container'),
       ], custom={'data-wc': 'tabs'}))
 
@@ -267,7 +282,7 @@ entry('comp-map', 'map-pin', ('compMap', 'Map with address', 'Mapa com endereço
               ], name_key=text(C + 'map.text', 'Address', 'Endereço')),
               node('iframe', {'width': '100%', 'height': '380px', **border(LINE), **radius('16px')}, attributes={
                   'src': 'https://www.openstreetmap.org/export/embed.html?bbox=-46.6622%2C-23.5713%2C-46.6422%2C-23.5593&layer=mapnik&marker=-23.5653%2C-46.6522',
-                  'title': 'Mapa', 'loading': 'lazy'}),
+                  'title': (C + 'map.frame', 'Map', 'Mapa'), 'loading': 'lazy'}),
           ], name_key='comp.container'),
       ]))
 
@@ -277,7 +292,7 @@ entry('comp-video', 'circle-play', ('compVideo', 'YouTube video', 'Vídeo do You
           node('div', {**CONTAINER, 'max-width': '960px'}, [
               intro(C + 'video', ('See it in action', 'Veja funcionando'), ('Two minutes that explain everything.', 'Dois minutos que explicam tudo.')),
               node('iframe', {'width': '100%', 'aspect-ratio': '16 / 9', 'height': 'auto', **border(LINE, '0px'), **radius('16px'), 'background-color': INK}, attributes={
-                  'src': 'https://www.youtube-nocookie.com/embed/ScMzIvxBSi4', 'title': 'Vídeo', 'loading': 'lazy',
+                  'src': 'https://www.youtube-nocookie.com/embed/ScMzIvxBSi4', 'title': (C + 'video.frame', 'Video', 'Vídeo'), 'loading': 'lazy',
                   'allow': 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen'}),
           ], name_key='comp.container'),
       ]))
@@ -285,7 +300,7 @@ entry('comp-video', 'circle-play', ('compVideo', 'YouTube video', 'Vídeo do You
 # ---------------------------------------------------------------- 9. shop with cart
 def product(n, seed, en, pt, price, en_d, pt_d):
     return node('article', {**CARD, **pad('16px', '16px'), 'display': 'flex', 'flex-direction': 'column', 'row-gap': '12px'}, [
-        photo(seed, f'{C}shop.{n}.alt', en, pt, ratio='1 / 1', w=800, h=800),
+        photo(seed, f'{C}shop.{n}.name', en, pt, ratio='1 / 1', w=800, h=800),
         node('heading', {**H3, 'margin-bottom': '0px'}, tag='h3', text_key=text(f'{C}shop.{n}.name', en, pt)),
         node('paragraph', SMALL, text_key=text(f'{C}shop.{n}.desc', en_d, pt_d)),
         node('div', {'display': 'flex', 'align-items': 'center', 'justify-content': 'space-between', 'column-gap': '12px', 'margin-top': 'auto'}, [
@@ -306,7 +321,7 @@ entry('comp-shop', 'shopping-cart', ('compShop', 'Shop with cart (order by Whats
                   ], name_key='comp.intro'),
                   node('div', {'display': 'flex', 'align-items': 'center', 'column-gap': '8px'}, [
                       node('button', SECONDARY, text_key=text(C + 'shop.cart', 'Cart', 'Carrinho'), custom={'data-wc-cart-open': ''}),
-                      node('paragraph', {**no_margin(), 'display': 'inline-block', 'background-color': BRAND, 'color': WHITE, **radius('999px'), **pad('0px', '8px'), 'font-size': '13px', 'line-height': '22px'}, tag='span', text_key=text(C + 'shop.zero', '0', '0'), custom={'data-wc-count': ''}, attributes={'ariaLabel': 'Itens no carrinho'}),
+                      node('paragraph', {**no_margin(), 'display': 'inline-block', 'background-color': BRAND, 'color': WHITE, **radius('999px'), **pad('0px', '8px'), 'font-size': '13px', 'line-height': '22px'}, tag='span', text_key=text(C + 'shop.zero', '0', '0'), custom={'data-wc-count': ''}, attributes={'ariaLabel': (C + 'shop.countLabel', 'Items in the cart', 'Itens no carrinho')}),
                   ], name_key=text(C + 'shop.cartButton', 'Cart button', 'Botão do carrinho')),
               ], name_key=text(C + 'shop.head', 'Shop header', 'Cabeçalho da loja')),
               node('div', GRID('240px', '20px'), [
@@ -318,7 +333,7 @@ entry('comp-shop', 'shopping-cart', ('compShop', 'Shop with cart (order by Whats
           node('aside', CART_PANEL, [
               node('div', {'display': 'flex', 'align-items': 'center', 'justify-content': 'space-between'}, [
                   node('heading', {**H3, 'margin-bottom': '0px'}, tag='h3', text_key=text(C + 'shop.yourCart', 'Your cart', 'Seu carrinho')),
-                  node('button', ROUND_BTN, text_key=text(C + 'close', '×', '×'), custom={'data-wc-close': '', 'aria-label': 'Fechar'}),
+                  node('button', ROUND_BTN, text_key=text(C + 'close', '×', '×'), custom={'data-wc-close': '', 'aria-label': (C + 'closeLabel', 'Close', 'Fechar')}),
               ], name_key=text(C + 'shop.cartHead', 'Cart header', 'Topo do carrinho')),
               node('paragraph', BODY, text_key=text(C + 'shop.empty', 'Your cart is empty.', 'Seu carrinho está vazio.'), custom={'data-wc-empty': ''}),
               node('div', None, [], name_key=text(C + 'shop.items', 'Items', 'Itens'), custom={'data-wc-items': ''}),
@@ -328,13 +343,14 @@ entry('comp-shop', 'shopping-cart', ('compShop', 'Shop with cart (order by Whats
               ], name_key=text(C + 'shop.totalRow', 'Total', 'Total')),
               node('button', {**PRIMARY, 'width': '100%'}, text_key=text(C + 'shop.checkout', 'Send order by WhatsApp', 'Enviar pedido pelo WhatsApp'), custom={'data-wc-checkout': ''}),
               node('paragraph', SMALL, text_key=text(C + 'shop.note', 'You confirm payment and delivery with us on WhatsApp.', 'Você combina pagamento e entrega com a gente pelo WhatsApp.')),
-          ], name_key=text(C + 'shop.cartPanel', 'Cart', 'Carrinho'), custom={'data-wc': 'cart', 'data-wc-whatsapp': '5511999999999'}),
+          # the cart sends the orders to the number the shop types in; none is shipped, and the Checks panel asks for it
+          ], name_key=text(C + 'shop.cartPanel', 'Cart', 'Carrinho'), custom={'data-wc': 'cart', 'data-wc-whatsapp': ''}),
       ]))
 
 # ---------------------------------------------------------------- 10. blog / posts with search and categories
 def post(n, seed, tag, en_tag, pt_tag, en, pt, en_x, pt_x, date):
     return node('article', {**CARD, **pad('0px', '0px'), 'overflow': 'hidden', 'display': 'flex', 'flex-direction': 'column'}, [
-        photo(seed, f'{C}blog.{n}.alt', en, pt, ratio='16 / 9', w=1200, h=675, r='0px'),
+        photo(seed, f'{C}blog.{n}.title', en, pt, ratio='16 / 9', w=1200, h=675, r='0px'),
         node('div', {**pad('20px', '20px'), 'display': 'flex', 'flex-direction': 'column', 'row-gap': '8px'}, [
             node('paragraph', {'font-size': '13px', 'font-weight': '600', 'color': BRAND, 'text-transform': 'uppercase', 'letter-spacing': '0.06em', **no_margin()}, text_key=text(f'{C}blog.cat.{tag}', en_tag, pt_tag)),
             node('heading', {**H3, 'margin-bottom': '0px'}, tag='h3', text_key=text(f'{C}blog.{n}.title', en, pt)),
@@ -356,7 +372,7 @@ entry('comp-blog', 'newspaper', ('compBlog', 'Blog with search and categories', 
                       node('button', CHIP, text_key=C + 'blog.cat.news', custom={'data-wc-filter': 'news'}),
                       node('button', CHIP, text_key=C + 'blog.cat.stories', custom={'data-wc-filter': 'stories'}),
                   ], name_key=text(C + 'blog.categories', 'Categories', 'Categorias')),
-                  node('input', {**pad('10px', '14px'), **border(LINE), **radius('10px'), 'min-width': '240px', 'font-size': '15px'}, attributes={'inputType': 'search', 'placeholder': 'Buscar…', 'name': 'busca'}, custom={'data-wc-search': '', 'aria-label': 'Buscar'}),
+                  node('input', {**pad('10px', '14px'), **border(LINE), **radius('10px'), 'min-width': '240px', 'font-size': '15px'}, attributes={'inputType': 'search', 'placeholder': (C + 'blog.searchPlaceholder', 'Search…', 'Buscar…'), 'name': 'search'}, custom={'data-wc-search': '', 'aria-label': (C + 'blog.searchLabel', 'Search', 'Buscar')}),
               ], name_key=text(C + 'blog.tools', 'Search and categories', 'Busca e categorias')),
               node('div', GRID('280px', '24px'), [
                   post('one', 'wc-post-1', 'tips', 'Tips', 'Dicas', 'Five ideas to sell more this month', 'Cinco ideias para vender mais este mês', 'Small changes that bring results fast.', 'Pequenas mudanças que trazem resultado rápido.', '12/10/2026'),
@@ -385,7 +401,7 @@ entry('comp-countdown', 'timer', ('compCountdown', 'Countdown', 'Contagem regres
               ], name_key=text(C + 'count.units', 'Time left', 'Tempo restante')),
               node('paragraph', {**LEAD, 'color': WHITE, 'margin-top': '24px'}, text_key=text(C + 'count.done', 'It started!', 'Começou!'), custom={'data-wc-done': ''}),
           ], name_key='comp.container'),
-      ], custom={'data-wc': 'countdown', 'data-wc-date': '2026-12-31T23:59:00-03:00'}))
+      ], custom={'data-wc': 'countdown'}, days={'data-wc-date': 30}))
 
 # ---------------------------------------------------------------- 12. stats counters
 def stat(n, to, suffix, en, pt):
@@ -399,7 +415,7 @@ entry('comp-stats', 'chart-no-axes-column-increasing', ('compStats', 'Numbers th
       node('section', SECTION, [
           node('div', {**CONTAINER, **GRID('200px', '32px')}, [
               stat('one', '1200', '+', 'happy clients', 'clientes felizes'),
-              stat('two', '15', ' anos', 'years of experience', 'anos de experiência'),
+              stat('two', '15', '', 'years of experience', 'anos de experiência'),
               stat('three', '98', '%', 'would recommend', 'recomendariam'),
               stat('four', '24', 'h', 'to answer you', 'para responder você'),
           ], name_key='comp.container'),
@@ -413,14 +429,15 @@ entry('comp-cookies', 'cookie', ('compCookies', 'Cookie notice (LGPD)', 'Aviso d
               node('button', SECONDARY, text_key=text(C + 'cookies.reject', 'Essential only', 'Só essenciais'), custom={'data-wc-reject': ''}),
               node('button', PRIMARY, text_key=text(C + 'cookies.accept', 'Accept all', 'Aceitar todos'), custom={'data-wc-accept': ''}),
           ], name_key=text(C + 'cookies.actions', 'Choices', 'Escolhas')),
-      ], name_key=text(C + 'cookies.name', 'Cookie notice', 'Aviso de cookies'), custom={'data-wc': 'cookies', 'role': 'region', 'aria-label': 'Cookies'}))
+      ], name_key=text(C + 'cookies.name', 'Cookie notice', 'Aviso de cookies'), custom={'data-wc': 'cookies', 'role': 'region', 'aria-label': (C + 'cookies.label', 'Cookies', 'Cookies')}))
 
 # ---------------------------------------------------------------- 14. WhatsApp floating button
 entry('comp-whatsapp', 'message-circle', ('compWhatsapp', 'WhatsApp button', 'Botão do WhatsApp'), 'link',
       node('link', {'position': 'fixed', 'right': '20px', 'bottom': '20px', 'z-index': '800', 'background-color': '#15803d', 'color': WHITE, 'font-weight': '700', 'text-decoration': 'none', **pad('14px', '20px'), **radius('999px'), 'box-shadow': '0 8px 24px rgba(21, 128, 61, 0.35)'},
            text_key=text(C + 'whatsapp.text', 'WhatsApp', 'WhatsApp'),
-           attributes={'href': 'https://wa.me/5511999999999?text=Ol%C3%A1%21%20Vim%20pelo%20site.', 'newTab': True},
-           custom={'aria-label': 'Fale conosco pelo WhatsApp'}))
+           # no number is shipped: the person types the business's own after wa.me/, and the Checks panel asks for it
+           attributes={'href': (C + 'whatsapp.href', 'https://wa.me/?text=Hello%21%20I%20found%20you%20on%20the%20website.', 'https://wa.me/?text=Ol%C3%A1%21%20Vim%20pelo%20site.'), 'newTab': True},
+           custom={'aria-label': (C + 'whatsapp.label', 'Talk to us on WhatsApp', 'Fale conosco pelo WhatsApp')}))
 
 # ---------------------------------------------------------------- 15. newsletter
 entry('comp-newsletter', 'mail-plus', ('compNewsletter', 'Newsletter sign-up', 'Cadastro na newsletter'), 'section',
@@ -429,7 +446,7 @@ entry('comp-newsletter', 'mail-plus', ('compNewsletter', 'Newsletter sign-up', '
               node('heading', H2, tag='h2', text_key=text(C + 'news.title', 'Get the news first', 'Receba as novidades primeiro')),
               node('paragraph', LEAD, text_key=text(C + 'news.lead', 'One e-mail a month. No spam.', 'Um e-mail por mês. Sem spam.')),
               node('form', {'display': 'flex', 'flex-wrap': 'wrap', 'column-gap': '8px', 'row-gap': '8px', 'justify-content': 'center'}, [
-                  node('input', {**pad('12px', '14px'), **border(LINE), **radius('10px'), 'flex-grow': '1', 'min-width': '240px', 'font-size': '16px'}, attributes={'inputType': 'email', 'name': 'email', 'placeholder': 'seu@email.com', 'required': True}, custom={'aria-label': 'E-mail'}),
+                  node('input', {**pad('12px', '14px'), **border(LINE), **radius('10px'), 'flex-grow': '1', 'min-width': '240px', 'font-size': '16px'}, attributes={'inputType': 'email', 'name': 'email', 'placeholder': (C + 'news.placeholder', 'you@email.com', 'seu@email.com'), 'required': True}, custom={'aria-label': (C + 'news.emailLabel', 'E-mail', 'E-mail')}),
                   node('button', PRIMARY, text_key=text(C + 'news.send', 'Sign up', 'Cadastrar'), attributes={'buttonType': 'submit'}),
               ]),
           ], name_key='comp.container'),
@@ -489,7 +506,7 @@ entry('comp-share', 'share-2', ('compShare', 'Share buttons', 'Botões de compar
 # ---------------------------------------------------------------- 19. team
 def member(n, en, pt, role_en, role_pt):
     return node('article', {'text-align': 'center', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center', 'row-gap': '8px'}, [
-        node('image', {'width': '140px', 'height': '140px', 'object-fit': 'cover', **radius('999px'), 'background-color': LINE}, attributes={'src': f'https://picsum.photos/seed/wc-team-{n}/400/400', 'alt': pt, 'loading': 'lazy'}),
+        node('image', {'width': '140px', 'height': '140px', 'object-fit': 'cover', **radius('999px'), 'background-color': LINE}, attributes={'src': f'https://picsum.photos/seed/wc-team-{n}/400/400', 'alt': (f'{C}team.{n}.name', en, pt), 'loading': 'lazy'}),
         node('heading', {**H3, 'margin-bottom': '0px', 'margin-top': '8px'}, tag='h3', text_key=text(f'{C}team.{n}.name', en, pt)),
         node('paragraph', SMALL, text_key=text(f'{C}team.{n}.role', role_en, role_pt)),
     ])

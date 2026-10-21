@@ -15,30 +15,79 @@
   var wordsByLanguage = /* site words */ {};
   var words = wordsByLanguage[/^pt(-|$)/i.test(lang) ? 'pt-BR' : 'en'];
   var all = function (root, selector) { return Array.prototype.slice.call(root.querySelectorAll(selector)); };
-  var each = function (kind, init) {
-    all(document, '[data-wc="' + kind + '"]').forEach(function (root) {
-      if (root.__wc) return;
-      root.__wc = true;
-      try { init(root); } catch (error) { if (window.console) console.error('[widgets] ' + kind, error); }
-    });
+  // the element itself when it matches, then the ones inside it
+  var within = function (root, selector) { return (root.matches && root.matches(selector) ? [root] : []).concat(all(root, selector)); };
+  // Each kind of component starts once per element: the ones the page holds now, and the ones written into it later
+  // (the observer at the end: a product card or a lightbox the application repeats is a copy made after this script
+  // ran, which carries neither the listeners nor the mark).
+  var kinds = {};
+  var begin = function (root, kind) {
+    if (root.__wc || !kinds[kind]) return;
+    root.__wc = true;
+    try { kinds[kind](root); } catch (error) { if (window.console) console.error('[widgets] ' + kind, error); }
   };
+  var each = function (kind, init) {
+    kinds[kind] = init;
+    all(document, '[data-wc="' + kind + '"]').forEach(function (root) { begin(root, kind); });
+  };
+  // What the components keep in this browser is the site's own: its host and the folder its pages stand in, so two
+  // sites served from one origin (file://, two folders of one domain) share no cart and no choice.
+  var site = location.host + location.pathname.replace(/[^/]*$/, '');
+  var warned = false;
+  var unkept = function (error) {
+    if (warned || !window.console) return;
+    warned = true;
+    console.warn('[widgets] this browser keeps no values: they last this visit only.', error);
+  };
+  var memory = {};
   var store = {
     get: function (key, fallback) {
-      try { var raw = window.localStorage.getItem(key); return raw === null ? fallback : JSON.parse(raw); } catch { return fallback; }
+      var raw = Object.prototype.hasOwnProperty.call(memory, site + key) ? memory[site + key] : null;
+      if (raw === null) {
+        try { raw = window.localStorage.getItem('wc:' + site + '|' + key); } catch (error) { unkept(error); }
+      }
+      if (raw === null || raw === undefined) return fallback;
+      try { return JSON.parse(raw); } catch (error) { if (window.console) console.warn('[widgets] the value kept as ' + key + ' is no JSON:', error); return fallback; }
     },
     set: function (key, value) {
-      try { window.localStorage.setItem(key, JSON.stringify(value)); } catch { /* private window: kept for this visit */ }
+      var raw = JSON.stringify(value);
+      try { window.localStorage.setItem('wc:' + site + '|' + key, raw); } catch (error) { unkept(error); memory[site + key] = raw; }
     },
   };
   var money = function (value, currency) {
-    try { return new Intl.NumberFormat(lang, { style: 'currency', currency: currency || 'BRL' }).format(value); } catch { return String(value); }
+    try { return new Intl.NumberFormat(lang, { style: 'currency', currency: currency || 'BRL' }).format(value); } catch (error) {
+      if (window.console) console.warn('[widgets] the price is written without its currency (' + currency + '):', error);
+      return String(value);
+    }
   };
+  // The mark the page's language groups thousands with, when it is "." or "," (pt-BR ".", en ","); "" for another.
+  var groupMark = (function () {
+    try {
+      var group = new Intl.NumberFormat(lang, { useGrouping: true }).formatToParts(1234567.5).filter(function (part) { return part.type === 'group'; })[0];
+      return group && (group.value === '.' || group.value === ',') ? group.value : '';
+    } catch (error) {
+      if (window.console) console.warn('[widgets] the page\'s language ' + lang + ' is unknown to this browser:', error);
+      return '';
+    }
+  })();
+  /* The number a price or a count is written with, read in the page's language: the project's own number reader
+     (core/data/collections.ts readNumber). "29,90" and "29.90" are decimals; a number grouped by thousands with a
+     decimal mark ("1.299,00", "$1,299.00") reads its marks; one mark before three digits alone ("R$ 1.299", "$1,299")
+     is a thousand when the page's language groups with that mark, and a fraction otherwise. */
   var number = function (text) {
-    // "29,90", "1.299,00", "29.90" and "1299" read as numbers
-    var t = String(text || '').replace(/[^\d,.-]/g, '');
-    if (t.indexOf(',') > -1) t = t.replace(/\./g, '').replace(',', '.');
-    var n = parseFloat(t);
-    return isNaN(n) ? 0 : n;
+    var found = /[+-]?\d[\d.,]*/.exec(String(text || ''));
+    if (!found) return 0;
+    var t = found[0].replace(/[.,]+$/, '');
+    if (/^[+-]?[1-9]\d{0,2}[.,]\d{3}$/.test(t) && t.replace(/[^.,]/g, '') === groupMark) return Number(t.replace(groupMark, ''));
+    if (/^[+-]?\d+(?:\.\d+)?$/.test(t)) return Number(t);
+    if (/^[+-]?\d+,\d+$/.test(t)) return Number(t.replace(',', '.'));
+    var grouped = /^[+-]?[1-9]\d{0,2}([.,])\d{3}(?:\1\d{3})*(?:([.,])\d+)?$/.exec(t);
+    if (!grouped || grouped[2] === grouped[1]) {
+      if (window.console) console.warn('[widgets] "' + text + '" holds no number this page reads; it counts as 0');
+      return 0;
+    }
+    var at = grouped[2] ? t.lastIndexOf(grouped[2]) : t.length;
+    return Number(t.slice(0, at).split(grouped[1]).join('') + (grouped[2] ? '.' + t.slice(at + 1) : ''));
   };
 
   /* The rules the components' states need (open, active, hidden): attribute selectors the editor's own styles do not
@@ -308,7 +357,7 @@
   /* Cookie consent (LGPD): the banner until the visitor chooses; the choice is kept, and announced to the page's own
      scripts (the event wc:consent, and window.wcConsent). */
   each('cookies', function (root) {
-    var key = 'wc-consent';
+    var key = 'consent';
     var choice = store.get(key, null);
     var decide = function (value) {
       store.set(key, value);
@@ -324,7 +373,7 @@
 
   /* Shop: products added to a cart kept in the visitor's browser; the order goes by WhatsApp (data-wc-whatsapp) or by
      e-mail (data-wc-email). */
-  var cartKey = 'wc-cart:' + location.host;
+  var cartKey = 'cart';
   var cart = store.get(cartKey, []);
   var carts = [];
   var saveCart = function () { store.set(cartKey, cart); carts.forEach(function (paint) { paint(); }); badge(); };
@@ -353,7 +402,14 @@
       });
     });
   });
-  all(document, '[data-wc-cart-open]').forEach(function (b) { b.addEventListener('click', function (e) { e.preventDefault(); openCart(); }); });
+  var cartOpeners = function (root) {
+    within(root, '[data-wc-cart-open]').forEach(function (b) {
+      if (b.__wcCartOpen) return;
+      b.__wcCartOpen = true;
+      b.addEventListener('click', function (e) { e.preventDefault(); openCart(); });
+    });
+  };
+  cartOpeners(document);
   each('cart', function (root) {
     root.setAttribute('role', 'dialog');
     root.setAttribute('aria-label', root.getAttribute('aria-label') || words.cart);
@@ -470,7 +526,10 @@
           if (navigator.clipboard) navigator.clipboard.writeText(location.href).then(function () { var t = b.textContent; b.textContent = '✓'; window.setTimeout(function () { b.textContent = t; }, 1200); });
           return;
         }
-        if (to === 'native' && navigator.share) { navigator.share({ title: document.title, url: location.href }).catch(function () {}); return; }
+        if (to === 'native' && navigator.share) { navigator.share({ title: document.title, url: location.href }).catch(function (error) {
+          // the visitor closing the share sheet is no failure
+          if (error && error.name !== 'AbortError' && window.console) console.warn('[widgets] the page could not be shared:', error);
+        }); return; }
         if (targets[to]) window.open(targets[to], '_blank', 'noopener,width=640,height=560');
       });
     });
@@ -478,19 +537,44 @@
 
   /* Popups: a button with data-wc-open="<id>" opens the <dialog> of that id; data-wc-close closes it; a press on the
      backdrop too. A dialog with data-wc-delay opens by itself after that many milliseconds, once per visitor. */
-  all(document, '[data-wc-open]').forEach(function (b) {
-    b.addEventListener('click', function (e) {
-      var dialog = document.getElementById(b.getAttribute('data-wc-open'));
-      if (dialog && dialog.showModal) { e.preventDefault(); dialog.showModal(); }
+  var popups = function (root) {
+    within(root, '[data-wc-open]').forEach(function (b) {
+      if (b.__wcOpen) return;
+      b.__wcOpen = true;
+      b.addEventListener('click', function (e) {
+        var dialog = document.getElementById(b.getAttribute('data-wc-open'));
+        if (dialog && dialog.showModal) { e.preventDefault(); dialog.showModal(); }
+      });
     });
-  });
-  all(document, 'dialog').forEach(function (dialog) {
-    dialog.addEventListener('click', function (e) { if (e.target === dialog) dialog.close(); });
-    all(dialog, '[data-wc-close]').forEach(function (b) { b.addEventListener('click', function () { dialog.close(); }); });
-    var delay = parseInt(dialog.getAttribute('data-wc-delay') || '0', 10);
-    var seenKey = 'wc-popup:' + (dialog.id || 'x');
-    if (delay > 0 && !store.get(seenKey, false)) {
-      window.setTimeout(function () { if (dialog.showModal && !dialog.open) { dialog.showModal(); store.set(seenKey, true); } }, delay);
-    }
-  });
+    within(root, 'dialog').forEach(function (dialog) {
+      if (dialog.__wcDialog) return;
+      dialog.__wcDialog = true;
+      dialog.addEventListener('click', function (e) { if (e.target === dialog) dialog.close(); });
+      all(dialog, '[data-wc-close]').forEach(function (b) { b.addEventListener('click', function () { dialog.close(); }); });
+      var delay = parseInt(dialog.getAttribute('data-wc-delay') || '0', 10);
+      var seenKey = 'popup:' + (dialog.id || 'x');
+      if (delay > 0 && !store.get(seenKey, false)) {
+        window.setTimeout(function () { if (dialog.showModal && !dialog.open) { dialog.showModal(); store.set(seenKey, true); } }, delay);
+      }
+    });
+  };
+  popups(document);
+
+  /* What the page writes later (the application runtime's repeated rows, a template's clone) starts as the page's own
+     did: each component kind, the cart buttons, the popups, the cart counters. */
+  if (window.MutationObserver) {
+    new MutationObserver(function (records) {
+      var counters = false;
+      records.forEach(function (record) {
+        Array.prototype.forEach.call(record.addedNodes, function (node) {
+          if (node.nodeType !== 1) return;
+          within(node, '[data-wc]').forEach(function (root) { begin(root, root.getAttribute('data-wc')); });
+          cartOpeners(node);
+          popups(node);
+          if (within(node, '[data-wc-count]').length > 0) counters = true;
+        });
+      });
+      if (counters) badge();
+    }).observe(document.documentElement, { childList: true, subtree: true });
+  }
 })();

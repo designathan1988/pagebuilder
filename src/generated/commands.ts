@@ -220,11 +220,11 @@ export interface CommandArgs {
   "app.removeLibrary": { readonly name: string };
   "app.setTable": { readonly name?: string; readonly read?: "public" | "members" | "owner" | "admin"; readonly write?: "public" | "members" | "admin"; readonly previous?: string };
   "app.removeTable": { readonly name: string };
-  "logic.set": { readonly field: "text" | "html" | "show" | "each" | "as" | "key" | "model" | "component"; readonly value: string };
-  "logic.setBinding": { readonly binding: string; readonly value: string; readonly previous?: string };
+  "logic.set": { readonly field: "text" | "html" | "show" | "each" | "as" | "key" | "model" | "component"; readonly value: string; readonly target?: NodeId };
+  "logic.setBinding": { readonly binding: string; readonly value: string; readonly previous?: string; readonly target?: NodeId };
   "logic.addHandler": { readonly event?: string; readonly code?: string };
-  "logic.updateHandler": { readonly handler: number; readonly event?: string; readonly code?: string };
-  "logic.removeHandler": { readonly handler: number };
+  "logic.updateHandler": { readonly handler: number; readonly event?: string; readonly code?: string; readonly target?: NodeId };
+  "logic.removeHandler": { readonly handler: number; readonly target?: NodeId };
   "logic.clear": Record<string, never>;
   "motion.add": { readonly trigger?: "click" | "double-click" | "pointer-down" | "pointer-up" | "pointer-enter" | "pointer-leave" | "hover" | "pointer-move" | "focus" | "blur" | "focus-within" | "key" | "input" | "change" | "form-submit" | "form-invalid" | "long-press" | "scroll-into-view" | "scroll-out-of-view" | "while-visible" | "page-scroll" | "scroll-direction" | "page-load" | "page-leave" | "visibility" | "resize" | "breakpoint" | "timer" | "interval" | "idle" | "media-play" | "media-pause" | "media-end" | "media-time" | "dropdown-open" | "dropdown-close" | "tab-change" | "slide-change" | "dialog-open" | "dialog-close" | "details-open" | "mobile-menu-open" | "custom"; readonly timeline?: string; readonly preset?: "fade-up" | "fade-in" | "zoom-in" | "slide-in" };
   "motion.update": { readonly interaction?: number; readonly field?: "trigger" | "timeline" | "control" | "leave" | "scope" | "once" | "delay" | "breakpoints" | "reducedMotion" | "key" | "threshold" | "milliseconds" | "direction" | "axis" | "breakpoint" | "seconds" | "state" | "event" | "scrollStart" | "scrollEnd"; readonly value?: JsonValue };
@@ -545,7 +545,7 @@ export const FEATURE_COMMANDS: Readonly<Record<FeatureId, readonly CommandId[]>>
   "class-moves": ["classes.moveInto","classes.applyToSimilar"],
   "templates-layout": ["element.insert"],
   "templates-content": ["element.insert"],
-  "templates-sections": ["element.insert"],
+  "templates-sections": ["element.insert","element.setCustomAttribute"],
   "reusable-components": ["components.create","components.insertInstance","components.detach","components.startCreate","components.closePrompt"],
   "repeat-element": ["components.repeat","components.fillFromData"],
   "templates-components": ["element.insert"],

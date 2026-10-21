@@ -565,7 +565,7 @@
           }
         },
         {
-          "id": "a-variable-is-removed",
+          "id": "a-variable-the-code-still-reads-is-not-removed",
           "setup": {
             "fixture": "app-logic",
             "selection": [],
@@ -601,51 +601,17 @@
           "doors": [
             "app.removeVariable#app-variable-remove"
           ],
-          "refusals": [],
+          "refusals": [
+            {
+              "key": "status.app.inUse",
+              "document": "unchanged"
+            }
+          ],
           "expect": {
-            "document": [
-              {
-                "op": "set",
-                "path": "/@app",
-                "value": {
-                  "variables": [
-                    {
-                      "name": "count",
-                      "type": "number",
-                      "initial": 0
-                    }
-                  ],
-                  "scripts": [
-                    {
-                      "name": "util",
-                      "code": "export const answer = 42;\n"
-                    }
-                  ],
-                  "components": [
-                    {
-                      "name": "Badge",
-                      "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
-                    }
-                  ],
-                  "libraries": [
-                    {
-                      "name": "confetti",
-                      "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
-                    }
-                  ],
-                  "tables": [
-                    {
-                      "name": "posts",
-                      "read": "public",
-                      "write": "members"
-                    }
-                  ]
-                }
-              }
-            ],
+            "document": [],
             "selection": [],
             "history": {
-              "undoSteps": 1,
+              "undoSteps": 0,
               "undoRestores": true,
               "redoRestores": true
             },
@@ -654,9 +620,10 @@
               "geometry": [],
               "feedback": [
                 {
-                  "key": "status.app.variableRemoved",
+                  "key": "status.app.inUse",
                   "params": {
-                    "name": "title"
+                    "name": "title",
+                    "where": "Title"
                   }
                 }
               ]

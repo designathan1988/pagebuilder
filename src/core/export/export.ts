@@ -325,7 +325,7 @@ export function pageLines(document: DocumentJson, pageIndex: number, manifestRul
       // a class the elements of instances share is written once, by the first of them
       if (!shared.reused.has(node.id)) {
         const plain = held.filter((animation) => !byEvent.has(animation.name));
-        const block = nodeCss(node, `.${generated}`, output, 'block', null, animationListDeclarations(plain));
+        const block = nodeCss(node, `.${generated}`, output, 'block', animationListDeclarations(plain));
         if (block !== '') for (const text of block.split('\n')) css.push({ text, node: node.id });
       }
     }

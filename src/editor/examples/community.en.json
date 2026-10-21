@@ -1,18 +1,22 @@
 {
  "version": 4,
- "language": "pt-BR",
+ "language": "en",
  "codeLanguage": "en",
  "pages": [
   {
    "id": "clubpage",
-   "name": "Comunidade",
+   "name": "Community",
    "file": "index.html",
    "tree": {
     "id": "club184",
     "type": "page",
     "name": "Body",
     "tag": "body",
-    "attributes": {},
+    "attributes": {
+     "pageTitle": "Community",
+     "pageDescription": "Member sign-up and log-in, a public board and private notes: all in a database, with no server to set up.",
+     "pageLanguage": "en"
+    },
     "classes": [],
     "styles": {
      "desktop": {
@@ -65,7 +69,7 @@
        {
         "id": "club147",
         "type": "header",
-        "name": "Topo",
+        "name": "Top",
         "tag": "header",
         "attributes": {},
         "classes": [],
@@ -85,7 +89,7 @@
          {
           "id": "club146",
           "type": "div",
-          "name": "Titulos",
+          "name": "Titles",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -102,7 +106,7 @@
            {
             "id": "club144",
             "type": "heading",
-            "name": "Titulo",
+            "name": "Title",
             "tag": "h1",
             "attributes": {},
             "classes": [],
@@ -117,13 +121,13 @@
               }
              }
             },
-            "text": "Comunidade",
+            "text": "Community",
             "children": []
            },
            {
             "id": "club145",
             "type": "paragraph",
-            "name": "Descricao",
+            "name": "Description",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -137,7 +141,7 @@
               }
              }
             },
-            "text": "Cadastro e login de membros, um mural público e notas privadas: tudo num banco de dados, sem servidor para configurar.",
+            "text": "Member sign-up and log-in, a public board and private notes: all in a database, with no server to set up.",
             "children": []
            }
           ]
@@ -145,7 +149,7 @@
          {
           "id": "club142",
           "type": "paragraph",
-          "name": "Saudacao",
+          "name": "Greeting",
           "tag": "p",
           "attributes": {},
           "classes": [],
@@ -160,17 +164,17 @@
             }
            }
           },
-          "text": "Olá, Ana",
+          "text": "Hi, Ana",
           "children": [],
           "logic": {
            "show": "app.auth.user",
-           "text": "app.auth.user ? 'Olá, ' + (app.auth.user.name || app.auth.user.email) + (app.auth.user.role === 'admin' ? ' (admin)' : '') : ''"
+           "text": "app.auth.user ? 'Hi, ' + (app.auth.user.name || app.auth.user.email) + (app.auth.user.role === 'admin' ? ' (admin)' : '') : ''"
           }
          },
          {
           "id": "club143",
           "type": "button",
-          "name": "Sair",
+          "name": "Log out",
           "tag": "button",
           "attributes": {
            "buttonType": "button"
@@ -208,7 +212,7 @@
             }
            }
           },
-          "text": "Sair",
+          "text": "Log out",
           "children": [],
           "logic": {
            "on": [
@@ -225,7 +229,7 @@
        {
         "id": "club157",
         "type": "section",
-        "name": "Entrar",
+        "name": "Log in",
         "tag": "section",
         "attributes": {},
         "classes": [],
@@ -264,7 +268,7 @@
          {
           "id": "club150",
           "type": "div",
-          "name": "Abas",
+          "name": "Tabs",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -284,7 +288,7 @@
            {
             "id": "club148",
             "type": "button",
-            "name": "Aba Entrar",
+            "name": "Log-in tab",
             "tag": "button",
             "attributes": {
              "buttonType": "button"
@@ -322,7 +326,7 @@
               }
              }
             },
-            "text": "Entrar",
+            "text": "Log in",
             "children": [],
             "logic": {
              "on": [
@@ -340,7 +344,7 @@
            {
             "id": "club149",
             "type": "button",
-            "name": "Aba Criar conta",
+            "name": "Sign-up tab",
             "tag": "button",
             "attributes": {
              "buttonType": "button"
@@ -378,7 +382,7 @@
               }
              }
             },
-            "text": "Criar conta",
+            "text": "Sign up",
             "children": [],
             "logic": {
              "on": [
@@ -398,7 +402,7 @@
          {
           "id": "club156",
           "type": "form",
-          "name": "Acesso",
+          "name": "Access",
           "tag": "form",
           "attributes": {},
           "classes": [],
@@ -417,11 +421,11 @@
            {
             "id": "club151",
             "type": "input",
-            "name": "Nome",
+            "name": "Name",
             "tag": "input",
             "attributes": {
              "inputType": "text",
-             "placeholder": "Seu nome",
+             "placeholder": "Your name",
              "autocomplete": "name"
             },
             "classes": [],
@@ -513,11 +517,11 @@
            {
             "id": "club153",
             "type": "input",
-            "name": "Senha",
+            "name": "Password",
             "tag": "input",
             "attributes": {
              "inputType": "password",
-             "placeholder": "Senha (8 caracteres ou mais)",
+             "placeholder": "Password (8 characters or more)",
              "autocomplete": "current-password",
              "required": true
             },
@@ -561,7 +565,7 @@
            {
             "id": "club154",
             "type": "button",
-            "name": "Enviar",
+            "name": "Submit",
             "tag": "button",
             "attributes": {
              "buttonType": "submit"
@@ -599,10 +603,10 @@
               }
              }
             },
-            "text": "Entrar",
+            "text": "Log in",
             "children": [],
             "logic": {
-             "text": "state.busy ? 'Aguarde…' : state.mode === 'signup' ? 'Criar conta' : 'Entrar'",
+             "text": "state.busy ? 'Please wait…' : state.mode === 'signup' ? 'Sign up' : 'Log in'",
              "binds": {
               "attr:disabled": "state.busy"
              }
@@ -611,7 +615,7 @@
            {
             "id": "club155",
             "type": "paragraph",
-            "name": "Erro",
+            "name": "Error",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -650,7 +654,7 @@
        {
         "id": "club182",
         "type": "div",
-        "name": "Colunas",
+        "name": "Columns",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -670,7 +674,7 @@
          {
           "id": "club171",
           "type": "section",
-          "name": "Mural",
+          "name": "Board",
           "tag": "section",
           "attributes": {},
           "classes": [],
@@ -712,7 +716,7 @@
            {
             "id": "club158",
             "type": "heading",
-            "name": "Titulo mural",
+            "name": "Board title",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -727,13 +731,13 @@
               }
              }
             },
-            "text": "Mural",
+            "text": "Board",
             "children": []
            },
            {
             "id": "club161",
             "type": "form",
-            "name": "Novo recado",
+            "name": "New post",
             "tag": "form",
             "attributes": {},
             "classes": [],
@@ -751,10 +755,10 @@
              {
               "id": "club159",
               "type": "textarea",
-              "name": "Recado",
+              "name": "Post",
               "tag": "textarea",
               "attributes": {
-               "placeholder": "Escreva um recado para todos",
+               "placeholder": "Write a post for everyone",
                "rows": "3"
               },
               "classes": [],
@@ -799,7 +803,7 @@
              {
               "id": "club160",
               "type": "button",
-              "name": "Publicar",
+              "name": "Post",
               "tag": "button",
               "attributes": {
                "buttonType": "submit"
@@ -837,7 +841,7 @@
                 }
                }
               },
-              "text": "Publicar",
+              "text": "Post",
               "children": []
              }
             ],
@@ -854,7 +858,7 @@
            {
             "id": "club162",
             "type": "paragraph",
-            "name": "Convite",
+            "name": "Invitation",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -868,7 +872,7 @@
               }
              }
             },
-            "text": "Entre para publicar no mural.",
+            "text": "Log in to post on the board.",
             "children": [],
             "logic": {
              "show": "!app.auth.user"
@@ -877,7 +881,7 @@
            {
             "id": "club169",
             "type": "list",
-            "name": "Recados",
+            "name": "Posts",
             "tag": "ul",
             "attributes": {},
             "classes": [],
@@ -896,7 +900,7 @@
              {
               "id": "club168",
               "type": "listItem",
-              "name": "Item recado",
+              "name": "Post item",
               "tag": "li",
               "attributes": {},
               "classes": [],
@@ -916,7 +920,7 @@
                {
                 "id": "club166",
                 "type": "div",
-                "name": "Cabecalho recado",
+                "name": "Post header",
                 "tag": "div",
                 "attributes": {},
                 "classes": [],
@@ -936,7 +940,7 @@
                  {
                   "id": "club163",
                   "type": "paragraph",
-                  "name": "Autor",
+                  "name": "Author",
                   "tag": "p",
                   "attributes": {},
                   "classes": [],
@@ -955,13 +959,13 @@
                   "text": "Ana",
                   "children": [],
                   "logic": {
-                   "text": "row.autor"
+                   "text": "row.author"
                   }
                  },
                  {
                   "id": "club164",
                   "type": "paragraph",
-                  "name": "Quando",
+                  "name": "When",
                   "tag": "p",
                   "attributes": {},
                   "classes": [],
@@ -975,7 +979,7 @@
                     }
                    }
                   },
-                  "text": "21/10/2026 09:00",
+                  "text": "10/21/2026, 9:00 AM",
                   "children": [],
                   "logic": {
                    "text": "fn.when(row._created)"
@@ -984,7 +988,7 @@
                  {
                   "id": "club165",
                   "type": "button",
-                  "name": "Apagar recado",
+                  "name": "Delete post",
                   "tag": "button",
                   "attributes": {
                    "buttonType": "button"
@@ -1022,7 +1026,7 @@
                     }
                    }
                   },
-                  "text": "Apagar",
+                  "text": "Delete",
                   "children": [],
                   "logic": {
                    "on": [
@@ -1039,7 +1043,7 @@
                {
                 "id": "club167",
                 "type": "paragraph",
-                "name": "Texto recado",
+                "name": "Post text",
                 "tag": "p",
                 "attributes": {},
                 "classes": [],
@@ -1051,10 +1055,10 @@
                   }
                  }
                 },
-                "text": "Bem-vindos à comunidade!",
+                "text": "Welcome to the community!",
                 "children": [],
                 "logic": {
-                 "text": "row.texto"
+                 "text": "row.text"
                 }
                }
               ],
@@ -1069,7 +1073,7 @@
            {
             "id": "club170",
             "type": "paragraph",
-            "name": "Mural vazio",
+            "name": "Empty board",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1083,7 +1087,7 @@
               }
              }
             },
-            "text": "Nenhum recado ainda.",
+            "text": "No posts yet.",
             "children": [],
             "logic": {
              "show": "state.posts.length === 0"
@@ -1094,7 +1098,7 @@
          {
           "id": "club181",
           "type": "aside",
-          "name": "Notas",
+          "name": "Notes",
           "tag": "aside",
           "attributes": {},
           "classes": [],
@@ -1136,7 +1140,7 @@
            {
             "id": "club172",
             "type": "heading",
-            "name": "Titulo notas",
+            "name": "Notes title",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -1151,13 +1155,13 @@
               }
              }
             },
-            "text": "Minhas notas",
+            "text": "My notes",
             "children": []
            },
            {
             "id": "club173",
             "type": "paragraph",
-            "name": "Explicacao notas",
+            "name": "Notes explanation",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1171,13 +1175,13 @@
               }
              }
             },
-            "text": "Só você vê as suas notas.",
+            "text": "Only you see your notes.",
             "children": []
            },
            {
             "id": "club176",
             "type": "form",
-            "name": "Nova nota",
+            "name": "New note",
             "tag": "form",
             "attributes": {},
             "classes": [],
@@ -1197,11 +1201,11 @@
              {
               "id": "club174",
               "type": "input",
-              "name": "Nota",
+              "name": "Note",
               "tag": "input",
               "attributes": {
                "inputType": "text",
-               "placeholder": "Uma nota só sua"
+               "placeholder": "A note just for you"
               },
               "classes": [],
               "styles": {
@@ -1245,7 +1249,7 @@
              {
               "id": "club175",
               "type": "button",
-              "name": "Guardar",
+              "name": "Save",
               "tag": "button",
               "attributes": {
                "buttonType": "submit"
@@ -1283,7 +1287,7 @@
                 }
                }
               },
-              "text": "Guardar",
+              "text": "Save",
               "children": []
              }
             ],
@@ -1299,7 +1303,7 @@
            {
             "id": "club180",
             "type": "list",
-            "name": "Lista notas",
+            "name": "Notes list",
             "tag": "ul",
             "attributes": {},
             "classes": [],
@@ -1318,7 +1322,7 @@
              {
               "id": "club179",
               "type": "listItem",
-              "name": "Item nota",
+              "name": "Note item",
               "tag": "li",
               "attributes": {},
               "classes": [],
@@ -1343,7 +1347,7 @@
                {
                 "id": "club177",
                 "type": "paragraph",
-                "name": "Texto nota",
+                "name": "Note text",
                 "tag": "p",
                 "attributes": {},
                 "classes": [],
@@ -1357,16 +1361,16 @@
                   }
                  }
                 },
-                "text": "Minha primeira nota",
+                "text": "My first note",
                 "children": [],
                 "logic": {
-                 "text": "note.texto"
+                 "text": "note.text"
                 }
                },
                {
                 "id": "club178",
                 "type": "button",
-                "name": "Apagar nota",
+                "name": "Delete note",
                 "tag": "button",
                 "attributes": {
                  "buttonType": "button"
@@ -1404,7 +1408,7 @@
                   }
                  }
                 },
-                "text": "Apagar",
+                "text": "Delete",
                 "children": [],
                 "logic": {
                  "on": [
@@ -1494,12 +1498,12 @@
   ],
   "tables": [
    {
-    "name": "recados",
+    "name": "posts",
     "read": "public",
     "write": "members"
    },
    {
-    "name": "notas",
+    "name": "notes",
     "read": "owner",
     "write": "members"
    }
@@ -1507,7 +1511,7 @@
   "scripts": [
    {
     "name": "club",
-    "code": "// The community's code: the members sign up and in with app.auth, the wall and the notes live in the database\n// (app.db). Published on the platform, they are kept in the cloud; in the preview, in this browser.\nexport async function load() {\n  try {\n    state.posts = await app.db.list('recados', { order: '-_created', limit: 50 })\n    state.notes = app.auth.user ? await app.db.list('notas', { mine: true }) : []\n  } catch (error) {\n    state.error = error.message\n  }\n}\n\nexport async function enter() {\n  state.error = ''\n  state.busy = true\n  try {\n    const { email, password, name } = state.form\n    if (state.mode === 'signup') await app.auth.signup({ email, password, name })\n    else await app.auth.login({ email, password })\n    state.form = { email: '', password: '', name: '' }\n    await load()\n    app.toast('Bem-vindo, ' + (app.auth.user.name || app.auth.user.email) + '!')\n  } catch (error) {\n    state.error = error.message\n  } finally {\n    state.busy = false\n  }\n}\n\nexport async function leave() {\n  app.auth.logout()\n  await load()\n}\n\nexport async function post() {\n  const text = state.draft.trim()\n  if (text === '') return\n  const user = app.auth.user\n  await app.db.add('recados', { texto: text, autor: user.name || user.email })\n  state.draft = ''\n  await load()\n  app.toast('Recado publicado')\n}\n\nexport async function removePost(id) {\n  await app.db.remove('recados', id)\n  await load()\n}\n\nexport async function addNote() {\n  const text = state.note.trim()\n  if (text === '') return\n  await app.db.add('notas', { texto: text })\n  state.note = ''\n  await load()\n}\n\nexport async function removeNote(id) {\n  await app.db.remove('notas', id)\n  await load()\n}\n\n// who may remove a row: the member who wrote it, or an admin of the site\nexport function mine(row) {\n  const user = app.auth.user\n  return user !== null && (user.role === 'admin' || row._owner === user.id)\n}\n\nexport function when(iso) {\n  return new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })\n}\n"
+    "code": "// The community's code: the members sign up and in with app.auth, the wall and the notes live in the database\n// (app.db). Published on the platform, they are kept in the cloud; in the preview, in this browser.\nexport async function load() {\n  try {\n    state.posts = await app.db.list('posts', { order: '-_created', limit: 50 })\n    state.notes = app.auth.user ? await app.db.list('notes', { mine: true }) : []\n  } catch (error) {\n    state.error = error.message\n  }\n}\n\nexport async function enter() {\n  state.error = ''\n  state.busy = true\n  try {\n    const { email, password, name } = state.form\n    if (state.mode === 'signup') await app.auth.signup({ email, password, name })\n    else await app.auth.login({ email, password })\n    state.form = { email: '', password: '', name: '' }\n    await load()\n    app.toast('Welcome, ' + (app.auth.user.name || app.auth.user.email) + '!')\n  } catch (error) {\n    state.error = error.message\n  } finally {\n    state.busy = false\n  }\n}\n\nexport async function leave() {\n  app.auth.logout()\n  await load()\n}\n\nexport async function post() {\n  const text = state.draft.trim()\n  if (text === '') return\n  const user = app.auth.user\n  await app.db.add('posts', { text: text, author: user.name || user.email })\n  state.draft = ''\n  await load()\n  app.toast('Post published')\n}\n\nexport async function removePost(id) {\n  await app.db.remove('posts', id)\n  await load()\n}\n\nexport async function addNote() {\n  const text = state.note.trim()\n  if (text === '') return\n  await app.db.add('notes', { text: text })\n  state.note = ''\n  await load()\n}\n\nexport async function removeNote(id) {\n  await app.db.remove('notes', id)\n  await load()\n}\n\n// who may remove a row: the member who wrote it, or an admin of the site\nexport function mine(row) {\n  const user = app.auth.user\n  return user !== null && (user.role === 'admin' || row._owner === user.id)\n}\n\nexport function when(iso) {\n  return new Date(iso).toLocaleString('en', { dateStyle: 'short', timeStyle: 'short' })\n}\n"
    }
   ]
  }

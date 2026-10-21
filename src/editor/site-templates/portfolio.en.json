@@ -1,21 +1,21 @@
 {
  "version": 4,
- "language": "pt-BR",
+ "language": "en",
  "codeLanguage": "en",
  "pages": [
   {
-   "id": "portfolio98",
-   "name": "Portfólio",
+   "id": "portfolio107",
+   "name": "Portfolio",
    "file": "index.html",
    "tree": {
-    "id": "portfolio97",
+    "id": "portfolio106",
     "type": "page",
     "name": "Body",
     "tag": "body",
     "attributes": {
-     "pageTitle": "Lia Moreira — Fotografia",
-     "pageDescription": "Fotografia de paisagem, retrato e casamento. Agende seu ensaio.",
-     "pageLanguage": "pt-BR"
+     "pageTitle": "Lia Moreira — Photography",
+     "pageDescription": "Landscape, portrait and wedding photography. Book your shoot.",
+     "pageLanguage": "en"
     },
     "classes": [],
     "styles": {
@@ -36,7 +36,7 @@
      {
       "id": "portfolio1",
       "type": "header",
-      "name": "Menu que recolhe no celular",
+      "name": "Menu that folds on phones",
       "tag": "header",
       "attributes": {},
       "classes": [],
@@ -62,7 +62,7 @@
        {
         "id": "portfolio2",
         "type": "div",
-        "name": "Contêiner",
+        "name": "Container",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -89,7 +89,7 @@
           "name": "Link",
           "tag": "a",
           "attributes": {
-           "href": "/"
+           "href": "index.html"
           },
           "classes": [],
           "styles": {
@@ -108,7 +108,7 @@
          {
           "id": "portfolio4",
           "type": "button",
-          "name": "Botão",
+          "name": "Button",
           "tag": "button",
           "attributes": {
            "ariaLabel": "Menu"
@@ -158,7 +158,7 @@
          {
           "id": "portfolio5",
           "type": "nav",
-          "name": "Navegação",
+          "name": "Navigation",
           "tag": "nav",
           "attributes": {},
           "classes": [],
@@ -201,7 +201,7 @@
               }
              }
             },
-            "text": "Início",
+            "text": "Home",
             "children": []
            },
            {
@@ -210,7 +210,7 @@
             "name": "Link 3",
             "tag": "a",
             "attributes": {
-             "href": "index.html#sobre"
+             "href": "index.html#about"
             },
             "classes": [],
             "styles": {
@@ -226,7 +226,7 @@
               }
              }
             },
-            "text": "Sobre",
+            "text": "About",
             "children": []
            },
            {
@@ -235,7 +235,7 @@
             "name": "Link 4",
             "tag": "a",
             "attributes": {
-             "href": "index.html#trabalhos"
+             "href": "index.html#work"
             },
             "classes": [],
             "styles": {
@@ -251,7 +251,7 @@
               }
              }
             },
-            "text": "Trabalhos",
+            "text": "Work",
             "children": []
            },
            {
@@ -260,7 +260,7 @@
             "name": "Link 5",
             "tag": "a",
             "attributes": {
-             "href": "index.html#contato"
+             "href": "index.html#contact"
             },
             "classes": [],
             "styles": {
@@ -276,7 +276,7 @@
               }
              }
             },
-            "text": "Contato",
+            "text": "Contact",
             "children": []
            },
            {
@@ -285,7 +285,7 @@
             "name": "Link 6",
             "tag": "a",
             "attributes": {
-             "href": "index.html#contato"
+             "href": "index.html#contact"
             },
             "classes": [],
             "styles": {
@@ -320,7 +320,7 @@
               }
              }
             },
-            "text": "Agendar ensaio",
+            "text": "Book a shoot",
             "children": []
            }
           ],
@@ -338,7 +338,7 @@
      {
       "id": "portfolio11",
       "type": "section",
-      "name": "Destaque com imagem",
+      "name": "Hero with image",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -358,7 +358,7 @@
        {
         "id": "portfolio12",
         "type": "div",
-        "name": "Contêiner 2",
+        "name": "Container 2",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -381,7 +381,7 @@
          {
           "id": "portfolio13",
           "type": "div",
-          "name": "Texto",
+          "name": "Text",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -391,7 +391,7 @@
            {
             "id": "portfolio14",
             "type": "paragraph",
-            "name": "Parágrafo",
+            "name": "Paragraph",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -407,13 +407,13 @@
               }
              }
             },
-            "text": "Fotografia autoral",
+            "text": "Fine art photography",
             "children": []
            },
            {
             "id": "portfolio15",
             "type": "heading",
-            "name": "Título",
+            "name": "Heading",
             "tag": "h1",
             "attributes": {},
             "classes": [],
@@ -429,13 +429,13 @@
               }
              }
             },
-            "text": "Luz natural, momentos verdadeiros",
+            "text": "Natural light, true moments",
             "children": []
            },
            {
             "id": "portfolio16",
             "type": "paragraph",
-            "name": "Parágrafo 2",
+            "name": "Paragraph 2",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -449,13 +449,13 @@
               }
              }
             },
-            "text": "Retratos, casamentos e paisagens pelo Brasil. Cada ensaio é planejado com você, do roteiro à entrega.",
+            "text": "Portraits, weddings and landscapes, wherever you are. Each shoot is planned with you, from the idea to the delivery.",
             "children": []
            },
            {
             "id": "portfolio17",
             "type": "div",
-            "name": "Ações",
+            "name": "Actions",
             "tag": "div",
             "attributes": {},
             "classes": [],
@@ -474,7 +474,7 @@
              {
               "id": "portfolio18",
               "type": "button",
-              "name": "Botão 2",
+              "name": "Button 2",
               "tag": "button",
               "attributes": {},
               "classes": [],
@@ -507,13 +507,13 @@
                 }
                }
               },
-              "text": "Agendar ensaio",
+              "text": "Book a shoot",
               "children": []
              },
              {
               "id": "portfolio19",
               "type": "button",
-              "name": "Botão 3",
+              "name": "Button 3",
               "tag": "button",
               "attributes": {},
               "classes": [],
@@ -546,7 +546,7 @@
                 }
                }
               },
-              "text": "Ver trabalhos",
+              "text": "See my work",
               "children": []
              }
             ]
@@ -556,11 +556,11 @@
          {
           "id": "portfolio20",
           "type": "image",
-          "name": "Imagem",
+          "name": "Image",
           "tag": "img",
           "attributes": {
            "src": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&h=900&q=80",
-           "alt": "Luz natural, momentos verdadeiros"
+           "alt": "Natural light, true moments"
           },
           "classes": [],
           "styles": {
@@ -588,10 +588,10 @@
      {
       "id": "portfolio21",
       "type": "section",
-      "name": "Galeria que amplia",
+      "name": "Gallery that opens large",
       "tag": "section",
       "attributes": {
-       "id": "trabalhos"
+       "id": "work"
       },
       "classes": [],
       "styles": {
@@ -609,7 +609,7 @@
        {
         "id": "portfolio22",
         "type": "div",
-        "name": "Contêiner 3",
+        "name": "Container 3",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -627,7 +627,7 @@
          {
           "id": "portfolio23",
           "type": "div",
-          "name": "Introdução",
+          "name": "Introduction",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -647,7 +647,7 @@
            {
             "id": "portfolio24",
             "type": "heading",
-            "name": "Título 2",
+            "name": "Heading 2",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -664,13 +664,13 @@
               }
              }
             },
-            "text": "Trabalhos recentes",
+            "text": "Recent work",
             "children": []
            },
            {
             "id": "portfolio25",
             "type": "paragraph",
-            "name": "Parágrafo 3",
+            "name": "Paragraph 3",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -685,7 +685,7 @@
               }
              }
             },
-            "text": "Toque numa foto para ver em tamanho grande.",
+            "text": "Tap a photo to see it large.",
             "children": []
            }
           ]
@@ -693,7 +693,7 @@
          {
           "id": "portfolio26",
           "type": "div",
-          "name": "Fotos",
+          "name": "Photos",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -712,7 +712,7 @@
            {
             "id": "portfolio27",
             "type": "figure",
-            "name": "Figura",
+            "name": "Figure",
             "tag": "figure",
             "attributes": {},
             "classes": [],
@@ -731,12 +731,12 @@
              {
               "id": "portfolio28",
               "type": "image",
-              "name": "Imagem 2",
+              "name": "Image 2",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=900&h=900&q=80",
-               "alt": "Trabalhos recentes — foto 1",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Recent work — photo 1"
               },
               "classes": [],
               "styles": {
@@ -763,7 +763,7 @@
            {
             "id": "portfolio29",
             "type": "figure",
-            "name": "Figura 2",
+            "name": "Figure 2",
             "tag": "figure",
             "attributes": {},
             "classes": [],
@@ -782,12 +782,12 @@
              {
               "id": "portfolio30",
               "type": "image",
-              "name": "Imagem 3",
+              "name": "Image 3",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=900&h=900&q=80",
-               "alt": "Trabalhos recentes — foto 2",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Recent work — photo 2"
               },
               "classes": [],
               "styles": {
@@ -814,7 +814,7 @@
            {
             "id": "portfolio31",
             "type": "figure",
-            "name": "Figura 3",
+            "name": "Figure 3",
             "tag": "figure",
             "attributes": {},
             "classes": [],
@@ -833,12 +833,12 @@
              {
               "id": "portfolio32",
               "type": "image",
-              "name": "Imagem 4",
+              "name": "Image 4",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&h=900&q=80",
-               "alt": "Trabalhos recentes — foto 3",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Recent work — photo 3"
               },
               "classes": [],
               "styles": {
@@ -865,7 +865,7 @@
            {
             "id": "portfolio33",
             "type": "figure",
-            "name": "Figura 4",
+            "name": "Figure 4",
             "tag": "figure",
             "attributes": {},
             "classes": [],
@@ -884,12 +884,12 @@
              {
               "id": "portfolio34",
               "type": "image",
-              "name": "Imagem 5",
+              "name": "Image 5",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&h=900&q=80",
-               "alt": "Trabalhos recentes — foto 4",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Recent work — photo 4"
               },
               "classes": [],
               "styles": {
@@ -916,7 +916,7 @@
            {
             "id": "portfolio35",
             "type": "figure",
-            "name": "Figura 5",
+            "name": "Figure 5",
             "tag": "figure",
             "attributes": {},
             "classes": [],
@@ -935,12 +935,12 @@
              {
               "id": "portfolio36",
               "type": "image",
-              "name": "Imagem 6",
+              "name": "Image 6",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&h=900&q=80",
-               "alt": "Trabalhos recentes — foto 5",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Recent work — photo 5"
               },
               "classes": [],
               "styles": {
@@ -967,7 +967,7 @@
            {
             "id": "portfolio37",
             "type": "figure",
-            "name": "Figura 6",
+            "name": "Figure 6",
             "tag": "figure",
             "attributes": {},
             "classes": [],
@@ -986,12 +986,12 @@
              {
               "id": "portfolio38",
               "type": "image",
-              "name": "Imagem 7",
+              "name": "Image 7",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&h=900&q=80",
-               "alt": "Trabalhos recentes — foto 6",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Recent work — photo 6"
               },
               "classes": [],
               "styles": {
@@ -1027,10 +1027,10 @@
      {
       "id": "portfolio39",
       "type": "section",
-      "name": "Recursos",
+      "name": "Features",
       "tag": "section",
       "attributes": {
-       "id": "sobre"
+       "id": "about"
       },
       "classes": [],
       "styles": {
@@ -1048,7 +1048,7 @@
        {
         "id": "portfolio40",
         "type": "div",
-        "name": "Contêiner 4",
+        "name": "Container 4",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -1066,7 +1066,7 @@
          {
           "id": "portfolio41",
           "type": "div",
-          "name": "Introdução 2",
+          "name": "Introduction 2",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1086,7 +1086,7 @@
            {
             "id": "portfolio42",
             "type": "paragraph",
-            "name": "Parágrafo 4",
+            "name": "Paragraph 4",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1102,13 +1102,13 @@
               }
              }
             },
-            "text": "Sobre",
+            "text": "About",
             "children": []
            },
            {
             "id": "portfolio43",
             "type": "heading",
-            "name": "Título 3",
+            "name": "Heading 3",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -1124,13 +1124,13 @@
               }
              }
             },
-            "text": "Doze anos fotografando histórias",
+            "text": "Twelve years photographing stories",
             "children": []
            },
            {
             "id": "portfolio44",
             "type": "paragraph",
-            "name": "Parágrafo 5",
+            "name": "Paragraph 5",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1145,7 +1145,7 @@
               }
              }
             },
-            "text": "Formada em artes visuais, com trabalhos publicados em revistas de viagem.",
+            "text": "A visual arts graduate, with work published in travel magazines.",
             "children": []
            }
           ]
@@ -1153,7 +1153,7 @@
          {
           "id": "portfolio45",
           "type": "div",
-          "name": "Grade",
+          "name": "Grid",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1172,7 +1172,7 @@
            {
             "id": "portfolio46",
             "type": "article",
-            "name": "Artigo",
+            "name": "Article",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1208,7 +1208,7 @@
              {
               "id": "portfolio47",
               "type": "heading",
-              "name": "Título 4",
+              "name": "Heading 4",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1222,13 +1222,13 @@
                 }
                }
               },
-              "text": "Retratos",
+              "text": "Portraits",
               "children": []
              },
              {
               "id": "portfolio48",
               "type": "paragraph",
-              "name": "Parágrafo 6",
+              "name": "Paragraph 6",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1243,7 +1243,7 @@
                 }
                }
               },
-              "text": "Ensaios pessoais e corporativos, em estúdio ou ao ar livre.",
+              "text": "Personal and corporate shoots, in the studio or outdoors.",
               "children": []
              }
             ]
@@ -1251,7 +1251,7 @@
            {
             "id": "portfolio49",
             "type": "article",
-            "name": "Artigo 2",
+            "name": "Article 2",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1287,7 +1287,7 @@
              {
               "id": "portfolio50",
               "type": "heading",
-              "name": "Título 5",
+              "name": "Heading 5",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1301,13 +1301,13 @@
                 }
                }
               },
-              "text": "Casamentos",
+              "text": "Weddings",
               "children": []
              },
              {
               "id": "portfolio51",
               "type": "paragraph",
-              "name": "Parágrafo 7",
+              "name": "Paragraph 7",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1322,7 +1322,7 @@
                 }
                }
               },
-              "text": "Cobertura completa, do making of à festa, com álbum.",
+              "text": "Full coverage, from getting ready to the party, with an album.",
               "children": []
              }
             ]
@@ -1330,7 +1330,7 @@
            {
             "id": "portfolio52",
             "type": "article",
-            "name": "Artigo 3",
+            "name": "Article 3",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1366,7 +1366,7 @@
              {
               "id": "portfolio53",
               "type": "heading",
-              "name": "Título 6",
+              "name": "Heading 6",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1380,13 +1380,13 @@
                 }
                }
               },
-              "text": "Paisagens",
+              "text": "Landscapes",
               "children": []
              },
              {
               "id": "portfolio54",
               "type": "paragraph",
-              "name": "Parágrafo 8",
+              "name": "Paragraph 8",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1401,7 +1401,7 @@
                 }
                }
               },
-              "text": "Impressões fine art assinadas para sua casa ou empresa.",
+              "text": "Signed fine art prints for your home or office.",
               "children": []
              }
             ]
@@ -1415,7 +1415,7 @@
      {
       "id": "portfolio55",
       "type": "section",
-      "name": "Depoimentos",
+      "name": "Testimonials",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -1434,7 +1434,7 @@
        {
         "id": "portfolio56",
         "type": "div",
-        "name": "Contêiner 5",
+        "name": "Container 5",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -1452,7 +1452,7 @@
          {
           "id": "portfolio57",
           "type": "div",
-          "name": "Introdução 3",
+          "name": "Introduction 3",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1472,7 +1472,7 @@
            {
             "id": "portfolio58",
             "type": "paragraph",
-            "name": "Parágrafo 9",
+            "name": "Paragraph 9",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1488,13 +1488,13 @@
               }
              }
             },
-            "text": "Clientes",
+            "text": "Clients",
             "children": []
            },
            {
             "id": "portfolio59",
             "type": "heading",
-            "name": "Título 7",
+            "name": "Heading 7",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -1510,13 +1510,13 @@
               }
              }
             },
-            "text": "Palavras de quem fotografou comigo",
+            "text": "Words from people I photographed",
             "children": []
            },
            {
             "id": "portfolio60",
             "type": "paragraph",
-            "name": "Parágrafo 10",
+            "name": "Paragraph 10",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1539,7 +1539,7 @@
          {
           "id": "portfolio61",
           "type": "div",
-          "name": "Grade 2",
+          "name": "Grid 2",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1558,7 +1558,7 @@
            {
             "id": "portfolio62",
             "type": "article",
-            "name": "Artigo 4",
+            "name": "Article 4",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1594,7 +1594,7 @@
              {
               "id": "portfolio63",
               "type": "paragraph",
-              "name": "Parágrafo 11",
+              "name": "Paragraph 11",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1608,13 +1608,13 @@
                 }
                }
               },
-              "text": "\"As fotos do nosso casamento são as memórias mais bonitas que temos.\"",
+              "text": "\"Our wedding photos are the most beautiful memories we have.\"",
               "children": []
              },
              {
               "id": "portfolio64",
               "type": "paragraph",
-              "name": "Parágrafo 12",
+              "name": "Paragraph 12",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1628,13 +1628,13 @@
                 }
                }
               },
-              "text": "Ana e Lucas",
+              "text": "Ana and Lucas",
               "children": []
              },
              {
               "id": "portfolio65",
               "type": "paragraph",
-              "name": "Parágrafo 13",
+              "name": "Paragraph 13",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1648,7 +1648,7 @@
                 }
                }
               },
-              "text": "casamento em Tiradentes",
+              "text": "wedding in the countryside",
               "children": []
              }
             ]
@@ -1656,7 +1656,7 @@
            {
             "id": "portfolio66",
             "type": "article",
-            "name": "Artigo 5",
+            "name": "Article 5",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1692,7 +1692,7 @@
              {
               "id": "portfolio67",
               "type": "paragraph",
-              "name": "Parágrafo 14",
+              "name": "Paragraph 14",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1706,13 +1706,13 @@
                 }
                }
               },
-              "text": "\"Me senti à vontade o ensaio inteiro. O resultado ficou natural.\"",
+              "text": "\"I felt at ease the whole shoot. The result looks natural.\"",
               "children": []
              },
              {
               "id": "portfolio68",
               "type": "paragraph",
-              "name": "Parágrafo 15",
+              "name": "Paragraph 15",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1732,7 +1732,7 @@
              {
               "id": "portfolio69",
               "type": "paragraph",
-              "name": "Parágrafo 16",
+              "name": "Paragraph 16",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1746,7 +1746,7 @@
                 }
                }
               },
-              "text": "ensaio pessoal",
+              "text": "personal shoot",
               "children": []
              }
             ]
@@ -1754,7 +1754,7 @@
            {
             "id": "portfolio70",
             "type": "article",
-            "name": "Artigo 6",
+            "name": "Article 6",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1790,7 +1790,7 @@
              {
               "id": "portfolio71",
               "type": "paragraph",
-              "name": "Parágrafo 17",
+              "name": "Paragraph 17",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1804,13 +1804,13 @@
                 }
                }
               },
-              "text": "\"As impressões ficaram incríveis no nosso escritório.\"",
+              "text": "\"The prints look amazing in our office.\"",
               "children": []
              },
              {
               "id": "portfolio72",
               "type": "paragraph",
-              "name": "Parágrafo 18",
+              "name": "Paragraph 18",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1824,13 +1824,13 @@
                 }
                }
               },
-              "text": "Estúdio Arco",
+              "text": "Arco Studio",
               "children": []
              },
              {
               "id": "portfolio73",
               "type": "paragraph",
-              "name": "Parágrafo 19",
+              "name": "Paragraph 19",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1858,10 +1858,10 @@
      {
       "id": "portfolio74",
       "type": "section",
-      "name": "Contato",
+      "name": "Contact",
       "tag": "section",
       "attributes": {
-       "id": "contato"
+       "id": "contact"
       },
       "classes": [],
       "styles": {
@@ -1879,7 +1879,7 @@
        {
         "id": "portfolio75",
         "type": "div",
-        "name": "Contêiner 6",
+        "name": "Container 6",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -1901,7 +1901,7 @@
          {
           "id": "portfolio76",
           "type": "div",
-          "name": "Texto 2",
+          "name": "Text 2",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1911,7 +1911,7 @@
            {
             "id": "portfolio77",
             "type": "heading",
-            "name": "Título 8",
+            "name": "Heading 8",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -1927,13 +1927,13 @@
               }
              }
             },
-            "text": "Vamos conversar sobre seu ensaio",
+            "text": "Let's talk about your shoot",
             "children": []
            },
            {
             "id": "portfolio78",
             "type": "paragraph",
-            "name": "Parágrafo 20",
+            "name": "Paragraph 20",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1946,7 +1946,7 @@
               }
              }
             },
-            "text": "Conte a data, o lugar e o que você imagina. Respondo em até um dia.",
+            "text": "Tell me the date, the place and what you have in mind. I answer within a day.",
             "children": []
            }
           ]
@@ -1954,9 +1954,12 @@
          {
           "id": "portfolio79",
           "type": "form",
-          "name": "Formulário",
+          "name": "Form",
           "tag": "form",
-          "attributes": {},
+          "attributes": {
+           "method": "post",
+           "formSubmit": "{\"destination\":\"native\",\"method\":\"POST\"}"
+          },
           "classes": [],
           "styles": {
            "desktop": {
@@ -1993,7 +1996,7 @@
            {
             "id": "portfolio80",
             "type": "label",
-            "name": "Rótulo",
+            "name": "Label",
             "tag": "label",
             "attributes": {},
             "classes": [],
@@ -2011,7 +2014,7 @@
              {
               "id": "portfolio81",
               "type": "paragraph",
-              "name": "Parágrafo 21",
+              "name": "Paragraph 21",
               "tag": "span",
               "attributes": {},
               "classes": [],
@@ -2023,17 +2026,18 @@
                 }
                }
               },
-              "text": "Nome",
+              "text": "Name",
               "children": []
              },
              {
               "id": "portfolio82",
               "type": "input",
-              "name": "Campo",
+              "name": "Input",
               "tag": "input",
               "attributes": {
                "inputType": "text",
-               "name": "name"
+               "name": "name",
+               "formField": "{\"rules\":{\"required\":true}}"
               },
               "classes": [],
               "styles": {
@@ -2051,7 +2055,7 @@
            {
             "id": "portfolio83",
             "type": "label",
-            "name": "Rótulo 2",
+            "name": "Label 2",
             "tag": "label",
             "attributes": {},
             "classes": [],
@@ -2069,7 +2073,7 @@
              {
               "id": "portfolio84",
               "type": "paragraph",
-              "name": "Parágrafo 22",
+              "name": "Paragraph 22",
               "tag": "span",
               "attributes": {},
               "classes": [],
@@ -2081,17 +2085,18 @@
                 }
                }
               },
-              "text": "E-mail",
+              "text": "Email",
               "children": []
              },
              {
               "id": "portfolio85",
               "type": "input",
-              "name": "Campo 2",
+              "name": "Input 2",
               "tag": "input",
               "attributes": {
                "inputType": "email",
-               "name": "email"
+               "name": "email",
+               "formField": "{\"rules\":{\"required\":true,\"type\":\"email\"}}"
               },
               "classes": [],
               "styles": {
@@ -2107,9 +2112,186 @@
             ]
            },
            {
+            "id": "portfolio87",
+            "type": "label",
+            "name": "Label 3",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio88",
+              "type": "paragraph",
+              "name": "Paragraph 23",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#18181b"
+                }
+               }
+              },
+              "text": "Date",
+              "children": []
+             },
+             {
+              "id": "portfolio89",
+              "type": "input",
+              "name": "Input 3",
+              "tag": "input",
+              "attributes": {
+               "name": "date",
+               "formField": "{\"rules\":{\"required\":true,\"dateMinimum\":\"today\"}}",
+               "inputType": "date"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "portfolio90",
+            "type": "label",
+            "name": "Label 4",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio91",
+              "type": "paragraph",
+              "name": "Paragraph 24",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#18181b"
+                }
+               }
+              },
+              "text": "Place",
+              "children": []
+             },
+             {
+              "id": "portfolio92",
+              "type": "input",
+              "name": "Input 4",
+              "tag": "input",
+              "attributes": {
+               "name": "place",
+               "formField": "{\"rules\":{\"required\":true}}",
+               "inputType": "text"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "portfolio93",
+            "type": "label",
+            "name": "Label 5",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio94",
+              "type": "paragraph",
+              "name": "Paragraph 25",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#18181b"
+                }
+               }
+              },
+              "text": "What you have in mind",
+              "children": []
+             },
+             {
+              "id": "portfolio95",
+              "type": "textarea",
+              "name": "Textarea",
+              "tag": "textarea",
+              "attributes": {
+               "name": "message",
+               "formField": "{\"rules\":{\"required\":true}}",
+               "rows": 4
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": "",
+              "children": []
+             }
+            ]
+           },
+           {
             "id": "portfolio86",
             "type": "button",
-            "name": "Botão 4",
+            "name": "Button 4",
             "tag": "button",
             "attributes": {
              "buttonType": "submit"
@@ -2145,7 +2327,7 @@
               }
              }
             },
-            "text": "Enviar",
+            "text": "Send",
             "children": []
            }
           ]
@@ -2155,9 +2337,9 @@
       ]
      },
      {
-      "id": "portfolio87",
+      "id": "portfolio96",
       "type": "footer",
-      "name": "Rodapé com colunas",
+      "name": "Footer with columns",
       "tag": "footer",
       "attributes": {},
       "classes": [],
@@ -2176,9 +2358,9 @@
       "text": null,
       "children": [
        {
-        "id": "portfolio88",
+        "id": "portfolio97",
         "type": "div",
-        "name": "Contêiner 7",
+        "name": "Container 7",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -2198,9 +2380,9 @@
         "text": null,
         "children": [
          {
-          "id": "portfolio89",
+          "id": "portfolio98",
           "type": "div",
-          "name": "Marca",
+          "name": "Brand",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -2208,9 +2390,9 @@
           "text": null,
           "children": [
            {
-            "id": "portfolio90",
+            "id": "portfolio99",
             "type": "paragraph",
-            "name": "Parágrafo 23",
+            "name": "Paragraph 26",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -2228,9 +2410,9 @@
             "children": []
            },
            {
-            "id": "portfolio91",
+            "id": "portfolio100",
             "type": "paragraph",
-            "name": "Parágrafo 24",
+            "name": "Paragraph 27",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -2244,15 +2426,15 @@
               }
              }
             },
-            "text": "Fotografia — São Paulo e viagens.",
+            "text": "Photography — at home and on the road.",
             "children": []
            }
           ]
          },
          {
-          "id": "portfolio92",
+          "id": "portfolio101",
           "type": "nav",
-          "name": "Navegação 2",
+          "name": "Navigation 2",
           "tag": "nav",
           "attributes": {},
           "classes": [],
@@ -2272,7 +2454,7 @@
           "text": null,
           "children": [
            {
-            "id": "portfolio93",
+            "id": "portfolio102",
             "type": "link",
             "name": "Link 7",
             "tag": "a",
@@ -2287,16 +2469,16 @@
               }
              }
             },
-            "text": "Início",
+            "text": "Home",
             "children": []
            },
            {
-            "id": "portfolio94",
+            "id": "portfolio103",
             "type": "link",
             "name": "Link 8",
             "tag": "a",
             "attributes": {
-             "href": "index.html#sobre"
+             "href": "index.html#about"
             },
             "classes": [],
             "styles": {
@@ -2306,16 +2488,16 @@
               }
              }
             },
-            "text": "Sobre",
+            "text": "About",
             "children": []
            },
            {
-            "id": "portfolio95",
+            "id": "portfolio104",
             "type": "link",
             "name": "Link 9",
             "tag": "a",
             "attributes": {
-             "href": "index.html#contato"
+             "href": "index.html#contact"
             },
             "classes": [],
             "styles": {
@@ -2325,15 +2507,15 @@
               }
              }
             },
-            "text": "Contato",
+            "text": "Contact",
             "children": []
            }
           ]
          },
          {
-          "id": "portfolio96",
+          "id": "portfolio105",
           "type": "paragraph",
-          "name": "Parágrafo 25",
+          "name": "Paragraph 28",
           "tag": "p",
           "attributes": {},
           "classes": [],
@@ -2346,7 +2528,7 @@
             }
            }
           },
-          "text": "© 2026 Lia Moreira Fotografia.",
+          "text": "© 2026 Lia Moreira Photography.",
           "children": []
          }
         ]

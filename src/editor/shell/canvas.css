@@ -461,13 +461,31 @@
   cursor: grabbing;
 }
 
+/* The frame: as tall as the whole page (DCS-035: the canvas is an artboard), placed on the stage by the camera through
+   its left and top (canvas.tsx; view/camera.ts). Never moved nor contained with transform, will-change, filter or
+   contain, here, on the stage or on the page's view: the selection's label, the text toolbar, the quick panel's chip and
+   the drag's ghost are fixed in the window, and such an ancestor would hold them instead. */
 .frame {
   position: absolute;
-  top: 0;
-  bottom: 0;
   left: var(--space-9);
   display: flex;
   flex-direction: column;
+}
+
+/* The frame's header: its breakpoint tabs and the bands of what the edits reach, on the frame's top line; while that
+   line is above the stage's top, pinned to the stage's top over the page (canvas.tsx sets its top), on the canvas's
+   own background so the page reads as passing under it (above the page only then: on its top line it lies over
+   nothing of the page, and the first-look card of an empty page, start-screen.tsx, stays over it) */
+.frame__header {
+  position: relative;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+}
+
+.frame__header.is-pinned {
+  z-index: var(--z-canvas-edge);
+  background: var(--color-canvas);
 }
 
 /* The breakpoints side by side (side-by-side.tsx, spec side-by-side-view): a column per other breakpoint to the right
@@ -513,10 +531,12 @@
 /* The frame's right edge (canvas.tsx FrameEdge, spec breakpoints-switch): a band outside the page's right edge, beyond
    the reach of a selected element's handles (whose outer half lies past the page's edge), which the pointer drags to
    change the width of the screen shown; it never covers the page nor a handle */
+/* the handle centred on the frame's right edge: half of it over the page, half in the Fit margin (8 px), so the stage
+   never clips it at Fit */
 .frame__edge {
   position: absolute;
   top: var(--size-frame-tabs);
-  right: calc(var(--space-6) * -2);
+  right: calc(var(--space-6) / -2);
   bottom: 0;
   width: var(--space-6);
   cursor: ew-resize;
@@ -626,8 +646,7 @@
 
 .frame__view {
   position: relative;
-  flex: 1;
-  min-height: 0;
+  flex: none;
   overflow: hidden;
   background: var(--color-surface);
   outline: 1px solid var(--color-border-strong);

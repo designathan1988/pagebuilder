@@ -17,7 +17,7 @@ import { manifest } from '../../manifest/runtime.ts';
 import { usePointerViews } from '../input/pointer/use-views.ts';
 import { useStore } from '../store.ts';
 import { canvasFrame, nodeBox } from './coordinates.ts';
-import { travelInto } from './reveal.ts';
+import { travelInto, visiblePage } from './reveal.ts';
 
 // the canvas's pan, the wheel's command: what moves the page under the stage (the quick panel's reveal uses it too)
 const PAN = manifest.doors.find((d) => d.door.kind === 'canvas-wheel' && 'dx' in d.command.args);
@@ -41,14 +41,12 @@ export function RevealSelection({ stage }: { readonly stage: RefObject<HTMLDivEl
           const frame = canvasFrame();
           const box = frame === null ? null : nodeBox(frame, primary);
           if (area === null || box === null || (box.width <= 0 && box.height <= 0)) return;
-          const stageBox = area.getBoundingClientRect();
-          // the page's view, under the frame's tabs: what the person sees of the page
-          const view = area.querySelector('.frame__view')?.getBoundingClientRect() ?? stageBox;
-          const top = Math.max(stageBox.top, view.top);
-          const bottom = Math.min(stageBox.bottom, view.bottom);
+          // what the person sees of the page: the stage, under the frame's tabs pinned to its top (reveal.ts)
+          const view = visiblePage();
+          if (view === null) return;
           const inset = token(area, '--space-8');
-          const dy = travelInto(box.y, box.y + box.height, top, bottom, inset);
-          const dx = travelInto(box.x, box.x + box.width, stageBox.left, stageBox.right, inset);
+          const dy = travelInto(box.y, box.y + box.height, view.top, view.bottom, inset);
+          const dx = travelInto(box.x, box.x + box.width, view.left, view.right, inset);
           // a part in view overlaps the view along both axes; seen along one only, it moves along the other
           if (dx === 0 && dy === 0) return;
           (store.dispatch as (command: CommandId, args: unknown) => unknown)(pan.command.id, { dx: Math.round(dx), dy: Math.round(dy) });

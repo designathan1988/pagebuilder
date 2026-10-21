@@ -1,8 +1,9 @@
 // The centre column: the file tabs, the canvas toolbar with the Canvas /
 // Split / Code switch, the rulers, and the frame with its breakpoint tabs along the cascade from the base breakpoint,
 // and the page's iframe (src/editor/canvas/frame.tsx) at the camera's zoom (src/editor/view/camera.ts): the chosen one,
-// or in Fit mode the one that fits the frame to the stage; the frame is placed at the camera's pan.
-import { useContext, useLayoutEffect, useRef, useState } from 'react';
+// or in Fit mode the one that fits the frame to the stage; the frame, as tall as the whole page (DCS-035: the canvas is
+// an artboard), is placed on the stage where the camera puts it, on both axes.
+import { useCallback, useContext, useLayoutEffect, useRef, useState } from 'react';
 import type { MessageId } from '../../generated/ids.ts';
 import { manifest, type DoorEntry } from '../../manifest/runtime.ts';
 import { CanvasFrame } from '../canvas/frame.tsx';
@@ -14,7 +15,7 @@ import { GLYPHS, doorSlots, slotsIn } from '../doors/placement.ts';
 import { codeTabs } from '../explorer/file-tabs.ts';
 import { useEditorState } from '../store.ts';
 import { isEmptyProject } from '../../core/document/model.ts';
-import { FIT_MARGIN, fitZoom, panOf, registerStage } from '../view/camera.ts';
+import { fitZoom, frameLeftOf, frameTopOf, registerStage, reportFrame, topOf } from '../view/camera.ts';
 import { activeBreakpoint, viewportWidth } from '../view/breakpoints.ts';
 import { activeState } from '../view/style-state.ts';
 import { editorView } from '../view/editor-view.ts';
@@ -325,7 +326,28 @@ export function CanvasColumn() {
   // the breakpoint's screen height: what vh measures in the page and where the fold lines fall (item 2.3)
   const pageHeight = useEditorState((s) => activeBreakpoint(s).height);
   const zoom = chosen !== undefined ? chosen / 100 : fitZoom(size.width, pageWidth);
-  const pan = useEditorState((s) => panOf(s, zoom, size.width));
+  // The page's height (the frame measures it: canvas/frame.tsx) and the frame's header of tabs and badges: what the
+  // camera bounds its pan with, reported to it as they change so its handlers bound with the same measures
+  const [extent, setExtent] = useState(0);
+  const onExtent = useCallback((measured: number) => setExtent(measured), []);
+  const header = useRef<HTMLDivElement>(null);
+  const [headerHeight, setHeaderHeight] = useState(0);
+  useLayoutEffect(() => {
+    const element = header.current;
+    if (element === null) return;
+    setHeaderHeight(element.offsetHeight);
+    const observer = new ResizeObserver(() => setHeaderHeight(element.offsetHeight));
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [stageShown]);
+  const measures = { extent: Math.max(extent, pageHeight), header: headerHeight };
+  useLayoutEffect(() => reportFrame({ extent: measures.extent, header: measures.header }), [measures.extent, measures.header]);
+  // the frame's place on the stage: its left edge and its top (its header first, then the page)
+  const left = useEditorState((s) => frameLeftOf(s, zoom, size.width));
+  const top = useEditorState((s) => frameTopOf(topOf(s, zoom, size.height, measures), zoom));
+  // the header stays on the frame's top line; while that line is above the stage's top, the header is pinned there,
+  // over the page, so the breakpoint tabs stay within reach (the owner's decision D-1 read for the artboard, DCS-035)
+  const pinned = Math.round(Math.min(Math.max(0, -top), measures.extent * zoom));
   useLayoutEffect(() => registerStage(stage.current), [stageShown]);
   const report = useContext(ReportFitZoom);
   useLayoutEffect(() => report(zoom), [report, zoom]);
@@ -349,18 +371,20 @@ export function CanvasColumn() {
                 <Rulers />
                 {/* the stage around the page: a press here is on no node (pointer.ts) */}
                 <div className={`stage${panning !== 'idle' ? ` stage--${panning}` : ''}`} ref={stage} data-canvas-stage data-region="canvas-stage">
-                  <div className="frame" data-region="canvas-frame" style={{ width: pageWidth * zoom, left: FIT_MARGIN + pan }}>
-                    {/* the breakpoints, a row of tabs attached to the frame they switch (the owner's decision D-1; the
-                        canonical frame): their row takes its own width, so at a small zoom the tabs run past the
-                        frame's edge instead of being cut or overlapping (the audit's A3.18) */}
-                    <BreakpointTabs seen={{ from: Math.max(0, -(FIT_MARGIN + pan)), to: Math.min(pageWidth * zoom, size.width - (FIT_MARGIN + pan)) }} />
-                    {/* the bands of what the edits reach, in the flow between the tabs and the page: the breakpoint's,
-                        then the state's (window-overlays.css) */}
-                    <BreakpointBadge />
-                    <StateBadge />
+                  <div className="frame" data-region="canvas-frame" style={{ width: pageWidth * zoom, left, top }}>
+                    <div ref={header} className={`frame__header${pinned > 0 ? ' is-pinned' : ''}`} style={{ top: pinned }}>
+                      {/* the breakpoints, a row of tabs attached to the frame they switch (the owner's decision D-1; the
+                          canonical frame): their row takes its own width, so at a small zoom the tabs run past the
+                          frame's edge instead of being cut or overlapping (the audit's A3.18) */}
+                      <BreakpointTabs seen={{ from: Math.max(0, -left), to: Math.min(pageWidth * zoom, size.width - left) }} />
+                      {/* the bands of what the edits reach, in the flow between the tabs and the page: the breakpoint's,
+                          then the state's (window-overlays.css) */}
+                      <BreakpointBadge />
+                      <StateBadge />
+                    </div>
                     {/* the edge first: the page's overlay (its handles at the page's edge) is drawn over it */}
                     <FrameEdge width={pageWidth} />
-                    <CanvasFrame width={pageWidth} screen={pageHeight} zoom={zoom} />
+                    <CanvasFrame width={pageWidth} screen={pageHeight} zoom={zoom} onExtent={onExtent} />
                   </div>
                   {/* the quick panel of the selection, over the stage (canvas/quick-panel.tsx) */}
                   <QuickPanel stage={stage} />

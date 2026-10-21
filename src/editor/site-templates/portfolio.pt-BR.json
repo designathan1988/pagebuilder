@@ -1,0 +1,2542 @@
+{
+ "version": 4,
+ "language": "pt-BR",
+ "codeLanguage": "en",
+ "pages": [
+  {
+   "id": "portfolio107",
+   "name": "Portfólio",
+   "file": "index.html",
+   "tree": {
+    "id": "portfolio106",
+    "type": "page",
+    "name": "Body",
+    "tag": "body",
+    "attributes": {
+     "pageTitle": "Lia Moreira — Fotografia",
+     "pageDescription": "Fotografia de paisagem, retrato e casamento. Agende seu ensaio.",
+     "pageLanguage": "pt-BR"
+    },
+    "classes": [],
+    "styles": {
+     "desktop": {
+      "base": {
+       "margin-top": "0",
+       "margin-right": "0",
+       "margin-bottom": "0",
+       "margin-left": "0",
+       "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+       "color": "#18181b",
+       "background-color": "#ffffff"
+      }
+     }
+    },
+    "text": null,
+    "children": [
+     {
+      "id": "portfolio1",
+      "type": "header",
+      "name": "Menu que recolhe no celular",
+      "tag": "header",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "14px",
+         "padding-right": "24px",
+         "padding-bottom": "14px",
+         "padding-left": "24px",
+         "background-color": "#ffffff",
+         "border-bottom-width": "1px",
+         "border-bottom-style": "solid",
+         "border-bottom-color": "#e2e8f0",
+         "position": "sticky",
+         "top": "0px",
+         "z-index": "50"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "portfolio2",
+        "type": "div",
+        "name": "Contêiner",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "justify-content": "space-between",
+           "column-gap": "24px",
+           "row-gap": "12px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "portfolio3",
+          "type": "link",
+          "name": "Link",
+          "tag": "a",
+          "attributes": {
+           "href": "index.html"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "20px",
+             "font-weight": "700",
+             "color": "#18181b",
+             "text-decoration-line": "none"
+            }
+           }
+          },
+          "text": "Lia Moreira",
+          "children": []
+         },
+         {
+          "id": "portfolio4",
+          "type": "button",
+          "name": "Botão",
+          "tag": "button",
+          "attributes": {
+           "ariaLabel": "Menu"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "width": "44px",
+             "height": "44px",
+             "border-top-left-radius": "999px",
+             "border-top-right-radius": "999px",
+             "border-bottom-right-radius": "999px",
+             "border-bottom-left-radius": "999px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#e2e8f0",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#e2e8f0",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#e2e8f0",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#e2e8f0",
+             "background-color": "#ffffff",
+             "color": "#18181b",
+             "font-size": "20px",
+             "cursor": "pointer",
+             "display": "none",
+             "align-items": "center",
+             "justify-content": "center",
+             "padding-top": "0px",
+             "padding-bottom": "0px",
+             "padding-left": "0px",
+             "padding-right": "0px"
+            }
+           }
+          },
+          "text": "☰",
+          "children": [],
+          "customAttributes": {
+           "data-wc-toggle": ""
+          }
+         },
+         {
+          "id": "portfolio5",
+          "type": "nav",
+          "name": "Navegação",
+          "tag": "nav",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "0px",
+             "padding-right": "0px",
+             "padding-bottom": "0px",
+             "padding-left": "0px",
+             "display": "flex",
+             "flex-wrap": "wrap",
+             "align-items": "center",
+             "column-gap": "20px",
+             "row-gap": "8px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "portfolio6",
+            "type": "link",
+            "name": "Link 2",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#18181b",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Início",
+            "children": []
+           },
+           {
+            "id": "portfolio7",
+            "type": "link",
+            "name": "Link 3",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#sobre"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#18181b",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Sobre",
+            "children": []
+           },
+           {
+            "id": "portfolio8",
+            "type": "link",
+            "name": "Link 4",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#trabalhos"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#18181b",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Trabalhos",
+            "children": []
+           },
+           {
+            "id": "portfolio9",
+            "type": "link",
+            "name": "Link 5",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#contato"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#18181b",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Contato",
+            "children": []
+           },
+           {
+            "id": "portfolio10",
+            "type": "link",
+            "name": "Link 6",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#contato"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "12px",
+               "padding-bottom": "12px",
+               "padding-left": "22px",
+               "padding-right": "22px",
+               "background-color": "#18181b",
+               "color": "#ffffff",
+               "font-weight": "600",
+               "font-size": "15px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#18181b",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#18181b",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#18181b",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#18181b",
+               "border-top-left-radius": "10px",
+               "border-top-right-radius": "10px",
+               "border-bottom-right-radius": "10px",
+               "border-bottom-left-radius": "10px",
+               "cursor": "pointer",
+               "text-decoration-line": "none"
+              }
+             }
+            },
+            "text": "Agendar ensaio",
+            "children": []
+           }
+          ],
+          "customAttributes": {
+           "data-wc-menu": ""
+          }
+         }
+        ]
+       }
+      ],
+      "customAttributes": {
+       "data-wc": "menu"
+      }
+     },
+     {
+      "id": "portfolio11",
+      "type": "section",
+      "name": "Destaque com imagem",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px",
+         "background-color": "#fafafa"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "portfolio12",
+        "type": "div",
+        "name": "Contêiner 2",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(300px, 1fr))",
+           "column-gap": "56px",
+           "row-gap": "40px",
+           "align-items": "center"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "portfolio13",
+          "type": "div",
+          "name": "Texto",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "portfolio14",
+            "type": "paragraph",
+            "name": "Parágrafo",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#18181b",
+               "font-size": "14px",
+               "font-weight": "600",
+               "letter-spacing": "0.08em",
+               "text-transform": "uppercase",
+               "margin-bottom": "12px"
+              }
+             }
+            },
+            "text": "Fotografia autoral",
+            "children": []
+           },
+           {
+            "id": "portfolio15",
+            "type": "heading",
+            "name": "Título",
+            "tag": "h1",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(2.25rem, 5vw, 3.5rem)",
+               "line-height": "1.1",
+               "color": "#18181b",
+               "letter-spacing": "-0.02em",
+               "margin-bottom": "20px",
+               "font-family": "Georgia, \"Times New Roman\", serif"
+              }
+             }
+            },
+            "text": "Luz natural, momentos verdadeiros",
+            "children": []
+           },
+           {
+            "id": "portfolio16",
+            "type": "paragraph",
+            "name": "Parágrafo 2",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-bottom": "32px"
+              }
+             }
+            },
+            "text": "Retratos, casamentos e paisagens pelo Brasil. Cada ensaio é planejado com você, do roteiro à entrega.",
+            "children": []
+           },
+           {
+            "id": "portfolio17",
+            "type": "div",
+            "name": "Ações",
+            "tag": "div",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-wrap": "wrap",
+               "column-gap": "12px",
+               "row-gap": "12px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio18",
+              "type": "button",
+              "name": "Botão 2",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "14px",
+                 "padding-bottom": "14px",
+                 "padding-left": "24px",
+                 "padding-right": "24px",
+                 "background-color": "#18181b",
+                 "color": "#ffffff",
+                 "font-weight": "600",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#18181b",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#18181b",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#18181b",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#18181b",
+                 "border-top-left-radius": "10px",
+                 "border-top-right-radius": "10px",
+                 "border-bottom-right-radius": "10px",
+                 "border-bottom-left-radius": "10px"
+                }
+               }
+              },
+              "text": "Agendar ensaio",
+              "children": []
+             },
+             {
+              "id": "portfolio19",
+              "type": "button",
+              "name": "Botão 3",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "14px",
+                 "padding-bottom": "14px",
+                 "padding-left": "24px",
+                 "padding-right": "24px",
+                 "background-color": "#ffffff",
+                 "color": "#18181b",
+                 "font-weight": "600",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#e2e8f0",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#e2e8f0",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#e2e8f0",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#e2e8f0",
+                 "border-top-left-radius": "10px",
+                 "border-top-right-radius": "10px",
+                 "border-bottom-right-radius": "10px",
+                 "border-bottom-left-radius": "10px"
+                }
+               }
+              },
+              "text": "Ver trabalhos",
+              "children": []
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "id": "portfolio20",
+          "type": "image",
+          "name": "Imagem",
+          "tag": "img",
+          "attributes": {
+           "src": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&h=900&q=80",
+           "alt": "Luz natural, momentos verdadeiros"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "max-width": "100%",
+             "width": "100%",
+             "aspect-ratio": "4 / 3",
+             "object-fit": "cover",
+             "border-top-left-radius": "20px",
+             "border-top-right-radius": "20px",
+             "border-bottom-right-radius": "20px",
+             "border-bottom-left-radius": "20px",
+             "background-color": "#e2e8f0"
+            }
+           }
+          },
+          "text": null,
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "portfolio21",
+      "type": "section",
+      "name": "Galeria que amplia",
+      "tag": "section",
+      "attributes": {
+       "id": "trabalhos"
+      },
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "80px",
+         "padding-right": "24px",
+         "padding-bottom": "80px",
+         "padding-left": "24px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "portfolio22",
+        "type": "div",
+        "name": "Contêiner 3",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "portfolio23",
+          "type": "div",
+          "name": "Introdução",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center",
+             "max-width": "720px",
+             "margin-left": "auto",
+             "margin-right": "auto",
+             "margin-bottom": "40px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "portfolio24",
+            "type": "heading",
+            "name": "Título 2",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#18181b",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "12px",
+               "margin-top": "0px",
+               "font-family": "Georgia, \"Times New Roman\", serif"
+              }
+             }
+            },
+            "text": "Trabalhos recentes",
+            "children": []
+           },
+           {
+            "id": "portfolio25",
+            "type": "paragraph",
+            "name": "Parágrafo 3",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Toque numa foto para ver em tamanho grande.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "portfolio26",
+          "type": "div",
+          "name": "Fotos",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "grid",
+             "grid-template-columns": "repeat(auto-fit, minmax(220px, 1fr))",
+             "column-gap": "16px",
+             "row-gap": "16px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "portfolio27",
+            "type": "figure",
+            "name": "Figura",
+            "tag": "figure",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0px",
+               "margin-bottom": "0px",
+               "margin-left": "0px",
+               "margin-right": "0px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio28",
+              "type": "image",
+              "name": "Imagem 2",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=900&h=900&q=80",
+               "loading": "lazy",
+               "alt": "Trabalhos recentes — foto 1"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "100%",
+                 "aspect-ratio": "1 / 1",
+                 "object-fit": "cover",
+                 "display": "block",
+                 "border-top-left-radius": "12px",
+                 "border-top-right-radius": "12px",
+                 "border-bottom-right-radius": "12px",
+                 "border-bottom-left-radius": "12px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "portfolio29",
+            "type": "figure",
+            "name": "Figura 2",
+            "tag": "figure",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0px",
+               "margin-bottom": "0px",
+               "margin-left": "0px",
+               "margin-right": "0px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio30",
+              "type": "image",
+              "name": "Imagem 3",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=900&h=900&q=80",
+               "loading": "lazy",
+               "alt": "Trabalhos recentes — foto 2"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "100%",
+                 "aspect-ratio": "1 / 1",
+                 "object-fit": "cover",
+                 "display": "block",
+                 "border-top-left-radius": "12px",
+                 "border-top-right-radius": "12px",
+                 "border-bottom-right-radius": "12px",
+                 "border-bottom-left-radius": "12px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "portfolio31",
+            "type": "figure",
+            "name": "Figura 3",
+            "tag": "figure",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0px",
+               "margin-bottom": "0px",
+               "margin-left": "0px",
+               "margin-right": "0px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio32",
+              "type": "image",
+              "name": "Imagem 4",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&h=900&q=80",
+               "loading": "lazy",
+               "alt": "Trabalhos recentes — foto 3"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "100%",
+                 "aspect-ratio": "1 / 1",
+                 "object-fit": "cover",
+                 "display": "block",
+                 "border-top-left-radius": "12px",
+                 "border-top-right-radius": "12px",
+                 "border-bottom-right-radius": "12px",
+                 "border-bottom-left-radius": "12px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "portfolio33",
+            "type": "figure",
+            "name": "Figura 4",
+            "tag": "figure",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0px",
+               "margin-bottom": "0px",
+               "margin-left": "0px",
+               "margin-right": "0px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio34",
+              "type": "image",
+              "name": "Imagem 5",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&h=900&q=80",
+               "loading": "lazy",
+               "alt": "Trabalhos recentes — foto 4"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "100%",
+                 "aspect-ratio": "1 / 1",
+                 "object-fit": "cover",
+                 "display": "block",
+                 "border-top-left-radius": "12px",
+                 "border-top-right-radius": "12px",
+                 "border-bottom-right-radius": "12px",
+                 "border-bottom-left-radius": "12px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "portfolio35",
+            "type": "figure",
+            "name": "Figura 5",
+            "tag": "figure",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0px",
+               "margin-bottom": "0px",
+               "margin-left": "0px",
+               "margin-right": "0px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio36",
+              "type": "image",
+              "name": "Imagem 6",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&h=900&q=80",
+               "loading": "lazy",
+               "alt": "Trabalhos recentes — foto 5"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "100%",
+                 "aspect-ratio": "1 / 1",
+                 "object-fit": "cover",
+                 "display": "block",
+                 "border-top-left-radius": "12px",
+                 "border-top-right-radius": "12px",
+                 "border-bottom-right-radius": "12px",
+                 "border-bottom-left-radius": "12px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "portfolio37",
+            "type": "figure",
+            "name": "Figura 6",
+            "tag": "figure",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0px",
+               "margin-bottom": "0px",
+               "margin-left": "0px",
+               "margin-right": "0px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio38",
+              "type": "image",
+              "name": "Imagem 7",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&h=900&q=80",
+               "loading": "lazy",
+               "alt": "Trabalhos recentes — foto 6"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "100%",
+                 "aspect-ratio": "1 / 1",
+                 "object-fit": "cover",
+                 "display": "block",
+                 "border-top-left-radius": "12px",
+                 "border-top-right-radius": "12px",
+                 "border-bottom-right-radius": "12px",
+                 "border-bottom-left-radius": "12px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ],
+      "customAttributes": {
+       "data-wc": "lightbox"
+      }
+     },
+     {
+      "id": "portfolio39",
+      "type": "section",
+      "name": "Recursos",
+      "tag": "section",
+      "attributes": {
+       "id": "sobre"
+      },
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "portfolio40",
+        "type": "div",
+        "name": "Contêiner 4",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "portfolio41",
+          "type": "div",
+          "name": "Introdução 2",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center",
+             "max-width": "720px",
+             "margin-left": "auto",
+             "margin-right": "auto",
+             "margin-bottom": "48px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "portfolio42",
+            "type": "paragraph",
+            "name": "Parágrafo 4",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#18181b",
+               "font-size": "14px",
+               "font-weight": "600",
+               "letter-spacing": "0.08em",
+               "text-transform": "uppercase",
+               "margin-bottom": "12px"
+              }
+             }
+            },
+            "text": "Sobre",
+            "children": []
+           },
+           {
+            "id": "portfolio43",
+            "type": "heading",
+            "name": "Título 3",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#18181b",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "16px",
+               "font-family": "Georgia, \"Times New Roman\", serif"
+              }
+             }
+            },
+            "text": "Doze anos fotografando histórias",
+            "children": []
+           },
+           {
+            "id": "portfolio44",
+            "type": "paragraph",
+            "name": "Parágrafo 5",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Formada em artes visuais, com trabalhos publicados em revistas de viagem.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "portfolio45",
+          "type": "div",
+          "name": "Grade",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "grid",
+             "grid-template-columns": "repeat(auto-fit, minmax(260px, 1fr))",
+             "column-gap": "24px",
+             "row-gap": "24px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "portfolio46",
+            "type": "article",
+            "name": "Artigo",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio47",
+              "type": "heading",
+              "name": "Título 4",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "color": "#18181b",
+                 "margin-bottom": "8px",
+                 "font-family": "Georgia, \"Times New Roman\", serif"
+                }
+               }
+              },
+              "text": "Retratos",
+              "children": []
+             },
+             {
+              "id": "portfolio48",
+              "type": "paragraph",
+              "name": "Parágrafo 6",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Ensaios pessoais e corporativos, em estúdio ou ao ar livre.",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "portfolio49",
+            "type": "article",
+            "name": "Artigo 2",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio50",
+              "type": "heading",
+              "name": "Título 5",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "color": "#18181b",
+                 "margin-bottom": "8px",
+                 "font-family": "Georgia, \"Times New Roman\", serif"
+                }
+               }
+              },
+              "text": "Casamentos",
+              "children": []
+             },
+             {
+              "id": "portfolio51",
+              "type": "paragraph",
+              "name": "Parágrafo 7",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Cobertura completa, do making of à festa, com álbum.",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "portfolio52",
+            "type": "article",
+            "name": "Artigo 3",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio53",
+              "type": "heading",
+              "name": "Título 6",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "color": "#18181b",
+                 "margin-bottom": "8px",
+                 "font-family": "Georgia, \"Times New Roman\", serif"
+                }
+               }
+              },
+              "text": "Paisagens",
+              "children": []
+             },
+             {
+              "id": "portfolio54",
+              "type": "paragraph",
+              "name": "Parágrafo 8",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Impressões fine art assinadas para sua casa ou empresa.",
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "portfolio55",
+      "type": "section",
+      "name": "Depoimentos",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "portfolio56",
+        "type": "div",
+        "name": "Contêiner 5",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "portfolio57",
+          "type": "div",
+          "name": "Introdução 3",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center",
+             "max-width": "720px",
+             "margin-left": "auto",
+             "margin-right": "auto",
+             "margin-bottom": "48px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "portfolio58",
+            "type": "paragraph",
+            "name": "Parágrafo 9",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#18181b",
+               "font-size": "14px",
+               "font-weight": "600",
+               "letter-spacing": "0.08em",
+               "text-transform": "uppercase",
+               "margin-bottom": "12px"
+              }
+             }
+            },
+            "text": "Clientes",
+            "children": []
+           },
+           {
+            "id": "portfolio59",
+            "type": "heading",
+            "name": "Título 7",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#18181b",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "16px",
+               "font-family": "Georgia, \"Times New Roman\", serif"
+              }
+             }
+            },
+            "text": "Palavras de quem fotografou comigo",
+            "children": []
+           },
+           {
+            "id": "portfolio60",
+            "type": "paragraph",
+            "name": "Parágrafo 10",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "portfolio61",
+          "type": "div",
+          "name": "Grade 2",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "grid",
+             "grid-template-columns": "repeat(auto-fit, minmax(260px, 1fr))",
+             "column-gap": "24px",
+             "row-gap": "24px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "portfolio62",
+            "type": "article",
+            "name": "Artigo 4",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio63",
+              "type": "paragraph",
+              "name": "Parágrafo 11",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "18px",
+                 "line-height": "1.6",
+                 "color": "#18181b",
+                 "margin-bottom": "20px"
+                }
+               }
+              },
+              "text": "\"As fotos do nosso casamento são as memórias mais bonitas que temos.\"",
+              "children": []
+             },
+             {
+              "id": "portfolio64",
+              "type": "paragraph",
+              "name": "Parágrafo 12",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#18181b",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Ana e Lucas",
+              "children": []
+             },
+             {
+              "id": "portfolio65",
+              "type": "paragraph",
+              "name": "Parágrafo 13",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "casamento em Tiradentes",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "portfolio66",
+            "type": "article",
+            "name": "Artigo 5",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio67",
+              "type": "paragraph",
+              "name": "Parágrafo 14",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "18px",
+                 "line-height": "1.6",
+                 "color": "#18181b",
+                 "margin-bottom": "20px"
+                }
+               }
+              },
+              "text": "\"Me senti à vontade o ensaio inteiro. O resultado ficou natural.\"",
+              "children": []
+             },
+             {
+              "id": "portfolio68",
+              "type": "paragraph",
+              "name": "Parágrafo 15",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#18181b",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Marina C.",
+              "children": []
+             },
+             {
+              "id": "portfolio69",
+              "type": "paragraph",
+              "name": "Parágrafo 16",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "ensaio pessoal",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "portfolio70",
+            "type": "article",
+            "name": "Artigo 6",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio71",
+              "type": "paragraph",
+              "name": "Parágrafo 17",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "18px",
+                 "line-height": "1.6",
+                 "color": "#18181b",
+                 "margin-bottom": "20px"
+                }
+               }
+              },
+              "text": "\"As impressões ficaram incríveis no nosso escritório.\"",
+              "children": []
+             },
+             {
+              "id": "portfolio72",
+              "type": "paragraph",
+              "name": "Parágrafo 18",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#18181b",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Estúdio Arco",
+              "children": []
+             },
+             {
+              "id": "portfolio73",
+              "type": "paragraph",
+              "name": "Parágrafo 19",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "fine art",
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "portfolio74",
+      "type": "section",
+      "name": "Contato",
+      "tag": "section",
+      "attributes": {
+       "id": "contato"
+      },
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "portfolio75",
+        "type": "div",
+        "name": "Contêiner 6",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(300px, 1fr))",
+           "column-gap": "56px",
+           "row-gap": "32px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "portfolio76",
+          "type": "div",
+          "name": "Texto 2",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "portfolio77",
+            "type": "heading",
+            "name": "Título 8",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#18181b",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "16px",
+               "font-family": "Georgia, \"Times New Roman\", serif"
+              }
+             }
+            },
+            "text": "Vamos conversar sobre seu ensaio",
+            "children": []
+           },
+           {
+            "id": "portfolio78",
+            "type": "paragraph",
+            "name": "Parágrafo 20",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569"
+              }
+             }
+            },
+            "text": "Conte a data, o lugar e o que você imagina. Respondo em até um dia.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "portfolio79",
+          "type": "form",
+          "name": "Formulário",
+          "tag": "form",
+          "attributes": {
+           "method": "post",
+           "formSubmit": "{\"destination\":\"native\",\"method\":\"POST\"}"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "16px",
+             "padding-top": "28px",
+             "padding-bottom": "28px",
+             "padding-left": "28px",
+             "padding-right": "28px",
+             "background-color": "#ffffff",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#e2e8f0",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#e2e8f0",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#e2e8f0",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#e2e8f0",
+             "border-top-left-radius": "16px",
+             "border-top-right-radius": "16px",
+             "border-bottom-right-radius": "16px",
+             "border-bottom-left-radius": "16px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "portfolio80",
+            "type": "label",
+            "name": "Rótulo",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio81",
+              "type": "paragraph",
+              "name": "Parágrafo 21",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#18181b"
+                }
+               }
+              },
+              "text": "Nome",
+              "children": []
+             },
+             {
+              "id": "portfolio82",
+              "type": "input",
+              "name": "Campo",
+              "tag": "input",
+              "attributes": {
+               "inputType": "text",
+               "name": "name",
+               "formField": "{\"rules\":{\"required\":true}}"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "portfolio83",
+            "type": "label",
+            "name": "Rótulo 2",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio84",
+              "type": "paragraph",
+              "name": "Parágrafo 22",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#18181b"
+                }
+               }
+              },
+              "text": "E-mail",
+              "children": []
+             },
+             {
+              "id": "portfolio85",
+              "type": "input",
+              "name": "Campo 2",
+              "tag": "input",
+              "attributes": {
+               "inputType": "email",
+               "name": "email",
+               "formField": "{\"rules\":{\"required\":true,\"type\":\"email\"}}"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "portfolio87",
+            "type": "label",
+            "name": "Rótulo 3",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio88",
+              "type": "paragraph",
+              "name": "Parágrafo 23",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#18181b"
+                }
+               }
+              },
+              "text": "Data",
+              "children": []
+             },
+             {
+              "id": "portfolio89",
+              "type": "input",
+              "name": "Campo 3",
+              "tag": "input",
+              "attributes": {
+               "name": "date",
+               "formField": "{\"rules\":{\"required\":true,\"dateMinimum\":\"today\"}}",
+               "inputType": "date"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "portfolio90",
+            "type": "label",
+            "name": "Rótulo 4",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio91",
+              "type": "paragraph",
+              "name": "Parágrafo 24",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#18181b"
+                }
+               }
+              },
+              "text": "Lugar",
+              "children": []
+             },
+             {
+              "id": "portfolio92",
+              "type": "input",
+              "name": "Campo 4",
+              "tag": "input",
+              "attributes": {
+               "name": "place",
+               "formField": "{\"rules\":{\"required\":true}}",
+               "inputType": "text"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "portfolio93",
+            "type": "label",
+            "name": "Rótulo 5",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "portfolio94",
+              "type": "paragraph",
+              "name": "Parágrafo 25",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#18181b"
+                }
+               }
+              },
+              "text": "O que você imagina",
+              "children": []
+             },
+             {
+              "id": "portfolio95",
+              "type": "textarea",
+              "name": "Área de texto",
+              "tag": "textarea",
+              "attributes": {
+               "name": "message",
+               "formField": "{\"rules\":{\"required\":true}}",
+               "rows": 4
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": "",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "portfolio86",
+            "type": "button",
+            "name": "Botão 4",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "submit"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "14px",
+               "padding-bottom": "14px",
+               "padding-left": "24px",
+               "padding-right": "24px",
+               "background-color": "#18181b",
+               "color": "#ffffff",
+               "font-weight": "600",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#18181b",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#18181b",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#18181b",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#18181b",
+               "border-top-left-radius": "10px",
+               "border-top-right-radius": "10px",
+               "border-bottom-right-radius": "10px",
+               "border-bottom-left-radius": "10px",
+               "align-self": "flex-start"
+              }
+             }
+            },
+            "text": "Enviar",
+            "children": []
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "portfolio96",
+      "type": "footer",
+      "name": "Rodapé com colunas",
+      "tag": "footer",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "56px",
+         "padding-right": "40px",
+         "padding-bottom": "56px",
+         "padding-left": "40px",
+         "background-color": "#18181b",
+         "color": "#cbd5e1"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "portfolio97",
+        "type": "div",
+        "name": "Contêiner 7",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(200px, 1fr))",
+           "column-gap": "32px",
+           "row-gap": "24px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "portfolio98",
+          "type": "div",
+          "name": "Marca",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "portfolio99",
+            "type": "paragraph",
+            "name": "Parágrafo 26",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "20px",
+               "font-weight": "700",
+               "color": "#ffffff",
+               "margin-bottom": "8px"
+              }
+             }
+            },
+            "text": "Lia Moreira",
+            "children": []
+           },
+           {
+            "id": "portfolio100",
+            "type": "paragraph",
+            "name": "Parágrafo 27",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "14px",
+               "line-height": "1.6",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Fotografia — São Paulo e viagens.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "portfolio101",
+          "type": "nav",
+          "name": "Navegação 2",
+          "tag": "nav",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "0px",
+             "padding-right": "0px",
+             "padding-bottom": "0px",
+             "padding-left": "0px",
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "8px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "portfolio102",
+            "type": "link",
+            "name": "Link 7",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "Início",
+            "children": []
+           },
+           {
+            "id": "portfolio103",
+            "type": "link",
+            "name": "Link 8",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#sobre"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "Sobre",
+            "children": []
+           },
+           {
+            "id": "portfolio104",
+            "type": "link",
+            "name": "Link 9",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#contato"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "Contato",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "portfolio105",
+          "type": "paragraph",
+          "name": "Parágrafo 28",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "14px",
+             "margin-top": "0px",
+             "margin-bottom": "0px"
+            }
+           }
+          },
+          "text": "© 2026 Lia Moreira Fotografia.",
+          "children": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}

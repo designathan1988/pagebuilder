@@ -1,3 +1,23 @@
+// What the person sees of the page on the canvas now, in screen px (DCS-035: the frame is as tall as the page and the
+// camera moves it over the stage): the page's view clipped to the stage, below the frame's header of breakpoint tabs
+// and badges, which stays pinned to the stage's top while the page's top is above it (shell/canvas.tsx); `hidden` says
+// on which sides the page goes on past what is seen. Null with no canvas drawn.
+export interface VisiblePage {
+  readonly left: number;
+  readonly top: number;
+  readonly right: number;
+  readonly bottom: number;
+  readonly hidden: { readonly left: boolean; readonly top: boolean; readonly right: boolean; readonly bottom: boolean };
+}
+export function visiblePage(): VisiblePage | null {
+  const stage = document.querySelector('[data-canvas-stage]')?.getBoundingClientRect();
+  const view = document.querySelector('.frame__view')?.getBoundingClientRect();
+  if (stage === undefined || view === undefined) return null;
+  const header = document.querySelector('.frame__header')?.getBoundingClientRect();
+  const seen = { left: Math.max(stage.left, view.left), top: Math.max(stage.top, view.top, header?.bottom ?? stage.top), right: Math.min(stage.right, view.right), bottom: Math.min(stage.bottom, view.bottom) };
+  return { ...seen, hidden: { left: view.left < seen.left - 0.5, top: view.top < seen.top - 0.5, right: view.right > seen.right + 0.5, bottom: view.bottom > seen.bottom + 0.5 } };
+}
+
 // The least travel along one axis that brings a box [from, to] inside a view [low, high], its edge `inset` inside the
 // view's (canvas/reveal-selection.tsx): 0 while any part of it is already inside; a box above or left of the view
 // comes in at the view's start, one below or right of it at the view's end — or at the view's start when it is taller

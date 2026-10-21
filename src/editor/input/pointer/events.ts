@@ -11,6 +11,7 @@ import { storedValue } from '../../../core/style/stored.ts';
 import { guidesOf } from '../../../core/page/guides.ts';
 import { elementPredicate } from '../../../core/style/applies.ts';
 import { MODEL_RULES } from '../../store.ts';
+import { cameraTravel } from '../../view/camera.ts';
 import { toolPoint, toolPress } from '../pointer-tools.ts';
 import { typedBand } from '../../canvas/band-typing.ts';
 import { heldTyping, keepTypingBefore } from '../pending.ts';
@@ -387,8 +388,11 @@ export function pointerEvents(p: PointerOwner): Pick<PointerOwner, 'onDoubleClic
       shared.panning.last = { x: event.clientX, y: event.clientY };
       if (dx === 0 && dy === 0) return;
       p.capture(event.pointerId);
-      shared.panning.moved = { x: shared.panning.moved.x + dx, y: shared.panning.moved.y + dy };
+      // the travel the camera really made under its bounds (view/camera.ts): what Esc gives back
+      const before = store.getState();
       p.dispatchPan(shared.panning.entry, { dx, dy });
+      const travel = cameraTravel(before, store.getState());
+      shared.panning.moved = { x: shared.panning.moved.x + travel.x, y: shared.panning.moved.y + travel.y };
       return;
     }
     const press = pressAt(event, p.isRoot, under);

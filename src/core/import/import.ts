@@ -1683,7 +1683,7 @@ export function importedSite<Ui>(context: HandlerContext<Ui>, picked: readonly P
   const markup = importPageFiles(picked);
   const report = emptyReport();
   // Merging reserves every existing node name; replacement starts a fresh naming scope.
-  const make: NodeMaker = { rules, ids, words, taken: replacing ? new Set() : new Set([...allNodes(state.document)].map(node => node.name)), htmlIds: new Set() };
+  const make: NodeMaker = { rules, ids, words, pageWords: words, taken: replacing ? new Set() : new Set([...allNodes(state.document)].map(node => node.name)), htmlIds: new Set() };
   const held: ProjectFile[] = [];
   const pages: Page[] = [];
   const sources: SheetSource[] = [];

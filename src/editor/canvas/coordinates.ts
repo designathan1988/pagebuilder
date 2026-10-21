@@ -1,7 +1,9 @@
 // Coordinates under zoom: the one place that converts between the page (the page's CSS pixels
 // inside the iframe, from the top-left of the page, scroll included), the frame (the iframe's viewport: the page's
 // CSS pixels from its visible top-left) and the screen (the editor window's client pixels). The iframe is scaled with
-// the standard CSS zoom, so one page pixel is `zoom` screen pixels; its layout keeps the breakpoint's width.
+// the standard CSS zoom, so one page pixel is `zoom` screen pixels; its layout keeps the breakpoint's width. The
+// frame is as tall as the whole page and its page never scrolls (DCS-035: the camera moves the frame), so the page and
+// the frame coincide; the scroll is still read, so a page that did scroll is measured where it is drawn.
 import type { ResizeRoom } from '../../core/geometry/resize.ts';
 import { NODE_ATTRIBUTE, nodeSelector } from './render/render.ts';
 import type { Layout } from '../../core/ports/layout.ts';
@@ -200,25 +202,6 @@ export function sideFlow(iframe: HTMLIFrameElement, id: string): 'vertical' | 'h
   return style.flexDirection.startsWith('column') ? 'vertical' : 'horizontal';
 }
 
-// Scrolls the canvas's page by a distance in screen pixels (the drag's autoscroll); whether it moved.
-export function scrollPage(iframe: HTMLIFrameElement, screen: number): boolean {
-  const view = iframe.contentWindow;
-  const g = geometryOf(iframe);
-  if (!view || !g) return false;
-  const before = view.scrollY;
-  view.scrollBy(0, screen / g.zoom);
-  return view.scrollY !== before;
-}
-
-// A new zoom keeps the page point `at` screen px below the view's top there (spec zoom-keyboard-buttons: the middle of
-// the view; zoom-wheel-pan: the pointer).
-export function keepPagePoint(iframe: HTMLIFrameElement, before: number, after: number, at: number): void {
-  const view = iframe.contentWindow;
-  if (!view || before <= 0 || after <= 0) return;
-  const point = view.scrollY + at / before;
-  view.scrollTo(view.scrollX, point - at / after);
-}
-
 // What a resize starts from (spec resize-handles; items 4.2 and A3.16): the element's border box in CSS px, what its
 // padding and border add to its content on each axis (the width and height it declares measure its content under
 // content-box), whether it is positioned out of the flow (absolute or fixed: its left and top move with a west or
@@ -362,11 +345,6 @@ export function elementBoxes(iframe: HTMLIFrameElement): ElementBox[] {
   });
 }
 
-// A pan's scroll of the page, in page px (spec zoom-wheel-pan)
-export function scrollPageBy(iframe: HTMLIFrameElement, by: number): void {
-  iframe.contentWindow?.scrollBy(0, by);
-}
-
 // The screen box of a node's element, or null when the page does not draw it.
 export function nodeBox(iframe: HTMLIFrameElement, id: string): { x: number; y: number; width: number; height: number } | null {
   const element = iframe.contentDocument?.querySelector(nodeSelector(id as NodeId));
@@ -463,14 +441,17 @@ export const pageLayout: Layout = {
     // exact, as drawn: a writer rounds what it writes (two insets rounded apart can leave a box narrower than its text:
     // position.setAnchors)
     const size = { width: cssPx(style.width), height: cssPx(style.height) };
-    // the containing block's padding edges: the viewport's, or the parent's border box less its borders
+    // the containing block's padding edges: the viewport's, or the parent's border box less its borders. The viewport
+    // is the root's box pinned to the breakpoint's screen (DCS-035: the frame itself is the whole page tall; the
+    // renderer's artboardCss makes the root, its padding box, the containing block of fixed elements)
     const parent = element.parentElement;
     if (within === 'parent' && !parent) return null;
     const p = within === 'viewport' || !parent ? null : parent.getBoundingClientRect();
     const ps = p === null || !parent ? null : view.getComputedStyle(parent);
+    const screen = element.ownerDocument.documentElement.getBoundingClientRect();
     const box =
       p === null || ps === null
-        ? { left: 0, top: 0, right: view.innerWidth, bottom: view.innerHeight }
+        ? { left: screen.left, top: screen.top, right: screen.right, bottom: screen.bottom }
         : { left: p.left + cssPx(ps.borderLeftWidth), top: p.top + cssPx(ps.borderTopWidth), right: p.right - cssPx(ps.borderRightWidth), bottom: p.bottom - cssPx(ps.borderBottomWidth) };
     return { left: edge.left - box.left, top: edge.top - box.top, right: box.right - edge.right, bottom: box.bottom - edge.bottom, ...size };
   },

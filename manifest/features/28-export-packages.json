@@ -163,7 +163,7 @@
                   "path": "capacitor.config.json",
                   "present": [
                     "\"webDir\": \"www\"",
-                    "\"appId\": \"com.webconstructor.home\""
+                    "\"appId\": \"com.webconstructor.sited323941b\""
                   ],
                   "absent": []
                 },
@@ -171,7 +171,8 @@
                   "path": "package.json",
                   "present": [
                     "\"@capacitor/android\"",
-                    "\"@capacitor/cli\""
+                    "\"@capacitor/cli\"",
+                    "\"@capacitor/assets\""
                   ],
                   "absent": []
                 },
@@ -183,9 +184,15 @@
                   "absent": []
                 },
                 {
+                  "path": "assets/icon-only.png",
+                  "present": [],
+                  "absent": []
+                },
+                {
                   "path": "README.md",
                   "present": [
-                    "npx cap add android"
+                    "npx cap add android",
+                    "npx @capacitor/assets generate"
                   ],
                   "absent": []
                 }
@@ -259,7 +266,8 @@
                   "path": "main.js",
                   "present": [
                     "protocol.registerSchemesAsPrivileged",
-                    "app://bundle/index.html"
+                    "app://bundle/index.html",
+                    "'will-navigate'"
                   ],
                   "absent": []
                 },
@@ -268,6 +276,11 @@
                   "present": [
                     "<h1>Welcome to Aurora</h1>"
                   ],
+                  "absent": []
+                },
+                {
+                  "path": "build/icon.ico",
+                  "present": [],
                   "absent": []
                 },
                 {

@@ -289,13 +289,18 @@
   }
  },
  "remove-var": {
-  "status": "done",
+  "status": "refused",
   "app": {
    "variables": [
     {
      "name": "count",
      "type": "number",
      "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
     }
    ],
    "scripts": [
@@ -343,11 +348,12 @@
    }
   ],
   "message": {
-   "key": "status.app.variableRemoved",
+   "key": "status.app.inUse",
    "params": {
-    "name": "title"
+    "name": "title",
+    "where": "Title"
    },
-   "en": "Variable title removed."
+   "en": "The code of Title uses title; take it out there first."
   }
  },
  "new-script": {
@@ -1452,7 +1458,7 @@
     "logic": {
      "on": [
       {
-       "event": "mouseenter",
+       "event": "click",
        "code": ""
       }
      ]
@@ -1462,10 +1468,10 @@
   "message": {
    "key": "status.app.handlerAdded",
    "params": {
-    "event": "mouseenter",
+    "event": "click",
     "element": "Box"
    },
-   "en": "mouseenter event added to Box."
+   "en": "click event added to Box."
   }
  },
  "handler-event": {

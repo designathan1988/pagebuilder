@@ -41,11 +41,18 @@ export function CloudBar() {
       (error: unknown) => setRefusal(REFUSALS[error instanceof Error ? error.message : ''] ?? 'cloud.publish.failed'),
     );
   };
+  // the routine saving and saved, which follow every edit, are shown and never announced (a screen reader would speak
+  // twice per keystroke); a state that asks for attention (a failure, a conflict, a project too large) is announced
+  // once, from a live region that is always there so the change is heard
+  const attention = cloud.save !== 'saved' && cloud.save !== 'saving';
   return (
     <div className="cloud-bar">
-      <span className={`cloud-bar__save cloud-bar__save--${cloud.save}`} role="status" title={cloud.error ?? undefined}>
+      <span className={`cloud-bar__save cloud-bar__save--${cloud.save}`} title={cloud.error ?? undefined}>
         <Icon name={cloud.save === 'saved' ? 'check' : cloud.save === 'saving' ? 'upload' : 'triangle-alert'} size="sm" />
         {t(CLOUD_SAVE_TEXT[cloud.save])}
+      </span>
+      <span className="visually-hidden" role="alert">
+        {attention ? t(CLOUD_SAVE_TEXT[cloud.save]) : null}
       </span>
       {cloud.save === 'conflict' ? (
         <>

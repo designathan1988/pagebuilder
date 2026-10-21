@@ -47,6 +47,8 @@ OWNER = 'src/core/logic/commands.ts'
 P = 'app-panel'
 I = 'inspector-logic'
 FIELDS = ['text', 'html', 'show', 'each', 'as', 'key', 'model', 'component']
+# the element a Logic field writes: the one its typing began on, so a selection change while typing never moves it
+TARGET = arg('node', True)
 commands = [
     command('app.setVariable', 'command.app.setVariable', OWNER, {
         'name': arg('string', True), 'type': arg('enum', True, ['text', 'number', 'boolean', 'list', 'object']),
@@ -57,10 +59,10 @@ commands = [
         door('app-variable-type', 'variable-type', 'field', P, 3, 'app.variable.type'),
         door('app-variable-initial', 'variable-initial', 'field', P, 4, 'app.variable.initial'),
         door('app-variable-persist', 'variable-persist', 'button', P, 5, 'app.variable.persist', {'persist': True}, icon='hard-drive', pressed=True),
-    ], APP_REFUSALS),
+    ], APP_REFUSALS + ['status.app.keptTaken']),
     command('app.removeVariable', 'command.app.removeVariable', OWNER, {'name': arg('string')}, [
         door('app-variable-remove', 'variable-remove', 'icon-button', P, 6, 'command.app.removeVariable', icon='trash'),
-    ], []),
+    ], ['status.app.inUse']),
     command('app.setModule', 'command.app.setModule', OWNER, {
         'kind': arg('enum', False, ['script', 'component']), 'name': arg('string', True), 'code': arg('string', True), 'previous': arg('string', True),
     }, [
@@ -71,7 +73,7 @@ commands = [
     ], APP_REFUSALS),
     command('app.removeModule', 'command.app.removeModule', OWNER, {'kind': arg('enum', False, ['script', 'component']), 'name': arg('string')}, [
         door('app-module-remove', 'module-remove', 'icon-button', P, 11, 'command.app.removeModule', icon='trash'),
-    ], ['status.app.componentInUse']),
+    ], ['status.app.componentInUse', 'status.app.inUse']),
     command('app.setLibrary', 'command.app.setLibrary', OWNER, {'name': arg('string'), 'url': arg('string'), 'previous': arg('string', True)}, [
         door('app-library-add', 'library-add', 'button', P, 12, 'command.app.addLibrary', icon='package-plus'),
     ], APP_REFUSALS),
@@ -90,22 +92,22 @@ commands = [
     command('app.removeTable', 'command.app.removeTable', OWNER, {'name': arg('string')}, [
         door('app-table-remove', 'table-remove', 'icon-button', P, 19, 'command.app.removeTable', icon='trash'),
     ], []),
-    command('logic.set', 'command.logic.set', OWNER, {'field': arg('enum', False, FIELDS), 'value': arg('string')}, [
+    command('logic.set', 'command.logic.set', OWNER, {'field': arg('enum', False, FIELDS), 'value': arg('string'), 'target': TARGET}, [
         door('inspector-logic-field', 'logic-field', 'field', I, 1, 'command.logic.set', panel='inspector'),
         door('app-use-component', 'use-component', 'button', P, 14, 'command.app.useComponent', {'field': 'component'}, icon='square-dashed-mouse-pointer'),
     ], LOGIC_REFUSALS),
-    command('logic.setBinding', 'command.logic.setBinding', OWNER, {'binding': arg('string'), 'value': arg('string'), 'previous': arg('string', True)}, [
+    command('logic.setBinding', 'command.logic.setBinding', OWNER, {'binding': arg('string'), 'value': arg('string'), 'previous': arg('string', True), 'target': TARGET}, [
         door('inspector-logic-binding', 'logic-binding', 'field', I, 2, 'command.logic.setBinding', panel='inspector'),
         door('inspector-logic-add-binding', 'logic-add-binding', 'button', I, 3, 'command.logic.addBinding', panel='inspector', icon='plus'),
-    ], LOGIC_REFUSALS + ['status.app.badBinding']),
+    ], LOGIC_REFUSALS + ['status.app.badBinding', 'status.app.taken']),
     command('logic.addHandler', 'command.logic.addHandler', OWNER, {'event': arg('string', True), 'code': arg('string', True)}, [
         door('inspector-logic-add-handler', 'logic-add-handler', 'button', I, 4, 'command.logic.addHandler', panel='inspector', icon='plus'),
     ], LOGIC_REFUSALS),
-    command('logic.updateHandler', 'command.logic.updateHandler', OWNER, {'handler': arg('integer'), 'event': arg('string', True), 'code': arg('string', True)}, [
+    command('logic.updateHandler', 'command.logic.updateHandler', OWNER, {'handler': arg('integer'), 'event': arg('string', True), 'code': arg('string', True), 'target': TARGET}, [
         door('inspector-logic-handler-event', 'logic-handler-event', 'field', I, 5, 'logic.handler.event', panel='inspector'),
         door('inspector-logic-handler-code', 'logic-handler-code', 'field', I, 6, 'logic.handler.code', panel='inspector'),
     ], LOGIC_REFUSALS),
-    command('logic.removeHandler', 'command.logic.removeHandler', OWNER, {'handler': arg('integer')}, [
+    command('logic.removeHandler', 'command.logic.removeHandler', OWNER, {'handler': arg('integer'), 'target': TARGET}, [
         door('inspector-logic-handler-remove', 'logic-handler-remove', 'icon-button', I, 7, 'command.logic.removeHandler', panel='inspector', icon='trash'),
     ], LOGIC_REFUSALS),
     command('logic.clear', 'command.logic.clear', OWNER, {}, [
@@ -135,19 +137,28 @@ for region in ('app-panel', 'inspector-logic'):
 layout['panels']['app'] = {'icon': 'braces', 'labelKey': 'panel.app', 'place': 'sidebar', 'in': None, 'open': False}
 save('manifest/layout.json', layout, crlf)
 
+def put(doors, entry):
+    # a door this generator owns keeps its place in the list, so the generators that write the same command after
+    # this one (site-templates.py, export-packages.py) give the same file whatever order they run in
+    at = next((i for i, d in enumerate(doors) if d['id'] == entry['id']), None)
+    if at is None:
+        doors.append(entry)
+    else:
+        doors[at] = entry
+
+
 workspace, crlf = load('manifest/commands/workspace.json')
 for c in workspace['commands']:
     # every list of the panels names the App panel too
     for a in c['args'].values():
         if a['type'] == 'enum' and 'data' in a['values'] and 'layout-composer' in a['values'] and 'app' not in a['values']:
             a['values'].append('app')
-    c['entryPoints'] = [d for d in c['entryPoints'] if d['id'] not in ('toolbar-activity-bar-app', 'inspector-tab-logic')]
-    if c['id'] == 'workspace.setPanelOpen' and not any(d['id'] == 'toolbar-activity-bar-app' for d in c['entryPoints']):
+    if c['id'] == 'workspace.setPanelOpen':
         data = next(d for d in c['entryPoints'] if d['id'] == 'toolbar-activity-bar-data')
-        c['entryPoints'].append({**data, 'id': 'toolbar-activity-bar-app', 'feature': FEATURE, 'labelKey': 'panel.app', 'icon': 'braces', 'placement': {'region': 'activity-bar', 'order': 20}, 'args': {'panel': 'app', 'open': 'open', 'focus': True}})
-    if c['id'] == 'workspace.setActiveTab' and not any(d['id'] == 'inspector-tab-logic' for d in c['entryPoints']):
+        put(c['entryPoints'], {**data, 'id': 'toolbar-activity-bar-app', 'feature': FEATURE, 'labelKey': 'panel.app', 'icon': 'braces', 'placement': {'region': 'activity-bar', 'order': 20}, 'args': {'panel': 'app', 'open': 'open', 'focus': True}})
+    if c['id'] == 'workspace.setActiveTab':
         tab = next(d for d in c['entryPoints'] if d['id'] == 'inspector-tab-interactions')
-        c['entryPoints'].append({**tab, 'id': 'inspector-tab-logic', 'feature': FEATURE, 'control': 'tab-logic', 'labelKey': 'inspector.tab.logic', 'placement': {'region': 'inspector-header', 'order': 10}, 'args': {'group': 'inspector', 'panel': 'logic'}})
+        put(c['entryPoints'], {**tab, 'id': 'inspector-tab-logic', 'feature': FEATURE, 'control': 'tab-logic', 'labelKey': 'inspector.tab.logic', 'placement': {'region': 'inspector-header', 'order': 10}, 'args': {'group': 'inspector', 'panel': 'logic'}})
 save('manifest/commands/workspace.json', workspace, crlf)
 
 # the example applications open through project.open, the project's text given by the place (start screen, App panel)
@@ -156,9 +167,8 @@ EXAMPLE_DOORS = (('start-open-example', 'start-examples'), ('app-open-example', 
 for c in project_commands['commands']:
     if c['id'] != 'project.open':
         continue
-    c['entryPoints'] = [d for d in c['entryPoints'] if d['id'] not in [one for one, _ in EXAMPLE_DOORS]]
-    for order, (id_, region) in enumerate(EXAMPLE_DOORS, 1):
-        c['entryPoints'].append(door(id_, id_, 'button', region, 1, 'command.openExample', icon='app-window'))
+    for id_, region in EXAMPLE_DOORS:
+        put(c['entryPoints'], door(id_, id_, 'button', region, 1, 'command.openExample', icon='app-window'))
 save('manifest/commands/project.json', project_commands, crlf)
 layout, crlf = load('manifest/layout.json')
 for region, area, after in (('start-examples', 'centre', None), ('app-panel-examples', 'left', 'app-panel')):
@@ -186,47 +196,51 @@ def expect(document, feedback, selection=None, undo=1):
 
 OPEN_APP = step('workspace.setPanelOpen#toolbar-activity-bar-app')
 OPEN_LOGIC = step('workspace.setActiveTab#inspector-tab-logic')
-FIXTURE = json.load(open('manifest/features/fixtures/app-logic.json'))
+FIXTURE = json.load(open('manifest/features/fixtures/app-logic.json', encoding='utf-8'))
 # the outcome of each case, computed by running the commands on the fixture: src/core/logic/cases.test.ts compares it
 # with what the commands do now, and rewrites it when run with APP_LOGIC_WRITE=1
-COMPUTED = json.load(open('tools/gen/content/app-logic.computed.json'))
+COMPUTED = json.load(open('tools/gen/content/app-logic.computed.json', encoding='utf-8'))
 NODE = {'n1': 'Title', 'n2': 'Box'}
 CASES = [
-    # id, scenario id, fixture, selection, door, args, typed
+    # id, scenario id, fixture, selection, door, args, the steps taken before the door (none: the door is pressed
+    # with its args, the way the runner presses every door)
     ('new-variable', 'a-new-variable-starts-as-an-empty-text', 'empty', [], 'app.setVariable#app-new-variable', {}, None),
-    ('rename', 'a-renamed-variable-is-renamed-in-every-expression', 'app-logic', [], 'app.setVariable#app-variable-name', {'previous': 'count', 'name': 'clicks'}, 'clicks'),
-    ('retype', 'a-variable-of-another-type-starts-from-its-empty-value', 'app-logic', [], 'app.setVariable#app-variable-type', {'previous': 'count', 'name': 'count', 'type': 'text'}, 'text'),
-    ('initial', 'a-variable-takes-its-first-value', 'app-logic', [], 'app.setVariable#app-variable-initial', {'previous': 'title', 'name': 'title', 'initial': 'Hi there'}, 'Hi there'),
+    ('rename', 'a-renamed-variable-is-renamed-in-every-expression', 'app-logic', [], 'app.setVariable#app-variable-name', {'previous': 'count', 'name': 'clicks'}, None),
+    ('retype', 'a-variable-of-another-type-starts-from-its-empty-value', 'app-logic', [], 'app.setVariable#app-variable-type', {'previous': 'count', 'name': 'count', 'type': 'text'}, None),
+    ('initial', 'a-variable-takes-its-first-value', 'app-logic', [], 'app.setVariable#app-variable-initial', {'previous': 'title', 'name': 'title', 'initial': 'Hi there'}, None),
     ('persist', 'a-variable-is-kept-in-the-browser', 'app-logic', [], 'app.setVariable#app-variable-persist', {'previous': 'count', 'name': 'count', 'persist': True}, None),
-    ('remove-var', 'a-variable-is-removed', 'app-logic', [], 'app.removeVariable#app-variable-remove', {'name': 'title'}, None),
+    ('remove-var', 'a-variable-the-code-still-reads-is-not-removed', 'app-logic', [], 'app.removeVariable#app-variable-remove', {'name': 'title'}, None),
     ('new-script', 'a-new-script-starts-with-an-exported-function', 'empty', [], 'app.setModule#app-new-script', {'kind': 'script'}, None),
     ('new-component', 'a-new-code-component-draws-into-its-element', 'app-logic', [], 'app.setModule#app-new-component', {'kind': 'component'}, None),
-    ('module-name', 'a-script-is-renamed', 'app-logic', [], 'app.setModule#app-module-name', {'kind': 'script', 'previous': 'util', 'name': 'helpers'}, 'helpers'),
-    ('module-code', 'a-script-keeps-its-new-code', 'app-logic', [], 'app.setModule#app-module-code', {'kind': 'script', 'name': 'util', 'code': 'export const answer = 7;\n'}, 'export const answer = 7;\n'),
+    ('module-name', 'a-script-is-renamed', 'app-logic', [], 'app.setModule#app-module-name', {'kind': 'script', 'previous': 'util', 'name': 'helpers'}, None),
+    ('module-code', 'a-script-keeps-its-new-code', 'app-logic', [], 'app.setModule#app-module-code', {'kind': 'script', 'name': 'util', 'code': 'export const answer = 7;\n'}, None),
     ('module-remove', 'a-script-is-removed', 'app-logic', [], 'app.removeModule#app-module-remove', {'kind': 'script', 'name': 'util'}, None),
     ('library-add', 'a-library-is-named-for-the-imports', 'app-logic', [], 'app.setLibrary#app-library-add', {'name': 'dayjs', 'url': 'https://cdn.jsdelivr.net/npm/dayjs@1.11.13/+esm'}, None),
     ('library-remove', 'a-library-is-removed', 'app-logic', [], 'app.removeLibrary#app-library-remove', {'name': 'confetti'}, None),
     ('new-table', 'a-new-table-is-read-by-anyone-and-added-to-by-members', 'empty', [], 'app.setTable#app-new-table', {}, None),
-    ('table-name', 'a-table-is-renamed', 'app-logic', [], 'app.setTable#app-table-name', {'previous': 'posts', 'name': 'articles'}, 'articles'),
-    ('table-read', 'a-table-is-read-only-by-its-owners', 'app-logic', [], 'app.setTable#app-table-read', {'previous': 'posts', 'read': 'owner'}, 'owner'),
-    ('table-write', 'a-table-is-added-to-only-by-admins', 'app-logic', [], 'app.setTable#app-table-write', {'previous': 'posts', 'write': 'admin'}, 'admin'),
-    ('table-bad-name', 'a-table-name-with-capitals-is-refused', 'app-logic', [], 'app.setTable#app-table-name', {'previous': 'posts', 'name': 'Posts'}, 'Posts'),
+    ('table-name', 'a-table-is-renamed', 'app-logic', [], 'app.setTable#app-table-name', {'previous': 'posts', 'name': 'articles'}, None),
+    ('table-read', 'a-table-is-read-only-by-its-owners', 'app-logic', [], 'app.setTable#app-table-read', {'previous': 'posts', 'read': 'owner'}, None),
+    ('table-write', 'a-table-is-added-to-only-by-admins', 'app-logic', [], 'app.setTable#app-table-write', {'previous': 'posts', 'write': 'admin'}, None),
+    ('table-bad-name', 'a-table-name-with-capitals-is-refused', 'app-logic', [], 'app.setTable#app-table-name', {'previous': 'posts', 'name': 'Posts'}, None),
     ('table-remove', 'a-table-is-removed', 'app-logic', [], 'app.removeTable#app-table-remove', {'name': 'posts'}, None),
-    ('logic-field', 'an-element-shows-while-its-expression-is-true', 'app-logic', ['n2'], 'logic.set#inspector-logic-field', {'field': 'show', 'value': 'state.count'}, 'state.count'),
+    ('logic-field', 'an-element-shows-while-its-expression-is-true', 'app-logic', ['n2'], 'logic.set#inspector-logic-field', {'field': 'show', 'value': 'state.count'}, None),
     ('use-component', 'an-element-draws-a-code-component', 'app-logic', ['n2'], 'logic.set#app-use-component', {'field': 'component', 'value': 'Badge'}, None),
-    ('binding', 'a-class-follows-an-expression', 'app-logic', ['n1'], 'logic.setBinding#inspector-logic-binding', {'binding': 'class:active', 'value': 'state.count'}, 'state.count'),
+    ('binding', 'a-class-follows-an-expression', 'app-logic', ['n1'], 'logic.setBinding#inspector-logic-binding', {'binding': 'class:active', 'value': 'state.count'},
+     # the binding's own field shows only once the element has that binding
+     [step('logic.setBinding#inspector-logic-add-binding', {'binding': 'class:active', 'value': 'state.title'})]),
     ('add-binding', 'an-attribute-follows-an-expression', 'app-logic', ['n1'], 'logic.setBinding#inspector-logic-add-binding', {'binding': 'attr:title', 'value': 'state.title'}, None),
-    ('add-handler', 'an-event-is-added', 'app-logic', ['n2'], 'logic.addHandler#inspector-logic-add-handler', {'event': 'mouseenter'}, None),
-    ('handler-event', 'an-event-is-changed', 'app-logic', ['n1'], 'logic.updateHandler#inspector-logic-handler-event', {'handler': 0, 'event': 'dblclick'}, 'dblclick'),
-    ('handler-code', 'an-event-runs-its-new-code', 'app-logic', ['n1'], 'logic.updateHandler#inspector-logic-handler-code', {'handler': 0, 'code': 'state.count += 2'}, 'state.count += 2'),
+    ('add-handler', 'an-event-is-added', 'app-logic', ['n2'], 'logic.addHandler#inspector-logic-add-handler', {}, None),
+    ('handler-event', 'an-event-is-changed', 'app-logic', ['n1'], 'logic.updateHandler#inspector-logic-handler-event', {'handler': 0, 'event': 'dblclick'}, None),
+    ('handler-code', 'an-event-runs-its-new-code', 'app-logic', ['n1'], 'logic.updateHandler#inspector-logic-handler-code', {'handler': 0, 'code': 'state.count += 2'}, None),
     ('handler-remove', 'an-event-is-removed', 'app-logic', ['n1'], 'logic.removeHandler#inspector-logic-handler-remove', {'handler': 0}, None),
     ('clear', 'an-element-loses-its-logic', 'app-logic', ['n1'], 'logic.clear#inspector-logic-clear', {}, None),
-    ('reserved', 'a-reserved-name-is-refused', 'app-logic', [], 'app.setVariable#app-variable-name', {'previous': 'count', 'name': 'state'}, 'state'),
-    ('bad-binding', 'a-binding-of-no-kind-is-refused', 'app-logic', ['n1'], 'logic.setBinding#inspector-logic-binding', {'binding': 'onclick', 'value': 'state.count'}, 'state.count'),
+    ('reserved', 'a-reserved-name-is-refused', 'app-logic', [], 'app.setVariable#app-variable-name', {'previous': 'count', 'name': 'state'}, None),
+    ('bad-binding', 'a-binding-of-no-kind-is-refused', 'app-logic', ['n1'], 'logic.setBinding#inspector-logic-add-binding', {'binding': 'onclick', 'value': 'state.count'}, None),
 ]
 
 # the cases as the test runs them: id, fixture, selection, command, args
-with open('tools/gen/content/app-logic.cases.json', 'w') as f:
+# (newline='': the same bytes on every system; Windows would otherwise rewrite every line with CRLF)
+with open('tools/gen/content/app-logic.cases.json', 'w', encoding='utf-8', newline='') as f:
     json.dump([[case, fixture, selection, door_.split('#')[0], args] for case, _, fixture, selection, door_, args, _ in CASES], f, indent=1)
     f.write('\n')
 
@@ -241,7 +255,7 @@ def node_logic(fixture, name):
 
 
 scenarios = []
-for case, sid, fixture, selection, door_, args, typed in CASES:
+for case, sid, fixture, selection, door_, args, before_steps in CASES:
     out = COMPUTED.get(case)
     # a new case is computed first (APP_LOGIC_WRITE=1 npx vitest run src/core/logic/cases.test.ts), then written
     if out is None:
@@ -260,7 +274,7 @@ for case, sid, fixture, selection, door_, args, typed in CASES:
                 else:
                     document.extend({'op': 'remove', 'path': f"/Page/{node['name']}/@logic/{key}"} for key in before)
     inspector = door_.startswith('logic.') and 'app-use-component' not in door_
-    steps = [OPEN_LOGIC if inspector else OPEN_APP, step(door_, args, action=True, typed=typed)]
+    steps = [OPEN_LOGIC if inspector else OPEN_APP, *(before_steps or []), step(door_, args, action=True)]
     feedback = [{'key': out['message']['key'], 'params': out['message']['params']}]
     scenarios.append({
         'id': sid,
@@ -268,7 +282,7 @@ for case, sid, fixture, selection, door_, args, typed in CASES:
         'steps': steps,
         'doors': [door_],
         'refusals': [{'key': out['message']['key'], 'document': 'unchanged'}] if refused else [],
-        'expect': expect(document, feedback, [f'/Page/{NODE[n]}' for n in selection], 0 if refused else 1),
+        'expect': expect(document, feedback, [f'/Page/{NODE[n]}' for n in selection], 0 if refused else 1 + len(before_steps or [])),
     })
 for id_, _ in EXAMPLE_DOORS:
     scenarios.append({
@@ -346,6 +360,8 @@ WORDS = {
     'status.app.badValue': ('The first value of {name} is not of the type {type}.', 'O valor inicial de {name} não é do tipo {type}.'),
     'status.app.invalid': ('Not applied: {reason}.', 'Não aplicado: {reason}.'),
     'status.app.componentInUse': ('{element} draws {name}; take it out there first.', '{element} desenha {name}; tire de lá primeiro.'),
+    'status.app.inUse': ('The code of {where} uses {name}; take it out there first.', 'O código de {where} usa {name}; tire de lá primeiro.'),
+    'status.app.keptTaken': ('{other} already keeps its visitors’ saved values under the name {stored}, so {name} cannot be kept there too: choose another name or turn off “Keep in the visitor’s browser”.', '{other} já guarda os valores salvos dos visitantes com o nome {stored}, então {name} não pode ser guardada ali também: escolha outro nome ou desligue “Guardar no navegador do visitante”.'),
     'status.app.noElement': ('Select an element first.', 'Selecione um elemento primeiro.'),
     'status.app.badBinding': ('“{binding}” is not a binding: write attr:, class:, style: or prop: and a name.', '“{binding}” não é um vínculo: escreva attr:, class:, style: ou prop: e um nome.'),
     'status.app.variableAdded': ('Variable {name} added.', 'Variável {name} criada.'),

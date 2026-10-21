@@ -867,6 +867,12 @@
       "note": "Fit leaves this margin on each side of the page: zoom = (canvas width − 2 × 8) ÷ page width (the audit's A3.18: 8 px in Fit)."
     },
     {
+      "id": "zoom.panKeep",
+      "value": 64,
+      "unit": "screen-px",
+      "note": "The canvas pans freely on both axes (DCS-035) until only this much of the page stays inside the stage, along each axis (the whole page where it is smaller)."
+    },
+    {
       "id": "zoom.wheelFactor",
       "value": 0.002,
       "unit": "factor",

@@ -34,7 +34,8 @@ const PART_DOORS = doorSlots('inspector-settings').filter((d) => d.door.kind ===
 // the person's own attributes (feature element-attributes-aria): the doors whose command takes an attribute's name
 // (and its value): in the manifest's order, the name field that adds one and the value field of each, both fields of
 // the command that sets a value; then the remove button
-const CUSTOM_DOORS = doorSlots('inspector-settings').filter((d) => d.door.kind === 'panel-control' && d.command.args.name?.type === 'string');
+// (a door that fixes the name is a field of one attribute, the cart's WhatsApp number below, not the person's own)
+const CUSTOM_DOORS = doorSlots('inspector-settings').filter((d) => d.door.kind === 'panel-control' && d.command.args.name?.type === 'string' && !('name' in d.door.args));
 const [CUSTOM_ADD, CUSTOM_VALUE] = CUSTOM_DOORS.filter((d) => d.door.kind === 'panel-control' && d.door.drawnAs === 'field' && 'value' in d.command.args);
 const CUSTOM_REMOVE = CUSTOM_DOORS.find((d) => d.door.kind === 'panel-control' && d.door.drawnAs === 'icon-button' && !('value' in d.command.args));
 
@@ -350,6 +351,26 @@ function ComponentSettings({ node }: { readonly node: DocNode }) {
   );
 }
 
+// The shop's cart (the Components' cart, data-wc="cart", read by src/editor/widgets/widgets.js): the WhatsApp number
+// its orders go to, the custom attribute its door names, typed in its own labelled field (the audit's TPL-13; the
+// Checks' "Cart with nowhere to send the order" points here). The command keeps the number's digits and refuses what
+// is no phone number (core/elements/attributes.ts whatsappNumber).
+const CART_WHATSAPP = doorSlots('inspector-settings').find((d) => d.door.kind === 'panel-control' && d.door.control === 'cart-whatsapp');
+const CART_KIND = { attribute: 'data-wc', value: 'cart' } as const;
+function CartSettings({ node }: { readonly node: DocNode }) {
+  const t = useT();
+  if (CART_WHATSAPP === undefined || node.customAttributes?.[CART_KIND.attribute] !== CART_KIND.value) return null;
+  const attribute = String(CART_WHATSAPP.door.args.name);
+  return (
+    <section className="settings-section" data-settings-section="cart" aria-label={t('settings.cart')}>
+      <div className="settings-section__header">
+        <h3 title={t('settings.cart.about')}>{t('settings.cart')}</h3>
+      </div>
+      <PanelField key={node.id} entry={CART_WHATSAPP} value={node.customAttributes[attribute] ?? ''} label={t(CART_WHATSAPP.door.labelKey as MessageId)} placeholder={t('inspector.cart.whatsapp.placeholder')} />
+    </section>
+  );
+}
+
 export function SettingsTab({ head = null }: { readonly head?: ReactNode } = {}) {
   const t = useT();
   const count = useEditorState((s) => s.selection.length);
@@ -414,6 +435,7 @@ export function SettingsTab({ head = null }: { readonly head?: ReactNode } = {})
               </section>
             );
           })}
+          {node !== null ? <CartSettings node={node} /> : null}
           {node !== null ? <FormsInspector node={node} /> : null}
           {node !== null ? <ComponentSettings node={node} /> : null}
           {node !== null ? <ProjectSettings node={node} /> : null}

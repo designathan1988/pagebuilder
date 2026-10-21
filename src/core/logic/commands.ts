@@ -1,7 +1,9 @@
 // The commands of the application layer (spec app-logic): the project's variables, scripts, code components and
 // libraries (app.*), and the logic of the selected element (logic.*). Each computes the document it leads to and is
 // refused with the validator's own reason when that document breaks the model (core/logic/validate.ts); a variable,
-// a component or a script that is renamed is renamed in every expression, handler and module that names it.
+// a component, a script or a table that is renamed is renamed in every expression, handler and module that names it,
+// and one that code still names is not removed (core/logic/references.ts). The element a logic.* command writes is the
+// one its `target` names (the element a field's typing began on: rules G1 and G2), else the selected one.
 import type { NodeId } from '../../generated/commands.ts';
 import type { MessageId } from '../../generated/ids.ts';
 import { message, registerHandler, type HandlerContext, type Message, type Outcome } from '../commands/registry.ts';
@@ -27,6 +29,7 @@ import {
   type NodeLogic,
   type VariableType,
 } from './model.ts';
+import { exportedNames, renameComponent, renameScript, renameTable, renameVariable, usesScript, usesVariable } from './references.ts';
 import { appProblems, nameRefusal } from './validate.ts';
 
 const refused = (key: MessageId, params: Readonly<Record<string, string>> = {}): Outcome<never> => ({ kind: 'refused', message: message(key, params) });
@@ -87,9 +90,35 @@ function mapCode(document: DocumentJson, rewrite: (code: string) => string): Doc
   return { ...nodes, app: { ...app, ...(app.scripts === undefined ? {} : { scripts: modules(app.scripts) }), ...(app.components === undefined ? {} : { components: modules(app.components) }) } };
 }
 
-const escape = (text: string) => text.replace(/[$.*+?^()[\]{}|\\]/gu, '\\$&');
-// a rename of a name inside code: `state.old` → `state.new` (a variable), `fn.old` → `fn.new` (a script's module)
-const renameIn = (prefix: string, from: string, to: string) => (code: string) => code.replace(new RegExp(`\\b${escape(prefix)}\\.${escape(from)}\\b`, 'gu'), `${prefix}.${to}`);
+// The pieces of code an element's logic holds: its expressions, its bindings' and its events' code (`as` and
+// `component` are names, not code).
+function codeOf(logic: NodeLogic): readonly string[] {
+  return Object.entries(logic).flatMap(([key, value]): string[] => {
+    if (key === 'binds') return Object.values(value as Record<string, string>);
+    if (key === 'on') return (value as readonly AppHandler[]).map((one) => one.code);
+    return key === 'as' || key === 'component' ? [] : [value as string];
+  });
+}
+
+// The first element (by its name) or module (by its name, the module `self` aside) whose code `uses` reads true for:
+// where a removal would leave code naming what is gone. Null when nothing does.
+function firstUse(document: DocumentJson, uses: (code: string) => boolean, self?: AppModule): string | null {
+  const trees = [...document.pages.map((page) => page.tree), ...(document.components ?? []).map((one) => one.tree)];
+  const visit = (node: DocNode): string | null => {
+    if (node.logic !== undefined && codeOf(node.logic).some(uses)) return node.name;
+    for (const child of node.children) {
+      const found = visit(child);
+      if (found !== null) return found;
+    }
+    return null;
+  };
+  for (const tree of trees) {
+    const found = visit(tree);
+    if (found !== null) return found;
+  }
+  const modules = [...(document.app?.scripts ?? []), ...(document.app?.components ?? [])];
+  return modules.find((one) => one !== self && uses(one.code))?.name ?? null;
+}
 
 // Why a name is refused, in the person's words: a word every expression already has, or no identifier.
 function nameProblem(name: string): Outcome<never> | null {
@@ -128,10 +157,17 @@ export const setVariableCommand = registerHandler('app.setVariable', (context, {
   }
   if (!initialFits(kind, first)) return refused('status.app.badValue', { name: typed, type: kind });
   const keep = typeof persist === 'boolean' ? persist : held?.persist === true;
-  const variable: AppVariable = { name: typed, type: kind, initial: first, ...(keep ? { persist: true as const } : {}) };
+  // a persisted variable keeps the name its visitors' values were saved under across renames (the audit's LOGIC-12);
+  // renamed back to that name, it needs none
+  const storedAs = keep && held !== undefined ? (held.kept ?? held.name) : undefined;
+  const variable: AppVariable = { name: typed, type: kind, initial: first, ...(keep ? { persist: true as const } : {}), ...(storedAs !== undefined && storedAs !== typed ? { kept: storedAs } : {}) };
+  // two persisted variables kept under one name would overwrite each other's saved values in the visitor's browser
+  const stored = variable.kept ?? variable.name;
+  const sharer = keep ? variables.find((one) => one !== held && one.persist === true && (one.kept ?? one.name) === stored) : undefined;
+  if (sharer !== undefined) return refused('status.app.keptTaken', { name: typed, stored, other: sharer.name });
   const list = held === undefined ? [...variables, variable] : variables.map((one) => (one === held ? variable : one));
   let after = withList(document, 'variables', list);
-  if (held !== undefined && held.name !== typed) after = mapCode(after, renameIn('state', held.name, typed));
+  if (held !== undefined && held.name !== typed) after = mapCode(after, renameVariable(held.name, typed));
   return change(context, after, message(held === undefined ? 'status.app.variableAdded' : 'status.app.variableChanged', { name: typed }));
 }, (state, args) => {
   // the Keep door is pressed while the variable it stands for (previous, else name) is kept in the browser
@@ -143,6 +179,9 @@ export const removeVariableCommand = registerHandler('app.removeVariable', (cont
   const document = context.state.document;
   const variables = document.app?.variables ?? [];
   if (!variables.some((one) => one.name === name)) return { kind: 'change' };
+  // a variable code still reads stays until that code reads it no more (the code would read nothing)
+  const where = firstUse(document, usesVariable(name));
+  if (where !== null) return refused('status.app.inUse', { name, where });
   return change(context, withList(document, 'variables', variables.filter((one) => one.name !== name)), message('status.app.variableRemoved', { name }));
 });
 
@@ -183,8 +222,10 @@ export const setModuleCommand = registerHandler('app.setModule', (context, { kin
   const next: AppModule = { name: typed, code: typeof code === 'string' ? code : (held?.code ?? starter(key, (id) => context.words(id))) };
   let after = withList(document, key, held === undefined ? [...list, next] : list.map((one) => (one === held ? next : one)));
   if (held !== undefined && held.name !== typed) {
-    if (key === 'components') after = mapNodes(after, (node) => (node.logic?.component === held.name ? { ...node, logic: { ...node.logic, component: typed } } : node));
-    else after = mapCode(after, renameIn('fn', held.name, typed));
+    if (key === 'components') {
+      after = mapNodes(after, (node) => (node.logic?.component === held.name ? { ...node, logic: { ...node.logic, component: typed } } : node));
+      after = mapCode(after, renameComponent(held.name, typed));
+    } else after = mapCode(after, renameScript(held.name, typed));
   }
   const said = held === undefined ? 'status.app.moduleAdded' : 'status.app.moduleChanged';
   return change(context, after, message(said, { name: typed }));
@@ -194,7 +235,15 @@ export const removeModuleCommand = registerHandler('app.removeModule', (context,
   const document = context.state.document;
   const key = listKey(kind);
   const list: readonly AppModule[] = document.app?.[key] ?? [];
-  if (!list.some((one) => one.name === name)) return { kind: 'change' };
+  const gone = list.find((one) => one.name === name);
+  if (gone === undefined) return { kind: 'change' };
+  // a script code still calls stays until that code calls it no more: its module, its specifier, or a function only it
+  // exports (another script that exports the same name still answers fn.<name>)
+  if (key === 'scripts') {
+    const others = new Set(list.filter((one) => one !== gone).flatMap((one) => exportedNames(one.code)));
+    const where = firstUse(document, usesScript(name, exportedNames(gone.code).filter((one) => !others.has(one))), gone);
+    if (where !== null) return refused('status.app.inUse', { name, where });
+  }
   // a component an element draws stays until that element draws no more (the element's logic would name nothing)
   if (key === 'components') {
     const user = [...document.pages.flatMap((page) => [page.tree]), ...(document.components ?? []).map((one) => one.tree)].flatMap((tree) => {
@@ -234,8 +283,8 @@ export const removeLibraryCommand = registerHandler('app.removeLibrary', (contex
 // ---------------------------------------------------------------- app.*: the database's tables
 
 // A table added (no name: the first free "table", "table2"…, read by anyone, added to by members), renamed, or given
-// who reads it and who adds to it. A rename changes the table the site's code names; the rows already kept stay
-// under the old name.
+// who reads it and who adds to it. A rename changes the table the site's code names (every app.db call that names it
+// is rewritten); the rows already kept stay under the old name.
 export const setTableCommand = registerHandler('app.setTable', (context, { name, read, write, previous }): Outcome<never> => {
   const document = context.state.document;
   const list: readonly AppTable[] = document.app?.tables ?? [];
@@ -249,7 +298,8 @@ export const setTableCommand = registerHandler('app.setTable', (context, { name,
     write: (WRITE_ACCESS as readonly unknown[]).includes(write) ? (write as AppTable['write']) : (held?.write ?? 'members'),
   };
   const said = message(held === undefined ? 'status.app.tableAdded' : 'status.app.tableChanged', { name: typed });
-  return change(context, withList(document, 'tables', held === undefined ? [...list, next] : list.map((one) => (one === held ? next : one))), said);
+  const after = withList(document, 'tables', held === undefined ? [...list, next] : list.map((one) => (one === held ? next : one)));
+  return change(context, held !== undefined && held.name !== typed ? mapCode(after, renameTable(held.name, typed)) : after, said);
 });
 
 export const removeTableCommand = registerHandler('app.removeTable', (context, { name }): Outcome<never> => {
@@ -261,9 +311,10 @@ export const removeTableCommand = registerHandler('app.removeTable', (context, {
 
 // ---------------------------------------------------------------- logic.*: the selected element's logic
 
-// The selected element and where it stands; refused while nothing or a locked element is selected.
-function selected<Ui>(context: HandlerContext<Ui>): { readonly node: DocNode; readonly path: readonly (string | number)[] } | Outcome<never> {
-  const primary = context.state.selection[0];
+// The element the command writes (the one `target` names: the element a field's typing began on; else the selected
+// one) and where it stands; refused while there is none or it is locked.
+function selected<Ui>(context: HandlerContext<Ui>, target?: unknown): { readonly node: DocNode; readonly path: readonly (string | number)[] } | Outcome<never> {
+  const primary = typeof target === 'string' ? (target as NodeId) : context.state.selection[0];
   const found = primary === undefined ? null : locate(context.state.document, primary);
   if (found === null) return refused('status.app.noElement');
   const locked = firstLockRefusal(context.state.document, [found.node.id as NodeId], 'status.locked.edit');
@@ -284,8 +335,8 @@ function withLogic(document: DocumentJson, nodeId: string, logic: NodeLogic): Do
 
 const without = (logic: NodeLogic, ...keys: readonly string[]): NodeLogic => Object.fromEntries(Object.entries(logic).filter(([key]) => !keys.includes(key))) as NodeLogic;
 
-export const setLogicCommand = registerHandler('logic.set', (context, { field, value }): Outcome<never> => {
-  const found = selected(context);
+export const setLogicCommand = registerHandler('logic.set', (context, { field, value, target }): Outcome<never> => {
+  const found = selected(context, target);
   if ('kind' in found) return found;
   const logic = found.node.logic ?? {};
   if (!(LOGIC_FIELDS as readonly string[]).includes(field)) return { kind: 'change' };
@@ -301,13 +352,16 @@ export const setLogicCommand = registerHandler('logic.set', (context, { field, v
   return change(context, withLogic(context.state.document, found.node.id, next), message(text === '' ? 'status.app.logicCleared' : 'status.app.logicSet', { element: found.node.name }));
 });
 
-export const setBindingCommand = registerHandler('logic.setBinding', (context, { binding, value, previous }): Outcome<never> => {
-  const found = selected(context);
+export const setBindingCommand = registerHandler('logic.setBinding', (context, { binding, value, previous, target }): Outcome<never> => {
+  const found = selected(context, target);
   if ('kind' in found) return found;
   const name = typeof binding === 'string' ? binding.trim() : '';
   if (readBinding(name) === null) return refused('status.app.badBinding', { binding: name });
   const logic = found.node.logic ?? {};
   const text = typeof value === 'string' ? value.trim() : '';
+  // a binding renamed to the name another binding of the element has would take that one's place: refused, as a
+  // variable's or a script's rename to a name taken is
+  if (typeof previous === 'string' && previous !== name && Object.hasOwn(logic.binds ?? {}, name)) return refused('status.app.taken', { name });
   const gone = (key: string) => key === name || (typeof previous === 'string' && key === previous);
   // the binding keeps its place when renamed or changed; a new one goes last
   const kept = Object.entries(logic.binds ?? {}).flatMap(([key, code]): [string, string][] => (key === (typeof previous === 'string' ? previous : name) ? (text === '' ? [] : [[name, text]]) : gone(key) ? [] : [[key, code]]));
@@ -324,8 +378,8 @@ export const addHandlerCommand = registerHandler('logic.addHandler', (context, {
   return change(context, withLogic(context.state.document, found.node.id, { ...logic, on: [...(logic.on ?? []), handler] }), message('status.app.handlerAdded', { event: handler.event, element: found.node.name }));
 });
 
-export const updateHandlerCommand = registerHandler('logic.updateHandler', (context, { handler, event, code }): Outcome<never> => {
-  const found = selected(context);
+export const updateHandlerCommand = registerHandler('logic.updateHandler', (context, { handler, event, code, target }): Outcome<never> => {
+  const found = selected(context, target);
   if ('kind' in found) return found;
   const logic = found.node.logic ?? {};
   const held = logic.on?.[handler];
@@ -335,8 +389,8 @@ export const updateHandlerCommand = registerHandler('logic.updateHandler', (cont
   return change(context, withLogic(context.state.document, found.node.id, { ...logic, on }), message('status.app.logicSet', { element: found.node.name }));
 });
 
-export const removeHandlerCommand = registerHandler('logic.removeHandler', (context, { handler }): Outcome<never> => {
-  const found = selected(context);
+export const removeHandlerCommand = registerHandler('logic.removeHandler', (context, { handler, target }): Outcome<never> => {
+  const found = selected(context, target);
   if ('kind' in found) return found;
   const logic = found.node.logic ?? {};
   if (logic.on?.[handler] === undefined) return { kind: 'change' };

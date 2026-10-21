@@ -127,6 +127,12 @@ export interface TemplateNode {
   // the element's own data-* attributes: what a web component's script reads (data-wc…); aria-* and role have their
   // own fields (attributes)
   readonly customAttributes?: Readonly<Record<string, string>> | undefined;
+  // attributes whose value is a text of the catalogue (an image's alt, an aria-label, a placeholder, a frame's title),
+  // written in the same words as the template's texts (textKey), never one language's literal
+  readonly attributeKeys?: Readonly<Record<string, string>> | undefined;
+  // data-* attributes holding a moment this many days after the element is placed (a countdown's end): a date written
+  // into the template would pass while the product is sold, and the countdown would arrive already over
+  readonly customDaysAhead?: Readonly<Record<string, number>> | undefined;
   readonly children?: readonly TemplateNode[] | undefined;
 }
 const templateNodeSchema: z.ZodType<TemplateNode> = z.lazy(() =>
@@ -139,6 +145,8 @@ const templateNodeSchema: z.ZodType<TemplateNode> = z.lazy(() =>
     styles: z.record(cssName, z.union([z.string().min(1), z.array(z.record(camelId, z.union([z.string(), z.boolean()])))])).optional(),
     attributes: z.record(camelId, z.union([z.string(), z.number(), z.boolean()])).optional(),
     customAttributes: z.record(z.string().regex(/^data-[a-z0-9-]+$/), z.string()).optional(),
+    attributeKeys: z.record(camelId, i18nKey).optional(),
+    customDaysAhead: z.record(z.string().regex(/^data-[a-z0-9-]+$/), z.number().int().positive()).optional(),
     children: z.array(templateNodeSchema).optional(),
   }),
 );

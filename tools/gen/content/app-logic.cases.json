@@ -238,9 +238,7 @@
    "n2"
   ],
   "logic.addHandler",
-  {
-   "event": "mouseenter"
-  }
+  {}
  ],
  [
   "handler-event",

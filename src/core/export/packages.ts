@@ -14,9 +14,10 @@
 import en from '../../i18n/locales/en.json' with { type: 'json' };
 import ptBR from '../../i18n/locales/pt-BR.json' with { type: 'json' };
 import { formatMessage } from '../../i18n/index.ts';
-import type { DocumentJson } from '../document/model.ts';
+import { walk, type DocNode, type DocumentJson } from '../document/model.ts';
 import { relativePath } from '../files/files.ts';
 import { crc32, type ZipEntry } from '../project/zip.ts';
+import { manifest } from '../../manifest/runtime.ts';
 import { pageLanguage } from './names.ts';
 
 export type PackageFormat = 'site' | 'pwa' | 'android' | 'desktop';
@@ -45,10 +46,21 @@ const decoder = new TextDecoder();
 const text = (path: string, content: string): ZipEntry => ({ path, bytes: encoder.encode(content) });
 const json = (path: string, value: unknown): ZipEntry => text(path, `${JSON.stringify(value, null, 2)}\n`);
 
-// What the app is called and its colour: the first page's title (else the project's first page name), the first
-// design token whose value is a hex colour (else the editor's blue).
+// What the app is called, its identifier and its colours.
+//  - name: the start page's title (else the first page's name), what the web app manifest and the package descriptions
+//    say in full;
+//  - appName: the brand, the title's part before its separator ("Brasa & Sal — Cozinha de fogo" → "Brasa & Sal"): the
+//    launcher's label, the window's title and the installer's name, which a whole SEO title would overflow;
+//  - shortName: the web app manifest's short_name, at most 12 characters;
+//  - id: the Android package name and iOS bundle identifier (reverse domain): lowercase letters and digits only in
+//    each part, so both stores take it; seeded by the start page's internal id, which no edit of a title or a text
+//    changes and which every project draws at random, so it stays the same from one export to the next (a store
+//    installs a new build as an update only under the same id). The README asks for the person's own domain first.
+//  - color: the first design token whose value is a hex colour, else the start page's accent (the first saturated
+//    background its elements set: a button's, a badge's), else the editor's blue; background: the start page's own.
 export interface AppIdentity {
   readonly name: string;
+  readonly appName: string;
   readonly shortName: string;
   readonly id: string;
   readonly slug: string;
@@ -59,22 +71,49 @@ export interface AppIdentity {
 }
 
 const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/iu;
+const DEFAULT_COLOR = '#2563eb';
+const DEFAULT_BACKGROUND = '#ffffff';
+// what separates a brand from the rest of a title: a dash between spaces, a bar, a middle dot, a colon
+const TITLE_SEPARATOR = /\s+[—–\-|·]\s+|:\s+/u;
+const LAUNCHER_LENGTH = 30;
+// the property an element's background colour is written in (the manifest names it for the checks' contrast)
+const BACKGROUND = manifest.interactions.checks.backgroundProperty;
+
+// the base breakpoint's base-state value of a property, when it is a hex colour
+function hexStyle(node: DocNode, property: string): string | null {
+  const value = (node.styles.desktop?.base as Readonly<Record<string, unknown>> | undefined)?.[property];
+  return typeof value === 'string' && HEX.test(value.trim()) ? value.trim().toLowerCase() : null;
+}
+
+// a colour that reads as a brand's accent: saturated, neither near white nor near black (HSL)
+function isAccent(hex: string): boolean {
+  const [r, g, b] = rgb(hex).map((c) => c / 255) as [number, number, number];
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const lightness = (max + min) / 2;
+  const saturation = max === min ? 0 : (max - min) / (1 - Math.abs(2 * lightness - 1));
+  return saturation >= 0.35 && lightness >= 0.2 && lightness <= 0.75;
+}
 
 export function appIdentity(document: DocumentJson): AppIdentity {
   const first = document.pages[0];
-  const title = first === undefined ? '' : String((first.tree.attributes as Record<string, unknown>).pageTitle ?? '');
-  const name = (title.trim() || first?.name.trim() || 'App').slice(0, 60);
-  const shortName = name.length <= 12 ? name : name.split(/\s+/u)[0]?.slice(0, 12) || name.slice(0, 12);
-  const slug = name.normalize('NFD').replace(/[̀-ͯ]/gu, '').toLowerCase().replace(/[^a-z0-9]+/gu, '-').replace(/^-+|-+$/gu, '') || 'app';
-  // an Android application id: dot-separated parts, each a letter then letters, digits or underscores
-  const part = slug.replace(/-/gu, '_').replace(/^[^a-z]+/u, '') || 'app';
-  const color = (document.tokens ?? []).find((token) => HEX.test(token.value.trim()))?.value.trim() ?? '#2563eb';
   const start = document.pages.some((page) => page.file === 'index.html') ? 'index.html' : (first?.file ?? 'index.html');
+  const startPage = document.pages.find((page) => page.file === start) ?? first;
+  const attributes = (startPage?.tree.attributes ?? {}) as Readonly<Record<string, unknown>>;
+  const title = String(attributes.pageTitle ?? '').trim();
+  const name = (title || first?.name.trim() || 'App').slice(0, 60);
+  const brand = name.split(TITLE_SEPARATOR)[0]?.trim() || name;
+  const appName = brand.length <= LAUNCHER_LENGTH ? brand : brand.slice(0, LAUNCHER_LENGTH).trim();
+  const shortName = appName.length <= 12 ? appName : appName.split(/\s+/u)[0]?.slice(0, 12) || appName.slice(0, 12);
+  const slug = appName.normalize('NFD').replace(/[̀-ͯ]/gu, '').toLowerCase().replace(/[^a-z0-9]+/gu, '-').replace(/^-+|-+$/gu, '') || 'app';
+  const seed = crc32(encoder.encode(startPage?.id ?? name)).toString(16).padStart(8, '0');
+  const token = (document.tokens ?? []).find((one) => HEX.test(one.value.trim()))?.value.trim();
+  const accent = startPage === undefined ? undefined : [...walk(startPage.tree)].map((node) => hexStyle(node, BACKGROUND)).find((hex): hex is string => hex !== null && isAccent(hex));
+  const background = startPage === undefined ? null : hexStyle(startPage.tree, BACKGROUND);
   // the language the start page's <html lang> says (core/render/output.ts): its own setting, else the project's, else
   // English, so the README and the package metadata speak the site's language
-  const startPage = document.pages.find((page) => page.file === start);
-  const language = pageLanguage((startPage?.tree.attributes as Record<string, unknown> | undefined)?.pageLanguage, document.language);
-  return { name, shortName, id: `com.webconstructor.${part}`, slug, color, background: '#ffffff', start, language };
+  const language = pageLanguage(attributes.pageLanguage, document.language);
+  return { name, appName, shortName, id: `com.webconstructor.site${seed}`, slug, color: token ?? accent ?? DEFAULT_COLOR, background: background ?? DEFAULT_BACKGROUND, start, language };
 }
 
 // ---- icons: a PNG drawn here (no canvas in the core), the app's initial on its colour ----
@@ -193,7 +232,7 @@ const initialOf = (name: string): string => [...name.normalize('NFD').replace(/[
 // the icons, unless the project holds its own at the same paths
 function icons(entries: readonly ZipEntry[], identity: AppIdentity): ZipEntry[] {
   const held = new Set(entries.map((entry) => entry.path));
-  const letter = initialOf(identity.name);
+  const letter = initialOf(identity.appName);
   return [
     { path: ICON_192, bytes: iconPng(192, identity.color, letter) },
     { path: ICON_512, bytes: iconPng(512, identity.color, letter) },
@@ -201,7 +240,48 @@ function icons(entries: readonly ZipEntry[], identity: AppIdentity): ZipEntry[] 
   ].filter((icon) => !held.has(icon.path));
 }
 
+// The native icon sources, drawn like the web icons: the project's own 512px icon when it holds one at its path, else
+// the app's initial on its colour.
+const ownIcon = (entries: readonly ZipEntry[]): Uint8Array | undefined => entries.find((entry) => entry.path === ICON_512)?.bytes;
+
+// A Windows icon (.ico) holding one PNG image (Windows Vista and later read PNG entries): the ICONDIR header, one
+// ICONDIRENTRY (0 stands for 256 pixels) and the image.
+function icoOf(png: Uint8Array, size: number): Uint8Array {
+  const out = new Uint8Array(22 + png.length);
+  const view = new DataView(out.buffer);
+  view.setUint16(2, 1, true);
+  view.setUint16(4, 1, true);
+  out[6] = size >= 256 ? 0 : size;
+  out[7] = size >= 256 ? 0 : size;
+  view.setUint16(10, 1, true);
+  view.setUint16(12, 32, true);
+  view.setUint32(14, png.length, true);
+  view.setUint32(18, 22, true);
+  out.set(png, 22);
+  return out;
+}
+
+// A macOS icon (.icns) holding PNG images by their type (ic08: 256px, ic09: 512px, ic10: 1024px).
+function icnsOf(images: readonly (readonly [string, Uint8Array])[]): Uint8Array {
+  const length = 8 + images.reduce((sum, [, png]) => sum + 8 + png.length, 0);
+  const out = new Uint8Array(length);
+  const view = new DataView(out.buffer);
+  out.set(encoder.encode('icns'), 0);
+  view.setUint32(4, length);
+  let at = 8;
+  for (const [type, png] of images) {
+    out.set(encoder.encode(type), at);
+    view.setUint32(at + 4, 8 + png.length);
+    out.set(png, at + 8);
+    at += 8 + png.length;
+  }
+  return out;
+}
+
 const isPage = (path: string): boolean => /\.html?$/iu.test(path);
+
+// text placed inside HTML: the characters markup reads, written as references
+const escapeHtml = (value: string): string => value.replace(/[&<>"]/gu, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c] ?? c);
 
 // every page gets the lines in its head (each line given the page's own path)
 function intoHeads(entries: readonly ZipEntry[], lines: (page: string) => readonly string[]): ZipEntry[] {
@@ -234,25 +314,43 @@ export function webManifest(identity: AppIdentity): object {
   };
 }
 
-// The service worker: every file of the site kept at install (a new export, a new cache), the pages from the network
-// first (the latest published version) and from the cache offline, every other file from the cache first.
+// The service worker: every file of the site kept at install, fetched past the browser's HTTP cache (cache: 'reload'),
+// so a new export never stores a stale copy as its new version. The pages, scripts, styles and data come from the
+// network first (the latest published version, revalidated with the server) and from the cache offline; images, fonts
+// and media from the cache first. Its caches are named by the site's scope as well as its version, so two sites on one
+// origin (user.github.io/a/ and /b/) never delete each other's.
 export function serviceWorker(paths: readonly string[], version: string, start: string): string {
   const files = ['./', ...paths.map((path) => `./${path.split('/').map(encodeURIComponent).join('/')}`)];
   return `// Service worker written by Webconstructor: the site works offline once opened.
-const CACHE = 'site-${version}';
+const PREFIX = 'site:' + new URL(self.registration.scope).pathname + ':';
+const CACHE = PREFIX + '${version}';
 const FILES = ${JSON.stringify(files, null, 2)};
+// what a new version may change, so it comes from the network first; anything else (images, fonts, media) from the cache
+const FRESH = ['document', 'script', 'style', 'manifest', 'worker', ''];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(FILES)).then(() => self.skipWaiting()));
+  event.waitUntil(
+    caches.open(CACHE)
+      .then((cache) => cache.addAll(FILES.map((file) => new Request(file, { cache: 'reload' }))))
+      .then(() => self.skipWaiting()),
+  );
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((key) => key.startsWith('site-') && key !== CACHE).map((key) => caches.delete(key))))
+      .then((keys) => Promise.all(keys.filter((key) => key.startsWith(PREFIX) && key !== CACHE).map((key) => caches.delete(key))))
       .then(() => self.clients.claim()),
   );
 });
+
+const keep = (request, response) => {
+  if (response.ok) {
+    const copy = response.clone();
+    caches.open(CACHE).then((cache) => cache.put(request, copy));
+  }
+  return response;
+};
 
 self.addEventListener('fetch', (event) => {
   const request = event.request;
@@ -262,26 +360,20 @@ self.addEventListener('fetch', (event) => {
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request)
-        .then((response) => {
-          if (response.ok) {
-            const copy = response.clone();
-            caches.open(CACHE).then((cache) => cache.put(request, copy));
-          }
-          return response;
-        })
+        .then((response) => keep(request, response))
         .catch(() => caches.match(request, { ignoreSearch: true }).then((hit) => hit || caches.match(${JSON.stringify(`./${start}`)}))),
     );
     return;
   }
-  event.respondWith(
-    caches.match(request).then((hit) => hit || fetch(request).then((response) => {
-      if (response.ok) {
-        const copy = response.clone();
-        caches.open(CACHE).then((cache) => cache.put(request, copy));
-      }
-      return response;
-    })),
-  );
+  if (FRESH.includes(request.destination)) {
+    event.respondWith(
+      fetch(request, { cache: 'no-cache' })
+        .then((response) => keep(request, response))
+        .catch(() => caches.match(request).then((hit) => hit || Promise.reject(new Error('offline and not kept: ' + request.url)))),
+    );
+    return;
+  }
+  event.respondWith(caches.match(request).then((hit) => hit || fetch(request).then((response) => keep(request, response))));
 });
 `;
 }
@@ -310,13 +402,19 @@ export function pwaEntries(entries: readonly ZipEntry[], document: DocumentJson)
 // a native app opens index.html: a site whose first page has another file gets one that goes there
 function withIndex(entries: readonly ZipEntry[], identity: AppIdentity): ZipEntry[] {
   if (entries.some((entry) => entry.path === 'index.html')) return [...entries];
-  const target = encodeURI(identity.start);
-  return [...entries, text('index.html', `<!DOCTYPE html>\n<html lang="${identity.language}">\n<head>\n  <meta charset="utf-8">\n  <meta http-equiv="refresh" content="0; url=${target}">\n  <title>${identity.name}</title>\n</head>\n<body><a href="${target}">${identity.name}</a></body>\n</html>\n`)];
+  const target = escapeHtml(encodeURI(identity.start));
+  const title = escapeHtml(identity.appName);
+  return [...entries, text('index.html', `<!DOCTYPE html>\n<html lang="${escapeHtml(identity.language)}">\n<head>\n  <meta charset="utf-8">\n  <meta http-equiv="refresh" content="0; url=${target}">\n  <title>${title}</title>\n</head>\n<body><a href="${target}">${title}</a></body>\n</html>\n`)];
 }
 
 const inFolder = (folder: string, entries: readonly ZipEntry[]): ZipEntry[] => entries.map((entry) => ({ path: `${folder}/${entry.path}`, bytes: entry.bytes }));
 
 const GITIGNORE = 'node_modules/\nout/\nandroid/\nios/\n';
+
+// The icon @capacitor/assets turns into every Android and iOS icon (assets/icon-only.png, 1024 pixels square:
+// capacitorjs.com/docs/guides/splash-screens-and-icons)
+export const NATIVE_ICON = 'assets/icon-only.png';
+const CAPACITOR_ASSETS_VERSION = '^3.0.5';
 
 // The Capacitor project of the site (Android and iOS).
 export function androidEntries(entries: readonly ZipEntry[], document: DocumentJson): ZipEntry[] {
@@ -328,11 +426,12 @@ export function androidEntries(entries: readonly ZipEntry[], document: DocumentJ
       version: '1.0.0',
       private: true,
       description: identity.name,
-      scripts: { 'add:android': 'cap add android', 'add:ios': 'cap add ios', sync: 'cap sync', android: 'cap open android', ios: 'cap open ios' },
+      scripts: { 'add:android': 'cap add android', 'add:ios': 'cap add ios', icons: 'capacitor-assets generate', sync: 'cap sync', android: 'cap open android', ios: 'cap open ios' },
       dependencies: { '@capacitor/android': CAPACITOR_VERSION, '@capacitor/core': CAPACITOR_VERSION, '@capacitor/ios': CAPACITOR_VERSION },
-      devDependencies: { '@capacitor/cli': CAPACITOR_VERSION },
+      devDependencies: { '@capacitor/assets': CAPACITOR_ASSETS_VERSION, '@capacitor/cli': CAPACITOR_VERSION },
     }),
-    json('capacitor.config.json', { appId: identity.id, appName: identity.name, webDir: 'www', android: { backgroundColor: identity.background } }),
+    json('capacitor.config.json', { appId: identity.id, appName: identity.appName, webDir: 'www', backgroundColor: identity.background, android: { backgroundColor: identity.background } }),
+    { path: NATIVE_ICON, bytes: iconPng(1024, identity.color, initialOf(identity.appName)) },
     text('.gitignore', GITIGNORE),
     readme(identity, 'export.readme.android'),
     ...inFolder('www', site),
@@ -344,21 +443,27 @@ export function androidEntries(entries: readonly ZipEntry[], document: DocumentJ
 type ReadmeKey = 'export.readme.android' | 'export.readme.desktop';
 function readme(identity: AppIdentity, key: ReadmeKey): ZipEntry {
   const catalogue = /^pt(-|$)/iu.test(identity.language) ? ptBR : en;
-  return text(catalogue['export.readme.file'], formatMessage(catalogue[key], { name: identity.name, id: identity.id }));
+  return text(catalogue['export.readme.file'], formatMessage(catalogue[key], { name: identity.appName, id: identity.id }));
 }
+
+// The desktop icons Electron Forge builds with (packagerConfig.icon names them without an extension and each system
+// takes its own: .ico on Windows, .icns on macOS, .png on Linux; the Squirrel installer takes the .ico).
+export const DESKTOP_ICON = 'build/icon';
 
 // The Electron Forge project of the site (Windows, macOS and Linux).
 export function desktopEntries(entries: readonly ZipEntry[], document: DocumentJson): ZipEntry[] {
   const identity = appIdentity(document);
   const site = [...entries, ...icons(entries, identity)];
   const forgeName = identity.slug.replace(/-/gu, '_');
+  const letter = initialOf(identity.appName);
+  const png = (size: number): Uint8Array => (size === 512 ? (ownIcon(entries) ?? iconPng(512, identity.color, letter)) : iconPng(size, identity.color, letter));
   return [
     json('package.json', {
       name: identity.slug,
-      productName: identity.name,
+      productName: identity.appName,
       version: '1.0.0',
       description: identity.name,
-      author: identity.name,
+      author: identity.appName,
       main: 'main.js',
       scripts: { start: 'electron-forge start', package: 'electron-forge package', make: 'electron-forge make' },
       dependencies: { 'electron-squirrel-startup': '^1.0.1' },
@@ -371,16 +476,19 @@ export function desktopEntries(entries: readonly ZipEntry[], document: DocumentJ
       },
       config: {
         forge: {
-          packagerConfig: { name: identity.name, executableName: identity.slug, asar: true },
+          packagerConfig: { name: identity.appName, executableName: identity.slug, asar: true, icon: DESKTOP_ICON },
           makers: [
-            { name: '@electron-forge/maker-squirrel', config: { name: forgeName } },
+            { name: '@electron-forge/maker-squirrel', config: { name: forgeName, setupIcon: `${DESKTOP_ICON}.ico` } },
             { name: '@electron-forge/maker-zip', platforms: ['darwin', 'linux'] },
-            { name: '@electron-forge/maker-deb', config: {} },
+            { name: '@electron-forge/maker-deb', config: { options: { icon: `${DESKTOP_ICON}.png` } } },
           ],
         },
       },
     }),
     text('main.js', electronMain(identity)),
+    { path: `${DESKTOP_ICON}.png`, bytes: png(512) },
+    { path: `${DESKTOP_ICON}.ico`, bytes: icoOf(iconPng(256, identity.color, letter), 256) },
+    { path: `${DESKTOP_ICON}.icns`, bytes: icnsOf([['ic08', iconPng(256, identity.color, letter)], ['ic09', png(512)], ['ic10', iconPng(1024, identity.color, letter)]]) },
     text('.gitignore', GITIGNORE),
     readme(identity, 'export.readme.desktop'),
     ...inFolder('app', site),
@@ -388,8 +496,10 @@ export function desktopEntries(entries: readonly ZipEntry[], document: DocumentJ
 }
 
 function electronMain(identity: AppIdentity): string {
-  return `// ${identity.name}: the site in a desktop window (Electron). The site's files are served from app/ through the app://
-// scheme, registered as standard and secure so modules, the import map, fetch and localStorage work as on the web.
+  return `// ${identity.appName.replace(/[\r\n]+/gu, ' ')}: the site in a desktop window (Electron). The site's files are served from app/ through
+// the app:// scheme, registered as standard and secure so modules, the import map, fetch and localStorage work as on
+// the web. Every address outside the app (another site, an e-mail, a phone number) opens in the system's own apps,
+// never in this window, which has no back button.
 const { app, BrowserWindow, net, protocol, shell } = require('electron');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
@@ -397,6 +507,8 @@ const { pathToFileURL } = require('node:url');
 if (require('electron-squirrel-startup')) app.quit();
 
 const ROOT = path.join(__dirname, 'app');
+const INSIDE = 'app://bundle/';
+const OUTSIDE = /^(https?|mailto|tel|sms):/i;
 
 protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { standard: true, secure: true, supportFetchAPI: true } },
@@ -406,15 +518,22 @@ const createWindow = () => {
   const win = new BrowserWindow({
     width: 1280,
     height: 820,
-    title: ${JSON.stringify(identity.name)},
+    title: ${JSON.stringify(identity.appName)},
     backgroundColor: ${JSON.stringify(identity.background)},
     icon: path.join(ROOT, 'icons', 'icon-512.png'),
     autoHideMenuBar: true,
   });
-  // links to other sites open in the person's browser
+  // a link that opens a new window: a page of the app opens in this window, any other address in the system's apps
   win.webContents.setWindowOpenHandler(({ url }) => {
-    if (/^https?:/.test(url)) shell.openExternal(url);
+    if (url.startsWith(INSIDE)) win.loadURL(url);
+    else if (OUTSIDE.test(url)) shell.openExternal(url);
     return { action: 'deny' };
+  });
+  // a link followed in this window: the app's own pages stay, any other address goes to the system's apps
+  win.webContents.on('will-navigate', (event) => {
+    if (event.url.startsWith(INSIDE)) return;
+    event.preventDefault();
+    if (OUTSIDE.test(event.url)) shell.openExternal(event.url);
   });
   win.loadURL(${JSON.stringify(`app://bundle/${encodeURI(identity.start)}`)});
 };
@@ -422,7 +541,9 @@ const createWindow = () => {
 app.whenReady().then(() => {
   protocol.handle('app', (request) => {
     const { pathname } = new URL(request.url);
-    const target = path.resolve(ROOT, '.' + decodeURIComponent(pathname));
+    // a folder's address (app://bundle/, app://bundle/blog/) is its index.html, as on a web server
+    const file = pathname.endsWith('/') ? pathname + 'index.html' : pathname;
+    const target = path.resolve(ROOT, '.' + decodeURIComponent(file));
     const relative = path.relative(ROOT, target);
     // nothing outside app/ (app://bundle/../../file)
     if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) return new Response('Not found', { status: 404 });

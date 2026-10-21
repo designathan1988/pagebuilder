@@ -11,7 +11,8 @@ import type { NodeId } from '../../generated/commands.ts';
 import type { ElementType, MessageId } from '../../generated/ids.ts';
 import type { TemplateNode } from '../../manifest/schema.ts';
 import type { WrapperId } from '../document/validate.ts';
-import { message, registerHandler, registerPredicate, type Message, type Outcome } from '../commands/registry.ts';
+import { message, registerHandler, registerPredicate, type HandlerContext, type Message, type Outcome } from '../commands/registry.ts';
+import { pageLanguage } from '../export/names.ts';
 import { allNodes, locate, walk, type DocNode, type DocumentJson, type Location, type Selection, type Styles } from '../document/model.ts';
 import { releaseReferencesPatch } from '../document/tree.ts';
 import type { ModelRules } from '../document/validate.ts';
@@ -56,11 +57,23 @@ function templateElement(make: NodeMaker, spec: TemplateNode, rootNameKey?: Mess
   return {
     ...base,
     tag: spec.tag ?? base.tag,
-    text: spec.textKey === undefined ? base.text : make.words(spec.textKey as MessageId),
+    text: spec.textKey === undefined ? base.text : make.pageWords(spec.textKey as MessageId),
     styles: all,
-    attributes: { ...base.attributes, ...(spec.attributes ?? {}) } as DocNode['attributes'],
-    ...(spec.customAttributes === undefined ? {} : { customAttributes: { ...spec.customAttributes } }),
+    attributes: { ...base.attributes, ...(spec.attributes ?? {}), ...Object.fromEntries(Object.entries(spec.attributeKeys ?? {}).map(([name, key]) => [name, make.pageWords(key as MessageId)])) } as DocNode['attributes'],
+    ...(spec.customAttributes === undefined && spec.customDaysAhead === undefined ? {} : { customAttributes: { ...spec.customAttributes, ...daysAhead(make, spec.customDaysAhead ?? {}) } }),
   };
+}
+
+// A template's dated attributes (customDaysAhead): each the moment that many days after the element is placed, as
+// ISO 8601 in UTC (what a page's script reads with Date). A maker without a moment (one that only names nodes) is a
+// defect of its caller: the date would be the epoch's.
+const DAY_MS = 86_400_000;
+function daysAhead(make: NodeMaker, days: Readonly<Record<string, number>>): Record<string, string> {
+  const entries = Object.entries(days);
+  if (entries.length === 0) return {};
+  if (make.now === undefined) throw new Error('a template with a dated attribute is placed by a node maker without the moment (nodeMaker now)');
+  const now = make.now;
+  return Object.fromEntries(entries.map(([name, count]) => [name, new Date(now + count * DAY_MS).toISOString()]));
 }
 
 // element.createNaturalChild (feature natural-child-command): a new natural child inside the one selected element
@@ -256,8 +269,22 @@ function emptyCell(parent: DocNode, rules: ModelRules): number {
   return parent.children.findIndex(untouched);
 }
 
-export const insertCommand = registerHandler('element.insert', ({ state, ids, rules, words }, { entry, parent, index }): Outcome<never> => {
-  const node = paletteNode(nodeMaker(state.document, rules, ids, words), entry);
+// The words of the page a new element goes into (the page of the node it is placed by, else the page shown): its own
+// language, else the project's, as the export writes its <html lang> (export/names.ts pageLanguage), so a palette
+// element placed into an English page while the editor speaks Portuguese says its texts in English (the audit's TPL-3).
+export function pageWordsAt(context: Pick<HandlerContext<unknown>, 'state' | 'words' | 'pageWords'>, near: NodeId | undefined): (key: MessageId) => string {
+  const { state, pageWords } = context;
+  if (pageWords === undefined) return (key) => context.words(key);
+  const placed = near === undefined ? null : locate(state.document, near);
+  const page = placed === null ? pageShown(state) : (state.document.pages[placed.page] ?? null);
+  const language = pageLanguage(page?.tree.attributes['pageLanguage' as keyof DocNode['attributes']], state.document.language);
+  return (key) => pageWords(language, key);
+}
+
+export const insertCommand = registerHandler('element.insert', (context, { entry, parent, index }): Outcome<never> => {
+  const { state, ids, rules, words, clock } = context;
+  const near = parent ?? state.selection[0];
+  const node = paletteNode(nodeMaker(state.document, rules, ids, words, clock.now(), pageWordsAt(context, near)), entry);
   const at = placement(state, state.selection, rules, parent, index, node);
   if (at === null) throw new Error(`element.insert: the document has no node ${String(parent)}`);
   const receiver = at.parent.node;

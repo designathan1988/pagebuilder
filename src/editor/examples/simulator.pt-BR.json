@@ -12,7 +12,11 @@
     "type": "page",
     "name": "Body",
     "tag": "body",
-    "attributes": {},
+    "attributes": {
+     "pageTitle": "Simulador de partículas",
+     "pageDescription": "Gravidade, colisões e quicadas calculadas a cada quadro. Clique na área para lançar mais bolas.",
+     "pageLanguage": "pt-BR"
+    },
     "classes": [],
     "styles": {
      "desktop": {

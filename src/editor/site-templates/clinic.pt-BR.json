@@ -1,0 +1,3098 @@
+{
+ "version": 4,
+ "language": "pt-BR",
+ "codeLanguage": "en",
+ "pages": [
+  {
+   "id": "clinic132",
+   "name": "Clínica",
+   "file": "index.html",
+   "tree": {
+    "id": "clinic131",
+    "type": "page",
+    "name": "Body",
+    "tag": "body",
+    "attributes": {
+     "pageTitle": "Clínica Viva — Saúde da família",
+     "pageDescription": "Consultas com clínico geral, pediatria, cardiologia e dermatologia. Agende online.",
+     "pageLanguage": "pt-BR"
+    },
+    "classes": [],
+    "styles": {
+     "desktop": {
+      "base": {
+       "margin-top": "0",
+       "margin-right": "0",
+       "margin-bottom": "0",
+       "margin-left": "0",
+       "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+       "color": "#0f172a",
+       "background-color": "#ffffff"
+      }
+     }
+    },
+    "text": null,
+    "children": [
+     {
+      "id": "clinic1",
+      "type": "header",
+      "name": "Menu que recolhe no celular",
+      "tag": "header",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "14px",
+         "padding-right": "24px",
+         "padding-bottom": "14px",
+         "padding-left": "24px",
+         "background-color": "#ffffff",
+         "border-bottom-width": "1px",
+         "border-bottom-style": "solid",
+         "border-bottom-color": "#e2e8f0",
+         "position": "sticky",
+         "top": "0px",
+         "z-index": "50"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "clinic2",
+        "type": "div",
+        "name": "Contêiner",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "justify-content": "space-between",
+           "column-gap": "24px",
+           "row-gap": "12px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "clinic3",
+          "type": "link",
+          "name": "Link",
+          "tag": "a",
+          "attributes": {
+           "href": "index.html"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "20px",
+             "font-weight": "700",
+             "color": "#0f172a",
+             "text-decoration-line": "none"
+            }
+           }
+          },
+          "text": "Clínica Viva",
+          "children": []
+         },
+         {
+          "id": "clinic4",
+          "type": "button",
+          "name": "Botão",
+          "tag": "button",
+          "attributes": {
+           "ariaLabel": "Menu"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "width": "44px",
+             "height": "44px",
+             "border-top-left-radius": "999px",
+             "border-top-right-radius": "999px",
+             "border-bottom-right-radius": "999px",
+             "border-bottom-left-radius": "999px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#e2e8f0",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#e2e8f0",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#e2e8f0",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#e2e8f0",
+             "background-color": "#ffffff",
+             "color": "#0f172a",
+             "font-size": "20px",
+             "cursor": "pointer",
+             "display": "none",
+             "align-items": "center",
+             "justify-content": "center",
+             "padding-top": "0px",
+             "padding-bottom": "0px",
+             "padding-left": "0px",
+             "padding-right": "0px"
+            }
+           }
+          },
+          "text": "☰",
+          "children": [],
+          "customAttributes": {
+           "data-wc-toggle": ""
+          }
+         },
+         {
+          "id": "clinic5",
+          "type": "nav",
+          "name": "Navegação",
+          "tag": "nav",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "0px",
+             "padding-right": "0px",
+             "padding-bottom": "0px",
+             "padding-left": "0px",
+             "display": "flex",
+             "flex-wrap": "wrap",
+             "align-items": "center",
+             "column-gap": "20px",
+             "row-gap": "8px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "clinic6",
+            "type": "link",
+            "name": "Link 2",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#0f172a",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Início",
+            "children": []
+           },
+           {
+            "id": "clinic7",
+            "type": "link",
+            "name": "Link 3",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#equipe"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#0f172a",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Equipe",
+            "children": []
+           },
+           {
+            "id": "clinic8",
+            "type": "link",
+            "name": "Link 4",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#especialidades"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#0f172a",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Especialidades",
+            "children": []
+           },
+           {
+            "id": "clinic9",
+            "type": "link",
+            "name": "Link 5",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#contato"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#0f172a",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Contato",
+            "children": []
+           },
+           {
+            "id": "clinic10",
+            "type": "link",
+            "name": "Link 6",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#contato"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "12px",
+               "padding-bottom": "12px",
+               "padding-left": "22px",
+               "padding-right": "22px",
+               "background-color": "#0e7490",
+               "color": "#ffffff",
+               "font-weight": "600",
+               "font-size": "15px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#0e7490",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#0e7490",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#0e7490",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#0e7490",
+               "border-top-left-radius": "10px",
+               "border-top-right-radius": "10px",
+               "border-bottom-right-radius": "10px",
+               "border-bottom-left-radius": "10px",
+               "cursor": "pointer",
+               "text-decoration-line": "none"
+              }
+             }
+            },
+            "text": "Agendar consulta",
+            "children": []
+           }
+          ],
+          "customAttributes": {
+           "data-wc-menu": ""
+          }
+         }
+        ]
+       }
+      ],
+      "customAttributes": {
+       "data-wc": "menu"
+      }
+     },
+     {
+      "id": "clinic11",
+      "type": "section",
+      "name": "Destaque com imagem",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px",
+         "background-color": "#ecfeff"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "clinic12",
+        "type": "div",
+        "name": "Contêiner 2",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(300px, 1fr))",
+           "column-gap": "56px",
+           "row-gap": "40px",
+           "align-items": "center"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "clinic13",
+          "type": "div",
+          "name": "Texto",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "clinic14",
+            "type": "paragraph",
+            "name": "Parágrafo",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#0e7490",
+               "font-size": "14px",
+               "font-weight": "600",
+               "letter-spacing": "0.08em",
+               "text-transform": "uppercase",
+               "margin-bottom": "12px"
+              }
+             }
+            },
+            "text": "Saúde da família",
+            "children": []
+           },
+           {
+            "id": "clinic15",
+            "type": "heading",
+            "name": "Título",
+            "tag": "h1",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(2.25rem, 5vw, 3.5rem)",
+               "line-height": "1.1",
+               "color": "#0f172a",
+               "letter-spacing": "-0.02em",
+               "margin-bottom": "20px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "Cuidado próximo, consulta sem espera",
+            "children": []
+           },
+           {
+            "id": "clinic16",
+            "type": "paragraph",
+            "name": "Parágrafo 2",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-bottom": "32px"
+              }
+             }
+            },
+            "text": "Especialistas, exames e retorno pelo WhatsApp. Atendemos convênios e particular.",
+            "children": []
+           },
+           {
+            "id": "clinic17",
+            "type": "div",
+            "name": "Ações",
+            "tag": "div",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-wrap": "wrap",
+               "column-gap": "12px",
+               "row-gap": "12px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "clinic18",
+              "type": "button",
+              "name": "Botão 2",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "14px",
+                 "padding-bottom": "14px",
+                 "padding-left": "24px",
+                 "padding-right": "24px",
+                 "background-color": "#0e7490",
+                 "color": "#ffffff",
+                 "font-weight": "600",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#0e7490",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#0e7490",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#0e7490",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#0e7490",
+                 "border-top-left-radius": "10px",
+                 "border-top-right-radius": "10px",
+                 "border-bottom-right-radius": "10px",
+                 "border-bottom-left-radius": "10px"
+                }
+               }
+              },
+              "text": "Agendar consulta",
+              "children": []
+             },
+             {
+              "id": "clinic19",
+              "type": "button",
+              "name": "Botão 3",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "14px",
+                 "padding-bottom": "14px",
+                 "padding-left": "24px",
+                 "padding-right": "24px",
+                 "background-color": "#ffffff",
+                 "color": "#0f172a",
+                 "font-weight": "600",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#e2e8f0",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#e2e8f0",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#e2e8f0",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#e2e8f0",
+                 "border-top-left-radius": "10px",
+                 "border-top-right-radius": "10px",
+                 "border-bottom-right-radius": "10px",
+                 "border-bottom-left-radius": "10px"
+                }
+               }
+              },
+              "text": "Ver especialidades",
+              "children": []
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "id": "clinic20",
+          "type": "image",
+          "name": "Imagem",
+          "tag": "img",
+          "attributes": {
+           "src": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&h=900&q=80",
+           "alt": "Cuidado próximo, consulta sem espera"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "max-width": "100%",
+             "width": "100%",
+             "aspect-ratio": "4 / 3",
+             "object-fit": "cover",
+             "border-top-left-radius": "20px",
+             "border-top-right-radius": "20px",
+             "border-bottom-right-radius": "20px",
+             "border-bottom-left-radius": "20px",
+             "background-color": "#e2e8f0"
+            }
+           }
+          },
+          "text": null,
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "clinic21",
+      "type": "section",
+      "name": "Recursos",
+      "tag": "section",
+      "attributes": {
+       "id": "especialidades"
+      },
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "clinic22",
+        "type": "div",
+        "name": "Contêiner 3",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "clinic23",
+          "type": "div",
+          "name": "Introdução",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center",
+             "max-width": "720px",
+             "margin-left": "auto",
+             "margin-right": "auto",
+             "margin-bottom": "48px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "clinic24",
+            "type": "paragraph",
+            "name": "Parágrafo 3",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#0e7490",
+               "font-size": "14px",
+               "font-weight": "600",
+               "letter-spacing": "0.08em",
+               "text-transform": "uppercase",
+               "margin-bottom": "12px"
+              }
+             }
+            },
+            "text": "Especialidades",
+            "children": []
+           },
+           {
+            "id": "clinic25",
+            "type": "heading",
+            "name": "Título 2",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#0f172a",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "16px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "Tudo o que sua família precisa",
+            "children": []
+           },
+           {
+            "id": "clinic26",
+            "type": "paragraph",
+            "name": "Parágrafo 4",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Do check-up ao acompanhamento contínuo.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "clinic27",
+          "type": "div",
+          "name": "Grade",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "grid",
+             "grid-template-columns": "repeat(auto-fit, minmax(260px, 1fr))",
+             "column-gap": "24px",
+             "row-gap": "24px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "clinic28",
+            "type": "article",
+            "name": "Artigo",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "clinic29",
+              "type": "heading",
+              "name": "Título 3",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "color": "#0f172a",
+                 "margin-bottom": "8px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Clínica geral e pediatria",
+              "children": []
+             },
+             {
+              "id": "clinic30",
+              "type": "paragraph",
+              "name": "Parágrafo 5",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Consultas de rotina, vacinas e acompanhamento do crescimento.",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "clinic31",
+            "type": "article",
+            "name": "Artigo 2",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "clinic32",
+              "type": "heading",
+              "name": "Título 4",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "color": "#0f172a",
+                 "margin-bottom": "8px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Cardiologia",
+              "children": []
+             },
+             {
+              "id": "clinic33",
+              "type": "paragraph",
+              "name": "Parágrafo 6",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Eletrocardiograma, MAPA e Holter no mesmo dia.",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "clinic34",
+            "type": "article",
+            "name": "Artigo 3",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "clinic35",
+              "type": "heading",
+              "name": "Título 5",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "color": "#0f172a",
+                 "margin-bottom": "8px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Dermatologia",
+              "children": []
+             },
+             {
+              "id": "clinic36",
+              "type": "paragraph",
+              "name": "Parágrafo 7",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Avaliação de pintas, acne e tratamentos clínicos.",
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "clinic37",
+      "type": "section",
+      "name": "Números que contam",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "80px",
+         "padding-right": "24px",
+         "padding-bottom": "80px",
+         "padding-left": "24px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "clinic38",
+        "type": "div",
+        "name": "Contêiner 4",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(200px, 1fr))",
+           "column-gap": "32px",
+           "row-gap": "32px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "clinic39",
+          "type": "div",
+          "name": "Contêiner 5",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "clinic40",
+            "type": "paragraph",
+            "name": "Parágrafo 8",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "48px",
+               "font-weight": "800",
+               "color": "#0e7490",
+               "line-height": "1.1",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "15 mil",
+            "children": [],
+            "customAttributes": {
+             "data-wc": "counter",
+             "data-wc-to": "1200",
+             "data-wc-suffix": "+"
+            }
+           },
+           {
+            "id": "clinic41",
+            "type": "paragraph",
+            "name": "Parágrafo 9",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "16px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "8px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "pacientes atendidos",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "clinic42",
+          "type": "div",
+          "name": "Contêiner 6",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "clinic43",
+            "type": "paragraph",
+            "name": "Parágrafo 10",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "48px",
+               "font-weight": "800",
+               "color": "#0e7490",
+               "line-height": "1.1",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "20 anos",
+            "children": [],
+            "customAttributes": {
+             "data-wc": "counter",
+             "data-wc-to": "15",
+             "data-wc-suffix": ""
+            }
+           },
+           {
+            "id": "clinic44",
+            "type": "paragraph",
+            "name": "Parágrafo 11",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "16px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "8px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "de cuidado no bairro",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "clinic45",
+          "type": "div",
+          "name": "Contêiner 7",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "clinic46",
+            "type": "paragraph",
+            "name": "Parágrafo 12",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "48px",
+               "font-weight": "800",
+               "color": "#0e7490",
+               "line-height": "1.1",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "12",
+            "children": [],
+            "customAttributes": {
+             "data-wc": "counter",
+             "data-wc-to": "98",
+             "data-wc-suffix": "%"
+            }
+           },
+           {
+            "id": "clinic47",
+            "type": "paragraph",
+            "name": "Parágrafo 13",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "16px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "8px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "convênios aceitos",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "clinic48",
+          "type": "div",
+          "name": "Contêiner 8",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "clinic49",
+            "type": "paragraph",
+            "name": "Parágrafo 14",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "48px",
+               "font-weight": "800",
+               "color": "#0e7490",
+               "line-height": "1.1",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "48 h",
+            "children": [],
+            "customAttributes": {
+             "data-wc": "counter",
+             "data-wc-to": "24",
+             "data-wc-suffix": "h"
+            }
+           },
+           {
+            "id": "clinic50",
+            "type": "paragraph",
+            "name": "Parágrafo 15",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "16px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "8px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "para sua consulta",
+            "children": []
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "clinic51",
+      "type": "section",
+      "name": "Equipe",
+      "tag": "section",
+      "attributes": {
+       "id": "equipe"
+      },
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "80px",
+         "padding-right": "24px",
+         "padding-bottom": "80px",
+         "padding-left": "24px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "clinic52",
+        "type": "div",
+        "name": "Contêiner 9",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "clinic53",
+          "type": "div",
+          "name": "Introdução 2",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center",
+             "max-width": "720px",
+             "margin-left": "auto",
+             "margin-right": "auto",
+             "margin-bottom": "40px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "clinic54",
+            "type": "heading",
+            "name": "Título 6",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#0f172a",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "12px",
+               "margin-top": "0px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "Nossa equipe",
+            "children": []
+           },
+           {
+            "id": "clinic55",
+            "type": "paragraph",
+            "name": "Parágrafo 16",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Médicos que acompanham você de perto.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "clinic56",
+          "type": "div",
+          "name": "Pessoas",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "grid",
+             "grid-template-columns": "repeat(auto-fit, minmax(200px, 1fr))",
+             "column-gap": "32px",
+             "row-gap": "32px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "clinic57",
+            "type": "article",
+            "name": "Artigo 4",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "56px",
+               "padding-right": "40px",
+               "padding-bottom": "56px",
+               "padding-left": "40px",
+               "text-align": "center",
+               "display": "flex",
+               "flex-direction": "column",
+               "align-items": "center",
+               "row-gap": "8px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "clinic58",
+              "type": "image",
+              "name": "Imagem 2",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=400&h=400&q=80",
+               "loading": "lazy",
+               "alt": "Dra. Paula Neves"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "140px",
+                 "height": "140px",
+                 "object-fit": "cover",
+                 "border-top-left-radius": "999px",
+                 "border-top-right-radius": "999px",
+                 "border-bottom-right-radius": "999px",
+                 "border-bottom-left-radius": "999px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             },
+             {
+              "id": "clinic59",
+              "type": "heading",
+              "name": "Título 7",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "line-height": "1.3",
+                 "color": "#0f172a",
+                 "margin-top": "8px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Dra. Paula Neves",
+              "children": []
+             },
+             {
+              "id": "clinic60",
+              "type": "paragraph",
+              "name": "Parágrafo 17",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "line-height": "1.5",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Clínica geral — CRM 000000",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "clinic61",
+            "type": "article",
+            "name": "Artigo 5",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "56px",
+               "padding-right": "40px",
+               "padding-bottom": "56px",
+               "padding-left": "40px",
+               "text-align": "center",
+               "display": "flex",
+               "flex-direction": "column",
+               "align-items": "center",
+               "row-gap": "8px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "clinic62",
+              "type": "image",
+              "name": "Imagem 3",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=400&h=400&q=80",
+               "loading": "lazy",
+               "alt": "Dr. Henrique Melo"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "140px",
+                 "height": "140px",
+                 "object-fit": "cover",
+                 "border-top-left-radius": "999px",
+                 "border-top-right-radius": "999px",
+                 "border-bottom-right-radius": "999px",
+                 "border-bottom-left-radius": "999px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             },
+             {
+              "id": "clinic63",
+              "type": "heading",
+              "name": "Título 8",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "line-height": "1.3",
+                 "color": "#0f172a",
+                 "margin-top": "8px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Dr. Henrique Melo",
+              "children": []
+             },
+             {
+              "id": "clinic64",
+              "type": "paragraph",
+              "name": "Parágrafo 18",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "line-height": "1.5",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Cardiologia — CRM 000000",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "clinic65",
+            "type": "article",
+            "name": "Artigo 6",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "56px",
+               "padding-right": "40px",
+               "padding-bottom": "56px",
+               "padding-left": "40px",
+               "text-align": "center",
+               "display": "flex",
+               "flex-direction": "column",
+               "align-items": "center",
+               "row-gap": "8px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "clinic66",
+              "type": "image",
+              "name": "Imagem 4",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=400&h=400&q=80",
+               "loading": "lazy",
+               "alt": "Dra. Larissa Rocha"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "140px",
+                 "height": "140px",
+                 "object-fit": "cover",
+                 "border-top-left-radius": "999px",
+                 "border-top-right-radius": "999px",
+                 "border-bottom-right-radius": "999px",
+                 "border-bottom-left-radius": "999px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             },
+             {
+              "id": "clinic67",
+              "type": "heading",
+              "name": "Título 9",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "line-height": "1.3",
+                 "color": "#0f172a",
+                 "margin-top": "8px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Dra. Larissa Rocha",
+              "children": []
+             },
+             {
+              "id": "clinic68",
+              "type": "paragraph",
+              "name": "Parágrafo 19",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "line-height": "1.5",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Pediatria — CRM 000000",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "clinic69",
+            "type": "article",
+            "name": "Artigo 7",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "56px",
+               "padding-right": "40px",
+               "padding-bottom": "56px",
+               "padding-left": "40px",
+               "text-align": "center",
+               "display": "flex",
+               "flex-direction": "column",
+               "align-items": "center",
+               "row-gap": "8px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "clinic70",
+              "type": "image",
+              "name": "Imagem 5",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=400&h=400&q=80",
+               "loading": "lazy",
+               "alt": "Dr. Eduardo Pinto"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "140px",
+                 "height": "140px",
+                 "object-fit": "cover",
+                 "border-top-left-radius": "999px",
+                 "border-top-right-radius": "999px",
+                 "border-bottom-right-radius": "999px",
+                 "border-bottom-left-radius": "999px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             },
+             {
+              "id": "clinic71",
+              "type": "heading",
+              "name": "Título 10",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "line-height": "1.3",
+                 "color": "#0f172a",
+                 "margin-top": "8px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Dr. Eduardo Pinto",
+              "children": []
+             },
+             {
+              "id": "clinic72",
+              "type": "paragraph",
+              "name": "Parágrafo 20",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "line-height": "1.5",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Dermatologia — CRM 000000",
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "clinic73",
+      "type": "section",
+      "name": "Perguntas frequentes",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px",
+         "background-color": "#ecfeff"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "clinic74",
+        "type": "div",
+        "name": "Contêiner 10",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "760px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "clinic75",
+          "type": "div",
+          "name": "Introdução 3",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center",
+             "max-width": "720px",
+             "margin-left": "auto",
+             "margin-right": "auto",
+             "margin-bottom": "48px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "clinic76",
+            "type": "paragraph",
+            "name": "Parágrafo 21",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#0e7490",
+               "font-size": "14px",
+               "font-weight": "600",
+               "letter-spacing": "0.08em",
+               "text-transform": "uppercase",
+               "margin-bottom": "12px"
+              }
+             }
+            },
+            "text": "Dúvidas",
+            "children": []
+           },
+           {
+            "id": "clinic77",
+            "type": "heading",
+            "name": "Título 11",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#0f172a",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "16px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "Perguntas frequentes",
+            "children": []
+           },
+           {
+            "id": "clinic78",
+            "type": "paragraph",
+            "name": "Parágrafo 22",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "clinic79",
+          "type": "div",
+          "name": "Perguntas",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "12px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "clinic80",
+            "type": "details",
+            "name": "Detalhes",
+            "tag": "details",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "20px",
+               "padding-bottom": "20px",
+               "padding-left": "24px",
+               "padding-right": "24px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "12px",
+               "border-top-right-radius": "12px",
+               "border-bottom-right-radius": "12px",
+               "border-bottom-left-radius": "12px",
+               "background-color": "#ffffff"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "clinic81",
+              "type": "summary",
+              "name": "Resumo",
+              "tag": "summary",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a",
+                 "cursor": "pointer"
+                }
+               }
+              },
+              "text": null,
+              "children": [
+               {
+                "id": "clinic82",
+                "type": "paragraph",
+                "name": "Parágrafo 23",
+                "tag": "span",
+                "attributes": {},
+                "classes": [],
+                "styles": {},
+                "text": "Quais convênios vocês aceitam?",
+                "children": []
+               }
+              ]
+             },
+             {
+              "id": "clinic83",
+              "type": "paragraph",
+              "name": "Parágrafo 24",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "12px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Unimed, Bradesco Saúde, SulAmérica, Amil e outros. Confirme pelo WhatsApp.",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "clinic84",
+            "type": "details",
+            "name": "Detalhes 2",
+            "tag": "details",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "20px",
+               "padding-bottom": "20px",
+               "padding-left": "24px",
+               "padding-right": "24px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "12px",
+               "border-top-right-radius": "12px",
+               "border-bottom-right-radius": "12px",
+               "border-bottom-left-radius": "12px",
+               "background-color": "#ffffff"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "clinic85",
+              "type": "summary",
+              "name": "Resumo 2",
+              "tag": "summary",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a",
+                 "cursor": "pointer"
+                }
+               }
+              },
+              "text": null,
+              "children": [
+               {
+                "id": "clinic86",
+                "type": "paragraph",
+                "name": "Parágrafo 25",
+                "tag": "span",
+                "attributes": {},
+                "classes": [],
+                "styles": {},
+                "text": "Fazem exames no local?",
+                "children": []
+               }
+              ]
+             },
+             {
+              "id": "clinic87",
+              "type": "paragraph",
+              "name": "Parágrafo 26",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "12px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Sim: laboratório, eletrocardiograma e ultrassom.",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "clinic88",
+            "type": "details",
+            "name": "Detalhes 3",
+            "tag": "details",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "20px",
+               "padding-bottom": "20px",
+               "padding-left": "24px",
+               "padding-right": "24px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "12px",
+               "border-top-right-radius": "12px",
+               "border-bottom-right-radius": "12px",
+               "border-bottom-left-radius": "12px",
+               "background-color": "#ffffff"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "clinic89",
+              "type": "summary",
+              "name": "Resumo 3",
+              "tag": "summary",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a",
+                 "cursor": "pointer"
+                }
+               }
+              },
+              "text": null,
+              "children": [
+               {
+                "id": "clinic90",
+                "type": "paragraph",
+                "name": "Parágrafo 27",
+                "tag": "span",
+                "attributes": {},
+                "classes": [],
+                "styles": {},
+                "text": "Posso remarcar a consulta?",
+                "children": []
+               }
+              ]
+             },
+             {
+              "id": "clinic91",
+              "type": "paragraph",
+              "name": "Parágrafo 28",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "12px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Sim, até 24 horas antes, pelo WhatsApp ou telefone.",
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "clinic92",
+      "type": "section",
+      "name": "Contato",
+      "tag": "section",
+      "attributes": {
+       "id": "contato"
+      },
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "clinic93",
+        "type": "div",
+        "name": "Contêiner 11",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(300px, 1fr))",
+           "column-gap": "56px",
+           "row-gap": "32px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "clinic94",
+          "type": "div",
+          "name": "Texto 2",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "clinic95",
+            "type": "heading",
+            "name": "Título 12",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#0f172a",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "16px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "Agende sua consulta",
+            "children": []
+           },
+           {
+            "id": "clinic96",
+            "type": "paragraph",
+            "name": "Parágrafo 29",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569"
+              }
+             }
+            },
+            "text": "Deixe seu nome e e-mail e diga a especialidade. Confirmamos o horário em até 2 horas.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "clinic97",
+          "type": "form",
+          "name": "Formulário",
+          "tag": "form",
+          "attributes": {
+           "method": "post",
+           "formSubmit": "{\"destination\":\"native\",\"method\":\"POST\"}"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "16px",
+             "padding-top": "28px",
+             "padding-bottom": "28px",
+             "padding-left": "28px",
+             "padding-right": "28px",
+             "background-color": "#ffffff",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#e2e8f0",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#e2e8f0",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#e2e8f0",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#e2e8f0",
+             "border-top-left-radius": "16px",
+             "border-top-right-radius": "16px",
+             "border-bottom-right-radius": "16px",
+             "border-bottom-left-radius": "16px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "clinic98",
+            "type": "label",
+            "name": "Rótulo",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "clinic99",
+              "type": "paragraph",
+              "name": "Parágrafo 30",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a"
+                }
+               }
+              },
+              "text": "Nome",
+              "children": []
+             },
+             {
+              "id": "clinic100",
+              "type": "input",
+              "name": "Campo",
+              "tag": "input",
+              "attributes": {
+               "inputType": "text",
+               "name": "name",
+               "formField": "{\"rules\":{\"required\":true}}"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "clinic101",
+            "type": "label",
+            "name": "Rótulo 2",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "clinic102",
+              "type": "paragraph",
+              "name": "Parágrafo 31",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a"
+                }
+               }
+              },
+              "text": "E-mail",
+              "children": []
+             },
+             {
+              "id": "clinic103",
+              "type": "input",
+              "name": "Campo 2",
+              "tag": "input",
+              "attributes": {
+               "inputType": "email",
+               "name": "email",
+               "formField": "{\"rules\":{\"required\":true,\"type\":\"email\"}}"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "clinic105",
+            "type": "label",
+            "name": "Rótulo 3",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "clinic106",
+              "type": "paragraph",
+              "name": "Parágrafo 32",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a"
+                }
+               }
+              },
+              "text": "Especialidade",
+              "children": []
+             },
+             {
+              "id": "clinic107",
+              "type": "select",
+              "name": "Seleção",
+              "tag": "select",
+              "attributes": {
+               "name": "specialty",
+               "formField": "{\"rules\":{\"required\":true}}"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": [
+               {
+                "id": "clinic108",
+                "type": "option",
+                "name": "Opção",
+                "tag": "option",
+                "attributes": {
+                 "value": "Clínica geral"
+                },
+                "classes": [],
+                "styles": {},
+                "text": "Clínica geral",
+                "children": []
+               },
+               {
+                "id": "clinic109",
+                "type": "option",
+                "name": "Opção 2",
+                "tag": "option",
+                "attributes": {
+                 "value": "Pediatria"
+                },
+                "classes": [],
+                "styles": {},
+                "text": "Pediatria",
+                "children": []
+               },
+               {
+                "id": "clinic110",
+                "type": "option",
+                "name": "Opção 3",
+                "tag": "option",
+                "attributes": {
+                 "value": "Cardiologia"
+                },
+                "classes": [],
+                "styles": {},
+                "text": "Cardiologia",
+                "children": []
+               },
+               {
+                "id": "clinic111",
+                "type": "option",
+                "name": "Opção 4",
+                "tag": "option",
+                "attributes": {
+                 "value": "Dermatologia"
+                },
+                "classes": [],
+                "styles": {},
+                "text": "Dermatologia",
+                "children": []
+               }
+              ]
+             }
+            ]
+           },
+           {
+            "id": "clinic104",
+            "type": "button",
+            "name": "Botão 4",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "submit"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "14px",
+               "padding-bottom": "14px",
+               "padding-left": "24px",
+               "padding-right": "24px",
+               "background-color": "#0e7490",
+               "color": "#ffffff",
+               "font-weight": "600",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#0e7490",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#0e7490",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#0e7490",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#0e7490",
+               "border-top-left-radius": "10px",
+               "border-top-right-radius": "10px",
+               "border-bottom-right-radius": "10px",
+               "border-bottom-left-radius": "10px",
+               "align-self": "flex-start"
+              }
+             }
+            },
+            "text": "Pedir horário",
+            "children": []
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "clinic112",
+      "type": "section",
+      "name": "Mapa com endereço",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "80px",
+         "padding-right": "24px",
+         "padding-bottom": "80px",
+         "padding-left": "24px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "clinic113",
+        "type": "div",
+        "name": "Contêiner 12",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(300px, 1fr))",
+           "column-gap": "32px",
+           "row-gap": "32px",
+           "align-items": "center"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "clinic114",
+          "type": "div",
+          "name": "Endereço",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "clinic115",
+            "type": "heading",
+            "name": "Título 13",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#0f172a",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "12px",
+               "margin-top": "0px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "Onde estamos",
+            "children": []
+           },
+           {
+            "id": "clinic116",
+            "type": "paragraph",
+            "name": "Parágrafo 33",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "16px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "8px"
+              }
+             }
+            },
+            "text": "Rua Harmonia, 500 — Vila Madalena, São Paulo",
+            "children": []
+           },
+           {
+            "id": "clinic117",
+            "type": "paragraph",
+            "name": "Parágrafo 34",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "16px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "24px"
+              }
+             }
+            },
+            "text": "Segunda a sábado, das 7h às 19h",
+            "children": []
+           },
+           {
+            "id": "clinic118",
+            "type": "link",
+            "name": "Link 7",
+            "tag": "a",
+            "attributes": {
+             "href": "https://www.openstreetmap.org/directions?to=-23.5653%2C-46.6522",
+             "newTab": true
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "12px",
+               "padding-bottom": "12px",
+               "padding-left": "22px",
+               "padding-right": "22px",
+               "background-color": "#0e7490",
+               "color": "#ffffff",
+               "font-weight": "600",
+               "font-size": "16px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#0e7490",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#0e7490",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#0e7490",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#0e7490",
+               "border-top-left-radius": "10px",
+               "border-top-right-radius": "10px",
+               "border-bottom-right-radius": "10px",
+               "border-bottom-left-radius": "10px",
+               "cursor": "pointer",
+               "text-decoration-line": "none",
+               "display": "inline-block"
+              }
+             }
+            },
+            "text": "Como chegar",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "clinic119",
+          "type": "iframe",
+          "name": "Quadro incorporado",
+          "tag": "iframe",
+          "attributes": {
+           "src": "https://www.openstreetmap.org/export/embed.html?bbox=-46.6622%2C-23.5713%2C-46.6422%2C-23.5593&layer=mapnik&marker=-23.5653%2C-46.6522",
+           "loading": "lazy",
+           "title": "Mapa"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "width": "100%",
+             "height": "380px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#e2e8f0",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#e2e8f0",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#e2e8f0",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#e2e8f0",
+             "border-top-left-radius": "16px",
+             "border-top-right-radius": "16px",
+             "border-bottom-right-radius": "16px",
+             "border-bottom-left-radius": "16px"
+            }
+           }
+          },
+          "text": null,
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "clinic120",
+      "type": "footer",
+      "name": "Rodapé com colunas",
+      "tag": "footer",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "56px",
+         "padding-right": "40px",
+         "padding-bottom": "56px",
+         "padding-left": "40px",
+         "background-color": "#0f172a",
+         "color": "#cbd5e1"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "clinic121",
+        "type": "div",
+        "name": "Contêiner 13",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(200px, 1fr))",
+           "column-gap": "32px",
+           "row-gap": "24px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "clinic122",
+          "type": "div",
+          "name": "Marca",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "clinic123",
+            "type": "paragraph",
+            "name": "Parágrafo 35",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "20px",
+               "font-weight": "700",
+               "color": "#ffffff",
+               "margin-bottom": "8px"
+              }
+             }
+            },
+            "text": "Clínica Viva",
+            "children": []
+           },
+           {
+            "id": "clinic124",
+            "type": "paragraph",
+            "name": "Parágrafo 36",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "14px",
+               "line-height": "1.6",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Clínica Viva — Responsável técnico: Dra. Paula Neves, CRM 000000.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "clinic125",
+          "type": "nav",
+          "name": "Navegação 2",
+          "tag": "nav",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "0px",
+             "padding-right": "0px",
+             "padding-bottom": "0px",
+             "padding-left": "0px",
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "8px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "clinic126",
+            "type": "link",
+            "name": "Link 8",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "Início",
+            "children": []
+           },
+           {
+            "id": "clinic127",
+            "type": "link",
+            "name": "Link 9",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#equipe"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "Equipe",
+            "children": []
+           },
+           {
+            "id": "clinic128",
+            "type": "link",
+            "name": "Link 10",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#contato"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "Contato",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "clinic129",
+          "type": "paragraph",
+          "name": "Parágrafo 37",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "14px",
+             "margin-top": "0px",
+             "margin-bottom": "0px"
+            }
+           }
+          },
+          "text": "© 2026 Clínica Viva.",
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "clinic130",
+      "type": "link",
+      "name": "Botão do WhatsApp",
+      "tag": "a",
+      "attributes": {
+       "newTab": true,
+       "href": "https://wa.me/?text=Ol%C3%A1%21%20Vim%20pelo%20site.",
+       "ariaLabel": "Fale conosco pelo WhatsApp"
+      },
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "position": "fixed",
+         "right": "20px",
+         "bottom": "20px",
+         "z-index": "800",
+         "background-color": "#15803d",
+         "color": "#ffffff",
+         "font-weight": "700",
+         "text-decoration-line": "none",
+         "padding-top": "14px",
+         "padding-bottom": "14px",
+         "padding-left": "20px",
+         "padding-right": "20px",
+         "border-top-left-radius": "999px",
+         "border-top-right-radius": "999px",
+         "border-bottom-right-radius": "999px",
+         "border-bottom-left-radius": "999px",
+         "box-shadow": [
+          {
+           "color": "rgba(21, 128, 61, 0.35)",
+           "offsetX": "0px",
+           "offsetY": "8px",
+           "blur": "24px",
+           "spread": "0px",
+           "inset": false,
+           "hidden": false
+          }
+         ]
+        }
+       }
+      },
+      "text": "WhatsApp",
+      "children": []
+     }
+    ]
+   }
+  }
+ ]
+}

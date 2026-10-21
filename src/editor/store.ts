@@ -12,7 +12,7 @@ import { systemClock, type Clock } from '../core/ports/clock.ts';
 import { randomIds, type IdGenerator } from '../core/ports/ids.ts';
 import { createStore, type DispatchResult, type EditContext, type Gesture, type Store, type StoreState } from '../core/store/store.ts';
 import type { CommandId, ConstantId } from '../generated/ids.ts';
-import { translate } from '../i18n/index.ts';
+import { localeOfLanguage, translate } from '../i18n/index.ts';
 import { manifest } from '../manifest/runtime.ts';
 import { pageLayout } from './canvas/coordinates.ts';
 import { browserClipboard } from './clipboard.ts';
@@ -130,6 +130,9 @@ export function createEditorStore(options: EditorStoreOptions = {}): EditorStore
     clock: options.clock ?? systemClock,
     ids,
     words: (ui, key, params) => translate(ui.preferences.locale, key, params),
+    // the texts a palette element fills a page with, in the page's language; a language no catalogue has keeps the
+    // interface's (the palette's words before the audit's TPL-3)
+    pageWords: (ui, language, key, params) => translate(localeOfLanguage(language) ?? ui.preferences.locale, key, params),
     language: ui => ui.preferences.locale,
     layout: options.ports?.layout ?? pageLayout,
     downloads: options.ports?.downloads ?? browserDownloads,

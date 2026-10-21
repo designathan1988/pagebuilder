@@ -1847,7 +1847,8 @@
       "id": "templates-sections",
       "titleKey": "feature.templatesSections",
       "commands": [
-        "element.insert"
+        "element.insert",
+        "element.setCustomAttribute"
       ],
       "dependsOn": [
         "templates-layout"
@@ -2790,6 +2791,144 @@
             },
             "editor": null,
             "persistence": null,
+            "export": null
+          },
+          "refusals": []
+        },
+        {
+          "id": "the-cart-takes-its-whatsapp-number-as-digits",
+          "setup": {
+            "fixture": "empty",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": "fit"
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-insert",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "element.insert#elements-tile",
+              "args": {
+                "entry": "button"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "workspace.setActiveTab#inspector-tab-settings",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "element.setCustomAttribute#inspector-custom-attribute-add",
+              "args": {
+                "name": "data-wc",
+                "value": ""
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "element.setCustomAttribute#inspector-custom-attribute-value",
+              "args": {
+                "name": "data-wc",
+                "value": "cart"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "element.setCustomAttribute#inspector-cart-whatsapp",
+              "args": {
+                "name": "data-wc-whatsapp",
+                "value": "+55 (11) 98765-4321"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "element.setCustomAttribute#inspector-cart-whatsapp"
+          ],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/@children",
+                "value": [
+                  {
+                    "type": "button",
+                    "name": "Button",
+                    "tag": "button",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": "New button",
+                    "children": [],
+                    "customAttributes": {
+                      "data-wc": "cart",
+                      "data-wc-whatsapp": "5511987654321"
+                    }
+                  }
+                ]
+              }
+            ],
+            "selection": [
+              "/Page/Button"
+            ],
+            "history": {
+              "undoSteps": 4,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.attribute.set",
+                  "params": {
+                    "attribute": "data-wc-whatsapp",
+                    "name": "Button",
+                    "value": "5511987654321"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": {
+              "reload": "immediate",
+              "document": "same",
+              "preferences": null,
+              "selection": null
+            },
             "export": null
           },
           "refusals": []

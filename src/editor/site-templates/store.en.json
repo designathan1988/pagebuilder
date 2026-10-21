@@ -1,11 +1,11 @@
 {
  "version": 4,
- "language": "pt-BR",
+ "language": "en",
  "codeLanguage": "en",
  "pages": [
   {
    "id": "store128",
-   "name": "Loja",
+   "name": "Shop",
    "file": "index.html",
    "tree": {
     "id": "store127",
@@ -13,9 +13,9 @@
     "name": "Body",
     "tag": "body",
     "attributes": {
-     "pageTitle": "Aurora — Acessórios que duram",
-     "pageDescription": "Loja online de acessórios com entrega para todo o Brasil e pedido pelo WhatsApp.",
-     "pageLanguage": "pt-BR"
+     "pageTitle": "Aurora — Accessories that last",
+     "pageDescription": "Online accessories shop with nationwide delivery and orders on WhatsApp.",
+     "pageLanguage": "en"
     },
     "classes": [],
     "styles": {
@@ -36,7 +36,7 @@
      {
       "id": "store1",
       "type": "header",
-      "name": "Menu que recolhe no celular",
+      "name": "Menu that folds on phones",
       "tag": "header",
       "attributes": {},
       "classes": [],
@@ -62,7 +62,7 @@
        {
         "id": "store2",
         "type": "div",
-        "name": "Contêiner",
+        "name": "Container",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -89,7 +89,7 @@
           "name": "Link",
           "tag": "a",
           "attributes": {
-           "href": "/"
+           "href": "index.html"
           },
           "classes": [],
           "styles": {
@@ -108,7 +108,7 @@
          {
           "id": "store4",
           "type": "button",
-          "name": "Botão",
+          "name": "Button",
           "tag": "button",
           "attributes": {
            "ariaLabel": "Menu"
@@ -158,7 +158,7 @@
          {
           "id": "store5",
           "type": "nav",
-          "name": "Navegação",
+          "name": "Navigation",
           "tag": "nav",
           "attributes": {},
           "classes": [],
@@ -201,7 +201,7 @@
               }
              }
             },
-            "text": "Início",
+            "text": "Home",
             "children": []
            },
            {
@@ -210,7 +210,7 @@
             "name": "Link 3",
             "tag": "a",
             "attributes": {
-             "href": "sobre.html"
+             "href": "about.html"
             },
             "classes": [],
             "styles": {
@@ -226,7 +226,7 @@
               }
              }
             },
-            "text": "Sobre nós",
+            "text": "About us",
             "children": []
            },
            {
@@ -235,7 +235,7 @@
             "name": "Link 4",
             "tag": "a",
             "attributes": {
-             "href": "index.html#produtos"
+             "href": "index.html#products"
             },
             "classes": [],
             "styles": {
@@ -251,7 +251,7 @@
               }
              }
             },
-            "text": "Produtos",
+            "text": "Products",
             "children": []
            },
            {
@@ -260,7 +260,7 @@
             "name": "Link 5",
             "tag": "a",
             "attributes": {
-             "href": "sobre.html#contato"
+             "href": "about.html#contact"
             },
             "classes": [],
             "styles": {
@@ -276,7 +276,7 @@
               }
              }
             },
-            "text": "Contato",
+            "text": "Contact",
             "children": []
            },
            {
@@ -285,7 +285,7 @@
             "name": "Link 6",
             "tag": "a",
             "attributes": {
-             "href": "index.html#produtos"
+             "href": "index.html#products"
             },
             "classes": [],
             "styles": {
@@ -320,7 +320,7 @@
               }
              }
             },
-            "text": "Ver ofertas",
+            "text": "See the deals",
             "children": []
            }
           ],
@@ -338,10 +338,10 @@
      {
       "id": "store11",
       "type": "section",
-      "name": "Carrossel de fotos",
+      "name": "Photo carousel",
       "tag": "section",
       "attributes": {
-       "ariaLabel": "Fotos"
+       "ariaLabel": "Photos"
       },
       "classes": [],
       "styles": {
@@ -359,7 +359,7 @@
        {
         "id": "store12",
         "type": "div",
-        "name": "Contêiner 2",
+        "name": "Container 2",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -401,7 +401,7 @@
            {
             "id": "store14",
             "type": "figure",
-            "name": "Figura",
+            "name": "Figure",
             "tag": "figure",
             "attributes": {},
             "classes": [],
@@ -424,12 +424,12 @@
              {
               "id": "store15",
               "type": "image",
-              "name": "Imagem",
+              "name": "Image",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1600&h=700&q=80",
-               "alt": "Nova coleção: relógios minimalistas",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "New collection: minimalist watches"
               },
               "classes": [],
               "styles": {
@@ -454,7 +454,7 @@
              {
               "id": "store16",
               "type": "figureCaption",
-              "name": "Legenda",
+              "name": "Caption",
               "tag": "figcaption",
               "attributes": {},
               "classes": [],
@@ -478,7 +478,7 @@
                 }
                }
               },
-              "text": "Nova coleção: relógios minimalistas",
+              "text": "New collection: minimalist watches",
               "children": []
              }
             ]
@@ -486,7 +486,7 @@
            {
             "id": "store17",
             "type": "figure",
-            "name": "Figura 2",
+            "name": "Figure 2",
             "tag": "figure",
             "attributes": {},
             "classes": [],
@@ -509,12 +509,12 @@
              {
               "id": "store18",
               "type": "image",
-              "name": "Imagem 2",
+              "name": "Image 2",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1600&h=700&q=80",
-               "alt": "Som de estúdio, sem fio",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Studio sound, wireless"
               },
               "classes": [],
               "styles": {
@@ -539,7 +539,7 @@
              {
               "id": "store19",
               "type": "figureCaption",
-              "name": "Legenda 2",
+              "name": "Caption 2",
               "tag": "figcaption",
               "attributes": {},
               "classes": [],
@@ -563,7 +563,7 @@
                 }
                }
               },
-              "text": "Som de estúdio, sem fio",
+              "text": "Studio sound, wireless",
               "children": []
              }
             ]
@@ -571,7 +571,7 @@
            {
             "id": "store20",
             "type": "figure",
-            "name": "Figura 3",
+            "name": "Figure 3",
             "tag": "figure",
             "attributes": {},
             "classes": [],
@@ -594,12 +594,12 @@
              {
               "id": "store21",
               "type": "image",
-              "name": "Imagem 3",
+              "name": "Image 3",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1600&h=700&q=80",
-               "alt": "Frete grátis acima de R$ 199",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Free shipping on orders over $50"
               },
               "classes": [],
               "styles": {
@@ -624,7 +624,7 @@
              {
               "id": "store22",
               "type": "figureCaption",
-              "name": "Legenda 3",
+              "name": "Caption 3",
               "tag": "figcaption",
               "attributes": {},
               "classes": [],
@@ -648,7 +648,7 @@
                 }
                }
               },
-              "text": "Frete grátis acima de R$ 199",
+              "text": "Free shipping on orders over $50",
               "children": []
              }
             ]
@@ -661,7 +661,7 @@
          {
           "id": "store23",
           "type": "div",
-          "name": "Controles",
+          "name": "Controls",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -682,10 +682,10 @@
            {
             "id": "store24",
             "type": "button",
-            "name": "Botão 2",
+            "name": "Button 2",
             "tag": "button",
             "attributes": {
-             "ariaLabel": "Anterior"
+             "ariaLabel": "Previous"
             },
             "classes": [],
             "styles": {
@@ -732,7 +732,7 @@
            {
             "id": "store25",
             "type": "div",
-            "name": "Pontos",
+            "name": "Dots",
             "tag": "div",
             "attributes": {},
             "classes": [],
@@ -746,10 +746,10 @@
            {
             "id": "store26",
             "type": "button",
-            "name": "Botão 3",
+            "name": "Button 3",
             "tag": "button",
             "attributes": {
-             "ariaLabel": "Próximo"
+             "ariaLabel": "Next"
             },
             "classes": [],
             "styles": {
@@ -806,7 +806,7 @@
      {
       "id": "store27",
       "type": "section",
-      "name": "Recursos",
+      "name": "Features",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -825,7 +825,7 @@
        {
         "id": "store28",
         "type": "div",
-        "name": "Contêiner 3",
+        "name": "Container 3",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -843,7 +843,7 @@
          {
           "id": "store29",
           "type": "div",
-          "name": "Introdução",
+          "name": "Introduction",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -863,7 +863,7 @@
            {
             "id": "store30",
             "type": "paragraph",
-            "name": "Parágrafo",
+            "name": "Paragraph",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -879,13 +879,13 @@
               }
              }
             },
-            "text": "Comprar aqui",
+            "text": "Shopping here",
             "children": []
            },
            {
             "id": "store31",
             "type": "heading",
-            "name": "Título",
+            "name": "Heading",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -901,13 +901,13 @@
               }
              }
             },
-            "text": "Simples do pedido à entrega",
+            "text": "Simple from order to delivery",
             "children": []
            },
            {
             "id": "store32",
             "type": "paragraph",
-            "name": "Parágrafo 2",
+            "name": "Paragraph 2",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -922,7 +922,7 @@
               }
              }
             },
-            "text": "Tudo o que você espera de uma boa loja.",
+            "text": "Everything you expect from a good shop.",
             "children": []
            }
           ]
@@ -930,7 +930,7 @@
          {
           "id": "store33",
           "type": "div",
-          "name": "Grade",
+          "name": "Grid",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -949,7 +949,7 @@
            {
             "id": "store34",
             "type": "article",
-            "name": "Artigo",
+            "name": "Article",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -985,7 +985,7 @@
              {
               "id": "store35",
               "type": "heading",
-              "name": "Título 2",
+              "name": "Heading 2",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -999,13 +999,13 @@
                 }
                }
               },
-              "text": "Frete grátis",
+              "text": "Free shipping",
               "children": []
              },
              {
               "id": "store36",
               "type": "paragraph",
-              "name": "Parágrafo 3",
+              "name": "Paragraph 3",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1020,7 +1020,7 @@
                 }
                }
               },
-              "text": "Acima de R$ 199 para todo o Brasil, com rastreio.",
+              "text": "On orders over $50, nationwide, with tracking.",
               "children": []
              }
             ]
@@ -1028,7 +1028,7 @@
            {
             "id": "store37",
             "type": "article",
-            "name": "Artigo 2",
+            "name": "Article 2",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1064,7 +1064,7 @@
              {
               "id": "store38",
               "type": "heading",
-              "name": "Título 3",
+              "name": "Heading 3",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1078,13 +1078,13 @@
                 }
                }
               },
-              "text": "Troca em 30 dias",
+              "text": "30-day returns",
               "children": []
              },
              {
               "id": "store39",
               "type": "paragraph",
-              "name": "Parágrafo 4",
+              "name": "Paragraph 4",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1099,7 +1099,7 @@
                 }
                }
               },
-              "text": "Não gostou? A troca é por nossa conta.",
+              "text": "Not happy? Returns are on us.",
               "children": []
              }
             ]
@@ -1107,7 +1107,7 @@
            {
             "id": "store40",
             "type": "article",
-            "name": "Artigo 3",
+            "name": "Article 3",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1143,7 +1143,7 @@
              {
               "id": "store41",
               "type": "heading",
-              "name": "Título 4",
+              "name": "Heading 4",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1157,13 +1157,13 @@
                 }
                }
               },
-              "text": "Pagamento fácil",
+              "text": "Easy payment",
               "children": []
              },
              {
               "id": "store42",
               "type": "paragraph",
-              "name": "Parágrafo 5",
+              "name": "Paragraph 5",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1178,7 +1178,7 @@
                 }
                }
               },
-              "text": "Pix com 5% de desconto ou até 6x sem juros.",
+              "text": "5% off when you pay upfront, or 6 interest-free instalments.",
               "children": []
              }
             ]
@@ -1192,10 +1192,10 @@
      {
       "id": "store43",
       "type": "section",
-      "name": "Loja com carrinho (pedido no WhatsApp)",
+      "name": "Shop with cart (order by WhatsApp)",
       "tag": "section",
       "attributes": {
-       "id": "produtos"
+       "id": "products"
       },
       "classes": [],
       "styles": {
@@ -1213,7 +1213,7 @@
        {
         "id": "store44",
         "type": "div",
-        "name": "Contêiner 4",
+        "name": "Container 4",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -1231,7 +1231,7 @@
          {
           "id": "store45",
           "type": "div",
-          "name": "Cabeçalho da loja",
+          "name": "Shop header",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1253,7 +1253,7 @@
            {
             "id": "store46",
             "type": "div",
-            "name": "Introdução 2",
+            "name": "Introduction 2",
             "tag": "div",
             "attributes": {},
             "classes": [],
@@ -1263,7 +1263,7 @@
              {
               "id": "store47",
               "type": "heading",
-              "name": "Título 5",
+              "name": "Heading 5",
               "tag": "h2",
               "attributes": {},
               "classes": [],
@@ -1280,13 +1280,13 @@
                 }
                }
               },
-              "text": "Mais vendidos",
+              "text": "Best sellers",
               "children": []
              },
              {
               "id": "store48",
               "type": "paragraph",
-              "name": "Parágrafo 6",
+              "name": "Paragraph 6",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1301,7 +1301,7 @@
                 }
                }
               },
-              "text": "Adicione ao carrinho e finalize pelo WhatsApp: respondemos em minutos.",
+              "text": "Add to the cart and check out on WhatsApp: we answer within minutes.",
               "children": []
              }
             ]
@@ -1309,7 +1309,7 @@
            {
             "id": "store49",
             "type": "div",
-            "name": "Botão do carrinho",
+            "name": "Cart button",
             "tag": "div",
             "attributes": {},
             "classes": [],
@@ -1327,7 +1327,7 @@
              {
               "id": "store50",
               "type": "button",
-              "name": "Botão 4",
+              "name": "Button 4",
               "tag": "button",
               "attributes": {},
               "classes": [],
@@ -1362,7 +1362,7 @@
                 }
                }
               },
-              "text": "Carrinho",
+              "text": "Cart",
               "children": [],
               "customAttributes": {
                "data-wc-cart-open": ""
@@ -1371,10 +1371,10 @@
              {
               "id": "store51",
               "type": "paragraph",
-              "name": "Parágrafo 7",
+              "name": "Paragraph 7",
               "tag": "span",
               "attributes": {
-               "ariaLabel": "Itens no carrinho"
+               "ariaLabel": "Items in the cart"
               },
               "classes": [],
               "styles": {
@@ -1411,7 +1411,7 @@
          {
           "id": "store52",
           "type": "div",
-          "name": "Produtos",
+          "name": "Products",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1430,7 +1430,7 @@
            {
             "id": "store53",
             "type": "article",
-            "name": "Artigo 4",
+            "name": "Article 4",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1469,12 +1469,12 @@
              {
               "id": "store54",
               "type": "image",
-              "name": "Imagem 4",
+              "name": "Image 4",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&h=800&q=80",
-               "alt": "Relógio Aurora Classic",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Aurora Classic watch"
               },
               "classes": [],
               "styles": {
@@ -1499,7 +1499,7 @@
              {
               "id": "store55",
               "type": "heading",
-              "name": "Título 6",
+              "name": "Heading 6",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1515,13 +1515,13 @@
                 }
                }
               },
-              "text": "Relógio Aurora Classic",
+              "text": "Aurora Classic watch",
               "children": []
              },
              {
               "id": "store56",
               "type": "paragraph",
-              "name": "Parágrafo 8",
+              "name": "Paragraph 8",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1536,13 +1536,13 @@
                 }
                }
               },
-              "text": "Aço inox, pulseira de couro, 5 ATM.",
+              "text": "Stainless steel, leather strap, 5 ATM.",
               "children": []
              },
              {
               "id": "store57",
               "type": "div",
-              "name": "Preço e botão",
+              "name": "Price and button",
               "tag": "div",
               "attributes": {},
               "classes": [],
@@ -1562,7 +1562,7 @@
                {
                 "id": "store58",
                 "type": "paragraph",
-                "name": "Parágrafo 9",
+                "name": "Paragraph 9",
                 "tag": "p",
                 "attributes": {},
                 "classes": [],
@@ -1577,7 +1577,7 @@
                   }
                  }
                 },
-                "text": "R$ 349,00",
+                "text": "$79.00",
                 "children": [],
                 "customAttributes": {
                  "data-wc-price": ""
@@ -1586,7 +1586,7 @@
                {
                 "id": "store59",
                 "type": "button",
-                "name": "Botão 5",
+                "name": "Button 5",
                 "tag": "button",
                 "attributes": {},
                 "classes": [],
@@ -1621,7 +1621,7 @@
                   }
                  }
                 },
-                "text": "Adicionar",
+                "text": "Add to cart",
                 "children": [],
                 "customAttributes": {
                  "data-wc-add": ""
@@ -1631,13 +1631,14 @@
              }
             ],
             "customAttributes": {
-             "data-wc": "product"
+             "data-wc": "product",
+             "data-wc-currency": "USD"
             }
            },
            {
             "id": "store60",
             "type": "article",
-            "name": "Artigo 5",
+            "name": "Article 5",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1676,12 +1677,12 @@
              {
               "id": "store61",
               "type": "image",
-              "name": "Imagem 5",
+              "name": "Image 5",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&h=800&q=80",
-               "alt": "Fone Aurora Studio",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Aurora Studio headphones"
               },
               "classes": [],
               "styles": {
@@ -1706,7 +1707,7 @@
              {
               "id": "store62",
               "type": "heading",
-              "name": "Título 7",
+              "name": "Heading 7",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1722,13 +1723,13 @@
                 }
                }
               },
-              "text": "Fone Aurora Studio",
+              "text": "Aurora Studio headphones",
               "children": []
              },
              {
               "id": "store63",
               "type": "paragraph",
-              "name": "Parágrafo 10",
+              "name": "Paragraph 10",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1743,13 +1744,13 @@
                 }
                }
               },
-              "text": "Cancelamento de ruído, 30 h de bateria.",
+              "text": "Noise cancelling, 30 h of battery.",
               "children": []
              },
              {
               "id": "store64",
               "type": "div",
-              "name": "Preço e botão 2",
+              "name": "Price and button 2",
               "tag": "div",
               "attributes": {},
               "classes": [],
@@ -1769,7 +1770,7 @@
                {
                 "id": "store65",
                 "type": "paragraph",
-                "name": "Parágrafo 11",
+                "name": "Paragraph 11",
                 "tag": "p",
                 "attributes": {},
                 "classes": [],
@@ -1784,7 +1785,7 @@
                   }
                  }
                 },
-                "text": "R$ 499,00",
+                "text": "$119.00",
                 "children": [],
                 "customAttributes": {
                  "data-wc-price": ""
@@ -1793,7 +1794,7 @@
                {
                 "id": "store66",
                 "type": "button",
-                "name": "Botão 6",
+                "name": "Button 6",
                 "tag": "button",
                 "attributes": {},
                 "classes": [],
@@ -1828,7 +1829,7 @@
                   }
                  }
                 },
-                "text": "Adicionar",
+                "text": "Add to cart",
                 "children": [],
                 "customAttributes": {
                  "data-wc-add": ""
@@ -1838,13 +1839,14 @@
              }
             ],
             "customAttributes": {
-             "data-wc": "product"
+             "data-wc": "product",
+             "data-wc-currency": "USD"
             }
            },
            {
             "id": "store67",
             "type": "article",
-            "name": "Artigo 6",
+            "name": "Article 6",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1883,12 +1885,12 @@
              {
               "id": "store68",
               "type": "image",
-              "name": "Imagem 6",
+              "name": "Image 6",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=800&h=800&q=80",
-               "alt": "Óculos Aurora Sun",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Aurora Sun sunglasses"
               },
               "classes": [],
               "styles": {
@@ -1913,7 +1915,7 @@
              {
               "id": "store69",
               "type": "heading",
-              "name": "Título 8",
+              "name": "Heading 8",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1929,13 +1931,13 @@
                 }
                }
               },
-              "text": "Óculos Aurora Sun",
+              "text": "Aurora Sun sunglasses",
               "children": []
              },
              {
               "id": "store70",
               "type": "paragraph",
-              "name": "Parágrafo 12",
+              "name": "Paragraph 12",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1950,13 +1952,13 @@
                 }
                }
               },
-              "text": "Lentes polarizadas UV400.",
+              "text": "Polarised UV400 lenses.",
               "children": []
              },
              {
               "id": "store71",
               "type": "div",
-              "name": "Preço e botão 3",
+              "name": "Price and button 3",
               "tag": "div",
               "attributes": {},
               "classes": [],
@@ -1976,7 +1978,7 @@
                {
                 "id": "store72",
                 "type": "paragraph",
-                "name": "Parágrafo 13",
+                "name": "Paragraph 13",
                 "tag": "p",
                 "attributes": {},
                 "classes": [],
@@ -1991,7 +1993,7 @@
                   }
                  }
                 },
-                "text": "R$ 229,00",
+                "text": "$59.00",
                 "children": [],
                 "customAttributes": {
                  "data-wc-price": ""
@@ -2000,7 +2002,7 @@
                {
                 "id": "store73",
                 "type": "button",
-                "name": "Botão 7",
+                "name": "Button 7",
                 "tag": "button",
                 "attributes": {},
                 "classes": [],
@@ -2035,7 +2037,7 @@
                   }
                  }
                 },
-                "text": "Adicionar",
+                "text": "Add to cart",
                 "children": [],
                 "customAttributes": {
                  "data-wc-add": ""
@@ -2045,7 +2047,8 @@
              }
             ],
             "customAttributes": {
-             "data-wc": "product"
+             "data-wc": "product",
+             "data-wc-currency": "USD"
             }
            }
           ]
@@ -2055,7 +2058,7 @@
        {
         "id": "store74",
         "type": "aside",
-        "name": "Carrinho",
+        "name": "Cart",
         "tag": "aside",
         "attributes": {},
         "classes": [],
@@ -2097,7 +2100,7 @@
          {
           "id": "store75",
           "type": "div",
-          "name": "Topo do carrinho",
+          "name": "Cart header",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -2115,7 +2118,7 @@
            {
             "id": "store76",
             "type": "heading",
-            "name": "Título 9",
+            "name": "Heading 9",
             "tag": "h3",
             "attributes": {},
             "classes": [],
@@ -2131,16 +2134,16 @@
               }
              }
             },
-            "text": "Seu carrinho",
+            "text": "Your cart",
             "children": []
            },
            {
             "id": "store77",
             "type": "button",
-            "name": "Botão 8",
+            "name": "Button 8",
             "tag": "button",
             "attributes": {
-             "ariaLabel": "Fechar"
+             "ariaLabel": "Close"
             },
             "classes": [],
             "styles": {
@@ -2189,7 +2192,7 @@
          {
           "id": "store78",
           "type": "paragraph",
-          "name": "Parágrafo 14",
+          "name": "Paragraph 14",
           "tag": "p",
           "attributes": {},
           "classes": [],
@@ -2204,7 +2207,7 @@
             }
            }
           },
-          "text": "Seu carrinho está vazio.",
+          "text": "Your cart is empty.",
           "children": [],
           "customAttributes": {
            "data-wc-empty": ""
@@ -2213,7 +2216,7 @@
          {
           "id": "store79",
           "type": "div",
-          "name": "Itens",
+          "name": "Items",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -2247,7 +2250,7 @@
            {
             "id": "store81",
             "type": "paragraph",
-            "name": "Parágrafo 15",
+            "name": "Paragraph 15",
             "tag": "span",
             "attributes": {},
             "classes": [],
@@ -2265,7 +2268,7 @@
            {
             "id": "store82",
             "type": "paragraph",
-            "name": "Parágrafo 16",
+            "name": "Paragraph 16",
             "tag": "span",
             "attributes": {},
             "classes": [],
@@ -2277,7 +2280,7 @@
               }
              }
             },
-            "text": "R$ 0,00",
+            "text": "$0.00",
             "children": [],
             "customAttributes": {
              "data-wc-total": ""
@@ -2288,7 +2291,7 @@
          {
           "id": "store83",
           "type": "button",
-          "name": "Botão 9",
+          "name": "Button 9",
           "tag": "button",
           "attributes": {},
           "classes": [],
@@ -2324,7 +2327,7 @@
             }
            }
           },
-          "text": "Enviar pedido pelo WhatsApp",
+          "text": "Send order by WhatsApp",
           "children": [],
           "customAttributes": {
            "data-wc-checkout": ""
@@ -2333,7 +2336,7 @@
          {
           "id": "store84",
           "type": "paragraph",
-          "name": "Parágrafo 17",
+          "name": "Paragraph 17",
           "tag": "p",
           "attributes": {},
           "classes": [],
@@ -2348,13 +2351,13 @@
             }
            }
           },
-          "text": "Você combina pagamento e entrega com a gente pelo WhatsApp.",
+          "text": "You confirm payment and delivery with us on WhatsApp.",
           "children": []
          }
         ],
         "customAttributes": {
          "data-wc": "cart",
-         "data-wc-whatsapp": "5511999999999"
+         "data-wc-whatsapp": ""
         }
        }
       ]
@@ -2362,7 +2365,7 @@
      {
       "id": "store85",
       "type": "section",
-      "name": "Depoimentos",
+      "name": "Testimonials",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -2381,7 +2384,7 @@
        {
         "id": "store86",
         "type": "div",
-        "name": "Contêiner 5",
+        "name": "Container 5",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -2399,7 +2402,7 @@
          {
           "id": "store87",
           "type": "div",
-          "name": "Introdução 3",
+          "name": "Introduction 3",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -2419,7 +2422,7 @@
            {
             "id": "store88",
             "type": "paragraph",
-            "name": "Parágrafo 18",
+            "name": "Paragraph 18",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -2435,13 +2438,13 @@
               }
              }
             },
-            "text": "Avaliações",
+            "text": "Reviews",
             "children": []
            },
            {
             "id": "store89",
             "type": "heading",
-            "name": "Título 10",
+            "name": "Heading 10",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -2457,13 +2460,13 @@
               }
              }
             },
-            "text": "Clientes que voltam",
+            "text": "Customers who come back",
             "children": []
            },
            {
             "id": "store90",
             "type": "paragraph",
-            "name": "Parágrafo 19",
+            "name": "Paragraph 19",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -2478,7 +2481,7 @@
               }
              }
             },
-            "text": "Mais de 3 mil pedidos entregues.",
+            "text": "More than 3,000 orders delivered.",
             "children": []
            }
           ]
@@ -2486,7 +2489,7 @@
          {
           "id": "store91",
           "type": "div",
-          "name": "Grade 2",
+          "name": "Grid 2",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -2505,7 +2508,7 @@
            {
             "id": "store92",
             "type": "article",
-            "name": "Artigo 7",
+            "name": "Article 7",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -2541,7 +2544,7 @@
              {
               "id": "store93",
               "type": "paragraph",
-              "name": "Parágrafo 20",
+              "name": "Paragraph 20",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2555,13 +2558,13 @@
                 }
                }
               },
-              "text": "\"Chegou em dois dias, muito bem embalado. O relógio é ainda mais bonito pessoalmente.\"",
+              "text": "\"It arrived in two days, very well packed. The watch is even nicer in person.\"",
               "children": []
              },
              {
               "id": "store94",
               "type": "paragraph",
-              "name": "Parágrafo 21",
+              "name": "Paragraph 21",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2581,7 +2584,7 @@
              {
               "id": "store95",
               "type": "paragraph",
-              "name": "Parágrafo 22",
+              "name": "Paragraph 22",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2595,7 +2598,7 @@
                 }
                }
               },
-              "text": "Belo Horizonte",
+              "text": "Austin",
               "children": []
              }
             ]
@@ -2603,7 +2606,7 @@
            {
             "id": "store96",
             "type": "article",
-            "name": "Artigo 8",
+            "name": "Article 8",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -2639,7 +2642,7 @@
              {
               "id": "store97",
               "type": "paragraph",
-              "name": "Parágrafo 23",
+              "name": "Paragraph 23",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2653,13 +2656,13 @@
                 }
                }
               },
-              "text": "\"Troquei o tamanho sem nenhuma burocracia. Atendimento nota 10.\"",
+              "text": "\"I swapped the size with no hassle at all. Ten out of ten service.\"",
               "children": []
              },
              {
               "id": "store98",
               "type": "paragraph",
-              "name": "Parágrafo 24",
+              "name": "Paragraph 24",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2679,7 +2682,7 @@
              {
               "id": "store99",
               "type": "paragraph",
-              "name": "Parágrafo 25",
+              "name": "Paragraph 25",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2693,7 +2696,7 @@
                 }
                }
               },
-              "text": "Curitiba",
+              "text": "Denver",
               "children": []
              }
             ]
@@ -2701,7 +2704,7 @@
            {
             "id": "store100",
             "type": "article",
-            "name": "Artigo 9",
+            "name": "Article 9",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -2737,7 +2740,7 @@
              {
               "id": "store101",
               "type": "paragraph",
-              "name": "Parágrafo 26",
+              "name": "Paragraph 26",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2751,13 +2754,13 @@
                 }
                }
               },
-              "text": "\"O fone tem um som incrível. Já comprei outro de presente.\"",
+              "text": "\"The headphones sound amazing. I already bought another pair as a gift.\"",
               "children": []
              },
              {
               "id": "store102",
               "type": "paragraph",
-              "name": "Parágrafo 27",
+              "name": "Paragraph 27",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2777,7 +2780,7 @@
              {
               "id": "store103",
               "type": "paragraph",
-              "name": "Parágrafo 28",
+              "name": "Paragraph 28",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2791,7 +2794,7 @@
                 }
                }
               },
-              "text": "Recife",
+              "text": "Miami",
               "children": []
              }
             ]
@@ -2805,7 +2808,7 @@
      {
       "id": "store104",
       "type": "section",
-      "name": "Cadastro na newsletter",
+      "name": "Newsletter sign-up",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -2825,7 +2828,7 @@
        {
         "id": "store105",
         "type": "div",
-        "name": "Contêiner 6",
+        "name": "Container 6",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -2844,7 +2847,7 @@
          {
           "id": "store106",
           "type": "heading",
-          "name": "Título 11",
+          "name": "Heading 11",
           "tag": "h2",
           "attributes": {},
           "classes": [],
@@ -2861,13 +2864,13 @@
             }
            }
           },
-          "text": "Ganhe 10% na primeira compra",
+          "text": "Get 10% off your first order",
           "children": []
          },
          {
           "id": "store107",
           "type": "paragraph",
-          "name": "Parágrafo 29",
+          "name": "Paragraph 29",
           "tag": "p",
           "attributes": {},
           "classes": [],
@@ -2882,15 +2885,18 @@
             }
            }
           },
-          "text": "Cadastre seu e-mail e receba o cupom agora.",
+          "text": "Sign up with your e-mail and get the coupon now.",
           "children": []
          },
          {
           "id": "store108",
           "type": "form",
-          "name": "Formulário",
+          "name": "Form",
           "tag": "form",
-          "attributes": {},
+          "attributes": {
+           "method": "post",
+           "formSubmit": "{\"destination\":\"native\",\"method\":\"POST\"}"
+          },
           "classes": [],
           "styles": {
            "desktop": {
@@ -2908,14 +2914,15 @@
            {
             "id": "store109",
             "type": "input",
-            "name": "Campo",
+            "name": "Input",
             "tag": "input",
             "attributes": {
              "inputType": "email",
              "name": "email",
-             "placeholder": "seu@email.com",
              "required": true,
-             "ariaLabel": "E-mail"
+             "placeholder": "you@email.com",
+             "ariaLabel": "E-mail",
+             "formField": "{\"rules\":{\"required\":true,\"type\":\"email\"}}"
             },
             "classes": [],
             "styles": {
@@ -2953,7 +2960,7 @@
            {
             "id": "store110",
             "type": "button",
-            "name": "Botão 10",
+            "name": "Button 10",
             "tag": "button",
             "attributes": {
              "buttonType": "submit"
@@ -2990,7 +2997,7 @@
               }
              }
             },
-            "text": "Quero o cupom",
+            "text": "Get the coupon",
             "children": []
            }
           ]
@@ -3002,7 +3009,7 @@
      {
       "id": "store111",
       "type": "footer",
-      "name": "Rodapé com colunas",
+      "name": "Footer with columns",
       "tag": "footer",
       "attributes": {},
       "classes": [],
@@ -3023,7 +3030,7 @@
        {
         "id": "store112",
         "type": "div",
-        "name": "Contêiner 7",
+        "name": "Container 7",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -3045,7 +3052,7 @@
          {
           "id": "store113",
           "type": "div",
-          "name": "Marca",
+          "name": "Brand",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -3055,7 +3062,7 @@
            {
             "id": "store114",
             "type": "paragraph",
-            "name": "Parágrafo 30",
+            "name": "Paragraph 30",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -3075,7 +3082,7 @@
            {
             "id": "store115",
             "type": "paragraph",
-            "name": "Parágrafo 31",
+            "name": "Paragraph 31",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -3089,7 +3096,7 @@
               }
              }
             },
-            "text": "Acessórios com design e garantia. CNPJ 00.000.000/0001-00.",
+            "text": "Designed accessories with a warranty. Company no. 00000000.",
             "children": []
            }
           ]
@@ -3097,7 +3104,7 @@
          {
           "id": "store116",
           "type": "nav",
-          "name": "Navegação 2",
+          "name": "Navigation 2",
           "tag": "nav",
           "attributes": {},
           "classes": [],
@@ -3132,7 +3139,7 @@
               }
              }
             },
-            "text": "Início",
+            "text": "Home",
             "children": []
            },
            {
@@ -3141,7 +3148,7 @@
             "name": "Link 8",
             "tag": "a",
             "attributes": {
-             "href": "sobre.html"
+             "href": "about.html"
             },
             "classes": [],
             "styles": {
@@ -3151,7 +3158,7 @@
               }
              }
             },
-            "text": "Sobre nós",
+            "text": "About us",
             "children": []
            },
            {
@@ -3160,7 +3167,7 @@
             "name": "Link 9",
             "tag": "a",
             "attributes": {
-             "href": "sobre.html#contato"
+             "href": "about.html#contact"
             },
             "classes": [],
             "styles": {
@@ -3170,7 +3177,7 @@
               }
              }
             },
-            "text": "Contato",
+            "text": "Contact",
             "children": []
            }
           ]
@@ -3178,7 +3185,7 @@
          {
           "id": "store120",
           "type": "paragraph",
-          "name": "Parágrafo 32",
+          "name": "Paragraph 32",
           "tag": "p",
           "attributes": {},
           "classes": [],
@@ -3191,7 +3198,7 @@
             }
            }
           },
-          "text": "© 2026 Aurora. Todos os direitos reservados.",
+          "text": "© 2026 Aurora. All rights reserved.",
           "children": []
          }
         ]
@@ -3201,12 +3208,12 @@
      {
       "id": "store121",
       "type": "link",
-      "name": "Botão do WhatsApp",
+      "name": "WhatsApp button",
       "tag": "a",
       "attributes": {
-       "href": "https://wa.me/5511999999999?text=Ol%C3%A1%21%20Vim%20pelo%20site.",
        "newTab": true,
-       "ariaLabel": "Fale conosco pelo WhatsApp"
+       "href": "https://wa.me/?text=Hello%21%20I%20found%20you%20on%20the%20website.",
+       "ariaLabel": "Talk to us on WhatsApp"
       },
       "classes": [],
       "styles": {
@@ -3248,11 +3255,11 @@
      {
       "id": "store122",
       "type": "div",
-      "name": "Aviso de cookies",
+      "name": "Cookie notice",
       "tag": "div",
       "attributes": {
-       "ariaLabel": "Cookies",
-       "role": "region"
+       "role": "region",
+       "ariaLabel": "Cookies"
       },
       "classes": [],
       "styles": {
@@ -3311,7 +3318,7 @@
        {
         "id": "store123",
         "type": "paragraph",
-        "name": "Parágrafo 33",
+        "name": "Paragraph 33",
         "tag": "p",
         "attributes": {},
         "classes": [],
@@ -3328,13 +3335,13 @@
           }
          }
         },
-        "text": "Usamos cookies para melhorar sua experiência. Você escolhe: só os essenciais ou todos.",
+        "text": "We use cookies to improve your experience. You choose: essential only, or all.",
         "children": []
        },
        {
         "id": "store124",
         "type": "div",
-        "name": "Escolhas",
+        "name": "Choices",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -3351,7 +3358,7 @@
          {
           "id": "store125",
           "type": "button",
-          "name": "Botão 11",
+          "name": "Button 11",
           "tag": "button",
           "attributes": {},
           "classes": [],
@@ -3386,7 +3393,7 @@
             }
            }
           },
-          "text": "Só essenciais",
+          "text": "Essential only",
           "children": [],
           "customAttributes": {
            "data-wc-reject": ""
@@ -3395,7 +3402,7 @@
          {
           "id": "store126",
           "type": "button",
-          "name": "Botão 12",
+          "name": "Button 12",
           "tag": "button",
           "attributes": {},
           "classes": [],
@@ -3430,7 +3437,7 @@
             }
            }
           },
-          "text": "Aceitar todos",
+          "text": "Accept all",
           "children": [],
           "customAttributes": {
            "data-wc-accept": ""
@@ -3447,18 +3454,18 @@
    }
   },
   {
-   "id": "store195",
-   "name": "Sobre nós",
-   "file": "sobre.html",
+   "id": "store198",
+   "name": "About us",
+   "file": "about.html",
    "tree": {
-    "id": "store194",
+    "id": "store197",
     "type": "page",
     "name": "Body",
     "tag": "body",
     "attributes": {
-     "pageTitle": "Sobre a Aurora",
-     "pageDescription": "Quem somos, como trabalhamos e como falar com a gente.",
-     "pageLanguage": "pt-BR"
+     "pageTitle": "About Aurora",
+     "pageDescription": "Who we are, how we work and how to reach us.",
+     "pageLanguage": "en"
     },
     "classes": [],
     "styles": {
@@ -3479,7 +3486,7 @@
      {
       "id": "store129",
       "type": "header",
-      "name": "Menu que recolhe no celular 2",
+      "name": "Menu that folds on phones 2",
       "tag": "header",
       "attributes": {},
       "classes": [],
@@ -3505,7 +3512,7 @@
        {
         "id": "store130",
         "type": "div",
-        "name": "Contêiner 8",
+        "name": "Container 8",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -3532,7 +3539,7 @@
           "name": "Link 10",
           "tag": "a",
           "attributes": {
-           "href": "/"
+           "href": "index.html"
           },
           "classes": [],
           "styles": {
@@ -3551,7 +3558,7 @@
          {
           "id": "store132",
           "type": "button",
-          "name": "Botão 13",
+          "name": "Button 13",
           "tag": "button",
           "attributes": {
            "ariaLabel": "Menu"
@@ -3601,7 +3608,7 @@
          {
           "id": "store133",
           "type": "nav",
-          "name": "Navegação 3",
+          "name": "Navigation 3",
           "tag": "nav",
           "attributes": {},
           "classes": [],
@@ -3644,7 +3651,7 @@
               }
              }
             },
-            "text": "Início",
+            "text": "Home",
             "children": []
            },
            {
@@ -3653,7 +3660,7 @@
             "name": "Link 12",
             "tag": "a",
             "attributes": {
-             "href": "sobre.html"
+             "href": "about.html"
             },
             "classes": [],
             "styles": {
@@ -3669,7 +3676,7 @@
               }
              }
             },
-            "text": "Sobre nós",
+            "text": "About us",
             "children": []
            },
            {
@@ -3678,7 +3685,7 @@
             "name": "Link 13",
             "tag": "a",
             "attributes": {
-             "href": "index.html#produtos"
+             "href": "index.html#products"
             },
             "classes": [],
             "styles": {
@@ -3694,7 +3701,7 @@
               }
              }
             },
-            "text": "Produtos",
+            "text": "Products",
             "children": []
            },
            {
@@ -3703,7 +3710,7 @@
             "name": "Link 14",
             "tag": "a",
             "attributes": {
-             "href": "sobre.html#contato"
+             "href": "about.html#contact"
             },
             "classes": [],
             "styles": {
@@ -3719,7 +3726,7 @@
               }
              }
             },
-            "text": "Contato",
+            "text": "Contact",
             "children": []
            },
            {
@@ -3728,7 +3735,7 @@
             "name": "Link 15",
             "tag": "a",
             "attributes": {
-             "href": "index.html#produtos"
+             "href": "index.html#products"
             },
             "classes": [],
             "styles": {
@@ -3763,7 +3770,7 @@
               }
              }
             },
-            "text": "Ver ofertas",
+            "text": "See the deals",
             "children": []
            }
           ],
@@ -3781,7 +3788,7 @@
      {
       "id": "store139",
       "type": "section",
-      "name": "Destaque com imagem",
+      "name": "Hero with image",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -3801,7 +3808,7 @@
        {
         "id": "store140",
         "type": "div",
-        "name": "Contêiner 9",
+        "name": "Container 9",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -3824,7 +3831,7 @@
          {
           "id": "store141",
           "type": "div",
-          "name": "Texto",
+          "name": "Text",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -3834,7 +3841,7 @@
            {
             "id": "store142",
             "type": "paragraph",
-            "name": "Parágrafo 34",
+            "name": "Paragraph 34",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -3850,13 +3857,13 @@
               }
              }
             },
-            "text": "Nossa história",
+            "text": "Our story",
             "children": []
            },
            {
             "id": "store143",
             "type": "heading",
-            "name": "Título 12",
+            "name": "Heading 12",
             "tag": "h1",
             "attributes": {},
             "classes": [],
@@ -3872,13 +3879,13 @@
               }
              }
             },
-            "text": "Peças pensadas para durar, não para a próxima tendência",
+            "text": "Pieces made to last, not for the next trend",
             "children": []
            },
            {
             "id": "store144",
             "type": "paragraph",
-            "name": "Parágrafo 35",
+            "name": "Paragraph 35",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -3892,13 +3899,13 @@
               }
              }
             },
-            "text": "Começamos em 2019 numa garagem em Campinas. Hoje enviamos para todo o país, com o mesmo cuidado do primeiro pedido.",
+            "text": "We started in 2019 in a garage. Today we ship nationwide, with the same care as our first order.",
             "children": []
            },
            {
             "id": "store145",
             "type": "div",
-            "name": "Ações",
+            "name": "Actions",
             "tag": "div",
             "attributes": {},
             "classes": [],
@@ -3917,7 +3924,7 @@
              {
               "id": "store146",
               "type": "button",
-              "name": "Botão 14",
+              "name": "Button 14",
               "tag": "button",
               "attributes": {},
               "classes": [],
@@ -3950,13 +3957,13 @@
                 }
                }
               },
-              "text": "Ver produtos",
+              "text": "See the products",
               "children": []
              },
              {
               "id": "store147",
               "type": "button",
-              "name": "Botão 15",
+              "name": "Button 15",
               "tag": "button",
               "attributes": {},
               "classes": [],
@@ -3989,7 +3996,7 @@
                 }
                }
               },
-              "text": "Falar com a gente",
+              "text": "Talk to us",
               "children": []
              }
             ]
@@ -3999,11 +4006,11 @@
          {
           "id": "store148",
           "type": "image",
-          "name": "Imagem 7",
+          "name": "Image 7",
           "tag": "img",
           "attributes": {
            "src": "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&h=900&q=80",
-           "alt": "Peças pensadas para durar, não para a próxima tendência"
+           "alt": "Pieces made to last, not for the next trend"
           },
           "classes": [],
           "styles": {
@@ -4031,7 +4038,7 @@
      {
       "id": "store149",
       "type": "section",
-      "name": "Equipe",
+      "name": "Team",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -4050,7 +4057,7 @@
        {
         "id": "store150",
         "type": "div",
-        "name": "Contêiner 10",
+        "name": "Container 10",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -4068,7 +4075,7 @@
          {
           "id": "store151",
           "type": "div",
-          "name": "Introdução 4",
+          "name": "Introduction 4",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -4088,7 +4095,7 @@
            {
             "id": "store152",
             "type": "heading",
-            "name": "Título 13",
+            "name": "Heading 13",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -4105,13 +4112,13 @@
               }
              }
             },
-            "text": "Quem faz a Aurora",
+            "text": "The people behind Aurora",
             "children": []
            },
            {
             "id": "store153",
             "type": "paragraph",
-            "name": "Parágrafo 36",
+            "name": "Paragraph 36",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -4126,7 +4133,7 @@
               }
              }
             },
-            "text": "Uma equipe pequena que responde de verdade.",
+            "text": "A small team that really answers.",
             "children": []
            }
           ]
@@ -4134,7 +4141,7 @@
          {
           "id": "store154",
           "type": "div",
-          "name": "Pessoas",
+          "name": "People",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -4153,7 +4160,7 @@
            {
             "id": "store155",
             "type": "article",
-            "name": "Artigo 10",
+            "name": "Article 10",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -4177,12 +4184,12 @@
              {
               "id": "store156",
               "type": "image",
-              "name": "Imagem 8",
+              "name": "Image 8",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&h=400&q=80",
-               "alt": "Helena Prado",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Helena Prado"
               },
               "classes": [],
               "styles": {
@@ -4206,7 +4213,7 @@
              {
               "id": "store157",
               "type": "heading",
-              "name": "Título 14",
+              "name": "Heading 14",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -4228,7 +4235,7 @@
              {
               "id": "store158",
               "type": "paragraph",
-              "name": "Parágrafo 37",
+              "name": "Paragraph 37",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -4243,7 +4250,7 @@
                 }
                }
               },
-              "text": "Fundadora",
+              "text": "Founder",
               "children": []
              }
             ]
@@ -4251,7 +4258,7 @@
            {
             "id": "store159",
             "type": "article",
-            "name": "Artigo 11",
+            "name": "Article 11",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -4275,12 +4282,12 @@
              {
               "id": "store160",
               "type": "image",
-              "name": "Imagem 9",
+              "name": "Image 9",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&h=400&q=80",
-               "alt": "Marcos Lima",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Marcos Lima"
               },
               "classes": [],
               "styles": {
@@ -4304,7 +4311,7 @@
              {
               "id": "store161",
               "type": "heading",
-              "name": "Título 15",
+              "name": "Heading 15",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -4326,7 +4333,7 @@
              {
               "id": "store162",
               "type": "paragraph",
-              "name": "Parágrafo 38",
+              "name": "Paragraph 38",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -4341,7 +4348,7 @@
                 }
                }
               },
-              "text": "Produto",
+              "text": "Product",
               "children": []
              }
             ]
@@ -4349,7 +4356,7 @@
            {
             "id": "store163",
             "type": "article",
-            "name": "Artigo 12",
+            "name": "Article 12",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -4373,12 +4380,12 @@
              {
               "id": "store164",
               "type": "image",
-              "name": "Imagem 10",
+              "name": "Image 10",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=400&h=400&q=80",
-               "alt": "Júlia Reis",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Júlia Reis"
               },
               "classes": [],
               "styles": {
@@ -4402,7 +4409,7 @@
              {
               "id": "store165",
               "type": "heading",
-              "name": "Título 16",
+              "name": "Heading 16",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -4424,7 +4431,7 @@
              {
               "id": "store166",
               "type": "paragraph",
-              "name": "Parágrafo 39",
+              "name": "Paragraph 39",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -4439,7 +4446,7 @@
                 }
                }
               },
-              "text": "Atendimento",
+              "text": "Customer care",
               "children": []
              }
             ]
@@ -4447,7 +4454,7 @@
            {
             "id": "store167",
             "type": "article",
-            "name": "Artigo 13",
+            "name": "Article 13",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -4471,12 +4478,12 @@
              {
               "id": "store168",
               "type": "image",
-              "name": "Imagem 11",
+              "name": "Image 11",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&h=400&q=80",
-               "alt": "André Souza",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "André Souza"
               },
               "classes": [],
               "styles": {
@@ -4500,7 +4507,7 @@
              {
               "id": "store169",
               "type": "heading",
-              "name": "Título 17",
+              "name": "Heading 17",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -4522,7 +4529,7 @@
              {
               "id": "store170",
               "type": "paragraph",
-              "name": "Parágrafo 40",
+              "name": "Paragraph 40",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -4537,7 +4544,7 @@
                 }
                }
               },
-              "text": "Logística",
+              "text": "Logistics",
               "children": []
              }
             ]
@@ -4551,10 +4558,10 @@
      {
       "id": "store171",
       "type": "section",
-      "name": "Contato",
+      "name": "Contact",
       "tag": "section",
       "attributes": {
-       "id": "contato"
+       "id": "contact"
       },
       "classes": [],
       "styles": {
@@ -4572,7 +4579,7 @@
        {
         "id": "store172",
         "type": "div",
-        "name": "Contêiner 11",
+        "name": "Container 11",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -4594,7 +4601,7 @@
          {
           "id": "store173",
           "type": "div",
-          "name": "Texto 2",
+          "name": "Text 2",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -4604,7 +4611,7 @@
            {
             "id": "store174",
             "type": "heading",
-            "name": "Título 18",
+            "name": "Heading 18",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -4620,13 +4627,13 @@
               }
              }
             },
-            "text": "Fale com a gente",
+            "text": "Get in touch",
             "children": []
            },
            {
             "id": "store175",
             "type": "paragraph",
-            "name": "Parágrafo 41",
+            "name": "Paragraph 41",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -4639,7 +4646,7 @@
               }
              }
             },
-            "text": "Dúvidas sobre um pedido, trocas ou atacado: respondemos em até um dia útil.",
+            "text": "Questions about an order, returns or wholesale: we answer within one business day.",
             "children": []
            }
           ]
@@ -4647,9 +4654,12 @@
          {
           "id": "store176",
           "type": "form",
-          "name": "Formulário 2",
+          "name": "Form 2",
           "tag": "form",
-          "attributes": {},
+          "attributes": {
+           "method": "post",
+           "formSubmit": "{\"destination\":\"native\",\"method\":\"POST\"}"
+          },
           "classes": [],
           "styles": {
            "desktop": {
@@ -4686,7 +4696,7 @@
            {
             "id": "store177",
             "type": "label",
-            "name": "Rótulo",
+            "name": "Label",
             "tag": "label",
             "attributes": {},
             "classes": [],
@@ -4704,7 +4714,7 @@
              {
               "id": "store178",
               "type": "paragraph",
-              "name": "Parágrafo 42",
+              "name": "Paragraph 42",
               "tag": "span",
               "attributes": {},
               "classes": [],
@@ -4716,17 +4726,18 @@
                 }
                }
               },
-              "text": "Nome",
+              "text": "Name",
               "children": []
              },
              {
               "id": "store179",
               "type": "input",
-              "name": "Campo 2",
+              "name": "Input 2",
               "tag": "input",
               "attributes": {
                "inputType": "text",
-               "name": "name"
+               "name": "name",
+               "formField": "{\"rules\":{\"required\":true}}"
               },
               "classes": [],
               "styles": {
@@ -4744,7 +4755,7 @@
            {
             "id": "store180",
             "type": "label",
-            "name": "Rótulo 2",
+            "name": "Label 2",
             "tag": "label",
             "attributes": {},
             "classes": [],
@@ -4762,7 +4773,7 @@
              {
               "id": "store181",
               "type": "paragraph",
-              "name": "Parágrafo 43",
+              "name": "Paragraph 43",
               "tag": "span",
               "attributes": {},
               "classes": [],
@@ -4774,17 +4785,18 @@
                 }
                }
               },
-              "text": "E-mail",
+              "text": "Email",
               "children": []
              },
              {
               "id": "store182",
               "type": "input",
-              "name": "Campo 3",
+              "name": "Input 3",
               "tag": "input",
               "attributes": {
                "inputType": "email",
-               "name": "email"
+               "name": "email",
+               "formField": "{\"rules\":{\"required\":true,\"type\":\"email\"}}"
               },
               "classes": [],
               "styles": {
@@ -4800,9 +4812,68 @@
             ]
            },
            {
+            "id": "store184",
+            "type": "label",
+            "name": "Label 3",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "store185",
+              "type": "paragraph",
+              "name": "Paragraph 44",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a"
+                }
+               }
+              },
+              "text": "Message",
+              "children": []
+             },
+             {
+              "id": "store186",
+              "type": "textarea",
+              "name": "Textarea",
+              "tag": "textarea",
+              "attributes": {
+               "name": "message",
+               "formField": "{\"rules\":{\"required\":true}}",
+               "rows": 4
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": "",
+              "children": []
+             }
+            ]
+           },
+           {
             "id": "store183",
             "type": "button",
-            "name": "Botão 16",
+            "name": "Button 16",
             "tag": "button",
             "attributes": {
              "buttonType": "submit"
@@ -4838,7 +4909,7 @@
               }
              }
             },
-            "text": "Enviar",
+            "text": "Send",
             "children": []
            }
           ]
@@ -4848,9 +4919,9 @@
       ]
      },
      {
-      "id": "store184",
+      "id": "store187",
       "type": "footer",
-      "name": "Rodapé com colunas 2",
+      "name": "Footer with columns 2",
       "tag": "footer",
       "attributes": {},
       "classes": [],
@@ -4869,9 +4940,9 @@
       "text": null,
       "children": [
        {
-        "id": "store185",
+        "id": "store188",
         "type": "div",
-        "name": "Contêiner 12",
+        "name": "Container 12",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -4891,9 +4962,9 @@
         "text": null,
         "children": [
          {
-          "id": "store186",
+          "id": "store189",
           "type": "div",
-          "name": "Marca 2",
+          "name": "Brand 2",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -4901,9 +4972,9 @@
           "text": null,
           "children": [
            {
-            "id": "store187",
+            "id": "store190",
             "type": "paragraph",
-            "name": "Parágrafo 44",
+            "name": "Paragraph 45",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -4921,9 +4992,9 @@
             "children": []
            },
            {
-            "id": "store188",
+            "id": "store191",
             "type": "paragraph",
-            "name": "Parágrafo 45",
+            "name": "Paragraph 46",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -4937,15 +5008,15 @@
               }
              }
             },
-            "text": "Acessórios com design e garantia. CNPJ 00.000.000/0001-00.",
+            "text": "Designed accessories with a warranty. Company no. 00000000.",
             "children": []
            }
           ]
          },
          {
-          "id": "store189",
+          "id": "store192",
           "type": "nav",
-          "name": "Navegação 4",
+          "name": "Navigation 4",
           "tag": "nav",
           "attributes": {},
           "classes": [],
@@ -4965,7 +5036,7 @@
           "text": null,
           "children": [
            {
-            "id": "store190",
+            "id": "store193",
             "type": "link",
             "name": "Link 16",
             "tag": "a",
@@ -4980,16 +5051,16 @@
               }
              }
             },
-            "text": "Início",
+            "text": "Home",
             "children": []
            },
            {
-            "id": "store191",
+            "id": "store194",
             "type": "link",
             "name": "Link 17",
             "tag": "a",
             "attributes": {
-             "href": "sobre.html"
+             "href": "about.html"
             },
             "classes": [],
             "styles": {
@@ -4999,16 +5070,16 @@
               }
              }
             },
-            "text": "Sobre nós",
+            "text": "About us",
             "children": []
            },
            {
-            "id": "store192",
+            "id": "store195",
             "type": "link",
             "name": "Link 18",
             "tag": "a",
             "attributes": {
-             "href": "sobre.html#contato"
+             "href": "about.html#contact"
             },
             "classes": [],
             "styles": {
@@ -5018,15 +5089,15 @@
               }
              }
             },
-            "text": "Contato",
+            "text": "Contact",
             "children": []
            }
           ]
          },
          {
-          "id": "store193",
+          "id": "store196",
           "type": "paragraph",
-          "name": "Parágrafo 46",
+          "name": "Paragraph 47",
           "tag": "p",
           "attributes": {},
           "classes": [],
@@ -5039,7 +5110,7 @@
             }
            }
           },
-          "text": "© 2026 Aurora. Todos os direitos reservados.",
+          "text": "© 2026 Aurora. All rights reserved.",
           "children": []
          }
         ]

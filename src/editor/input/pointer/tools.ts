@@ -51,7 +51,9 @@ export function pointerTools(p: PointerOwner): Pick<PointerOwner, 'dropTool' | '
     const entry = WHEEL_DOORS.find((d) => d.door.kind === 'canvas-wheel' && d.door.modifier === modifier);
     if (!entry) return;
     event.preventDefault();
-    const unit = event.deltaMode === 1 ? WHEEL_LINE : event.deltaMode === 2 ? target.innerHeight : 1;
+    // a page-mode wheel moves the canvas by one stage's height (the canvas's own page: the camera moves the frame)
+    const stage = event.target instanceof Element ? event.target.closest('[data-canvas-stage]') : null;
+    const unit = event.deltaMode === 1 ? WHEEL_LINE : event.deltaMode === 2 ? (stage?.clientHeight ?? target.innerHeight) : 1;
     const dx = event.deltaX * unit;
     const dy = event.deltaY * unit;
     if ('factor' in entry.command.args) p.dispatchPan(entry, { factor: Math.exp(-dy * WHEEL_FACTOR), point: { x: event.clientX, y: event.clientY } });

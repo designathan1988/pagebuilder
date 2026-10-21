@@ -5,11 +5,15 @@
 // then applies each change of the document to it. One exception while a text is edited in place: the keymap listens
 // for keys on the frame's window (the page itself still carries no event handler or event attribute), and the frame
 // is not aria-hidden, as it holds the focus. The frame is scaled with the standard CSS zoom (Chrome 128+), so
-// the page lays out at its breakpoint's width and the stage shows it at the canvas zoom.
+// the page lays out at its breakpoint's width and the stage shows it at the canvas zoom. The frame is as tall as the
+// whole page (the owner's request DCS-035: the canvas is an artboard), so the page never scrolls inside it: the camera
+// moves the frame over the stage (view/camera.ts).
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import type { CommandId } from '../../generated/ids.ts';
+import { reportCanvas } from '../../core/incidents.ts';
 import { useCanvasMotion } from '../motion/use-canvas-motion.ts';
-import { PageRenderer, nodeSelector, renderModelFromManifest } from './render/render.ts';
-import { travelWhole } from './reveal.ts';
+import { PageRenderer, renderModelFromManifest } from './render/render.ts';
+import { travelWhole, visiblePage } from './reveal.ts';
 import { applyInlineChange, plainText, type TextRange } from '../../core/text/inline.ts';
 import { canvasValue } from '../../core/files/values.ts';
 import { openedPage } from '../../core/project/pages.ts';
@@ -23,7 +27,7 @@ import { useEditorState, useStore } from '../store.ts';
 import { CanvasChrome } from './chrome.tsx';
 import { Guides } from './guides.tsx';
 import { SnapLines } from './snap-lines.tsx';
-import { keepPagePoint, registerFrame, scrollPageBy } from './coordinates.ts';
+import { nodeBox, registerFrame } from './coordinates.ts';
 import { TEXT_EDITING, openLinkPrompt, registerEditReader } from './text-edit.ts';
 import { pageChanged } from './page-clock.ts';
 import { wiring } from '../wiring.ts';
@@ -32,31 +36,25 @@ const MODEL = renderModelFromManifest(manifest.elements, manifest.properties, ma
 // an empty page the renderer fills: no script, no style of the editor
 const PAGE = '<!doctype html><html><head><meta charset="utf-8"></head><body></body></html>';
 
-// Where the page's view begins under its bars held at the top (a sticky or fixed header at least half the page wide):
-// an element brought there would stand under the bar, its first line and its label hidden (DEF-0622, back to Desktop).
-// A bar holding the element itself takes no part.
-function stuckTop(view: Window, element: Element): number {
-  let top = 0;
-  for (const bar of view.document.body.querySelectorAll('*')) {
-    const position = view.getComputedStyle(bar).position;
-    if ((position !== 'sticky' && position !== 'fixed') || bar.contains(element)) continue;
-    const box = bar.getBoundingClientRect();
-    if (box.top <= 0.5 && box.bottom > 0 && box.width >= view.innerWidth / 2) top = Math.max(top, box.bottom);
-  }
-  return top;
-}
+// the canvas's pan, the wheel's command: what brings the selection back into view after a breakpoint's new width
+const PAN = manifest.doors.find((d) => d.door.kind === 'canvas-wheel' && 'dx' in d.command.args);
+// probes in a row the page's height may grow with no change of the document before the canvas reports it (DEV)
+const GROWTH_PROBES = 3;
 
 // screen is the breakpoint's screen (its height, from properties.json): the page inside the frame takes it as its
-// viewport, so vh, svh and dvh measure it whatever the zoom, and the page scrolls inside the frame as it does on the
-// site (the user's real-use audit, item 2.3)
-export function CanvasFrame({ width, screen, zoom }: { readonly width: number; readonly screen: number; readonly zoom: number }) {
+// viewport, so vh, svh and dvh measure it whatever the zoom (the user's real-use audit, item 2.3), its fixed elements
+// stand in it (the renderer's artboardCss), and the frame itself is as tall as the page (`extent`, measured here and
+// reported through onExtent): the page never scrolls inside it (DCS-035).
+export function CanvasFrame({ width, screen, zoom, onExtent }: { readonly width: number; readonly screen: number; readonly zoom: number; readonly onExtent: (extent: number) => void }) {
   const store = useStore();
-  const view = useRef<HTMLDivElement>(null);
   // the overlay over the page, where the chrome and the guides are drawn
   const overlay = useRef<HTMLDivElement>(null);
   const iframe = useRef<HTMLIFrameElement>(null);
-  // a layout measure (the height the view leaves the page), not editor state
-  const [height, setHeight] = useState(0);
+  // The page's height in page px, the breakpoint's screen at least: a layout measure, not editor state, which the
+  // renderer measures (PageRenderer.extent: the page never grows by being measured).
+  const [extent, setExtent] = useState(screen);
+  // the height last reported (none yet: the first probe always reports)
+  const shownExtent = useRef(0);
   // while a text is edited in place the frame holds the focus, so assistive technology must reach it
   const editing = useEditorState((s) => s.ui.textEdit.node !== null);
   // the page the editor shows (pages.switch): the renderer is built for it and rebuilt when it changes
@@ -67,50 +65,93 @@ export function CanvasFrame({ width, screen, zoom }: { readonly width: number; r
   useCanvasMotion(frameWindow, page);
 
   useEffect(() => {
-    const element = view.current;
-    if (!element) return;
-    const observer = new ResizeObserver(([entry]) => {
-      if (entry) setHeight(entry.contentRect.height);
-    });
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
     const frame = iframe.current;
     if (!frame) return;
     let stop = () => {};
     let stopFileDrop = () => {};
     const start = () => {
       const target = frame.contentDocument;
-      if (!target) return;
+      // (a page between two documents has no window yet: its load starts it again)
+      const pageWindow = target?.defaultView ?? null;
+      if (!target || pageWindow === null) return;
       // the breakpoint's screen: the canvas resolves vh, svh, dvh and lvh against it (item 2.3); a source that names a
       // file of the project draws as its object URL (spec explorer-assets-use)
-      const renderer = new PageRenderer(target, MODEL, page, { height: screen, width }, (name, value) => canvasValue(store.getState().document, name, value));
+      // the page drawn as an artboard: its root pinned to the breakpoint's screen (artboardCss)
+      const renderer = new PageRenderer(target, MODEL, page, { height: screen, width, artboard: true }, (name, value) => canvasValue(store.getState().document, name, value));
       renderer.mount(store.getState().document);
       // an image file dragged in from the operating system lands on the frame too: its own window reports the drag
       // the previous start's listeners go first (a load after a ready start runs start twice), then this one's drop
       stop();
-      stopFileDrop = target.defaultView !== null ? installOsFileDrop(store, target.defaultView, true) : () => {};
+      stopFileDrop = installOsFileDrop(store, pageWindow, true);
+      // The page's height (extent), probed once at the next frame after whatever may change it: a change of the
+      // document, a resource or a font loaded, a transition or an animation ended, a text typed in place, a preview of
+      // a state or of the timeline, a box of the page resized; never after a selection, a hover or the camera alone.
+      let probing = 0;
+      // whether something other than a box of the page resized asked for this probe, and the probes in a row that
+      // grew the page with nothing else asking (a page that grows by being measured: DEV's incident)
+      let caused = true;
+      let grew = 0;
+      const probe = () => {
+        probing = 0;
+        const inside = target.defaultView;
+        const measured = inside === null || !frame.isConnected ? null : renderer.extent();
+        if (inside === null || measured === null) return;
+        if (import.meta.env.DEV) {
+          // (by more than the pixel a new zoom's snapping of the layout moves it)
+          grew = !caused && measured > shownExtent.current + 1 ? grew + 1 : 0;
+          if (grew === GROWTH_PROBES) reportCanvas('the canvas page grew with no change of the document', `${String(GROWTH_PROBES)} probes in a row grew the page's height, now ${String(measured)} px: a stylesheet measures the frame's own height (a viewport unit or a height media feature the canvas did not resolve)`);
+        }
+        caused = false;
+        if (measured !== shownExtent.current) {
+          shownExtent.current = measured;
+          setExtent(measured);
+          reportExtent.current(measured);
+        }
+        if (import.meta.env.DEV && inside.innerHeight < screen - 0.5) reportCanvas('the canvas frame is shorter than the screen', `the frame shows ${String(inside.innerHeight)} px of a ${String(screen)} px screen`);
+      };
+      const probeSoon = () => {
+        caused = true;
+        if (probing === 0) probing = requestAnimationFrame(probe);
+      };
+      // a box of the page resized (an image sized, a text grown): the page's own observer, in its own window, so its
+      // notices come with the page's own layout
+      const resized = new pageWindow.ResizeObserver(() => {
+        if (probing === 0) probing = requestAnimationFrame(probe);
+      });
+      resized.observe(target.body);
       const stopDocument = store.subscribeDocument((change) => {
         renderer.apply(change.before, change.after, change.patches);
         pageChanged();
+        probeSoon();
       });
       // the page may have changed for its readers (canvas/page-clock.ts): the store changed (a selection, a breakpoint,
-      // a zoom), a resource of the page loaded (an image, which sizes its box; load does not bubble, so it is heard as
-      // it goes down), a font arrived; and it was just mounted
+      // a zoom, the camera), a resource of the page loaded (an image, which sizes its box; load does not bubble, so it
+      // is heard as it goes down), a font arrived; and it was just mounted
       const stopTicks = store.subscribe(pageChanged);
-      target.addEventListener('load', pageChanged, true);
-      // a scroll of the page moves every box on it
-      target.addEventListener('scroll', pageChanged, { passive: true });
+      const loaded = () => {
+        pageChanged();
+        probeSoon();
+      };
+      target.addEventListener('load', loaded, true);
+      // The page never scrolls inside its frame (DCS-035): a scroll there (a focus, a scrollIntoView of the page's own)
+      // would move every box away from where the camera shows it. Reported in development.
+      const scrolled = () => {
+        pageChanged();
+        const inside = target.defaultView;
+        if (import.meta.env.DEV && inside !== null && (inside.scrollX !== 0 || inside.scrollY !== 0)) reportCanvas('the canvas page scrolled inside its frame', `scrolled to ${String(inside.scrollX)}, ${String(inside.scrollY)}`);
+      };
+      target.addEventListener('scroll', scrolled, { passive: true });
       // so does the frame itself, resized (the fit zoom follows the stage, which no command changes)
       const framed = new ResizeObserver(pageChanged);
       framed.observe(frame);
-      target.fonts.addEventListener('loadingdone', pageChanged);
+      target.fonts.addEventListener('loadingdone', loaded);
       // a value read while the page's own transition ran is read again once it ends
-      target.addEventListener('transitionend', pageChanged);
-      target.addEventListener('animationend', pageChanged);
+      target.addEventListener('transitionend', loaded);
+      target.addEventListener('animationend', loaded);
+      // a text typed in place grows its element before the document holds it
+      target.addEventListener('input', probeSoon);
       pageChanged();
+      probeSoon();
       // A text edited in place (text-edit.ts): the renderer marks, focuses and reads the edited element, and while the
       // edit lasts the keymap reads the keys on the frame's window, where they arrive; once it ends, the focus leaves
       // the frame for the editor's page body (the canvas key context).
@@ -193,12 +234,16 @@ export function CanvasFrame({ width, screen, zoom }: { readonly width: number; r
       followEdit();
       stop = () => {
         stopTicks();
-        target.removeEventListener('load', pageChanged, true);
-        target.removeEventListener('scroll', pageChanged);
+        cancelAnimationFrame(probing);
+        probing = 0;
+        resized.disconnect();
+        target.removeEventListener('load', loaded, true);
+        target.removeEventListener('scroll', scrolled);
         framed.disconnect();
-        target.fonts.removeEventListener('loadingdone', pageChanged);
-        target.removeEventListener('transitionend', pageChanged);
-        target.removeEventListener('animationend', pageChanged);
+        target.fonts.removeEventListener('loadingdone', loaded);
+        target.removeEventListener('transitionend', loaded);
+        target.removeEventListener('animationend', loaded);
+        target.removeEventListener('input', probeSoon);
         stopDraftCapture();
         target.removeEventListener('input', captureDraft);
         target.removeEventListener('selectionchange', captureDraft);
@@ -226,104 +271,54 @@ export function CanvasFrame({ width, screen, zoom }: { readonly width: number; r
   // follows the running animation and Pause freezes where the eye left it
   useEffect(() => installPlayingLoop(store), [store]);
 
-  // A new zoom keeps the page point under its pivot there, the middle of the view without one (the camera keeps the
-  // horizontal place); a pan's scroll of the page is carried out once. The page inside the frame lays itself out a
-  // frame after the zoom (its own document), which drops the scroll written before it: the point is held again on the
-  // next frames until it stays (the user's real-use audit, A3.21: the point under the cursor drifted down the page).
-  const shown = useRef(zoom);
-  const held = useRef<{ readonly pageY: number; readonly at: number; readonly zoom: number } | null>(null);
-  const pivot = useEditorState((s) => s.ui.camera.pivot);
-  // A new width (another breakpoint) lays the page out anew, so a page point kept in px stands on other content: with
-  // a selection, the selected element is what the view keeps, brought whole into it under the page's bars held at the
-  // top by the least travel, its top when it is taller than the view (DEF-0622: Desktop to Tablet left the selected
-  // heading's top and its label away). The page and the view settle over the next frames (the breakpoint's band takes
-  // its height from the view a frame later): the view's height is read from the page each frame, and a new height
-  // never cancels the travel.
+  // the parent's measure of the page's height (shell/canvas.tsx), read by the probe above
+  const reportExtent = useRef(onExtent);
+  useLayoutEffect(() => {
+    reportExtent.current = onExtent;
+  }, [onExtent]);
+
+  // A new width (another breakpoint) lays the page out anew, so the page line the camera kept on top stands on other
+  // content: with a selection, the selected element is what the view keeps, brought whole into what the person sees of
+  // the page (under the frame's tabs pinned to the stage's top: reveal.ts visiblePage) by the least travel of the
+  // camera, its top when it is taller than the view (DEF-0622: Desktop to Tablet left the selected heading's top and
+  // its label away). The page settles over the next frames (its height probed anew, the breakpoint's band drawn): the
+  // element is measured each frame and the camera moves once it stood still two frames. A move of the camera in the
+  // meantime is the person's (a wheel right after the switch) and ends the wait, never pulled back.
   const shownWidth = useRef(width);
-  const anchored = useRef(false);
   useLayoutEffect(() => {
     const frame = iframe.current;
     if (shownWidth.current === width) return;
     shownWidth.current = width;
     const primary = store.getState().selection[0];
-    if (!frame || primary === undefined) return;
-    // the zoom that comes with the width, in this same commit, keeps no page point
-    anchored.current = true;
-    queueMicrotask(() => {
-      anchored.current = false;
-    });
+    if (!frame || primary === undefined || PAN === undefined) return;
+    const pan = PAN;
+    const camera = store.getState().ui.camera;
     const inset = parseFloat(getComputedStyle(frame).getPropertyValue('--space-8')) || 0;
-    // it ends once the element stood still two frames, or when another hand scrolled the page (a wheel right after the
-    // switch is the person's, never pulled back)
     let left = 12;
     let still = 0;
-    let wrote: number | null = null;
+    let last: number | null = null;
     let request = requestAnimationFrame(function again() {
-      const inside = frame.contentWindow;
-      const scale = frame.currentCSSZoom;
-      if (inside === null || left <= 0 || scale <= 0 || still >= 2 || (wrote !== null && Math.abs(inside.scrollY - wrote) > 0.5)) return;
+      if (left <= 0 || store.getState().ui.camera !== camera) return;
       left -= 1;
-      const element = frame.contentDocument?.querySelector(nodeSelector(primary));
-      if (element != null) {
-        const box = element.getBoundingClientRect();
-        const travel = travelWhole(box.top, box.bottom, stuckTop(inside, element), inside.document.documentElement.clientHeight, inset / scale);
-        still = Math.abs(travel) > 0.5 ? 0 : still + 1;
-        if (still === 0) inside.scrollBy(0, -travel);
-        wrote = inside.scrollY;
+      const box = nodeBox(frame, primary);
+      const view = visiblePage();
+      if (box !== null && view !== null) {
+        still = last !== null && Math.abs(box.y - last) <= 0.5 ? still + 1 : 0;
+        last = box.y;
+        if (still >= 2) {
+          const travel = travelWhole(box.y, box.y + box.height, view.top, view.bottom, inset);
+          if (Math.abs(travel) > 0.5) (store.dispatch as (command: CommandId, args: unknown) => unknown)(pan.command.id, { dx: 0, dy: Math.round(travel) });
+          return;
+        }
       }
       request = requestAnimationFrame(again);
     });
     return () => cancelAnimationFrame(request);
   }, [width, store]);
-  useLayoutEffect(() => {
-    const frame = iframe.current;
-    if (frame && shown.current !== zoom && anchored.current) {
-      shown.current = zoom;
-      held.current = null;
-      return;
-    }
-    if (!frame || shown.current === zoom) return;
-    const at = pivot !== null ? pivot.y - frame.getBoundingClientRect().top : height / 2;
-    const view = frame.contentWindow;
-    // the point this zoom keeps: the one the running gesture already holds, else the one under the pivot now (a wheel's
-    // notches arrive faster than the frames, and a write into a layout that has not settled is dropped)
-    const carried = held.current !== null && Math.abs(held.current.zoom - shown.current) < 1e-6 ? held.current : null;
-    const pageY = carried !== null && Math.abs(carried.at - at) < 0.5 ? carried.pageY : view === null ? 0 : view.scrollY + at / shown.current;
-    keepPagePoint(frame, shown.current, zoom, at);
-    held.current = { pageY, at, zoom };
-    shown.current = zoom;
-    let left = 8;
-    let request = requestAnimationFrame(function again() {
-      const inside = frame.contentWindow;
-      // a pan's scroll ended the hold (below): the point is no longer the zoom's to keep, or the hold scrolled the
-      // page back over the pan (the open quick panel's move to its label after a zoom never took: DEC-75)
-      if (inside === null || left <= 0 || held.current === null) return;
-      left -= 1;
-      const wanted = pageY - at / zoom;
-      if (Math.abs(inside.scrollY - wanted) <= 0.5) {
-        held.current = null;
-        return;
-      }
-      inside.scrollTo(inside.scrollX, wanted);
-      request = requestAnimationFrame(again);
-    });
-    return () => cancelAnimationFrame(request);
-  }, [zoom, height, pivot]);
-  const scroll = useEditorState((s) => s.ui.camera.scroll);
-  const scrolled = useRef(scroll.count);
-  useLayoutEffect(() => {
-    const frame = iframe.current;
-    if (frame && scroll.count !== scrolled.current) {
-      // a scroll of the page by a pan or a wheel ends a zoom's hold (the two would fight over the scroll)
-      held.current = null;
-      scrollPageBy(frame, scroll.by);
-    }
-    scrolled.current = scroll.count;
-  }, [scroll]);
 
   return (
-    <div className="frame__view" ref={view}>
-      <iframe ref={iframe} className="frame__page" srcDoc={PAGE} sandbox="allow-same-origin" tabIndex={-1} aria-hidden={editing ? undefined : true} style={{ width, height: zoom > 0 ? height / zoom : 0, zoom }} />
+    <div className="frame__view">
+      <iframe ref={iframe} className="frame__page" srcDoc={PAGE} sandbox="allow-same-origin" tabIndex={-1} aria-hidden={editing ? undefined : true} style={{ width, height: extent, zoom }} />
       <div className="frame__overlay" data-canvas-overlay ref={overlay}>
         <CanvasChrome />
         <Guides overlay={overlay} />

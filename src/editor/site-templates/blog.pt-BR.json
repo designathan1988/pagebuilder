@@ -89,7 +89,7 @@
           "name": "Link",
           "tag": "a",
           "attributes": {
-           "href": "/"
+           "href": "index.html"
           },
           "classes": [],
           "styles": {
@@ -916,8 +916,8 @@
             "tag": "input",
             "attributes": {
              "inputType": "search",
+             "name": "search",
              "placeholder": "Buscar…",
-             "name": "busca",
              "ariaLabel": "Buscar"
             },
             "classes": [],
@@ -1023,8 +1023,8 @@
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1200&h=675&q=80",
-               "alt": "Os 5 erros mais comuns no arroz (e como evitar)",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Os 5 erros mais comuns no arroz (e como evitar)"
               },
               "classes": [],
               "styles": {
@@ -1161,7 +1161,7 @@
                 "name": "Link 7",
                 "tag": "a",
                 "attributes": {
-                 "href": "/"
+                 "href": "index.html"
                 },
                 "classes": [],
                 "styles": {
@@ -1231,8 +1231,8 @@
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&h=675&q=80",
-               "alt": "Pizza de fermentação natural em casa",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Pizza de fermentação natural em casa"
               },
               "classes": [],
               "styles": {
@@ -1369,7 +1369,7 @@
                 "name": "Link 8",
                 "tag": "a",
                 "attributes": {
-                 "href": "/"
+                 "href": "index.html"
                 },
                 "classes": [],
                 "styles": {
@@ -1439,8 +1439,8 @@
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&h=675&q=80",
-               "alt": "O caderno da minha avó",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "O caderno da minha avó"
               },
               "classes": [],
               "styles": {
@@ -1577,7 +1577,7 @@
                 "name": "Link 9",
                 "tag": "a",
                 "attributes": {
-                 "href": "/"
+                 "href": "index.html"
                 },
                 "classes": [],
                 "styles": {
@@ -1724,7 +1724,10 @@
           "type": "form",
           "name": "Formulário",
           "tag": "form",
-          "attributes": {},
+          "attributes": {
+           "method": "post",
+           "formSubmit": "{\"destination\":\"native\",\"method\":\"POST\"}"
+          },
           "classes": [],
           "styles": {
            "desktop": {
@@ -1747,9 +1750,10 @@
             "attributes": {
              "inputType": "email",
              "name": "email",
-             "placeholder": "seu@email.com",
              "required": true,
-             "ariaLabel": "E-mail"
+             "placeholder": "seu@email.com",
+             "ariaLabel": "E-mail",
+             "formField": "{\"rules\":{\"required\":true,\"type\":\"email\"}}"
             },
             "classes": [],
             "styles": {
@@ -2036,11 +2040,11 @@
    }
   },
   {
-   "id": "blog122",
+   "id": "blog125",
    "name": "Sobre",
    "file": "sobre.html",
    "tree": {
-    "id": "blog121",
+    "id": "blog124",
     "type": "page",
     "name": "Body",
     "tag": "body",
@@ -2121,7 +2125,7 @@
           "name": "Link 13",
           "tag": "a",
           "attributes": {
-           "href": "/"
+           "href": "index.html"
           },
           "classes": [],
           "styles": {
@@ -2718,7 +2722,10 @@
           "type": "form",
           "name": "Formulário 2",
           "tag": "form",
-          "attributes": {},
+          "attributes": {
+           "method": "post",
+           "formSubmit": "{\"destination\":\"native\",\"method\":\"POST\"}"
+          },
           "classes": [],
           "styles": {
            "desktop": {
@@ -2795,7 +2802,8 @@
               "tag": "input",
               "attributes": {
                "inputType": "text",
-               "name": "name"
+               "name": "name",
+               "formField": "{\"rules\":{\"required\":true}}"
               },
               "classes": [],
               "styles": {
@@ -2853,7 +2861,8 @@
               "tag": "input",
               "attributes": {
                "inputType": "email",
-               "name": "email"
+               "name": "email",
+               "formField": "{\"rules\":{\"required\":true,\"type\":\"email\"}}"
               },
               "classes": [],
               "styles": {
@@ -2864,6 +2873,65 @@
                }
               },
               "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "blog111",
+            "type": "label",
+            "name": "Rótulo 3",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "blog112",
+              "type": "paragraph",
+              "name": "Parágrafo 23",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#111827"
+                }
+               }
+              },
+              "text": "Mensagem",
+              "children": []
+             },
+             {
+              "id": "blog113",
+              "type": "textarea",
+              "name": "Área de texto",
+              "tag": "textarea",
+              "attributes": {
+               "name": "message",
+               "formField": "{\"rules\":{\"required\":true}}",
+               "rows": 4
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": "",
               "children": []
              }
             ]
@@ -2917,7 +2985,7 @@
       ]
      },
      {
-      "id": "blog111",
+      "id": "blog114",
       "type": "footer",
       "name": "Rodapé com colunas 2",
       "tag": "footer",
@@ -2938,7 +3006,7 @@
       "text": null,
       "children": [
        {
-        "id": "blog112",
+        "id": "blog115",
         "type": "div",
         "name": "Contêiner 9",
         "tag": "div",
@@ -2960,7 +3028,7 @@
         "text": null,
         "children": [
          {
-          "id": "blog113",
+          "id": "blog116",
           "type": "div",
           "name": "Marca 2",
           "tag": "div",
@@ -2970,9 +3038,9 @@
           "text": null,
           "children": [
            {
-            "id": "blog114",
+            "id": "blog117",
             "type": "paragraph",
-            "name": "Parágrafo 23",
+            "name": "Parágrafo 24",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -2990,9 +3058,9 @@
             "children": []
            },
            {
-            "id": "blog115",
+            "id": "blog118",
             "type": "paragraph",
-            "name": "Parágrafo 24",
+            "name": "Parágrafo 25",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -3012,7 +3080,7 @@
           ]
          },
          {
-          "id": "blog116",
+          "id": "blog119",
           "type": "nav",
           "name": "Navegação 4",
           "tag": "nav",
@@ -3034,7 +3102,7 @@
           "text": null,
           "children": [
            {
-            "id": "blog117",
+            "id": "blog120",
             "type": "link",
             "name": "Link 19",
             "tag": "a",
@@ -3053,7 +3121,7 @@
             "children": []
            },
            {
-            "id": "blog118",
+            "id": "blog121",
             "type": "link",
             "name": "Link 20",
             "tag": "a",
@@ -3072,7 +3140,7 @@
             "children": []
            },
            {
-            "id": "blog119",
+            "id": "blog122",
             "type": "link",
             "name": "Link 21",
             "tag": "a",
@@ -3093,9 +3161,9 @@
           ]
          },
          {
-          "id": "blog120",
+          "id": "blog123",
           "type": "paragraph",
-          "name": "Parágrafo 25",
+          "name": "Parágrafo 26",
           "tag": "p",
           "attributes": {},
           "classes": [],

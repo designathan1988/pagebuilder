@@ -7,6 +7,7 @@ import type { NodeId } from '../../../generated/commands.ts';
 import { manifest } from '../../../manifest/runtime.ts';
 import type { DocNode, DocumentJson } from '../../../core/document/model.ts';
 import { applyPatches, type Patch } from '../../../core/history/transaction.ts';
+import { canvasViewport } from '../../../core/render/output.ts';
 import { EMPTY_TEXT_ATTRIBUTE, HIDDEN_ATTRIBUTE, NODE_ATTRIBUTE, NODE_STYLE_ATTRIBUTE, PageRenderer, editorCss, nodeCss, renderModelFromManifest, type RenderModel } from './render.ts';
 
 const model = renderModelFromManifest(manifest.elements, manifest.properties, manifest.interactions);
@@ -401,5 +402,21 @@ describe('the renderer (src/editor/canvas/render/render.ts)', () => {
     } finally {
       URL.createObjectURL = created;
     }
+  });
+});
+
+// DCS-035: the canvas frame is as tall as the page, so every sheet the canvas writes takes the breakpoint's screen as
+// its viewport: vh in px, and the height media features decided against width x screen
+describe('the canvas viewport', () => {
+  const screen = { width: 1440, height: 900 };
+  it('resolves viewport heights to the screen', () => {
+    expect(canvasViewport('.hero { min-height: 100vh; height: calc(50dvh - 10px); }', screen)).toBe('.hero { min-height: 900px; height: calc(450px - 10px); }');
+  });
+  it('decides the height media features and leaves the width ones', () => {
+    expect(canvasViewport('@media (orientation: portrait) { a { color: red } }', screen)).toBe('@media (max-width: 0px) { a { color: red } }');
+    expect(canvasViewport('@media screen and (min-height: 600px) and (max-width: 800px) { a { color: red } }', screen)).toBe('@media screen and (min-width: 0px) and (max-width: 800px) { a { color: red } }');
+    expect(canvasViewport('@media (height > 1000px) { a { color: red } }', screen)).toBe('@media (max-width: 0px) { a { color: red } }');
+    expect(canvasViewport('@media (min-aspect-ratio: 16/9) { a { color: red } }', screen)).toBe('@media (max-width: 0px) { a { color: red } }');
+    expect(canvasViewport('@media (max-width: 834px) { a { color: red } }', screen)).toBe('@media (max-width: 834px) { a { color: red } }');
   });
 });

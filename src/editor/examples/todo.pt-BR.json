@@ -12,7 +12,11 @@
     "type": "page",
     "name": "Body",
     "tag": "body",
-    "attributes": {},
+    "attributes": {
+     "pageTitle": "Tarefas",
+     "pageDescription": "Uma lista guardada no navegador: tudo feito com variáveis, lógica e um script.",
+     "pageLanguage": "pt-BR"
+    },
     "classes": [],
     "styles": {
      "desktop": {

@@ -92,7 +92,9 @@ save('manifest/features/29-site-templates.json', {'group': 'site-templates', 'ti
         'title': 'Whole ready-made sites to start from: restaurant, store, agency, portfolio, blog, event, clinic and SaaS',
         'steps': ['On the start screen, pick a ready-made site; it opens as the project, every page, text and image editable.',
                   'Or describe the business and press Create with AI: the Assistant opens with the description, and builds the pages from the ready sections and components.'],
-        'expected': ['Each site has its pages linked by its menu, a theme of its own and a layout that fits a phone.'],
+        'expected': ['Each site has its pages linked by its menu, a theme of its own and a layout that fits a phone.',
+                     "Each site and each example exists in English and in Portuguese; the start screen opens the one in the interface's language, as a new project.",
+                     'A list whose files fail to load says so and tries again; its buttons never stay disabled.'],
     },
     'scenarios': [scenario] + [{
         'id': sid,
@@ -113,6 +115,8 @@ save('manifest/features/29-site-templates.json', {'group': 'site-templates', 'ti
 WORDS = {
     'command.openTemplate': ('Open ready-made site', 'Abrir site pronto'),
     'start.templates': ('Or start from a complete site', 'Ou comece por um site completo'),
+    'start.templatesFailed': ('The ready-made sites did not load. Trying again…', 'Os sites prontos não carregaram. Tentando de novo…'),
+    'start.examplesFailed': ('The example apps did not load. Trying again…', 'Os apps de exemplo não carregaram. Tentando de novo…'),
     'start.ai.title': ('Create your site with AI', 'Crie seu site com IA'),
     'start.ai.brief': ('Describe your business or project', 'Descreva seu negócio ou projeto'),
     'start.ai.placeholder': ('E.g. a bakery in Recife with an online menu, orders on WhatsApp and a page about us', 'Ex.: uma padaria em Recife com cardápio online, pedidos pelo WhatsApp e uma página sobre nós'),

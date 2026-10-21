@@ -1,10 +1,13 @@
 # The example applications of the start screen (spec app-logic): each one a project built only from the generic
 # application layer — variables, element logic, scripts and code components — and no feature of its own, so it shows
 # what any person can build the same way: a task list, a text editor, a spreadsheet, a drawing editor, a vector editor,
-# a game, a simulator and a members' community kept in a database. Writes src/editor/examples/<id>.json; run from the repository root:
+# a game, a simulator and a members' community kept in a database, each in Portuguese and in English. Writes
+# src/editor/examples/<id>.<language>.json; run from the repository root (the same files on every run):
 #   python3 -I tools/gen/content/app-examples.py
 import itertools
 import json
+import os
+import re
 
 _ids = itertools.count(1)
 TAGS = {
@@ -1030,8 +1033,209 @@ export function when(iso) {
     logic={'on': [on('mount', 'await fn.load()')]},
 )
 
-for id_, document in EXAMPLES:
-    with open(f'src/editor/examples/{id_}.json', 'w', encoding='utf-8') as file:
+# ---------------------------------------------------------------- the English edition
+# Every example also exists in English (the start screen opens the one in the interface's language,
+# src/editor/site-templates/project-texts.ts): the Portuguese built above, each text written in English by hand in the
+# tables below (never machine-guessed). The build stops on a text the tables lack.
+
+# the elements' names (the Layers panel)
+EN_NAMES = {
+    'Aba Criar conta': 'Sign-up tab', 'Aba Entrar': 'Log-in tab', 'Abas': 'Tabs', 'Abrir': 'Open', 'Abrir imagem': 'Open image',
+    'Acesso': 'Access', 'Adicionar': 'Add', 'Ajuda': 'Help', 'Apagar nota': 'Delete note', 'Apagar recado': 'Delete post', 'App': 'App',
+    'Autor': 'Author', 'Aviso': 'Notice', 'Baixar CSV': 'Download CSV', 'Baixar HTML': 'Download HTML', 'Baixar PNG': 'Download PNG',
+    'Baixar SVG': 'Download SVG', 'Baixar texto': 'Download text', 'Barra': 'Toolbar', 'Body': 'Body', 'Borracha': 'Eraser',
+    'Cabecalho recado': 'Post header', 'Cartao': 'Card', 'Celula': 'Cell', 'Colunas': 'Columns', 'Contagem': 'Count',
+    'Conteudo': 'Content', 'Contorno': 'Stroke', 'Controle elasticidade': 'Bounciness control', 'Controle gravidade': 'Gravity control',
+    'Controle quantidade': 'Amount control', 'Controles': 'Controls', 'Convite': 'Invitation', 'Cor': 'Colour',
+    'Cor de preenchimento': 'Fill colour', 'Cor do contorno': 'Stroke colour', 'Descricao': 'Description', 'Desfazer': 'Undo',
+    'Documento': 'Document', 'Elasticidade': 'Bounciness', 'Elipse': 'Ellipse', 'Email': 'Email', 'Entrar': 'Log in', 'Enviar': 'Submit',
+    'Enviar para tras': 'Send backward', 'Erro': 'Error', 'Escolher cor': 'Pick colour', 'Espessura': 'Thickness', 'Excluir': 'Delete',
+    'Explicacao notas': 'Notes explanation', 'Feita': 'Done', 'Ferramentas': 'Tools', 'Filtro Abertas': 'Open filter',
+    'Filtro Cinza': 'Grey filter', 'Filtro Clarear': 'Lighten filter', 'Filtro Escurecer': 'Darken filter', 'Filtro Feitas': 'Done filter',
+    'Filtro Inverter': 'Invert filter', 'Filtro Sépia': 'Sepia filter', 'Filtro Todas': 'All filter', 'Filtros': 'Filters',
+    'Formula': 'Formula', 'Grade': 'Grid', 'Gravidade': 'Gravity', 'Guardar': 'Save', 'Italico': 'Italic', 'Item nota': 'Note item',
+    'Item recado': 'Post item', 'Jogar': 'Play', 'Jogo': 'Game', 'Limpar': 'Clear', 'Limpar feitas': 'Clear done',
+    'Limpar formato': 'Clear formatting', 'Linha': 'Line', 'Lista': 'List', 'Lista notas': 'Notes list', 'Medidas': 'Readings',
+    'Mensagem': 'Message', 'Mundo': 'World', 'Mural': 'Board', 'Mural vazio': 'Empty board', 'Negrito': 'Bold', 'Nome': 'Name',
+    'Nome do arquivo': 'File name', 'Nota': 'Note', 'Notas': 'Notes', 'Nova': 'New', 'Nova nota': 'New note', 'Novo recado': 'New post',
+    'Numerada': 'Numbered', 'Pagina': 'Page', 'Paragrafo': 'Paragraph', 'Pausar': 'Pause', 'Pincel': 'Brush', 'Placar': 'Score',
+    'Prancheta': 'Artboard', 'Preenchimento': 'Fill', 'Publicar': 'Post', 'Quadro': 'Canvas', 'Quando': 'When', 'Quantidade': 'Amount',
+    'Recado': 'Post', 'Recados': 'Posts', 'Reiniciar': 'Restart', 'Remover': 'Remove', 'Resultado': 'Result', 'Retangulo': 'Rectangle',
+    'Ritmo': 'Pace', 'Rodape': 'Footer', 'Rotulo elasticidade': 'Bounciness label', 'Rotulo gravidade': 'Gravity label',
+    'Rotulo quantidade': 'Amount label', 'Sair': 'Log out', 'Saudacao': 'Greeting', 'Selecionar': 'Select', 'Senha': 'Password',
+    'Seta ←': 'Arrow ←', 'Seta ↑': 'Arrow ↑', 'Seta →': 'Arrow →', 'Seta ↓': 'Arrow ↓', 'Sublinhado': 'Underline', 'Tabuleiro': 'Board',
+    'Tamanho': 'Size', 'Tarefa': 'Task', 'Texto': 'Text', 'Texto nota': 'Note text', 'Texto recado': 'Post text', 'Titulo': 'Title',
+    'Titulo mural': 'Board title', 'Titulo notas': 'Notes title', 'Titulos': 'Titles', 'Topo': 'Top', 'Trazer para frente': 'Bring forward',
+    'Vazio': 'Empty', 'Velocidade': 'Speed',
+}
+
+# the texts a person reads: the elements' texts, the fields' placeholders, the pages' names, titles and descriptions,
+# and the data the examples start with
+EN_TEXT = {
+    # pages and headers
+    'Tarefas': 'Tasks', 'Editor de texto': 'Text editor', 'Planilha': 'Spreadsheet', 'Desenho': 'Drawing', 'Editor de vetor': 'Vector editor',
+    'Jogo da cobrinha': 'Snake game', 'Simulador de partículas': 'Particle simulator', 'Comunidade': 'Community',
+    'Uma lista guardada no navegador: tudo feito com variáveis, lógica e um script.': 'A list kept in the browser: all made with variables, logic and a script.',
+    'Um editor de documentos: área editável, barra de formatação e arquivos — só com a camada de app.': 'A document editor: an editable area, a formatting toolbar and files — with the app layer alone.',
+    'Fórmulas como =B2*C2 e =SUM(D2:D4): um componente de código desenha a grade, um script calcula.': 'Formulas such as =B2*C2 and =SUM(D2:D4): a code component draws the grid, a script calculates.',
+    'Pincel, borracha, filtros e imagens: um canvas num componente de código, comandado pela barra.': 'Brush, eraser, filters and images: a canvas in a code component, driven by the toolbar.',
+    'Retângulos, elipses e linhas guardados como dados no estado e desenhados em SVG.': 'Rectangles, ellipses and lines kept as data in the state and drawn as SVG.',
+    'Setas ou WASD para virar, espaço para começar. Um canvas, um laço de animação e o estado do jogo.': 'Arrows or WASD to turn, space to start. A canvas, an animation loop and the game state.',
+    'Gravidade, colisões e quicadas calculadas a cada quadro. Clique na área para lançar mais bolas.': 'Gravity, collisions and bounces calculated every frame. Click the area to throw more balls.',
+    'Cadastro e login de membros, um mural público e notas privadas: tudo num banco de dados, sem servidor para configurar.': 'Member sign-up and log-in, a public board and private notes: all in a database, with no server to set up.',
+    # tasks
+    '1 abertas de 2': '1 open of 2', 'Abertas': 'Open', 'Adicionar': 'Add', 'Feitas': 'Done', 'Todas': 'All', 'Tarefa': 'Task',
+    'Nada por aqui.': 'Nothing here.', 'Limpar feitas': 'Clear done', 'Remover': 'Remove', 'O que precisa ser feito?': 'What needs doing?',
+    'Experimentar o painel App': 'Try the App panel', 'Criar meu primeiro app': 'Build my first app',
+    # text editor
+    '1. Lista': '1. List', '• Lista': '• List', '14 palavras · salvo neste navegador': '14 words · saved in this browser',
+    'Abrir…': 'Open…', 'Baixar .html': 'Download .html', 'Baixar .txt': 'Download .txt', 'Limpar': 'Clear', 'Nome do arquivo': 'File name',
+    '<h2>Meu documento</h2><p>Escreva aqui. Selecione um trecho e use a barra acima.</p>': '<h2>My document</h2><p>Write here. Select some text and use the toolbar above.</p>',
+    'documento': 'document',
+    # spreadsheet
+    '= Produto': '= Product', 'Baixar CSV': 'Download CSV', 'Limpar tudo': 'Clear all', 'Valor ou fórmula (=A1+B1)': 'Value or formula (=A1+B1)',
+    'Produto': 'Product', 'Qtd': 'Qty', 'Preço': 'Price', 'Total': 'Total', 'Caderno': 'Notebook', 'Caneta': 'Pen', 'Mochila': 'Backpack',
+    'Soma': 'Sum', 'Média': 'Average',
+    # drawing
+    'Abrir imagem…': 'Open image…', 'Baixar PNG': 'Download PNG', 'Borracha': 'Eraser', 'Cinza': 'Grey', 'Clarear': 'Lighten', 'Cor': 'Colour',
+    'Desfazer': 'Undo', 'Escurecer': 'Darken', 'Inverter': 'Invert', 'Pincel': 'Brush', 'Sépia': 'Sepia', 'Tamanho 8': 'Size 8',
+    # vector editor
+    'Baixar SVG': 'Download SVG', 'Contorno': 'Stroke', 'Elipse': 'Ellipse', 'Excluir': 'Delete', 'Linha': 'Line', 'Para frente': 'Forward',
+    'Para trás': 'Backward', 'Preenchimento': 'Fill', 'Retângulo': 'Rectangle', 'Selecionar': 'Select',
+    'Escolha uma forma e arraste na prancheta. Com Selecionar, clique para escolher e arraste para mover; Delete apaga.': 'Choose a shape and drag on the artboard. With Select, click to pick a shape and drag to move it; Delete removes it.',
+    # snake game
+    'Jogar': 'Play', 'Pontos: 0   Recorde: 0': 'Score: 0   Best: 0', 'Pronto para jogar?': 'Ready to play?', 'Reiniciar': 'Restart',
+    'Velocidade 8': 'Speed 8',
+    # simulator
+    '60 quadros/s · energia 0 kJ': '60 frames/s · energy 0 kJ', 'Bolas: 120': 'Balls: 120', 'Elasticidade: 80%': 'Bounciness: 80%',
+    'Gravidade: 900 px/s²': 'Gravity: 900 px/s²', 'Pausar': 'Pause',
+    # community
+    '21/10/2026 09:00': '10/21/2026, 9:00 AM', 'Ana': 'Ana', 'Apagar': 'Delete', 'Bem-vindos à comunidade!': 'Welcome to the community!',
+    'Criar conta': 'Sign up', 'Entrar': 'Log in', 'Entre para publicar no mural.': 'Log in to post on the board.', 'Guardar': 'Save',
+    'Minha primeira nota': 'My first note', 'Minhas notas': 'My notes', 'Mural': 'Board', 'Nenhum recado ainda.': 'No posts yet.',
+    'Olá, Ana': 'Hi, Ana', 'Publicar': 'Post', 'Sair': 'Log out', 'Só você vê as suas notas.': 'Only you see your notes.',
+    'E-mail': 'E-mail', 'Escreva um recado para todos': 'Write a post for everyone', 'Senha (8 caracteres ou mais)': 'Password (8 characters or more)',
+    'Seu nome': 'Your name', 'Uma nota só sua': 'A note just for you',
+}
+
+# the texts the examples' code writes on the page (the string literals of their expressions and scripts)
+EN_CODE = {
+    '   Recorde: ': '   Best: ', ' abertas de ': ' open of ', ' palavras · salvo neste navegador': ' words · saved in this browser',
+    ' pontos': ' points', ' quadros/s · energia ': ' frames/s · energy ', '#CICLO': '#CYCLE', '#ERRO': '#ERROR', 'Aguarde…': 'Please wait…',
+    'Bem-vindo, ': 'Welcome, ', 'Bolas: ': 'Balls: ', 'Continuar': 'Resume', 'Criar conta': 'Sign up', 'Elasticidade: ': 'Bounciness: ',
+    'Entrar': 'Log in', 'Fim de jogo! ': 'Game over! ', 'Gravidade: ': 'Gravity: ', 'Olá, ': 'Hi, ', 'Pausar': 'Pause',
+    'Pontos: ': 'Score: ', 'Pronto para jogar?': 'Ready to play?', 'Recado publicado': 'Post published', 'Tamanho ': 'Size ',
+    'Velocidade ': 'Speed ', 'desenho.png': 'drawing.png', 'desenho.svg': 'drawing.svg', 'documento': 'document',
+    'planilha.csv': 'spreadsheet.csv', 'pt-BR': 'en',
+}
+
+# the community's database: its tables and their fields, named in the edition's language wherever the code names them
+EN_IDENTIFIERS = {'recados': 'posts', 'notas': 'notes', 'texto': 'text', 'autor': 'author'}
+
+# what is the same in both languages: symbols, letters, cell names, numbers and people's names
+SAME = re.compile(r'^(?:[A-Z]\d*|H1|¶|[←↑→↓]|\d[\d./: ]*|Body|App|Ana|E-mail|Total|)$')
+LITERAL = re.compile(r"'((?:[^'\\\n]|\\.)*)'|\"((?:[^\"\\\n]|\\.)*)\"")
+IDENTIFIER = re.compile(r'\b(' + '|'.join(EN_IDENTIFIERS) + r')\b')
+
+
+def english_of(table, text, where):
+    if text in table:
+        return table[text]
+    if SAME.match(text):
+        return text
+    raise SystemExit(f'app-examples.py: no English for {where} {text!r}')
+
+
+def english_code(code):
+    def literal(m):
+        quote = m.group(0)[0]
+        held = m.group(1) if m.group(1) is not None else m.group(2)
+        return quote + EN_CODE.get(held, held) + quote
+    return IDENTIFIER.sub(lambda m: EN_IDENTIFIERS[m.group(1)], LITERAL.sub(literal, code))
+
+
+def english_logic(value):
+    if isinstance(value, str):
+        return english_code(value)
+    if isinstance(value, list):
+        return [english_logic(one) for one in value]
+    if isinstance(value, dict):
+        return {key: english_logic(one) if key != 'event' else one for key, one in value.items()}
+    return value
+
+
+def english_data(value):
+    if isinstance(value, str):
+        return EN_TEXT.get(value, value)
+    if isinstance(value, list):
+        return [english_data(one) for one in value]
+    if isinstance(value, dict):
+        return {key: english_data(one) for key, one in value.items()}
+    return value
+
+
+SPOKEN = ('placeholder', 'title', 'alt', 'ariaLabel', 'pageTitle', 'pageDescription')
+
+
+def english_node(tree):
+    out = dict(tree)
+    out['name'] = english_of(EN_NAMES, tree['name'], 'the element name')
+    if tree['text']:
+        out['text'] = english_of(EN_TEXT, tree['text'], 'the text')
+    out['attributes'] = {key: english_of(EN_TEXT, value, f'the {key}') if key in SPOKEN and isinstance(value, str) else value for key, value in tree['attributes'].items()}
+    if 'pageLanguage' in out['attributes']:
+        out['attributes']['pageLanguage'] = 'en'
+    if 'logic' in tree:
+        out['logic'] = english_logic(tree['logic'])
+    out['children'] = [english_node(child) for child in tree['children']]
+    return out
+
+
+def english(document):
+    app = dict(document['app'])
+    app['variables'] = [{**v, 'initial': english_data(v['initial'])} for v in app.get('variables', [])]
+    for part in ('scripts', 'components'):
+        if part in app:
+            app[part] = [{**one, 'code': english_code(one['code'])} for one in app[part]]
+    if 'tables' in app:
+        app['tables'] = [{**table, 'name': EN_IDENTIFIERS.get(table['name'], table['name'])} for table in app['tables']]
+    pages = [{**p, 'name': english_of(EN_TEXT, p['name'], 'the page name'), 'tree': english_node(p['tree'])} for p in document['pages']]
+    out = {**document, 'language': 'en', 'pages': pages, 'app': app}
+    # no Portuguese text left in the code: every literal the tables translate is gone
+    leftover = [held for held in EN_CODE if held != EN_CODE[held] and re.search(r"['\"]" + re.escape(held) + r"['\"]", json.dumps(out, ensure_ascii=False).replace('\\"', '"'))]
+    if leftover:
+        raise SystemExit(f'app-examples.py: Portuguese left in the English code: {leftover}')
+    return out
+
+
+# The page's title and description (what search results and a shared link show, and what an installed app is called):
+# the example's title and its header's description, in its language.
+def described(document):
+    tree = document['pages'][0]['tree']
+    found = []
+
+    def visit(node):
+        if node['name'] == 'Descricao':
+            found.append(node['text'])
+        for child in node['children']:
+            visit(child)
+    visit(tree)
+    attributes = {**tree['attributes'], 'pageTitle': document['pages'][0]['name'], 'pageDescription': found[0], 'pageLanguage': document['language']}
+    return {**document, 'pages': [{**document['pages'][0], 'tree': {**tree, 'attributes': attributes}}, *document['pages'][1:]]}
+
+
+def write(path, document):
+    # newline='': the same bytes on every system (a CRLF on Windows would rewrite every line)
+    with open(path, 'w', encoding='utf-8', newline='') as file:
         json.dump(document, file, ensure_ascii=False, indent=1)
         file.write('\n')
+
+
+for id_, document in EXAMPLES:
+    portuguese = described(document)
+    write(f'src/editor/examples/{id_}.pt-BR.json', portuguese)
+    write(f'src/editor/examples/{id_}.en.json', english(portuguese))
+    # the single-language file these replace
+    if os.path.exists(f'src/editor/examples/{id_}.json'):
+        os.remove(f'src/editor/examples/{id_}.json')
 print('examples:', ', '.join(id_ for id_, _ in EXAMPLES))

@@ -25,11 +25,14 @@ function source(document: DocumentJson, from: string, address: string): string {
   return file === null ? address : objectUrl(file);
 }
 
-function css(document: DocumentJson, from: string, text: string): string {
-  return fileUrlsIn(text, (address) => source(document, from, address));
+// A captured stylesheet's text as the canvas draws it: its addresses served from the project's files, and its viewport
+// resolved by the renderer's one viewport writer (`view`: render.ts, DCS-035)
+type View = (css: string) => string;
+function css(document: DocumentJson, from: string, text: string, view: View): string {
+  return view(fileUrlsIn(text, (address) => source(document, from, address)));
 }
 
-function attributes(target: Element, node: CapturedElement, document: DocumentJson, page: Page): void {
+function attributes(target: Element, node: CapturedElement, document: DocumentJson, page: Page, view: View): void {
   for (const attribute of [...target.attributes]) target.removeAttribute(attribute.name);
   for (const attribute of node.attributes) {
     // A captured document may embed a remote frame or plugin. The editing canvas never runs it;
@@ -37,7 +40,7 @@ function attributes(target: Element, node: CapturedElement, document: DocumentJs
     if (['iframe', 'object', 'embed'].includes(node.tag) && ['src', 'data'].includes(attribute.name)) continue;
     let value = attribute.value;
     if (attribute.name === 'srcset') value = rewriteSrcsetUrls(value, (address) => source(document, page.file, address));
-    else if (attribute.name === 'style') value = css(document, page.file, value);
+    else if (attribute.name === 'style') value = css(document, page.file, value, view);
     else if (RESOURCE.has(attribute.name)) value = source(document, page.file, value);
     else if (node.tag === 'link' && attribute.name === 'href') value = source(document, page.file, value);
     if (attribute.namespace === null) target.setAttribute(attribute.name, value);
@@ -64,13 +67,13 @@ function applyState(element: Element, node: CapturedElement, scrolled: Scrolled[
   if (state.scrollLeft !== undefined || state.scrollTop !== undefined) scrolled.push([element, state.scrollLeft ?? 0, state.scrollTop ?? 0]);
 }
 
-function makeNode(target: Document, document: DocumentJson, page: Page, node: CapturedNode, elements: Map<string, Element>, scrolled: Scrolled[] = []): Node {
+function makeNode(target: Document, document: DocumentJson, page: Page, node: CapturedNode, elements: Map<string, Element>, view: View, scrolled: Scrolled[] = []): Node {
   if (node.kind === 'text') return target.createTextNode(node.value);
   if (node.kind === 'comment') return target.createComment(node.value);
   // an element that acts on the page instead of drawing (a refresh, a <base>) is never put on the canvas
   if (unsafeCapturedElement(node.tag, node.attributes)) return target.createComment('');
   const element = node.namespace === HTML ? target.createElement(node.tag) : target.createElementNS(node.namespace, node.tag);
-  attributes(element, node, document, page);
+  attributes(element, node, document, page, view);
   element.setAttribute('data-capture-node', node.id);
   elements.set(node.id, element);
   if (node.tag === 'link' && (node.attributes.find((one) => one.name === 'rel')?.value ?? '').split(/\s+/).includes('stylesheet')) {
@@ -79,7 +82,7 @@ function makeNode(target: Document, document: DocumentJson, page: Page, node: Ca
     if (file !== null) {
       const sheet = target.createElement('style');
       const text = new TextDecoder().decode(Uint8Array.from(atob(file.bytes), (character) => character.charCodeAt(0)));
-      sheet.textContent = css(document, file.path, text);
+      sheet.textContent = css(document, file.path, text, view);
       sheet.setAttribute('data-capture-node', node.id);
       elements.set(node.id, sheet);
       return sheet;
@@ -89,12 +92,12 @@ function makeNode(target: Document, document: DocumentJson, page: Page, node: Ca
   if (node.shadow !== undefined) {
     try {
       const root = element.attachShadow({ mode: node.shadow.mode });
-      for (const child of node.shadow.children) root.append(makeNode(target, document, page, child, elements, scrolled));
+      for (const child of node.shadow.children) root.append(makeNode(target, document, page, child, elements, view, scrolled));
     } catch { /* not a valid shadow host */ }
   }
-  for (const child of node.children) element.append(makeNode(target, document, page, child, elements, scrolled));
+  for (const child of node.children) element.append(makeNode(target, document, page, child, elements, view, scrolled));
   applyState(element, node, scrolled);
-  if (node.tag === 'style') element.textContent = css(document, page.file, element.textContent ?? '');
+  if (node.tag === 'style') element.textContent = css(document, page.file, element.textContent ?? '', view);
   const paint = node.attributes.find((one) => one.name === 'data-capture-paint')?.value;
   if (paint !== undefined && node.tag === 'canvas') {
     const canvas = element as HTMLCanvasElement;
@@ -115,26 +118,26 @@ function makeNode(target: Document, document: DocumentJson, page: Page, node: Ca
   return element;
 }
 
-export function mountCaptured(target: Document, document: DocumentJson, page: Page, width: number): Map<string, Element> {
+export function mountCaptured(target: Document, document: DocumentJson, page: Page, width: number, view: View): Map<string, Element> {
   if (page.capture === undefined) throw new Error('captured renderer requires a captured page');
   const root = capturedAt(page.capture, width);
   const elements = new Map<string, Element>();
-  attributes(target.documentElement, root, document, page);
+  attributes(target.documentElement, root, document, page, view);
   target.documentElement.setAttribute('data-builder-capture', '');
   target.documentElement.setAttribute('data-capture-node', root.id);
   elements.set(root.id, target.documentElement);
   const head = root.children.find((one): one is CapturedElement => one.kind === 'element' && one.tag === 'head');
   const body = root.children.find((one): one is CapturedElement => one.kind === 'element' && one.tag === 'body');
   if (head === undefined || body === undefined) throw new Error('captured page lacks head or body');
-  attributes(target.body, body, document, page);
-  attributes(target.head, head, document, page);
+  attributes(target.body, body, document, page, view);
+  attributes(target.head, head, document, page, view);
   target.head.setAttribute('data-capture-node', head.id);
   target.body.setAttribute('data-capture-node', body.id);
   elements.set(head.id, target.head);
   elements.set(body.id, target.body);
   const scrolled: Scrolled[] = [];
-  target.head.replaceChildren(...head.children.map((node) => makeNode(target, document, page, node, elements, scrolled)));
-  target.body.replaceChildren(...body.children.map((node) => makeNode(target, document, page, node, elements, scrolled)));
+  target.head.replaceChildren(...head.children.map((node) => makeNode(target, document, page, node, elements, view, scrolled)));
+  target.body.replaceChildren(...body.children.map((node) => makeNode(target, document, page, node, elements, view, scrolled)));
   for (const [element, left, top] of scrolled) {
     element.scrollLeft = left;
     element.scrollTop = top;

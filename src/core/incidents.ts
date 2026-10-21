@@ -9,6 +9,9 @@
 //    (reportSelfChecks; core/document/self-checks.ts), in development and tests.
 //  - 'error': an error the page threw (a render error, an unhandled rejection): recorded by the editor side, so the
 //    person and the browser checks see it instead of a console nobody reads.
+//  - 'canvas': the canvas broke a rule of its own layout, in development (reportCanvas; canvas/frame.tsx, DCS-035):
+//    the canvas's page scrolled inside its frame, the page's height grew probe after probe with no change of the
+//    document, or the frame stood shorter than the breakpoint's screen.
 //
 // A bounded ring (the newest LIMIT), process-wide on purpose: an incident is about the app, not about one document.
 // It holds no document state and changes nothing; whoever draws it (the status bar's badge, the checks pane, the test
@@ -18,7 +21,7 @@ import type { DocumentJson } from './document/model.ts';
 import { documentFindings } from './document/self-checks.ts';
 
 export interface Incident {
-  readonly kind: 'invariant' | 'empty-change' | 'self-check' | 'error';
+  readonly kind: 'invariant' | 'empty-change' | 'self-check' | 'error' | 'canvas';
   // one line naming what happened: the command and its source, or where the error came from
   readonly what: string;
   // what the validator or the thrower said, in full
@@ -62,6 +65,11 @@ export function reportSelfChecks(source: string, document: DocumentJson): void {
 // An error the page threw, recorded by the editor side.
 export function reportError(what: string, detail: string): void {
   record({ kind: 'error', what, detail });
+}
+
+// A rule of the canvas's own layout broken (canvas/frame.tsx), in development.
+export function reportCanvas(what: string, detail: string): void {
+  record({ kind: 'canvas', what, detail });
 }
 
 export function incidents(): readonly Incident[] {

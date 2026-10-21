@@ -12,7 +12,11 @@
     "type": "page",
     "name": "Body",
     "tag": "body",
-    "attributes": {},
+    "attributes": {
+     "pageTitle": "Desenho",
+     "pageDescription": "Pincel, borracha, filtros e imagens: um canvas num componente de código, comandado pela barra.",
+     "pageLanguage": "pt-BR"
+    },
     "classes": [],
     "styles": {
      "desktop": {

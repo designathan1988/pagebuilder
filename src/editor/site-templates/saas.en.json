@@ -1,21 +1,21 @@
 {
  "version": 4,
- "language": "pt-BR",
+ "language": "en",
  "codeLanguage": "en",
  "pages": [
   {
-   "id": "saas148",
-   "name": "Produto",
+   "id": "saas154",
+   "name": "Product",
    "file": "index.html",
    "tree": {
-    "id": "saas147",
+    "id": "saas153",
     "type": "page",
     "name": "Body",
     "tag": "body",
     "attributes": {
-     "pageTitle": "Fluxo — Gestão financeira para pequenas empresas",
-     "pageDescription": "Contas a pagar e receber, fluxo de caixa e notas fiscais num só lugar. Teste grátis por 14 dias.",
-     "pageLanguage": "pt-BR"
+     "pageTitle": "Fluxo — Finance management for small businesses",
+     "pageDescription": "Bills, receivables, cash flow and invoices in one place. Free 14-day trial.",
+     "pageLanguage": "en"
     },
     "classes": [],
     "styles": {
@@ -36,7 +36,7 @@
      {
       "id": "saas1",
       "type": "header",
-      "name": "Menu que recolhe no celular",
+      "name": "Menu that folds on phones",
       "tag": "header",
       "attributes": {},
       "classes": [],
@@ -62,7 +62,7 @@
        {
         "id": "saas2",
         "type": "div",
-        "name": "Contêiner",
+        "name": "Container",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -89,7 +89,7 @@
           "name": "Link",
           "tag": "a",
           "attributes": {
-           "href": "/"
+           "href": "index.html"
           },
           "classes": [],
           "styles": {
@@ -108,7 +108,7 @@
          {
           "id": "saas4",
           "type": "button",
-          "name": "Botão",
+          "name": "Button",
           "tag": "button",
           "attributes": {
            "ariaLabel": "Menu"
@@ -158,7 +158,7 @@
          {
           "id": "saas5",
           "type": "nav",
-          "name": "Navegação",
+          "name": "Navigation",
           "tag": "nav",
           "attributes": {},
           "classes": [],
@@ -201,7 +201,7 @@
               }
              }
             },
-            "text": "Início",
+            "text": "Home",
             "children": []
            },
            {
@@ -210,7 +210,7 @@
             "name": "Link 3",
             "tag": "a",
             "attributes": {
-             "href": "index.html#precos"
+             "href": "index.html#pricing"
             },
             "classes": [],
             "styles": {
@@ -226,7 +226,7 @@
               }
              }
             },
-            "text": "Preços",
+            "text": "Pricing",
             "children": []
            },
            {
@@ -235,7 +235,7 @@
             "name": "Link 4",
             "tag": "a",
             "attributes": {
-             "href": "index.html#recursos"
+             "href": "index.html#features"
             },
             "classes": [],
             "styles": {
@@ -251,7 +251,7 @@
               }
              }
             },
-            "text": "Recursos",
+            "text": "Features",
             "children": []
            },
            {
@@ -260,7 +260,7 @@
             "name": "Link 5",
             "tag": "a",
             "attributes": {
-             "href": "index.html#contato"
+             "href": "index.html#contact"
             },
             "classes": [],
             "styles": {
@@ -276,7 +276,7 @@
               }
              }
             },
-            "text": "Contato",
+            "text": "Contact",
             "children": []
            },
            {
@@ -285,7 +285,7 @@
             "name": "Link 6",
             "tag": "a",
             "attributes": {
-             "href": "index.html#precos"
+             "href": "index.html#pricing"
             },
             "classes": [],
             "styles": {
@@ -320,7 +320,7 @@
               }
              }
             },
-            "text": "Testar grátis",
+            "text": "Try it free",
             "children": []
            }
           ],
@@ -338,7 +338,7 @@
      {
       "id": "saas11",
       "type": "section",
-      "name": "Destaque com imagem",
+      "name": "Hero with image",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -358,7 +358,7 @@
        {
         "id": "saas12",
         "type": "div",
-        "name": "Contêiner 2",
+        "name": "Container 2",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -381,7 +381,7 @@
          {
           "id": "saas13",
           "type": "div",
-          "name": "Texto",
+          "name": "Text",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -391,7 +391,7 @@
            {
             "id": "saas14",
             "type": "paragraph",
-            "name": "Parágrafo",
+            "name": "Paragraph",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -407,13 +407,13 @@
               }
              }
             },
-            "text": "Gestão financeira simples",
+            "text": "Simple finance management",
             "children": []
            },
            {
             "id": "saas15",
             "type": "heading",
-            "name": "Título",
+            "name": "Heading",
             "tag": "h1",
             "attributes": {},
             "classes": [],
@@ -429,13 +429,13 @@
               }
              }
             },
-            "text": "Saiba quanto sua empresa tem, deve e vai receber, em tempo real",
+            "text": "Know what your business has, owes and is owed, in real time",
             "children": []
            },
            {
             "id": "saas16",
             "type": "paragraph",
-            "name": "Parágrafo 2",
+            "name": "Paragraph 2",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -449,13 +449,13 @@
               }
              }
             },
-            "text": "Conecte o banco, emita notas e veja o fluxo de caixa dos próximos 90 dias. Sem planilha.",
+            "text": "Connect your bank, send invoices and see your cash flow for the next 90 days. No spreadsheets.",
             "children": []
            },
            {
             "id": "saas17",
             "type": "div",
-            "name": "Ações",
+            "name": "Actions",
             "tag": "div",
             "attributes": {},
             "classes": [],
@@ -474,7 +474,7 @@
              {
               "id": "saas18",
               "type": "button",
-              "name": "Botão 2",
+              "name": "Button 2",
               "tag": "button",
               "attributes": {},
               "classes": [],
@@ -507,13 +507,13 @@
                 }
                }
               },
-              "text": "Testar grátis por 14 dias",
+              "text": "Try it free for 14 days",
               "children": []
              },
              {
               "id": "saas19",
               "type": "button",
-              "name": "Botão 3",
+              "name": "Button 3",
               "tag": "button",
               "attributes": {},
               "classes": [],
@@ -546,7 +546,7 @@
                 }
                }
               },
-              "text": "Ver o vídeo",
+              "text": "Watch the video",
               "children": []
              }
             ]
@@ -556,11 +556,11 @@
          {
           "id": "saas20",
           "type": "image",
-          "name": "Imagem",
+          "name": "Image",
           "tag": "img",
           "attributes": {
            "src": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&h=900&q=80",
-           "alt": "Saiba quanto sua empresa tem, deve e vai receber, em tempo real"
+           "alt": "Know what your business has, owes and is owed, in real time"
           },
           "classes": [],
           "styles": {
@@ -588,7 +588,7 @@
      {
       "id": "saas21",
       "type": "section",
-      "name": "Logos de clientes",
+      "name": "Client logos",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -607,7 +607,7 @@
        {
         "id": "saas22",
         "type": "div",
-        "name": "Contêiner 3",
+        "name": "Container 3",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -626,7 +626,7 @@
          {
           "id": "saas23",
           "type": "paragraph",
-          "name": "Parágrafo 3",
+          "name": "Paragraph 3",
           "tag": "p",
           "attributes": {},
           "classes": [],
@@ -643,7 +643,7 @@
             }
            }
           },
-          "text": "Mais de 4 mil empresas usam o Fluxo",
+          "text": "More than 4,000 businesses use Fluxo",
           "children": []
          },
          {
@@ -671,7 +671,7 @@
            {
             "id": "saas25",
             "type": "paragraph",
-            "name": "Parágrafo 4",
+            "name": "Paragraph 4",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -692,7 +692,7 @@
            {
             "id": "saas26",
             "type": "paragraph",
-            "name": "Parágrafo 5",
+            "name": "Paragraph 5",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -713,7 +713,7 @@
            {
             "id": "saas27",
             "type": "paragraph",
-            "name": "Parágrafo 6",
+            "name": "Paragraph 6",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -734,7 +734,7 @@
            {
             "id": "saas28",
             "type": "paragraph",
-            "name": "Parágrafo 7",
+            "name": "Paragraph 7",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -755,7 +755,7 @@
            {
             "id": "saas29",
             "type": "paragraph",
-            "name": "Parágrafo 8",
+            "name": "Paragraph 8",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -782,10 +782,10 @@
      {
       "id": "saas30",
       "type": "section",
-      "name": "Recursos",
+      "name": "Features",
       "tag": "section",
       "attributes": {
-       "id": "recursos"
+       "id": "features"
       },
       "classes": [],
       "styles": {
@@ -803,7 +803,7 @@
        {
         "id": "saas31",
         "type": "div",
-        "name": "Contêiner 4",
+        "name": "Container 4",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -821,7 +821,7 @@
          {
           "id": "saas32",
           "type": "div",
-          "name": "Introdução",
+          "name": "Introduction",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -841,7 +841,7 @@
            {
             "id": "saas33",
             "type": "paragraph",
-            "name": "Parágrafo 9",
+            "name": "Paragraph 9",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -857,13 +857,13 @@
               }
              }
             },
-            "text": "Recursos",
+            "text": "Features",
             "children": []
            },
            {
             "id": "saas34",
             "type": "heading",
-            "name": "Título 2",
+            "name": "Heading 2",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -879,13 +879,13 @@
               }
              }
             },
-            "text": "O financeiro inteiro numa tela",
+            "text": "All your finances on one screen",
             "children": []
            },
            {
             "id": "saas35",
             "type": "paragraph",
-            "name": "Parágrafo 10",
+            "name": "Paragraph 10",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -900,7 +900,7 @@
               }
              }
             },
-            "text": "Feito para quem não é do financeiro.",
+            "text": "Made for people who aren't accountants.",
             "children": []
            }
           ]
@@ -908,7 +908,7 @@
          {
           "id": "saas36",
           "type": "div",
-          "name": "Grade",
+          "name": "Grid",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -927,7 +927,7 @@
            {
             "id": "saas37",
             "type": "article",
-            "name": "Artigo",
+            "name": "Article",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -963,7 +963,7 @@
              {
               "id": "saas38",
               "type": "heading",
-              "name": "Título 3",
+              "name": "Heading 3",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -977,13 +977,13 @@
                 }
                }
               },
-              "text": "Conciliação automática",
+              "text": "Automatic reconciliation",
               "children": []
              },
              {
               "id": "saas39",
               "type": "paragraph",
-              "name": "Parágrafo 11",
+              "name": "Paragraph 11",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -998,7 +998,7 @@
                 }
                }
               },
-              "text": "Os lançamentos do banco entram sozinhos e se casam com suas contas.",
+              "text": "Bank transactions come in on their own and match your bills.",
               "children": []
              }
             ]
@@ -1006,7 +1006,7 @@
            {
             "id": "saas40",
             "type": "article",
-            "name": "Artigo 2",
+            "name": "Article 2",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1042,7 +1042,7 @@
              {
               "id": "saas41",
               "type": "heading",
-              "name": "Título 4",
+              "name": "Heading 4",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1056,13 +1056,13 @@
                 }
                }
               },
-              "text": "Notas fiscais em 1 clique",
+              "text": "Invoices in one click",
               "children": []
              },
              {
               "id": "saas42",
               "type": "paragraph",
-              "name": "Parágrafo 12",
+              "name": "Paragraph 12",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1077,7 +1077,7 @@
                 }
                }
               },
-              "text": "NFS-e e NF-e emitidas e enviadas ao cliente por e-mail.",
+              "text": "Invoices issued and e-mailed to your customers.",
               "children": []
              }
             ]
@@ -1085,7 +1085,7 @@
            {
             "id": "saas43",
             "type": "article",
-            "name": "Artigo 3",
+            "name": "Article 3",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1121,7 +1121,7 @@
              {
               "id": "saas44",
               "type": "heading",
-              "name": "Título 5",
+              "name": "Heading 5",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1135,13 +1135,13 @@
                 }
                }
               },
-              "text": "Previsão de caixa",
+              "text": "Cash forecast",
               "children": []
              },
              {
               "id": "saas45",
               "type": "paragraph",
-              "name": "Parágrafo 13",
+              "name": "Paragraph 13",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1156,7 +1156,7 @@
                 }
                }
               },
-              "text": "Veja hoje se vai faltar dinheiro daqui a dois meses.",
+              "text": "See today whether you'll be short of cash two months from now.",
               "children": []
              }
             ]
@@ -1170,7 +1170,7 @@
      {
       "id": "saas46",
       "type": "section",
-      "name": "Vídeo do YouTube",
+      "name": "YouTube video",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -1189,7 +1189,7 @@
        {
         "id": "saas47",
         "type": "div",
-        "name": "Contêiner 5",
+        "name": "Container 5",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -1207,7 +1207,7 @@
          {
           "id": "saas48",
           "type": "div",
-          "name": "Introdução 2",
+          "name": "Introduction 2",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1227,7 +1227,7 @@
            {
             "id": "saas49",
             "type": "heading",
-            "name": "Título 6",
+            "name": "Heading 6",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -1244,13 +1244,13 @@
               }
              }
             },
-            "text": "Veja o Fluxo funcionando",
+            "text": "See Fluxo at work",
             "children": []
            },
            {
             "id": "saas50",
             "type": "paragraph",
-            "name": "Parágrafo 14",
+            "name": "Paragraph 14",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1265,7 +1265,7 @@
               }
              }
             },
-            "text": "Dois minutos do cadastro ao primeiro relatório.",
+            "text": "Two minutes from sign-up to the first report.",
             "children": []
            }
           ]
@@ -1273,13 +1273,13 @@
          {
           "id": "saas51",
           "type": "iframe",
-          "name": "Quadro incorporado",
+          "name": "Embedded frame",
           "tag": "iframe",
           "attributes": {
            "src": "https://www.youtube-nocookie.com/embed/ScMzIvxBSi4",
-           "title": "Vídeo",
            "loading": "lazy",
-           "allow": "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+           "allow": "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen",
+           "title": "Video"
           },
           "classes": [],
           "styles": {
@@ -1318,10 +1318,10 @@
      {
       "id": "saas52",
       "type": "section",
-      "name": "Preços mensal ou anual",
+      "name": "Prices monthly or yearly",
       "tag": "section",
       "attributes": {
-       "id": "precos"
+       "id": "pricing"
       },
       "classes": [],
       "styles": {
@@ -1339,7 +1339,7 @@
        {
         "id": "saas53",
         "type": "div",
-        "name": "Contêiner 6",
+        "name": "Container 6",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -1357,7 +1357,7 @@
          {
           "id": "saas54",
           "type": "div",
-          "name": "Introdução 3",
+          "name": "Introduction 3",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1377,7 +1377,7 @@
            {
             "id": "saas55",
             "type": "heading",
-            "name": "Título 7",
+            "name": "Heading 7",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -1394,13 +1394,13 @@
               }
              }
             },
-            "text": "Planos e preços",
+            "text": "Plans and prices",
             "children": []
            },
            {
             "id": "saas56",
             "type": "paragraph",
-            "name": "Parágrafo 15",
+            "name": "Paragraph 15",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1415,7 +1415,7 @@
               }
              }
             },
-            "text": "Economize dois meses no plano anual.",
+            "text": "Save two months with the yearly plan.",
             "children": []
            }
           ]
@@ -1423,7 +1423,7 @@
          {
           "id": "saas57",
           "type": "div",
-          "name": "Período",
+          "name": "Period",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1442,7 +1442,7 @@
            {
             "id": "saas58",
             "type": "button",
-            "name": "Botão 4",
+            "name": "Button 4",
             "tag": "button",
             "attributes": {},
             "classes": [],
@@ -1477,7 +1477,7 @@
               }
              }
             },
-            "text": "Mensal",
+            "text": "Monthly",
             "children": [],
             "customAttributes": {
              "data-wc-period": "monthly"
@@ -1486,7 +1486,7 @@
            {
             "id": "saas59",
             "type": "button",
-            "name": "Botão 5",
+            "name": "Button 5",
             "tag": "button",
             "attributes": {},
             "classes": [],
@@ -1521,7 +1521,7 @@
               }
              }
             },
-            "text": "Anual",
+            "text": "Yearly",
             "children": [],
             "customAttributes": {
              "data-wc-period": "yearly"
@@ -1532,7 +1532,7 @@
          {
           "id": "saas60",
           "type": "div",
-          "name": "Cartões de preço",
+          "name": "Price cards",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1551,7 +1551,7 @@
            {
             "id": "saas61",
             "type": "article",
-            "name": "Artigo 4",
+            "name": "Article 4",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1590,7 +1590,7 @@
              {
               "id": "saas62",
               "type": "heading",
-              "name": "Título 8",
+              "name": "Heading 8",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1606,13 +1606,13 @@
                 }
                }
               },
-              "text": "Básico",
+              "text": "Basic",
               "children": []
              },
              {
               "id": "saas63",
               "type": "paragraph",
-              "name": "Parágrafo 16",
+              "name": "Paragraph 16",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1627,17 +1627,17 @@
                 }
                }
               },
-              "text": "R$ 29/mês",
+              "text": "$29/mo",
               "children": [],
               "customAttributes": {
-               "data-wc-monthly": "R$ 29/mês",
-               "data-wc-yearly": "R$ 290/ano"
+               "data-wc-monthly": "$29/mo",
+               "data-wc-yearly": "$290/yr"
               }
              },
              {
               "id": "saas64",
               "type": "paragraph",
-              "name": "Parágrafo 17",
+              "name": "Paragraph 17",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1652,13 +1652,13 @@
                 }
                }
               },
-              "text": "Cancele quando quiser.",
+              "text": "Cancel any time.",
               "children": []
              },
              {
               "id": "saas65",
               "type": "button",
-              "name": "Botão 6",
+              "name": "Button 6",
               "tag": "button",
               "attributes": {},
               "classes": [],
@@ -1693,7 +1693,7 @@
                 }
                }
               },
-              "text": "Escolher",
+              "text": "Choose",
               "children": []
              }
             ]
@@ -1701,7 +1701,7 @@
            {
             "id": "saas66",
             "type": "article",
-            "name": "Artigo 5",
+            "name": "Article 5",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1740,7 +1740,7 @@
              {
               "id": "saas67",
               "type": "heading",
-              "name": "Título 9",
+              "name": "Heading 9",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1762,7 +1762,7 @@
              {
               "id": "saas68",
               "type": "paragraph",
-              "name": "Parágrafo 18",
+              "name": "Paragraph 18",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1777,17 +1777,17 @@
                 }
                }
               },
-              "text": "R$ 59/mês",
+              "text": "$59/mo",
               "children": [],
               "customAttributes": {
-               "data-wc-monthly": "R$ 59/mês",
-               "data-wc-yearly": "R$ 590/ano"
+               "data-wc-monthly": "$59/mo",
+               "data-wc-yearly": "$590/yr"
               }
              },
              {
               "id": "saas69",
               "type": "paragraph",
-              "name": "Parágrafo 19",
+              "name": "Paragraph 19",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1802,13 +1802,13 @@
                 }
                }
               },
-              "text": "Cancele quando quiser.",
+              "text": "Cancel any time.",
               "children": []
              },
              {
               "id": "saas70",
               "type": "button",
-              "name": "Botão 7",
+              "name": "Button 7",
               "tag": "button",
               "attributes": {},
               "classes": [],
@@ -1843,7 +1843,7 @@
                 }
                }
               },
-              "text": "Escolher",
+              "text": "Choose",
               "children": []
              }
             ]
@@ -1851,7 +1851,7 @@
            {
             "id": "saas71",
             "type": "article",
-            "name": "Artigo 6",
+            "name": "Article 6",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1890,7 +1890,7 @@
              {
               "id": "saas72",
               "type": "heading",
-              "name": "Título 10",
+              "name": "Heading 10",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1906,13 +1906,13 @@
                 }
                }
               },
-              "text": "Empresa",
+              "text": "Business",
               "children": []
              },
              {
               "id": "saas73",
               "type": "paragraph",
-              "name": "Parágrafo 20",
+              "name": "Paragraph 20",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1927,17 +1927,17 @@
                 }
                }
               },
-              "text": "R$ 129/mês",
+              "text": "$129/mo",
               "children": [],
               "customAttributes": {
-               "data-wc-monthly": "R$ 129/mês",
-               "data-wc-yearly": "R$ 1.290/ano"
+               "data-wc-monthly": "$129/mo",
+               "data-wc-yearly": "$1,290/yr"
               }
              },
              {
               "id": "saas74",
               "type": "paragraph",
-              "name": "Parágrafo 21",
+              "name": "Paragraph 21",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1952,13 +1952,13 @@
                 }
                }
               },
-              "text": "Cancele quando quiser.",
+              "text": "Cancel any time.",
               "children": []
              },
              {
               "id": "saas75",
               "type": "button",
-              "name": "Botão 8",
+              "name": "Button 8",
               "tag": "button",
               "attributes": {},
               "classes": [],
@@ -1993,7 +1993,7 @@
                 }
                }
               },
-              "text": "Escolher",
+              "text": "Choose",
               "children": []
              }
             ]
@@ -2010,7 +2010,7 @@
      {
       "id": "saas76",
       "type": "section",
-      "name": "Depoimentos",
+      "name": "Testimonials",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -2029,7 +2029,7 @@
        {
         "id": "saas77",
         "type": "div",
-        "name": "Contêiner 7",
+        "name": "Container 7",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -2047,7 +2047,7 @@
          {
           "id": "saas78",
           "type": "div",
-          "name": "Introdução 4",
+          "name": "Introduction 4",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -2067,7 +2067,7 @@
            {
             "id": "saas79",
             "type": "paragraph",
-            "name": "Parágrafo 22",
+            "name": "Paragraph 22",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -2083,13 +2083,13 @@
               }
              }
             },
-            "text": "Clientes",
+            "text": "Clients",
             "children": []
            },
            {
             "id": "saas80",
             "type": "heading",
-            "name": "Título 11",
+            "name": "Heading 11",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -2105,13 +2105,13 @@
               }
              }
             },
-            "text": "Quem usa recomenda",
+            "text": "Recommended by the people who use it",
             "children": []
            },
            {
             "id": "saas81",
             "type": "paragraph",
-            "name": "Parágrafo 23",
+            "name": "Paragraph 23",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -2126,7 +2126,7 @@
               }
              }
             },
-            "text": "Nota 4,8 na App Store e no Google Play.",
+            "text": "Rated 4.8 on the App Store and Google Play.",
             "children": []
            }
           ]
@@ -2134,7 +2134,7 @@
          {
           "id": "saas82",
           "type": "div",
-          "name": "Grade 2",
+          "name": "Grid 2",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -2153,7 +2153,7 @@
            {
             "id": "saas83",
             "type": "article",
-            "name": "Artigo 7",
+            "name": "Article 7",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -2189,7 +2189,7 @@
              {
               "id": "saas84",
               "type": "paragraph",
-              "name": "Parágrafo 24",
+              "name": "Paragraph 24",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2203,13 +2203,13 @@
                 }
                }
               },
-              "text": "\"Fechávamos o mês em 3 dias. Agora é uma tarde.\"",
+              "text": "\"Closing the month took us 3 days. Now it takes an afternoon.\"",
               "children": []
              },
              {
               "id": "saas85",
               "type": "paragraph",
-              "name": "Parágrafo 25",
+              "name": "Paragraph 25",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2229,7 +2229,7 @@
              {
               "id": "saas86",
               "type": "paragraph",
-              "name": "Parágrafo 26",
+              "name": "Paragraph 26",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2243,7 +2243,7 @@
                 }
                }
               },
-              "text": "Sócia, Campos Arquitetura",
+              "text": "Partner, Campos Architecture",
               "children": []
              }
             ]
@@ -2251,7 +2251,7 @@
            {
             "id": "saas87",
             "type": "article",
-            "name": "Artigo 8",
+            "name": "Article 8",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -2287,7 +2287,7 @@
              {
               "id": "saas88",
               "type": "paragraph",
-              "name": "Parágrafo 27",
+              "name": "Paragraph 27",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2301,13 +2301,13 @@
                 }
                }
               },
-              "text": "\"A previsão de caixa evitou um empréstimo caro.\"",
+              "text": "\"The cash forecast saved us from an expensive loan.\"",
               "children": []
              },
              {
               "id": "saas89",
               "type": "paragraph",
-              "name": "Parágrafo 28",
+              "name": "Paragraph 28",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2327,7 +2327,7 @@
              {
               "id": "saas90",
               "type": "paragraph",
-              "name": "Parágrafo 29",
+              "name": "Paragraph 29",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2341,7 +2341,7 @@
                 }
                }
               },
-              "text": "Dono, Lins Alimentos",
+              "text": "Owner, Lins Foods",
               "children": []
              }
             ]
@@ -2349,7 +2349,7 @@
            {
             "id": "saas91",
             "type": "article",
-            "name": "Artigo 9",
+            "name": "Article 9",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -2385,7 +2385,7 @@
              {
               "id": "saas92",
               "type": "paragraph",
-              "name": "Parágrafo 30",
+              "name": "Paragraph 30",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2399,13 +2399,13 @@
                 }
                }
               },
-              "text": "\"Meu contador acessa tudo direto, sem me pedir nada.\"",
+              "text": "\"My accountant sees everything directly, without asking me for anything.\"",
               "children": []
              },
              {
               "id": "saas93",
               "type": "paragraph",
-              "name": "Parágrafo 31",
+              "name": "Paragraph 31",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2425,7 +2425,7 @@
              {
               "id": "saas94",
               "type": "paragraph",
-              "name": "Parágrafo 32",
+              "name": "Paragraph 32",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2439,7 +2439,7 @@
                 }
                }
               },
-              "text": "MEI, Ateliê Melo",
+              "text": "Sole trader, Melo Studio",
               "children": []
              }
             ]
@@ -2453,7 +2453,7 @@
      {
       "id": "saas95",
       "type": "section",
-      "name": "Perguntas frequentes",
+      "name": "FAQ",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -2473,7 +2473,7 @@
        {
         "id": "saas96",
         "type": "div",
-        "name": "Contêiner 8",
+        "name": "Container 8",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -2491,7 +2491,7 @@
          {
           "id": "saas97",
           "type": "div",
-          "name": "Introdução 5",
+          "name": "Introduction 5",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -2511,7 +2511,7 @@
            {
             "id": "saas98",
             "type": "paragraph",
-            "name": "Parágrafo 33",
+            "name": "Paragraph 33",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -2527,13 +2527,13 @@
               }
              }
             },
-            "text": "Dúvidas",
+            "text": "Questions",
             "children": []
            },
            {
             "id": "saas99",
             "type": "heading",
-            "name": "Título 12",
+            "name": "Heading 12",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -2549,13 +2549,13 @@
               }
              }
             },
-            "text": "Perguntas frequentes",
+            "text": "Frequently asked questions",
             "children": []
            },
            {
             "id": "saas100",
             "type": "paragraph",
-            "name": "Parágrafo 34",
+            "name": "Paragraph 34",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -2578,7 +2578,7 @@
          {
           "id": "saas101",
           "type": "div",
-          "name": "Perguntas",
+          "name": "Questions",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -2596,7 +2596,7 @@
            {
             "id": "saas102",
             "type": "details",
-            "name": "Detalhes",
+            "name": "Details",
             "tag": "details",
             "attributes": {},
             "classes": [],
@@ -2632,7 +2632,7 @@
              {
               "id": "saas103",
               "type": "summary",
-              "name": "Resumo",
+              "name": "Summary",
               "tag": "summary",
               "attributes": {},
               "classes": [],
@@ -2650,12 +2650,12 @@
                {
                 "id": "saas104",
                 "type": "paragraph",
-                "name": "Parágrafo 35",
+                "name": "Paragraph 35",
                 "tag": "span",
                 "attributes": {},
                 "classes": [],
                 "styles": {},
-                "text": "Preciso de cartão para testar?",
+                "text": "Do I need a card to try it?",
                 "children": []
                }
               ]
@@ -2663,7 +2663,7 @@
              {
               "id": "saas105",
               "type": "paragraph",
-              "name": "Parágrafo 36",
+              "name": "Paragraph 36",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2678,7 +2678,7 @@
                 }
                }
               },
-              "text": "Não. Os 14 dias são grátis e sem compromisso.",
+              "text": "No. The 14 days are free, with no commitment.",
               "children": []
              }
             ]
@@ -2686,7 +2686,7 @@
            {
             "id": "saas106",
             "type": "details",
-            "name": "Detalhes 2",
+            "name": "Details 2",
             "tag": "details",
             "attributes": {},
             "classes": [],
@@ -2722,7 +2722,7 @@
              {
               "id": "saas107",
               "type": "summary",
-              "name": "Resumo 2",
+              "name": "Summary 2",
               "tag": "summary",
               "attributes": {},
               "classes": [],
@@ -2740,12 +2740,12 @@
                {
                 "id": "saas108",
                 "type": "paragraph",
-                "name": "Parágrafo 37",
+                "name": "Paragraph 37",
                 "tag": "span",
                 "attributes": {},
                 "classes": [],
                 "styles": {},
-                "text": "Meus dados ficam seguros?",
+                "text": "Is my data safe?",
                 "children": []
                }
               ]
@@ -2753,7 +2753,7 @@
              {
               "id": "saas109",
               "type": "paragraph",
-              "name": "Parágrafo 38",
+              "name": "Paragraph 38",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2768,7 +2768,7 @@
                 }
                }
               },
-              "text": "Sim: criptografia, backups diários e servidores no Brasil (LGPD).",
+              "text": "Yes: encryption, daily backups and privacy-law compliance.",
               "children": []
              }
             ]
@@ -2776,7 +2776,7 @@
            {
             "id": "saas110",
             "type": "details",
-            "name": "Detalhes 3",
+            "name": "Details 3",
             "tag": "details",
             "attributes": {},
             "classes": [],
@@ -2812,7 +2812,7 @@
              {
               "id": "saas111",
               "type": "summary",
-              "name": "Resumo 3",
+              "name": "Summary 3",
               "tag": "summary",
               "attributes": {},
               "classes": [],
@@ -2830,12 +2830,12 @@
                {
                 "id": "saas112",
                 "type": "paragraph",
-                "name": "Parágrafo 39",
+                "name": "Paragraph 39",
                 "tag": "span",
                 "attributes": {},
                 "classes": [],
                 "styles": {},
-                "text": "Funciona para MEI?",
+                "text": "Does it work for sole traders?",
                 "children": []
                }
               ]
@@ -2843,7 +2843,7 @@
              {
               "id": "saas113",
               "type": "paragraph",
-              "name": "Parágrafo 40",
+              "name": "Paragraph 40",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2858,7 +2858,7 @@
                 }
                }
               },
-              "text": "Sim, há um plano pensado para MEI, com emissão de NFS-e.",
+              "text": "Yes, there is a plan made for sole traders, with invoicing included.",
               "children": []
              }
             ]
@@ -2872,7 +2872,7 @@
      {
       "id": "saas114",
       "type": "section",
-      "name": "Chamada para ação",
+      "name": "Call to action",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -2893,7 +2893,7 @@
        {
         "id": "saas115",
         "type": "div",
-        "name": "Contêiner 9",
+        "name": "Container 9",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -2911,7 +2911,7 @@
          {
           "id": "saas116",
           "type": "heading",
-          "name": "Título 13",
+          "name": "Heading 13",
           "tag": "h2",
           "attributes": {},
           "classes": [],
@@ -2927,13 +2927,13 @@
             }
            }
           },
-          "text": "Comece hoje, sem cartão",
+          "text": "Start today, no card needed",
           "children": []
          },
          {
           "id": "saas117",
           "type": "paragraph",
-          "name": "Parágrafo 41",
+          "name": "Paragraph 41",
           "tag": "p",
           "attributes": {},
           "classes": [],
@@ -2947,13 +2947,13 @@
             }
            }
           },
-          "text": "Em 5 minutos sua conta está pronta.",
+          "text": "Your account is ready in 5 minutes.",
           "children": []
          },
          {
           "id": "saas118",
           "type": "button",
-          "name": "Botão 9",
+          "name": "Button 9",
           "tag": "button",
           "attributes": {},
           "classes": [],
@@ -2986,7 +2986,7 @@
             }
            }
           },
-          "text": "Testar grátis",
+          "text": "Try it free",
           "children": []
          }
         ]
@@ -2996,10 +2996,10 @@
      {
       "id": "saas119",
       "type": "section",
-      "name": "Contato",
+      "name": "Contact",
       "tag": "section",
       "attributes": {
-       "id": "contato"
+       "id": "contact"
       },
       "classes": [],
       "styles": {
@@ -3017,7 +3017,7 @@
        {
         "id": "saas120",
         "type": "div",
-        "name": "Contêiner 10",
+        "name": "Container 10",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -3039,7 +3039,7 @@
          {
           "id": "saas121",
           "type": "div",
-          "name": "Texto 2",
+          "name": "Text 2",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -3049,7 +3049,7 @@
            {
             "id": "saas122",
             "type": "heading",
-            "name": "Título 14",
+            "name": "Heading 14",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -3065,13 +3065,13 @@
               }
              }
             },
-            "text": "Fale com um especialista",
+            "text": "Talk to a specialist",
             "children": []
            },
            {
             "id": "saas123",
             "type": "paragraph",
-            "name": "Parágrafo 42",
+            "name": "Paragraph 42",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -3084,7 +3084,7 @@
               }
              }
             },
-            "text": "Para empresas com mais de 20 funcionários, montamos uma demonstração.",
+            "text": "For companies with more than 20 employees, we set up a demo.",
             "children": []
            }
           ]
@@ -3092,9 +3092,12 @@
          {
           "id": "saas124",
           "type": "form",
-          "name": "Formulário",
+          "name": "Form",
           "tag": "form",
-          "attributes": {},
+          "attributes": {
+           "method": "post",
+           "formSubmit": "{\"destination\":\"native\",\"method\":\"POST\"}"
+          },
           "classes": [],
           "styles": {
            "desktop": {
@@ -3131,7 +3134,7 @@
            {
             "id": "saas125",
             "type": "label",
-            "name": "Rótulo",
+            "name": "Label",
             "tag": "label",
             "attributes": {},
             "classes": [],
@@ -3149,7 +3152,7 @@
              {
               "id": "saas126",
               "type": "paragraph",
-              "name": "Parágrafo 43",
+              "name": "Paragraph 43",
               "tag": "span",
               "attributes": {},
               "classes": [],
@@ -3161,17 +3164,18 @@
                 }
                }
               },
-              "text": "Nome",
+              "text": "Name",
               "children": []
              },
              {
               "id": "saas127",
               "type": "input",
-              "name": "Campo",
+              "name": "Input",
               "tag": "input",
               "attributes": {
                "inputType": "text",
-               "name": "name"
+               "name": "name",
+               "formField": "{\"rules\":{\"required\":true}}"
               },
               "classes": [],
               "styles": {
@@ -3189,7 +3193,7 @@
            {
             "id": "saas128",
             "type": "label",
-            "name": "Rótulo 2",
+            "name": "Label 2",
             "tag": "label",
             "attributes": {},
             "classes": [],
@@ -3207,7 +3211,7 @@
              {
               "id": "saas129",
               "type": "paragraph",
-              "name": "Parágrafo 44",
+              "name": "Paragraph 44",
               "tag": "span",
               "attributes": {},
               "classes": [],
@@ -3219,17 +3223,138 @@
                 }
                }
               },
-              "text": "E-mail",
+              "text": "Email",
               "children": []
              },
              {
               "id": "saas130",
               "type": "input",
-              "name": "Campo 2",
+              "name": "Input 2",
               "tag": "input",
               "attributes": {
                "inputType": "email",
-               "name": "email"
+               "name": "email",
+               "formField": "{\"rules\":{\"required\":true,\"type\":\"email\"}}"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "saas132",
+            "type": "label",
+            "name": "Label 3",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "saas133",
+              "type": "paragraph",
+              "name": "Paragraph 45",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a"
+                }
+               }
+              },
+              "text": "Company",
+              "children": []
+             },
+             {
+              "id": "saas134",
+              "type": "input",
+              "name": "Input 3",
+              "tag": "input",
+              "attributes": {
+               "name": "company",
+               "formField": "{\"rules\":{\"required\":true}}",
+               "inputType": "text"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "saas135",
+            "type": "label",
+            "name": "Label 4",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "saas136",
+              "type": "paragraph",
+              "name": "Paragraph 46",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a"
+                }
+               }
+              },
+              "text": "Employees",
+              "children": []
+             },
+             {
+              "id": "saas137",
+              "type": "input",
+              "name": "Input 4",
+              "tag": "input",
+              "attributes": {
+               "name": "employees",
+               "formField": "{\"rules\":{\"required\":true,\"minimum\":1,\"maximum\":100000}}",
+               "inputType": "number",
+               "min": "1",
+               "max": "100000"
               },
               "classes": [],
               "styles": {
@@ -3247,7 +3372,7 @@
            {
             "id": "saas131",
             "type": "button",
-            "name": "Botão 10",
+            "name": "Button 10",
             "tag": "button",
             "attributes": {
              "buttonType": "submit"
@@ -3283,7 +3408,7 @@
               }
              }
             },
-            "text": "Enviar",
+            "text": "Send",
             "children": []
            }
           ]
@@ -3293,9 +3418,9 @@
       ]
      },
      {
-      "id": "saas132",
+      "id": "saas138",
       "type": "footer",
-      "name": "Rodapé com colunas",
+      "name": "Footer with columns",
       "tag": "footer",
       "attributes": {},
       "classes": [],
@@ -3314,9 +3439,9 @@
       "text": null,
       "children": [
        {
-        "id": "saas133",
+        "id": "saas139",
         "type": "div",
-        "name": "Contêiner 11",
+        "name": "Container 11",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -3336,9 +3461,9 @@
         "text": null,
         "children": [
          {
-          "id": "saas134",
+          "id": "saas140",
           "type": "div",
-          "name": "Marca",
+          "name": "Brand",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -3346,9 +3471,9 @@
           "text": null,
           "children": [
            {
-            "id": "saas135",
+            "id": "saas141",
             "type": "paragraph",
-            "name": "Parágrafo 45",
+            "name": "Paragraph 47",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -3366,9 +3491,9 @@
             "children": []
            },
            {
-            "id": "saas136",
+            "id": "saas142",
             "type": "paragraph",
-            "name": "Parágrafo 46",
+            "name": "Paragraph 48",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -3382,15 +3507,15 @@
               }
              }
             },
-            "text": "Fluxo Tecnologia Ltda. — São Paulo, SP.",
+            "text": "Fluxo Technology Inc.",
             "children": []
            }
           ]
          },
          {
-          "id": "saas137",
+          "id": "saas143",
           "type": "nav",
-          "name": "Navegação 2",
+          "name": "Navigation 2",
           "tag": "nav",
           "attributes": {},
           "classes": [],
@@ -3410,7 +3535,7 @@
           "text": null,
           "children": [
            {
-            "id": "saas138",
+            "id": "saas144",
             "type": "link",
             "name": "Link 7",
             "tag": "a",
@@ -3425,16 +3550,16 @@
               }
              }
             },
-            "text": "Início",
+            "text": "Home",
             "children": []
            },
            {
-            "id": "saas139",
+            "id": "saas145",
             "type": "link",
             "name": "Link 8",
             "tag": "a",
             "attributes": {
-             "href": "index.html#precos"
+             "href": "index.html#pricing"
             },
             "classes": [],
             "styles": {
@@ -3444,16 +3569,16 @@
               }
              }
             },
-            "text": "Preços",
+            "text": "Pricing",
             "children": []
            },
            {
-            "id": "saas140",
+            "id": "saas146",
             "type": "link",
             "name": "Link 9",
             "tag": "a",
             "attributes": {
-             "href": "index.html#contato"
+             "href": "index.html#contact"
             },
             "classes": [],
             "styles": {
@@ -3463,15 +3588,15 @@
               }
              }
             },
-            "text": "Contato",
+            "text": "Contact",
             "children": []
            }
           ]
          },
          {
-          "id": "saas141",
+          "id": "saas147",
           "type": "paragraph",
-          "name": "Parágrafo 47",
+          "name": "Paragraph 49",
           "tag": "p",
           "attributes": {},
           "classes": [],
@@ -3484,7 +3609,7 @@
             }
            }
           },
-          "text": "© 2026 Fluxo. Todos os direitos reservados.",
+          "text": "© 2026 Fluxo. All rights reserved.",
           "children": []
          }
         ]
@@ -3492,13 +3617,13 @@
       ]
      },
      {
-      "id": "saas142",
+      "id": "saas148",
       "type": "div",
-      "name": "Aviso de cookies",
+      "name": "Cookie notice",
       "tag": "div",
       "attributes": {
-       "ariaLabel": "Cookies",
-       "role": "region"
+       "role": "region",
+       "ariaLabel": "Cookies"
       },
       "classes": [],
       "styles": {
@@ -3555,9 +3680,9 @@
       "text": null,
       "children": [
        {
-        "id": "saas143",
+        "id": "saas149",
         "type": "paragraph",
-        "name": "Parágrafo 48",
+        "name": "Paragraph 50",
         "tag": "p",
         "attributes": {},
         "classes": [],
@@ -3574,13 +3699,13 @@
           }
          }
         },
-        "text": "Usamos cookies para melhorar sua experiência. Você escolhe: só os essenciais ou todos.",
+        "text": "We use cookies to improve your experience. You choose: essential only, or all.",
         "children": []
        },
        {
-        "id": "saas144",
+        "id": "saas150",
         "type": "div",
-        "name": "Escolhas",
+        "name": "Choices",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -3595,9 +3720,9 @@
         "text": null,
         "children": [
          {
-          "id": "saas145",
+          "id": "saas151",
           "type": "button",
-          "name": "Botão 11",
+          "name": "Button 11",
           "tag": "button",
           "attributes": {},
           "classes": [],
@@ -3632,16 +3757,16 @@
             }
            }
           },
-          "text": "Só essenciais",
+          "text": "Essential only",
           "children": [],
           "customAttributes": {
            "data-wc-reject": ""
           }
          },
          {
-          "id": "saas146",
+          "id": "saas152",
           "type": "button",
-          "name": "Botão 12",
+          "name": "Button 12",
           "tag": "button",
           "attributes": {},
           "classes": [],
@@ -3676,7 +3801,7 @@
             }
            }
           },
-          "text": "Aceitar todos",
+          "text": "Accept all",
           "children": [],
           "customAttributes": {
            "data-wc-accept": ""

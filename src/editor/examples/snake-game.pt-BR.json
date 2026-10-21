@@ -12,7 +12,11 @@
     "type": "page",
     "name": "Body",
     "tag": "body",
-    "attributes": {},
+    "attributes": {
+     "pageTitle": "Jogo da cobrinha",
+     "pageDescription": "Setas ou WASD para virar, espaço para começar. Um canvas, um laço de animação e o estado do jogo.",
+     "pageLanguage": "pt-BR"
+    },
     "classes": [],
     "styles": {
      "desktop": {

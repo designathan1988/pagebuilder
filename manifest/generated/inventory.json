@@ -3,12 +3,12 @@
     "features": 217,
     "built": 217,
     "commands": 387,
-    "doors": 1400,
-    "scenarios": 1871,
-    "modules": 515,
-    "lines": 90896,
+    "doors": 1401,
+    "scenarios": 1872,
+    "modules": 518,
+    "lines": 92090,
     "fields": 207,
-    "interactive": 268
+    "interactive": 270
   },
   "features": [
     {
@@ -1027,7 +1027,7 @@
         "element.removeCustomAttribute",
         "element.setAttribute"
       ],
-      "doors": 136,
+      "doors": 137,
       "scenarios": 8
     },
     {
@@ -1149,7 +1149,7 @@
         "classes.rename",
         "classes.delete"
       ],
-      "doors": 6,
+      "doors": 7,
       "scenarios": 6
     },
     {
@@ -1166,7 +1166,7 @@
         "classes.rename",
         "classes.delete"
       ],
-      "doors": 146,
+      "doors": 147,
       "scenarios": 26
     },
     {
@@ -1211,10 +1211,11 @@
       "id": "templates-sections",
       "built": true,
       "commands": [
-        "element.insert"
+        "element.insert",
+        "element.setCustomAttribute"
       ],
-      "doors": 5,
-      "scenarios": 5
+      "doors": 8,
+      "scenarios": 6
     },
     {
       "id": "reusable-components",
@@ -4139,14 +4140,33 @@
   ],
   "interactive": {
     "owners": {
-      "door": 92,
-      "inside-door": 41,
+      "door": 93,
+      "inside-door": 42,
       "local": 19,
       "none": 87,
       "spread": 6,
       "wraps-door": 23
     },
     "elements": [
+      {
+        "key": "src/editor/app-panel/logic-field.tsx|form|className,data-args,data-door,onSubmit,ref,title|1",
+        "tag": "form",
+        "role": null,
+        "handlers": [
+          "onSubmit"
+        ],
+        "owner": "door"
+      },
+      {
+        "key": "src/editor/app-panel/logic-field.tsx|input|aria-label,autoComplete,className,disabled,name,onBlur,onInput,ref,spellCheck,type|1",
+        "tag": "input",
+        "role": null,
+        "handlers": [
+          "onInput",
+          "onBlur"
+        ],
+        "owner": "inside-door"
+      },
       {
         "key": "src/editor/app-panel/logic-tab.tsx|input|aria-label,autoComplete,className,name,placeholder,spellCheck|1",
         "tag": "input",

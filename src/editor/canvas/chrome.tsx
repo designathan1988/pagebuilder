@@ -762,7 +762,8 @@ function useChromeLayout({ layer, label, bar, selection, targets, hovered, node,
         // and the chip beside it never lie over them (clearedLabel; CLAUDE.md, rule G5). Part of the key: tabs that
         // grow (their names in another language, DEF-0575) place the label again
         const tabs = [...document.querySelectorAll(EDITOR_CONTROLS)].map((el) => local(el.getBoundingClientRect())).filter((b): b is Box => b !== null && b.width > 0 && b.height > 0);
-        const key = JSON.stringify([first, size, tools, mode, edge, turn, chipWidth, chipRise, Math.round(origin.x), Math.round(origin.y), Math.round(origin.width), Math.round(origin.height), tabs.map((b) => [Math.round(b.x), Math.round(b.width)])]);
+        const placedTabs = tabs.map((b) => [Math.round(b.x), Math.round(b.y), Math.round(b.width)]);
+        const key = JSON.stringify([first, size, tools, mode, edge, turn, chipWidth, chipRise, Math.round(origin.x), Math.round(origin.y), Math.round(origin.width), Math.round(origin.height), placedTabs]);
         if (first === undefined || size === null) {
           placed = null;
           placedToolbar = null;
@@ -777,15 +778,17 @@ function useChromeLayout({ layer, label, bar, selection, targets, hovered, node,
           const labelFrame = turn === 0 || first === undefined ? first : turnedFrame(first, turn, edge);
           const one = selectionLabelBox(labelFrame, size, edge, content);
           const spot = clearedLabel(one, labelFrame, edge, { above: Math.max(tools === null ? 0 : gap + tools.height, chipRise), width: Math.max(size.width + chipWidth, tools?.width ?? 0) }, tabs, content);
-          // in view while the element's top is inside the page's view and the label inside the stage: the label is
-          // fixed in the window, above the page's edge too (an element at the page's top), so no layer clips it, and
-          // it hides where it would stand over the rulers, the panels or the breakpoint tabs of a page scrolled away
+          // in view while the element's top is inside the stage and the label inside it: the label is fixed in the
+          // window, above the page's edge too (an element at the page's top), so no layer clips it, and it hides where
+          // it would stand over the rulers or the panels, its element's top panned out of the stage (DCS-035: the frame
+          // is the whole page tall, the stage is what the person sees of it)
           const shown = document.querySelector('[data-canvas-stage]')?.getBoundingClientRect();
           const stage = shown === undefined ? { x: 0, y: 0, width: origin.width, height: origin.height } : { x: shown.x - origin.x, y: shown.y - origin.y, width: shown.width, height: shown.height };
           // the text toolbar above the label; under it where the label stands under its element (clearedLabel)
           const under = spot.placement === 'below';
           const top = tools === null || under ? spot.box.y : spot.box.y - gap - tools.height;
-          const seen = first.y >= -edge - 0.5 && first.y <= origin.height + 0.5 && spot.box.x >= stage.x - 0.5 && spot.box.x + Math.max(size.width, tools?.width ?? 0) <= stage.x + stage.width + 0.5 && top >= stage.y - 0.5;
+          const topSeen = first.y >= Math.max(0, stage.y) - edge - 0.5 && first.y <= Math.min(origin.height, stage.y + stage.height) + 0.5;
+          const seen = topSeen && spot.box.x >= stage.x - 0.5 && spot.box.x + Math.max(size.width, tools?.width ?? 0) <= stage.x + stage.width + 0.5 && top >= stage.y - 0.5;
           placed = { ...spot, seen };
           placedToolbar = tools === null ? null : { x: spot.box.x, y: under ? spot.box.y + size.height + gap : top };
         }

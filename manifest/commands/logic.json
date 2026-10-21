@@ -48,7 +48,8 @@
         "status.app.reserved",
         "status.app.taken",
         "status.app.badValue",
-        "status.app.invalid"
+        "status.app.invalid",
+        "status.app.keptTaken"
       ],
       "confirmation": null,
       "history": {
@@ -209,7 +210,9 @@
         "predicate": "always",
         "refusalKey": null
       },
-      "refusals": [],
+      "refusals": [
+        "status.app.inUse"
+      ],
       "confirmation": null,
       "history": {
         "undoable": true,
@@ -432,7 +435,8 @@
         "refusalKey": null
       },
       "refusals": [
-        "status.app.componentInUse"
+        "status.app.componentInUse",
+        "status.app.inUse"
       ],
       "confirmation": null,
       "history": {
@@ -832,6 +836,11 @@
           "type": "string",
           "values": [],
           "optional": false
+        },
+        "target": {
+          "type": "node",
+          "values": [],
+          "optional": true
         }
       },
       "availability": {
@@ -928,6 +937,11 @@
           "type": "string",
           "values": [],
           "optional": true
+        },
+        "target": {
+          "type": "node",
+          "values": [],
+          "optional": true
         }
       },
       "availability": {
@@ -938,7 +952,8 @@
         "status.app.noElement",
         "status.locked.edit",
         "status.app.invalid",
-        "status.app.badBinding"
+        "status.app.badBinding",
+        "status.app.taken"
       ],
       "confirmation": null,
       "history": {
@@ -1086,6 +1101,11 @@
           "type": "string",
           "values": [],
           "optional": true
+        },
+        "target": {
+          "type": "node",
+          "values": [],
+          "optional": true
         }
       },
       "availability": {
@@ -1170,6 +1190,11 @@
           "type": "integer",
           "values": [],
           "optional": false
+        },
+        "target": {
+          "type": "node",
+          "values": [],
+          "optional": true
         }
       },
       "availability": {

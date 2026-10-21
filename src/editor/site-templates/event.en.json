@@ -1,21 +1,21 @@
 {
  "version": 4,
- "language": "pt-BR",
+ "language": "en",
  "codeLanguage": "en",
  "pages": [
   {
-   "id": "agency165",
-   "name": "Início",
+   "id": "event139",
+   "name": "Event",
    "file": "index.html",
    "tree": {
-    "id": "agency164",
+    "id": "event138",
     "type": "page",
     "name": "Body",
     "tag": "body",
     "attributes": {
-     "pageTitle": "Norte — Agência de marketing digital",
-     "pageDescription": "Sites, tráfego pago e conteúdo para empresas que querem crescer com previsibilidade.",
-     "pageLanguage": "pt-BR"
+     "pageTitle": "Conecta — Technology and business conference",
+     "pageDescription": "Two days of talks, workshops and networking. Discounted tickets until the current batch ends.",
+     "pageLanguage": "en"
     },
     "classes": [],
     "styles": {
@@ -34,9 +34,9 @@
     "text": null,
     "children": [
      {
-      "id": "agency1",
+      "id": "event1",
       "type": "header",
-      "name": "Menu que recolhe no celular",
+      "name": "Menu that folds on phones",
       "tag": "header",
       "attributes": {},
       "classes": [],
@@ -60,9 +60,9 @@
       "text": null,
       "children": [
        {
-        "id": "agency2",
+        "id": "event2",
         "type": "div",
-        "name": "Contêiner",
+        "name": "Container",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -84,12 +84,12 @@
         "text": null,
         "children": [
          {
-          "id": "agency3",
+          "id": "event3",
           "type": "link",
           "name": "Link",
           "tag": "a",
           "attributes": {
-           "href": "/"
+           "href": "index.html"
           },
           "classes": [],
           "styles": {
@@ -102,13 +102,13 @@
             }
            }
           },
-          "text": "Norte",
+          "text": "Conecta",
           "children": []
          },
          {
-          "id": "agency4",
+          "id": "event4",
           "type": "button",
-          "name": "Botão",
+          "name": "Button",
           "tag": "button",
           "attributes": {
            "ariaLabel": "Menu"
@@ -156,9 +156,9 @@
           }
          },
          {
-          "id": "agency5",
+          "id": "event5",
           "type": "nav",
-          "name": "Navegação",
+          "name": "Navigation",
           "tag": "nav",
           "attributes": {},
           "classes": [],
@@ -180,9 +180,84 @@
           "text": null,
           "children": [
            {
-            "id": "agency6",
+            "id": "event6",
             "type": "link",
             "name": "Link 2",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#schedule"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#0f172a",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Schedule",
+            "children": []
+           },
+           {
+            "id": "event7",
+            "type": "link",
+            "name": "Link 3",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#speakers"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#0f172a",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Speakers",
+            "children": []
+           },
+           {
+            "id": "event8",
+            "type": "link",
+            "name": "Link 4",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#venue"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#0f172a",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Venue",
+            "children": []
+           },
+           {
+            "id": "event9",
+            "type": "link",
+            "name": "Link 5",
             "tag": "a",
             "attributes": {
              "href": "index.html"
@@ -201,91 +276,16 @@
               }
              }
             },
-            "text": "Início",
+            "text": "Home",
             "children": []
            },
            {
-            "id": "agency7",
-            "type": "link",
-            "name": "Link 3",
-            "tag": "a",
-            "attributes": {
-             "href": "index.html#cases"
-            },
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "color": "#0f172a",
-               "text-decoration-line": "none",
-               "font-weight": "500",
-               "padding-top": "8px",
-               "padding-bottom": "8px",
-               "padding-left": "4px",
-               "padding-right": "4px"
-              }
-             }
-            },
-            "text": "Cases",
-            "children": []
-           },
-           {
-            "id": "agency8",
-            "type": "link",
-            "name": "Link 4",
-            "tag": "a",
-            "attributes": {
-             "href": "index.html#servicos"
-            },
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "color": "#0f172a",
-               "text-decoration-line": "none",
-               "font-weight": "500",
-               "padding-top": "8px",
-               "padding-bottom": "8px",
-               "padding-left": "4px",
-               "padding-right": "4px"
-              }
-             }
-            },
-            "text": "Serviços",
-            "children": []
-           },
-           {
-            "id": "agency9",
-            "type": "link",
-            "name": "Link 5",
-            "tag": "a",
-            "attributes": {
-             "href": "index.html#contato"
-            },
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "color": "#0f172a",
-               "text-decoration-line": "none",
-               "font-weight": "500",
-               "padding-top": "8px",
-               "padding-bottom": "8px",
-               "padding-left": "4px",
-               "padding-right": "4px"
-              }
-             }
-            },
-            "text": "Contato",
-            "children": []
-           },
-           {
-            "id": "agency10",
+            "id": "event10",
             "type": "link",
             "name": "Link 6",
             "tag": "a",
             "attributes": {
-             "href": "index.html#contato"
+             "href": "index.html#tickets"
             },
             "classes": [],
             "styles": {
@@ -295,22 +295,22 @@
                "padding-bottom": "12px",
                "padding-left": "22px",
                "padding-right": "22px",
-               "background-color": "#2563eb",
+               "background-color": "#7c3aed",
                "color": "#ffffff",
                "font-weight": "600",
                "font-size": "15px",
                "border-top-width": "1px",
                "border-top-style": "solid",
-               "border-top-color": "#2563eb",
+               "border-top-color": "#7c3aed",
                "border-right-width": "1px",
                "border-right-style": "solid",
-               "border-right-color": "#2563eb",
+               "border-right-color": "#7c3aed",
                "border-bottom-width": "1px",
                "border-bottom-style": "solid",
-               "border-bottom-color": "#2563eb",
+               "border-bottom-color": "#7c3aed",
                "border-left-width": "1px",
                "border-left-style": "solid",
-               "border-left-color": "#2563eb",
+               "border-left-color": "#7c3aed",
                "border-top-left-radius": "10px",
                "border-top-right-radius": "10px",
                "border-bottom-right-radius": "10px",
@@ -320,7 +320,7 @@
               }
              }
             },
-            "text": "Pedir orçamento",
+            "text": "Buy a ticket",
             "children": []
            }
           ],
@@ -336,9 +336,9 @@
       }
      },
      {
-      "id": "agency11",
+      "id": "event11",
       "type": "section",
-      "name": "Destaque com imagem",
+      "name": "Hero with image",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -349,16 +349,16 @@
          "padding-right": "40px",
          "padding-bottom": "96px",
          "padding-left": "40px",
-         "background-color": "#eff6ff"
+         "background-color": "#f5f3ff"
         }
        }
       },
       "text": null,
       "children": [
        {
-        "id": "agency12",
+        "id": "event12",
         "type": "div",
-        "name": "Contêiner 2",
+        "name": "Container 2",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -379,9 +379,9 @@
         "text": null,
         "children": [
          {
-          "id": "agency13",
+          "id": "event13",
           "type": "div",
-          "name": "Texto",
+          "name": "Text",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -389,16 +389,16 @@
           "text": null,
           "children": [
            {
-            "id": "agency14",
+            "id": "event14",
             "type": "paragraph",
-            "name": "Parágrafo",
+            "name": "Paragraph",
             "tag": "p",
             "attributes": {},
             "classes": [],
             "styles": {
              "desktop": {
               "base": {
-               "color": "#2563eb",
+               "color": "#7c3aed",
                "font-size": "14px",
                "font-weight": "600",
                "letter-spacing": "0.08em",
@@ -407,13 +407,13 @@
               }
              }
             },
-            "text": "Agência de marketing digital",
+            "text": "A two-day conference · Downtown",
             "children": []
            },
            {
-            "id": "agency15",
+            "id": "event15",
             "type": "heading",
-            "name": "Título",
+            "name": "Heading",
             "tag": "h1",
             "attributes": {},
             "classes": [],
@@ -429,13 +429,13 @@
               }
              }
             },
-            "text": "Mais clientes todo mês, com estratégia e números claros",
+            "text": "Two days with the people building the future of digital business",
             "children": []
            },
            {
-            "id": "agency16",
+            "id": "event16",
             "type": "paragraph",
-            "name": "Parágrafo 2",
+            "name": "Paragraph 2",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -449,13 +449,13 @@
               }
              }
             },
-            "text": "Criamos o site, cuidamos dos anúncios e medimos tudo. Você acompanha os resultados num painel simples.",
+            "text": "40 talks, 12 hands-on workshops and 2,000 people to meet.",
             "children": []
            },
            {
-            "id": "agency17",
+            "id": "event17",
             "type": "div",
-            "name": "Ações",
+            "name": "Actions",
             "tag": "div",
             "attributes": {},
             "classes": [],
@@ -472,9 +472,9 @@
             "text": null,
             "children": [
              {
-              "id": "agency18",
+              "id": "event18",
               "type": "button",
-              "name": "Botão 2",
+              "name": "Button 2",
               "tag": "button",
               "attributes": {},
               "classes": [],
@@ -485,21 +485,21 @@
                  "padding-bottom": "14px",
                  "padding-left": "24px",
                  "padding-right": "24px",
-                 "background-color": "#2563eb",
+                 "background-color": "#7c3aed",
                  "color": "#ffffff",
                  "font-weight": "600",
                  "border-top-width": "1px",
                  "border-top-style": "solid",
-                 "border-top-color": "#2563eb",
+                 "border-top-color": "#7c3aed",
                  "border-right-width": "1px",
                  "border-right-style": "solid",
-                 "border-right-color": "#2563eb",
+                 "border-right-color": "#7c3aed",
                  "border-bottom-width": "1px",
                  "border-bottom-style": "solid",
-                 "border-bottom-color": "#2563eb",
+                 "border-bottom-color": "#7c3aed",
                  "border-left-width": "1px",
                  "border-left-style": "solid",
-                 "border-left-color": "#2563eb",
+                 "border-left-color": "#7c3aed",
                  "border-top-left-radius": "10px",
                  "border-top-right-radius": "10px",
                  "border-bottom-right-radius": "10px",
@@ -507,13 +507,13 @@
                 }
                }
               },
-              "text": "Pedir orçamento",
+              "text": "Buy a ticket",
               "children": []
              },
              {
-              "id": "agency19",
+              "id": "event19",
               "type": "button",
-              "name": "Botão 3",
+              "name": "Button 3",
               "tag": "button",
               "attributes": {},
               "classes": [],
@@ -546,7 +546,7 @@
                 }
                }
               },
-              "text": "Ver cases",
+              "text": "See the schedule",
               "children": []
              }
             ]
@@ -554,13 +554,13 @@
           ]
          },
          {
-          "id": "agency20",
+          "id": "event20",
           "type": "image",
-          "name": "Imagem",
+          "name": "Image",
           "tag": "img",
           "attributes": {
-           "src": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&h=900&q=80",
-           "alt": "Mais clientes todo mês, com estratégia e números claros"
+           "src": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&h=900&q=80",
+           "alt": "Two days with the people building the future of digital business"
           },
           "classes": [],
           "styles": {
@@ -586,591 +586,9 @@
       ]
      },
      {
-      "id": "agency21",
+      "id": "event21",
       "type": "section",
-      "name": "Logos de clientes",
-      "tag": "section",
-      "attributes": {},
-      "classes": [],
-      "styles": {
-       "desktop": {
-        "base": {
-         "padding-top": "48px",
-         "padding-right": "24px",
-         "padding-bottom": "48px",
-         "padding-left": "24px"
-        }
-       }
-      },
-      "text": null,
-      "children": [
-       {
-        "id": "agency22",
-        "type": "div",
-        "name": "Contêiner 3",
-        "tag": "div",
-        "attributes": {},
-        "classes": [],
-        "styles": {
-         "desktop": {
-          "base": {
-           "max-width": "1120px",
-           "margin-left": "auto",
-           "margin-right": "auto",
-           "text-align": "center"
-          }
-         }
-        },
-        "text": null,
-        "children": [
-         {
-          "id": "agency23",
-          "type": "paragraph",
-          "name": "Parágrafo 3",
-          "tag": "p",
-          "attributes": {},
-          "classes": [],
-          "styles": {
-           "desktop": {
-            "base": {
-             "font-size": "14px",
-             "line-height": "1.5",
-             "color": "#475569",
-             "margin-top": "0px",
-             "margin-bottom": "24px",
-             "text-transform": "uppercase",
-             "letter-spacing": "0.08em"
-            }
-           }
-          },
-          "text": "Empresas que crescem com a Norte",
-          "children": []
-         },
-         {
-          "id": "agency24",
-          "type": "div",
-          "name": "Logos",
-          "tag": "div",
-          "attributes": {},
-          "classes": [],
-          "styles": {
-           "desktop": {
-            "base": {
-             "display": "flex",
-             "flex-wrap": "wrap",
-             "justify-content": "center",
-             "align-items": "center",
-             "column-gap": "48px",
-             "row-gap": "24px",
-             "opacity": "0.7"
-            }
-           }
-          },
-          "text": null,
-          "children": [
-           {
-            "id": "agency25",
-            "type": "paragraph",
-            "name": "Parágrafo 4",
-            "tag": "p",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "font-size": "22px",
-               "font-weight": "800",
-               "color": "#0f172a",
-               "margin-top": "0px",
-               "margin-bottom": "0px"
-              }
-             }
-            },
-            "text": "Aroma",
-            "children": []
-           },
-           {
-            "id": "agency26",
-            "type": "paragraph",
-            "name": "Parágrafo 5",
-            "tag": "p",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "font-size": "22px",
-               "font-weight": "800",
-               "color": "#0f172a",
-               "margin-top": "0px",
-               "margin-bottom": "0px"
-              }
-             }
-            },
-            "text": "Lima Móveis",
-            "children": []
-           },
-           {
-            "id": "agency27",
-            "type": "paragraph",
-            "name": "Parágrafo 6",
-            "tag": "p",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "font-size": "22px",
-               "font-weight": "800",
-               "color": "#0f172a",
-               "margin-top": "0px",
-               "margin-bottom": "0px"
-              }
-             }
-            },
-            "text": "Cantina Reis",
-            "children": []
-           },
-           {
-            "id": "agency28",
-            "type": "paragraph",
-            "name": "Parágrafo 7",
-            "tag": "p",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "font-size": "22px",
-               "font-weight": "800",
-               "color": "#0f172a",
-               "margin-top": "0px",
-               "margin-bottom": "0px"
-              }
-             }
-            },
-            "text": "Nordeste Tech",
-            "children": []
-           },
-           {
-            "id": "agency29",
-            "type": "paragraph",
-            "name": "Parágrafo 8",
-            "tag": "p",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "font-size": "22px",
-               "font-weight": "800",
-               "color": "#0f172a",
-               "margin-top": "0px",
-               "margin-bottom": "0px"
-              }
-             }
-            },
-            "text": "Verde Vivo",
-            "children": []
-           }
-          ]
-         }
-        ]
-       }
-      ]
-     },
-     {
-      "id": "agency30",
-      "type": "section",
-      "name": "Recursos",
-      "tag": "section",
-      "attributes": {
-       "id": "servicos"
-      },
-      "classes": [],
-      "styles": {
-       "desktop": {
-        "base": {
-         "padding-top": "96px",
-         "padding-right": "40px",
-         "padding-bottom": "96px",
-         "padding-left": "40px"
-        }
-       }
-      },
-      "text": null,
-      "children": [
-       {
-        "id": "agency31",
-        "type": "div",
-        "name": "Contêiner 4",
-        "tag": "div",
-        "attributes": {},
-        "classes": [],
-        "styles": {
-         "desktop": {
-          "base": {
-           "max-width": "1120px",
-           "margin-left": "auto",
-           "margin-right": "auto"
-          }
-         }
-        },
-        "text": null,
-        "children": [
-         {
-          "id": "agency32",
-          "type": "div",
-          "name": "Introdução",
-          "tag": "div",
-          "attributes": {},
-          "classes": [],
-          "styles": {
-           "desktop": {
-            "base": {
-             "text-align": "center",
-             "max-width": "720px",
-             "margin-left": "auto",
-             "margin-right": "auto",
-             "margin-bottom": "48px"
-            }
-           }
-          },
-          "text": null,
-          "children": [
-           {
-            "id": "agency33",
-            "type": "paragraph",
-            "name": "Parágrafo 9",
-            "tag": "p",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "color": "#2563eb",
-               "font-size": "14px",
-               "font-weight": "600",
-               "letter-spacing": "0.08em",
-               "text-transform": "uppercase",
-               "margin-bottom": "12px"
-              }
-             }
-            },
-            "text": "Serviços",
-            "children": []
-           },
-           {
-            "id": "agency34",
-            "type": "heading",
-            "name": "Título 2",
-            "tag": "h2",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
-               "line-height": "1.2",
-               "color": "#0f172a",
-               "letter-spacing": "-0.01em",
-               "margin-bottom": "16px",
-               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
-              }
-             }
-            },
-            "text": "Do primeiro clique à venda",
-            "children": []
-           },
-           {
-            "id": "agency35",
-            "type": "paragraph",
-            "name": "Parágrafo 10",
-            "tag": "p",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "font-size": "18px",
-               "line-height": "1.6",
-               "color": "#475569",
-               "margin-top": "0px",
-               "margin-bottom": "0px"
-              }
-             }
-            },
-            "text": "Um time só cuidando de todo o caminho do seu cliente.",
-            "children": []
-           }
-          ]
-         },
-         {
-          "id": "agency36",
-          "type": "div",
-          "name": "Grade",
-          "tag": "div",
-          "attributes": {},
-          "classes": [],
-          "styles": {
-           "desktop": {
-            "base": {
-             "display": "grid",
-             "grid-template-columns": "repeat(auto-fit, minmax(260px, 1fr))",
-             "column-gap": "24px",
-             "row-gap": "24px"
-            }
-           }
-          },
-          "text": null,
-          "children": [
-           {
-            "id": "agency37",
-            "type": "article",
-            "name": "Artigo",
-            "tag": "article",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "padding-top": "28px",
-               "padding-right": "28px",
-               "padding-bottom": "28px",
-               "padding-left": "28px",
-               "background-color": "#ffffff",
-               "border-top-width": "1px",
-               "border-top-style": "solid",
-               "border-top-color": "#e2e8f0",
-               "border-right-width": "1px",
-               "border-right-style": "solid",
-               "border-right-color": "#e2e8f0",
-               "border-bottom-width": "1px",
-               "border-bottom-style": "solid",
-               "border-bottom-color": "#e2e8f0",
-               "border-left-width": "1px",
-               "border-left-style": "solid",
-               "border-left-color": "#e2e8f0",
-               "border-top-left-radius": "16px",
-               "border-top-right-radius": "16px",
-               "border-bottom-right-radius": "16px",
-               "border-bottom-left-radius": "16px"
-              }
-             }
-            },
-            "text": null,
-            "children": [
-             {
-              "id": "agency38",
-              "type": "heading",
-              "name": "Título 3",
-              "tag": "h3",
-              "attributes": {},
-              "classes": [],
-              "styles": {
-               "desktop": {
-                "base": {
-                 "font-size": "20px",
-                 "color": "#0f172a",
-                 "margin-bottom": "8px",
-                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
-                }
-               }
-              },
-              "text": "Sites que vendem",
-              "children": []
-             },
-             {
-              "id": "agency39",
-              "type": "paragraph",
-              "name": "Parágrafo 11",
-              "tag": "p",
-              "attributes": {},
-              "classes": [],
-              "styles": {
-               "desktop": {
-                "base": {
-                 "font-size": "16px",
-                 "line-height": "1.6",
-                 "color": "#475569",
-                 "margin-top": "0px",
-                 "margin-bottom": "0px"
-                }
-               }
-              },
-              "text": "Rápidos, bonitos e feitos para converter visitas em contatos.",
-              "children": []
-             }
-            ]
-           },
-           {
-            "id": "agency40",
-            "type": "article",
-            "name": "Artigo 2",
-            "tag": "article",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "padding-top": "28px",
-               "padding-right": "28px",
-               "padding-bottom": "28px",
-               "padding-left": "28px",
-               "background-color": "#ffffff",
-               "border-top-width": "1px",
-               "border-top-style": "solid",
-               "border-top-color": "#e2e8f0",
-               "border-right-width": "1px",
-               "border-right-style": "solid",
-               "border-right-color": "#e2e8f0",
-               "border-bottom-width": "1px",
-               "border-bottom-style": "solid",
-               "border-bottom-color": "#e2e8f0",
-               "border-left-width": "1px",
-               "border-left-style": "solid",
-               "border-left-color": "#e2e8f0",
-               "border-top-left-radius": "16px",
-               "border-top-right-radius": "16px",
-               "border-bottom-right-radius": "16px",
-               "border-bottom-left-radius": "16px"
-              }
-             }
-            },
-            "text": null,
-            "children": [
-             {
-              "id": "agency41",
-              "type": "heading",
-              "name": "Título 4",
-              "tag": "h3",
-              "attributes": {},
-              "classes": [],
-              "styles": {
-               "desktop": {
-                "base": {
-                 "font-size": "20px",
-                 "color": "#0f172a",
-                 "margin-bottom": "8px",
-                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
-                }
-               }
-              },
-              "text": "Tráfego pago",
-              "children": []
-             },
-             {
-              "id": "agency42",
-              "type": "paragraph",
-              "name": "Parágrafo 12",
-              "tag": "p",
-              "attributes": {},
-              "classes": [],
-              "styles": {
-               "desktop": {
-                "base": {
-                 "font-size": "16px",
-                 "line-height": "1.6",
-                 "color": "#475569",
-                 "margin-top": "0px",
-                 "margin-bottom": "0px"
-                }
-               }
-              },
-              "text": "Google e Meta Ads com metas semanais e relatórios claros.",
-              "children": []
-             }
-            ]
-           },
-           {
-            "id": "agency43",
-            "type": "article",
-            "name": "Artigo 3",
-            "tag": "article",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "padding-top": "28px",
-               "padding-right": "28px",
-               "padding-bottom": "28px",
-               "padding-left": "28px",
-               "background-color": "#ffffff",
-               "border-top-width": "1px",
-               "border-top-style": "solid",
-               "border-top-color": "#e2e8f0",
-               "border-right-width": "1px",
-               "border-right-style": "solid",
-               "border-right-color": "#e2e8f0",
-               "border-bottom-width": "1px",
-               "border-bottom-style": "solid",
-               "border-bottom-color": "#e2e8f0",
-               "border-left-width": "1px",
-               "border-left-style": "solid",
-               "border-left-color": "#e2e8f0",
-               "border-top-left-radius": "16px",
-               "border-top-right-radius": "16px",
-               "border-bottom-right-radius": "16px",
-               "border-bottom-left-radius": "16px"
-              }
-             }
-            },
-            "text": null,
-            "children": [
-             {
-              "id": "agency44",
-              "type": "heading",
-              "name": "Título 5",
-              "tag": "h3",
-              "attributes": {},
-              "classes": [],
-              "styles": {
-               "desktop": {
-                "base": {
-                 "font-size": "20px",
-                 "color": "#0f172a",
-                 "margin-bottom": "8px",
-                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
-                }
-               }
-              },
-              "text": "Conteúdo e redes",
-              "children": []
-             },
-             {
-              "id": "agency45",
-              "type": "paragraph",
-              "name": "Parágrafo 13",
-              "tag": "p",
-              "attributes": {},
-              "classes": [],
-              "styles": {
-               "desktop": {
-                "base": {
-                 "font-size": "16px",
-                 "line-height": "1.6",
-                 "color": "#475569",
-                 "margin-top": "0px",
-                 "margin-bottom": "0px"
-                }
-               }
-              },
-              "text": "Calendário editorial, design e vídeos curtos para sua marca.",
-              "children": []
-             }
-            ]
-           }
-          ]
-         }
-        ]
-       }
-      ]
-     },
-     {
-      "id": "agency46",
-      "type": "section",
-      "name": "Como funciona (passos)",
+      "name": "Countdown",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -1181,16 +599,17 @@
          "padding-right": "24px",
          "padding-bottom": "80px",
          "padding-left": "24px",
-         "background-color": "#eff6ff"
+         "background-color": "#2e1065",
+         "text-align": "center"
         }
        }
       },
       "text": null,
       "children": [
        {
-        "id": "agency47",
+        "id": "event22",
         "type": "div",
-        "name": "Contêiner 5",
+        "name": "Container 3",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -1206,9 +625,499 @@
         "text": null,
         "children": [
          {
-          "id": "agency48",
+          "id": "event23",
+          "type": "heading",
+          "name": "Heading 2",
+          "tag": "h2",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+             "line-height": "1.2",
+             "color": "#ffffff",
+             "letter-spacing": "-0.01em",
+             "margin-bottom": "12px",
+             "margin-top": "0px",
+             "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+            }
+           }
+          },
+          "text": "The second batch of tickets ends in",
+          "children": []
+         },
+         {
+          "id": "event24",
+          "type": "paragraph",
+          "name": "Paragraph 3",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "18px",
+             "line-height": "1.6",
+             "color": "#ddd6fe",
+             "margin-top": "0px",
+             "margin-bottom": "32px"
+            }
+           }
+          },
+          "text": "Lock in the current price before it goes up.",
+          "children": []
+         },
+         {
+          "id": "event25",
           "type": "div",
-          "name": "Introdução 2",
+          "name": "Time left",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-wrap": "wrap",
+             "justify-content": "center",
+             "column-gap": "16px",
+             "row-gap": "16px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "event26",
+            "type": "div",
+            "name": "Container 4",
+            "tag": "div",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "24px",
+               "padding-bottom": "24px",
+               "padding-left": "24px",
+               "padding-right": "24px",
+               "background-color": "rgba(255, 255, 255, 0.08)",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "rgba(255, 255, 255, 0.2)",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "rgba(255, 255, 255, 0.2)",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "rgba(255, 255, 255, 0.2)",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "rgba(255, 255, 255, 0.2)",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px",
+               "min-width": "110px",
+               "text-align": "center"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "event27",
+              "type": "paragraph",
+              "name": "Paragraph 4",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "44px",
+                 "font-weight": "700",
+                 "color": "#ffffff",
+                 "line-height": "1",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px",
+                 "font-variant-numeric": "tabular-nums"
+                }
+               }
+              },
+              "text": "00",
+              "children": [],
+              "customAttributes": {
+               "data-wc-unit": "days"
+              }
+             },
+             {
+              "id": "event28",
+              "type": "paragraph",
+              "name": "Paragraph 5",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "13px",
+                 "color": "#ddd6fe",
+                 "text-transform": "uppercase",
+                 "letter-spacing": "0.08em",
+                 "margin-top": "8px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Days",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "event29",
+            "type": "div",
+            "name": "Container 5",
+            "tag": "div",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "24px",
+               "padding-bottom": "24px",
+               "padding-left": "24px",
+               "padding-right": "24px",
+               "background-color": "rgba(255, 255, 255, 0.08)",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "rgba(255, 255, 255, 0.2)",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "rgba(255, 255, 255, 0.2)",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "rgba(255, 255, 255, 0.2)",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "rgba(255, 255, 255, 0.2)",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px",
+               "min-width": "110px",
+               "text-align": "center"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "event30",
+              "type": "paragraph",
+              "name": "Paragraph 6",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "44px",
+                 "font-weight": "700",
+                 "color": "#ffffff",
+                 "line-height": "1",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px",
+                 "font-variant-numeric": "tabular-nums"
+                }
+               }
+              },
+              "text": "00",
+              "children": [],
+              "customAttributes": {
+               "data-wc-unit": "hours"
+              }
+             },
+             {
+              "id": "event31",
+              "type": "paragraph",
+              "name": "Paragraph 7",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "13px",
+                 "color": "#ddd6fe",
+                 "text-transform": "uppercase",
+                 "letter-spacing": "0.08em",
+                 "margin-top": "8px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Hours",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "event32",
+            "type": "div",
+            "name": "Container 6",
+            "tag": "div",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "24px",
+               "padding-bottom": "24px",
+               "padding-left": "24px",
+               "padding-right": "24px",
+               "background-color": "rgba(255, 255, 255, 0.08)",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "rgba(255, 255, 255, 0.2)",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "rgba(255, 255, 255, 0.2)",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "rgba(255, 255, 255, 0.2)",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "rgba(255, 255, 255, 0.2)",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px",
+               "min-width": "110px",
+               "text-align": "center"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "event33",
+              "type": "paragraph",
+              "name": "Paragraph 8",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "44px",
+                 "font-weight": "700",
+                 "color": "#ffffff",
+                 "line-height": "1",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px",
+                 "font-variant-numeric": "tabular-nums"
+                }
+               }
+              },
+              "text": "00",
+              "children": [],
+              "customAttributes": {
+               "data-wc-unit": "minutes"
+              }
+             },
+             {
+              "id": "event34",
+              "type": "paragraph",
+              "name": "Paragraph 9",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "13px",
+                 "color": "#ddd6fe",
+                 "text-transform": "uppercase",
+                 "letter-spacing": "0.08em",
+                 "margin-top": "8px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Minutes",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "event35",
+            "type": "div",
+            "name": "Container 7",
+            "tag": "div",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "24px",
+               "padding-bottom": "24px",
+               "padding-left": "24px",
+               "padding-right": "24px",
+               "background-color": "rgba(255, 255, 255, 0.08)",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "rgba(255, 255, 255, 0.2)",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "rgba(255, 255, 255, 0.2)",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "rgba(255, 255, 255, 0.2)",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "rgba(255, 255, 255, 0.2)",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px",
+               "min-width": "110px",
+               "text-align": "center"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "event36",
+              "type": "paragraph",
+              "name": "Paragraph 10",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "44px",
+                 "font-weight": "700",
+                 "color": "#ffffff",
+                 "line-height": "1",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px",
+                 "font-variant-numeric": "tabular-nums"
+                }
+               }
+              },
+              "text": "00",
+              "children": [],
+              "customAttributes": {
+               "data-wc-unit": "seconds"
+              }
+             },
+             {
+              "id": "event37",
+              "type": "paragraph",
+              "name": "Paragraph 11",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "13px",
+                 "color": "#ddd6fe",
+                 "text-transform": "uppercase",
+                 "letter-spacing": "0.08em",
+                 "margin-top": "8px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Seconds",
+              "children": []
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "id": "event38",
+          "type": "paragraph",
+          "name": "Paragraph 12",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "18px",
+             "line-height": "1.6",
+             "color": "#ffffff",
+             "margin-top": "24px",
+             "margin-bottom": "32px"
+            }
+           }
+          },
+          "text": "The second batch is over: tickets are still on sale at the third-batch price.",
+          "children": [],
+          "customAttributes": {
+           "data-wc-done": ""
+          }
+         }
+        ]
+       }
+      ],
+      "customAttributes": {
+       "data-wc": "countdown",
+       "data-wc-date": "P30D"
+      }
+     },
+     {
+      "id": "event39",
+      "type": "section",
+      "name": "How it works (steps)",
+      "tag": "section",
+      "attributes": {
+       "id": "schedule"
+      },
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "80px",
+         "padding-right": "24px",
+         "padding-bottom": "80px",
+         "padding-left": "24px",
+         "background-color": "#f5f3ff"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "event40",
+        "type": "div",
+        "name": "Container 8",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "event41",
+          "type": "div",
+          "name": "Introduction",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1226,9 +1135,9 @@
           "text": null,
           "children": [
            {
-            "id": "agency49",
+            "id": "event42",
             "type": "heading",
-            "name": "Título 6",
+            "name": "Heading 3",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -1245,13 +1154,13 @@
               }
              }
             },
-            "text": "Como trabalhamos",
+            "text": "Schedule",
             "children": []
            },
            {
-            "id": "agency50",
+            "id": "event43",
             "type": "paragraph",
-            "name": "Parágrafo 14",
+            "name": "Paragraph 13",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1266,15 +1175,15 @@
               }
              }
             },
-            "text": "Três passos do diagnóstico aos resultados.",
+            "text": "Three tracks to plan your day.",
             "children": []
            }
           ]
          },
          {
-          "id": "agency51",
+          "id": "event44",
           "type": "div",
-          "name": "Passos",
+          "name": "Steps",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1291,9 +1200,9 @@
           "text": null,
           "children": [
            {
-            "id": "agency52",
+            "id": "event45",
             "type": "article",
-            "name": "Artigo 4",
+            "name": "Article",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1330,9 +1239,9 @@
             "text": null,
             "children": [
              {
-              "id": "agency53",
+              "id": "event46",
               "type": "paragraph",
-              "name": "Parágrafo 15",
+              "name": "Paragraph 14",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1345,7 +1254,7 @@
                  "border-top-right-radius": "999px",
                  "border-bottom-right-radius": "999px",
                  "border-bottom-left-radius": "999px",
-                 "background-color": "#2563eb",
+                 "background-color": "#7c3aed",
                  "color": "#ffffff",
                  "font-weight": "700",
                  "display": "flex",
@@ -1360,9 +1269,9 @@
               "children": []
              },
              {
-              "id": "agency54",
+              "id": "event47",
               "type": "heading",
-              "name": "Título 7",
+              "name": "Heading 4",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1378,13 +1287,13 @@
                 }
                }
               },
-              "text": "Diagnóstico gratuito",
+              "text": "Product and data",
               "children": []
              },
              {
-              "id": "agency55",
+              "id": "event48",
               "type": "paragraph",
-              "name": "Parágrafo 16",
+              "name": "Paragraph 15",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1399,15 +1308,15 @@
                 }
                }
               },
-              "text": "Analisamos seu site, anúncios e concorrentes.",
+              "text": "Applied AI, metrics that matter and product discovery.",
               "children": []
              }
             ]
            },
            {
-            "id": "agency56",
+            "id": "event49",
             "type": "article",
-            "name": "Artigo 5",
+            "name": "Article 2",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1444,9 +1353,9 @@
             "text": null,
             "children": [
              {
-              "id": "agency57",
+              "id": "event50",
               "type": "paragraph",
-              "name": "Parágrafo 17",
+              "name": "Paragraph 16",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1459,7 +1368,7 @@
                  "border-top-right-radius": "999px",
                  "border-bottom-right-radius": "999px",
                  "border-bottom-left-radius": "999px",
-                 "background-color": "#2563eb",
+                 "background-color": "#7c3aed",
                  "color": "#ffffff",
                  "font-weight": "700",
                  "display": "flex",
@@ -1474,9 +1383,9 @@
               "children": []
              },
              {
-              "id": "agency58",
+              "id": "event51",
               "type": "heading",
-              "name": "Título 8",
+              "name": "Heading 5",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1492,13 +1401,13 @@
                 }
                }
               },
-              "text": "Plano de 90 dias",
+              "text": "Marketing and sales",
               "children": []
              },
              {
-              "id": "agency59",
+              "id": "event52",
               "type": "paragraph",
-              "name": "Parágrafo 18",
+              "name": "Paragraph 17",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1513,15 +1422,15 @@
                 }
                }
               },
-              "text": "Metas, investimento e cronograma num só documento.",
+              "text": "Acquisition, brand and sales processes that scale.",
               "children": []
              }
             ]
            },
            {
-            "id": "agency60",
+            "id": "event53",
             "type": "article",
-            "name": "Artigo 6",
+            "name": "Article 3",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1558,9 +1467,9 @@
             "text": null,
             "children": [
              {
-              "id": "agency61",
+              "id": "event54",
               "type": "paragraph",
-              "name": "Parágrafo 19",
+              "name": "Paragraph 18",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1573,7 +1482,7 @@
                  "border-top-right-radius": "999px",
                  "border-bottom-right-radius": "999px",
                  "border-bottom-left-radius": "999px",
-                 "background-color": "#2563eb",
+                 "background-color": "#7c3aed",
                  "color": "#ffffff",
                  "font-weight": "700",
                  "display": "flex",
@@ -1588,9 +1497,9 @@
               "children": []
              },
              {
-              "id": "agency62",
+              "id": "event55",
               "type": "heading",
-              "name": "Título 9",
+              "name": "Heading 6",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1606,13 +1515,13 @@
                 }
                }
               },
-              "text": "Execução e relatório",
+              "text": "Leadership",
               "children": []
              },
              {
-              "id": "agency63",
+              "id": "event56",
               "type": "paragraph",
-              "name": "Parágrafo 20",
+              "name": "Paragraph 19",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1627,7 +1536,7 @@
                 }
                }
               },
-              "text": "Toda semana você vê o que foi feito e o que veio de retorno.",
+              "text": "Remote teams, culture and managing growth.",
               "children": []
              }
             ]
@@ -1639,12 +1548,12 @@
       ]
      },
      {
-      "id": "agency64",
+      "id": "event57",
       "type": "section",
-      "name": "Números que contam",
+      "name": "Team",
       "tag": "section",
       "attributes": {
-       "id": "cases"
+       "id": "speakers"
       },
       "classes": [],
       "styles": {
@@ -1660,318 +1569,9 @@
       "text": null,
       "children": [
        {
-        "id": "agency65",
+        "id": "event58",
         "type": "div",
-        "name": "Contêiner 6",
-        "tag": "div",
-        "attributes": {},
-        "classes": [],
-        "styles": {
-         "desktop": {
-          "base": {
-           "max-width": "1120px",
-           "margin-left": "auto",
-           "margin-right": "auto",
-           "display": "grid",
-           "grid-template-columns": "repeat(auto-fit, minmax(200px, 1fr))",
-           "column-gap": "32px",
-           "row-gap": "32px"
-          }
-         }
-        },
-        "text": null,
-        "children": [
-         {
-          "id": "agency66",
-          "type": "div",
-          "name": "Contêiner 7",
-          "tag": "div",
-          "attributes": {},
-          "classes": [],
-          "styles": {
-           "desktop": {
-            "base": {
-             "text-align": "center"
-            }
-           }
-          },
-          "text": null,
-          "children": [
-           {
-            "id": "agency67",
-            "type": "paragraph",
-            "name": "Parágrafo 21",
-            "tag": "p",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "font-size": "48px",
-               "font-weight": "800",
-               "color": "#2563eb",
-               "line-height": "1.1",
-               "margin-top": "0px",
-               "margin-bottom": "0px"
-              }
-             }
-            },
-            "text": "+180%",
-            "children": [],
-            "customAttributes": {
-             "data-wc": "counter",
-             "data-wc-to": "1200",
-             "data-wc-suffix": "+"
-            }
-           },
-           {
-            "id": "agency68",
-            "type": "paragraph",
-            "name": "Parágrafo 22",
-            "tag": "p",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "font-size": "16px",
-               "line-height": "1.6",
-               "color": "#475569",
-               "margin-top": "8px",
-               "margin-bottom": "0px"
-              }
-             }
-            },
-            "text": "leads em 6 meses (Clínica Vita)",
-            "children": []
-           }
-          ]
-         },
-         {
-          "id": "agency69",
-          "type": "div",
-          "name": "Contêiner 8",
-          "tag": "div",
-          "attributes": {},
-          "classes": [],
-          "styles": {
-           "desktop": {
-            "base": {
-             "text-align": "center"
-            }
-           }
-          },
-          "text": null,
-          "children": [
-           {
-            "id": "agency70",
-            "type": "paragraph",
-            "name": "Parágrafo 23",
-            "tag": "p",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "font-size": "48px",
-               "font-weight": "800",
-               "color": "#2563eb",
-               "line-height": "1.1",
-               "margin-top": "0px",
-               "margin-bottom": "0px"
-              }
-             }
-            },
-            "text": "R$ 2,4 mi",
-            "children": [],
-            "customAttributes": {
-             "data-wc": "counter",
-             "data-wc-to": "15",
-             "data-wc-suffix": " anos"
-            }
-           },
-           {
-            "id": "agency71",
-            "type": "paragraph",
-            "name": "Parágrafo 24",
-            "tag": "p",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "font-size": "16px",
-               "line-height": "1.6",
-               "color": "#475569",
-               "margin-top": "8px",
-               "margin-bottom": "0px"
-              }
-             }
-            },
-            "text": "em vendas geridas por mês",
-            "children": []
-           }
-          ]
-         },
-         {
-          "id": "agency72",
-          "type": "div",
-          "name": "Contêiner 9",
-          "tag": "div",
-          "attributes": {},
-          "classes": [],
-          "styles": {
-           "desktop": {
-            "base": {
-             "text-align": "center"
-            }
-           }
-          },
-          "text": null,
-          "children": [
-           {
-            "id": "agency73",
-            "type": "paragraph",
-            "name": "Parágrafo 25",
-            "tag": "p",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "font-size": "48px",
-               "font-weight": "800",
-               "color": "#2563eb",
-               "line-height": "1.1",
-               "margin-top": "0px",
-               "margin-bottom": "0px"
-              }
-             }
-            },
-            "text": "120+",
-            "children": [],
-            "customAttributes": {
-             "data-wc": "counter",
-             "data-wc-to": "98",
-             "data-wc-suffix": "%"
-            }
-           },
-           {
-            "id": "agency74",
-            "type": "paragraph",
-            "name": "Parágrafo 26",
-            "tag": "p",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "font-size": "16px",
-               "line-height": "1.6",
-               "color": "#475569",
-               "margin-top": "8px",
-               "margin-bottom": "0px"
-              }
-             }
-            },
-            "text": "sites entregues",
-            "children": []
-           }
-          ]
-         },
-         {
-          "id": "agency75",
-          "type": "div",
-          "name": "Contêiner 10",
-          "tag": "div",
-          "attributes": {},
-          "classes": [],
-          "styles": {
-           "desktop": {
-            "base": {
-             "text-align": "center"
-            }
-           }
-          },
-          "text": null,
-          "children": [
-           {
-            "id": "agency76",
-            "type": "paragraph",
-            "name": "Parágrafo 27",
-            "tag": "p",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "font-size": "48px",
-               "font-weight": "800",
-               "color": "#2563eb",
-               "line-height": "1.1",
-               "margin-top": "0px",
-               "margin-bottom": "0px"
-              }
-             }
-            },
-            "text": "9,6",
-            "children": [],
-            "customAttributes": {
-             "data-wc": "counter",
-             "data-wc-to": "24",
-             "data-wc-suffix": "h"
-            }
-           },
-           {
-            "id": "agency77",
-            "type": "paragraph",
-            "name": "Parágrafo 28",
-            "tag": "p",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "font-size": "16px",
-               "line-height": "1.6",
-               "color": "#475569",
-               "margin-top": "8px",
-               "margin-bottom": "0px"
-              }
-             }
-            },
-            "text": "nota média dos clientes",
-            "children": []
-           }
-          ]
-         }
-        ]
-       }
-      ]
-     },
-     {
-      "id": "agency78",
-      "type": "section",
-      "name": "Equipe",
-      "tag": "section",
-      "attributes": {},
-      "classes": [],
-      "styles": {
-       "desktop": {
-        "base": {
-         "padding-top": "80px",
-         "padding-right": "24px",
-         "padding-bottom": "80px",
-         "padding-left": "24px"
-        }
-       }
-      },
-      "text": null,
-      "children": [
-       {
-        "id": "agency79",
-        "type": "div",
-        "name": "Contêiner 11",
+        "name": "Container 9",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -1987,9 +1587,9 @@
         "text": null,
         "children": [
          {
-          "id": "agency80",
+          "id": "event59",
           "type": "div",
-          "name": "Introdução 3",
+          "name": "Introduction 2",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -2007,9 +1607,9 @@
           "text": null,
           "children": [
            {
-            "id": "agency81",
+            "id": "event60",
             "type": "heading",
-            "name": "Título 10",
+            "name": "Heading 7",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -2026,13 +1626,13 @@
               }
              }
             },
-            "text": "O time",
+            "text": "Speakers",
             "children": []
            },
            {
-            "id": "agency82",
+            "id": "event61",
             "type": "paragraph",
-            "name": "Parágrafo 29",
+            "name": "Paragraph 20",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -2047,15 +1647,15 @@
               }
              }
             },
-            "text": "Especialistas que você conhece pelo nome.",
+            "text": "Who takes the stage.",
             "children": []
            }
           ]
          },
          {
-          "id": "agency83",
+          "id": "event62",
           "type": "div",
-          "name": "Pessoas",
+          "name": "People",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -2072,9 +1672,9 @@
           "text": null,
           "children": [
            {
-            "id": "agency84",
+            "id": "event63",
             "type": "article",
-            "name": "Artigo 7",
+            "name": "Article 4",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -2096,210 +1696,14 @@
             "text": null,
             "children": [
              {
-              "id": "agency85",
+              "id": "event64",
               "type": "image",
-              "name": "Imagem 2",
-              "tag": "img",
-              "attributes": {
-               "src": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=400&h=400&q=80",
-               "alt": "Lara Mendes",
-               "loading": "lazy"
-              },
-              "classes": [],
-              "styles": {
-               "desktop": {
-                "base": {
-                 "max-width": "100%",
-                 "width": "140px",
-                 "height": "140px",
-                 "object-fit": "cover",
-                 "border-top-left-radius": "999px",
-                 "border-top-right-radius": "999px",
-                 "border-bottom-right-radius": "999px",
-                 "border-bottom-left-radius": "999px",
-                 "background-color": "#e2e8f0"
-                }
-               }
-              },
-              "text": null,
-              "children": []
-             },
-             {
-              "id": "agency86",
-              "type": "heading",
-              "name": "Título 11",
-              "tag": "h3",
-              "attributes": {},
-              "classes": [],
-              "styles": {
-               "desktop": {
-                "base": {
-                 "font-size": "20px",
-                 "line-height": "1.3",
-                 "color": "#0f172a",
-                 "margin-top": "8px",
-                 "margin-bottom": "0px",
-                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
-                }
-               }
-              },
-              "text": "Lara Mendes",
-              "children": []
-             },
-             {
-              "id": "agency87",
-              "type": "paragraph",
-              "name": "Parágrafo 30",
-              "tag": "p",
-              "attributes": {},
-              "classes": [],
-              "styles": {
-               "desktop": {
-                "base": {
-                 "font-size": "14px",
-                 "line-height": "1.5",
-                 "color": "#475569",
-                 "margin-top": "0px",
-                 "margin-bottom": "0px"
-                }
-               }
-              },
-              "text": "Estratégia",
-              "children": []
-             }
-            ]
-           },
-           {
-            "id": "agency88",
-            "type": "article",
-            "name": "Artigo 8",
-            "tag": "article",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "padding-top": "56px",
-               "padding-right": "40px",
-               "padding-bottom": "56px",
-               "padding-left": "40px",
-               "text-align": "center",
-               "display": "flex",
-               "flex-direction": "column",
-               "align-items": "center",
-               "row-gap": "8px"
-              }
-             }
-            },
-            "text": null,
-            "children": [
-             {
-              "id": "agency89",
-              "type": "image",
-              "name": "Imagem 3",
-              "tag": "img",
-              "attributes": {
-               "src": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&h=400&q=80",
-               "alt": "Caio Ramos",
-               "loading": "lazy"
-              },
-              "classes": [],
-              "styles": {
-               "desktop": {
-                "base": {
-                 "max-width": "100%",
-                 "width": "140px",
-                 "height": "140px",
-                 "object-fit": "cover",
-                 "border-top-left-radius": "999px",
-                 "border-top-right-radius": "999px",
-                 "border-bottom-right-radius": "999px",
-                 "border-bottom-left-radius": "999px",
-                 "background-color": "#e2e8f0"
-                }
-               }
-              },
-              "text": null,
-              "children": []
-             },
-             {
-              "id": "agency90",
-              "type": "heading",
-              "name": "Título 12",
-              "tag": "h3",
-              "attributes": {},
-              "classes": [],
-              "styles": {
-               "desktop": {
-                "base": {
-                 "font-size": "20px",
-                 "line-height": "1.3",
-                 "color": "#0f172a",
-                 "margin-top": "8px",
-                 "margin-bottom": "0px",
-                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
-                }
-               }
-              },
-              "text": "Caio Ramos",
-              "children": []
-             },
-             {
-              "id": "agency91",
-              "type": "paragraph",
-              "name": "Parágrafo 31",
-              "tag": "p",
-              "attributes": {},
-              "classes": [],
-              "styles": {
-               "desktop": {
-                "base": {
-                 "font-size": "14px",
-                 "line-height": "1.5",
-                 "color": "#475569",
-                 "margin-top": "0px",
-                 "margin-bottom": "0px"
-                }
-               }
-              },
-              "text": "Mídia paga",
-              "children": []
-             }
-            ]
-           },
-           {
-            "id": "agency92",
-            "type": "article",
-            "name": "Artigo 9",
-            "tag": "article",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "padding-top": "56px",
-               "padding-right": "40px",
-               "padding-bottom": "56px",
-               "padding-left": "40px",
-               "text-align": "center",
-               "display": "flex",
-               "flex-direction": "column",
-               "align-items": "center",
-               "row-gap": "8px"
-              }
-             }
-            },
-            "text": null,
-            "children": [
-             {
-              "id": "agency93",
-              "type": "image",
-              "name": "Imagem 4",
+              "name": "Image 2",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&h=400&q=80",
-               "alt": "Bianca Faria",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Renata Duarte"
               },
               "classes": [],
               "styles": {
@@ -2321,9 +1725,9 @@
               "children": []
              },
              {
-              "id": "agency94",
+              "id": "event65",
               "type": "heading",
-              "name": "Título 13",
+              "name": "Heading 8",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -2339,13 +1743,13 @@
                 }
                }
               },
-              "text": "Bianca Faria",
+              "text": "Renata Duarte",
               "children": []
              },
              {
-              "id": "agency95",
+              "id": "event66",
               "type": "paragraph",
-              "name": "Parágrafo 32",
+              "name": "Paragraph 21",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2360,15 +1764,15 @@
                 }
                }
               },
-              "text": "Design",
+              "text": "CEO, Lumen",
               "children": []
              }
             ]
            },
            {
-            "id": "agency96",
+            "id": "event67",
             "type": "article",
-            "name": "Artigo 10",
+            "name": "Article 5",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -2390,14 +1794,14 @@
             "text": null,
             "children": [
              {
-              "id": "agency97",
+              "id": "event68",
               "type": "image",
-              "name": "Imagem 5",
+              "name": "Image 3",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&h=400&q=80",
-               "alt": "Otávio Leal",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Felipe Araújo"
               },
               "classes": [],
               "styles": {
@@ -2419,9 +1823,9 @@
               "children": []
              },
              {
-              "id": "agency98",
+              "id": "event69",
               "type": "heading",
-              "name": "Título 14",
+              "name": "Heading 9",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -2437,13 +1841,13 @@
                 }
                }
               },
-              "text": "Otávio Leal",
+              "text": "Felipe Araújo",
               "children": []
              },
              {
-              "id": "agency99",
+              "id": "event70",
               "type": "paragraph",
-              "name": "Parágrafo 33",
+              "name": "Paragraph 22",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2458,7 +1862,203 @@
                 }
                }
               },
-              "text": "Desenvolvimento",
+              "text": "CTO, Vértice",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "event71",
+            "type": "article",
+            "name": "Article 6",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "56px",
+               "padding-right": "40px",
+               "padding-bottom": "56px",
+               "padding-left": "40px",
+               "text-align": "center",
+               "display": "flex",
+               "flex-direction": "column",
+               "align-items": "center",
+               "row-gap": "8px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "event72",
+              "type": "image",
+              "name": "Image 4",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=400&h=400&q=80",
+               "loading": "lazy",
+               "alt": "Sofia Castro"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "140px",
+                 "height": "140px",
+                 "object-fit": "cover",
+                 "border-top-left-radius": "999px",
+                 "border-top-right-radius": "999px",
+                 "border-bottom-right-radius": "999px",
+                 "border-bottom-left-radius": "999px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             },
+             {
+              "id": "event73",
+              "type": "heading",
+              "name": "Heading 10",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "line-height": "1.3",
+                 "color": "#0f172a",
+                 "margin-top": "8px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Sofia Castro",
+              "children": []
+             },
+             {
+              "id": "event74",
+              "type": "paragraph",
+              "name": "Paragraph 23",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "line-height": "1.5",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "CMO, Bora",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "event75",
+            "type": "article",
+            "name": "Article 7",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "56px",
+               "padding-right": "40px",
+               "padding-bottom": "56px",
+               "padding-left": "40px",
+               "text-align": "center",
+               "display": "flex",
+               "flex-direction": "column",
+               "align-items": "center",
+               "row-gap": "8px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "event76",
+              "type": "image",
+              "name": "Image 5",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&h=400&q=80",
+               "loading": "lazy",
+               "alt": "Gustavo Pires"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "140px",
+                 "height": "140px",
+                 "object-fit": "cover",
+                 "border-top-left-radius": "999px",
+                 "border-top-right-radius": "999px",
+                 "border-bottom-right-radius": "999px",
+                 "border-bottom-left-radius": "999px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             },
+             {
+              "id": "event77",
+              "type": "heading",
+              "name": "Heading 11",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "line-height": "1.3",
+                 "color": "#0f172a",
+                 "margin-top": "8px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Gustavo Pires",
+              "children": []
+             },
+             {
+              "id": "event78",
+              "type": "paragraph",
+              "name": "Paragraph 24",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "line-height": "1.5",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Investor, Atlas",
               "children": []
              }
             ]
@@ -2470,11 +2070,13 @@
       ]
      },
      {
-      "id": "agency100",
+      "id": "event79",
       "type": "section",
-      "name": "Preços",
+      "name": "Pricing",
       "tag": "section",
-      "attributes": {},
+      "attributes": {
+       "id": "tickets"
+      },
       "classes": [],
       "styles": {
        "desktop": {
@@ -2483,16 +2085,16 @@
          "padding-right": "40px",
          "padding-bottom": "96px",
          "padding-left": "40px",
-         "background-color": "#eff6ff"
+         "background-color": "#f5f3ff"
         }
        }
       },
       "text": null,
       "children": [
        {
-        "id": "agency101",
+        "id": "event80",
         "type": "div",
-        "name": "Contêiner 12",
+        "name": "Container 10",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -2508,9 +2110,9 @@
         "text": null,
         "children": [
          {
-          "id": "agency102",
+          "id": "event81",
           "type": "div",
-          "name": "Introdução 4",
+          "name": "Introduction 3",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -2528,16 +2130,16 @@
           "text": null,
           "children": [
            {
-            "id": "agency103",
+            "id": "event82",
             "type": "paragraph",
-            "name": "Parágrafo 34",
+            "name": "Paragraph 25",
             "tag": "p",
             "attributes": {},
             "classes": [],
             "styles": {
              "desktop": {
               "base": {
-               "color": "#2563eb",
+               "color": "#7c3aed",
                "font-size": "14px",
                "font-weight": "600",
                "letter-spacing": "0.08em",
@@ -2546,13 +2148,13 @@
               }
              }
             },
-            "text": "Planos",
+            "text": "Tickets",
             "children": []
            },
            {
-            "id": "agency104",
+            "id": "event83",
             "type": "heading",
-            "name": "Título 15",
+            "name": "Heading 12",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -2568,13 +2170,13 @@
               }
              }
             },
-            "text": "Escolha o ritmo do seu crescimento",
+            "text": "Choose your ticket",
             "children": []
            },
            {
-            "id": "agency105",
+            "id": "event84",
             "type": "paragraph",
-            "name": "Parágrafo 35",
+            "name": "Paragraph 26",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -2589,15 +2191,15 @@
               }
              }
             },
-            "text": "Sem fidelidade. Troque de plano quando quiser.",
+            "text": "Half price for students. Pay in up to 10 instalments.",
             "children": []
            }
           ]
          },
          {
-          "id": "agency106",
+          "id": "event85",
           "type": "div",
-          "name": "Grade 2",
+          "name": "Grid",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -2614,9 +2216,9 @@
           "text": null,
           "children": [
            {
-            "id": "agency107",
+            "id": "event86",
             "type": "article",
-            "name": "Artigo 11",
+            "name": "Article 8",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -2653,9 +2255,9 @@
             "text": null,
             "children": [
              {
-              "id": "agency108",
+              "id": "event87",
               "type": "heading",
-              "name": "Título 16",
+              "name": "Heading 13",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -2670,13 +2272,13 @@
                 }
                }
               },
-              "text": "Essencial",
+              "text": "One day",
               "children": []
              },
              {
-              "id": "agency109",
+              "id": "event88",
               "type": "paragraph",
-              "name": "Parágrafo 36",
+              "name": "Paragraph 27",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2692,13 +2294,13 @@
                 }
                }
               },
-              "text": "R$ 1.490/mês",
+              "text": "$290",
               "children": []
              },
              {
-              "id": "agency110",
+              "id": "event89",
               "type": "paragraph",
-              "name": "Parágrafo 37",
+              "name": "Paragraph 28",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2712,13 +2314,13 @@
                 }
                }
               },
-              "text": "Site + Google Ads.",
+              "text": "The talks of one of the days.",
               "children": []
              },
              {
-              "id": "agency111",
+              "id": "event90",
               "type": "button",
-              "name": "Botão 4",
+              "name": "Button 4",
               "tag": "button",
               "attributes": {},
               "classes": [],
@@ -2751,15 +2353,15 @@
                 }
                }
               },
-              "text": "Quero este",
+              "text": "Buy",
               "children": []
              }
             ]
            },
            {
-            "id": "agency112",
+            "id": "event91",
             "type": "article",
-            "name": "Artigo 12",
+            "name": "Article 9",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -2773,16 +2375,16 @@
                "background-color": "#ffffff",
                "border-top-width": "2px",
                "border-top-style": "solid",
-               "border-top-color": "#2563eb",
+               "border-top-color": "#7c3aed",
                "border-right-width": "2px",
                "border-right-style": "solid",
-               "border-right-color": "#2563eb",
+               "border-right-color": "#7c3aed",
                "border-bottom-width": "2px",
                "border-bottom-style": "solid",
-               "border-bottom-color": "#2563eb",
+               "border-bottom-color": "#7c3aed",
                "border-left-width": "2px",
                "border-left-style": "solid",
-               "border-left-color": "#2563eb",
+               "border-left-color": "#7c3aed",
                "border-top-left-radius": "16px",
                "border-top-right-radius": "16px",
                "border-bottom-right-radius": "16px",
@@ -2796,9 +2398,9 @@
             "text": null,
             "children": [
              {
-              "id": "agency113",
+              "id": "event92",
               "type": "heading",
-              "name": "Título 17",
+              "name": "Heading 14",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -2813,13 +2415,13 @@
                 }
                }
               },
-              "text": "Crescimento",
+              "text": "Pass",
               "children": []
              },
              {
-              "id": "agency114",
+              "id": "event93",
               "type": "paragraph",
-              "name": "Parágrafo 38",
+              "name": "Paragraph 29",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2835,13 +2437,13 @@
                 }
                }
               },
-              "text": "R$ 2.990/mês",
+              "text": "$490",
               "children": []
              },
              {
-              "id": "agency115",
+              "id": "event94",
               "type": "paragraph",
-              "name": "Parágrafo 39",
+              "name": "Paragraph 30",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2855,13 +2457,13 @@
                 }
                }
               },
-              "text": "Google, Meta e conteúdo.",
+              "text": "Both days + recordings.",
               "children": []
              },
              {
-              "id": "agency116",
+              "id": "event95",
               "type": "button",
-              "name": "Botão 5",
+              "name": "Button 5",
               "tag": "button",
               "attributes": {},
               "classes": [],
@@ -2872,21 +2474,21 @@
                  "padding-bottom": "14px",
                  "padding-left": "24px",
                  "padding-right": "24px",
-                 "background-color": "#2563eb",
+                 "background-color": "#7c3aed",
                  "color": "#ffffff",
                  "font-weight": "600",
                  "border-top-width": "1px",
                  "border-top-style": "solid",
-                 "border-top-color": "#2563eb",
+                 "border-top-color": "#7c3aed",
                  "border-right-width": "1px",
                  "border-right-style": "solid",
-                 "border-right-color": "#2563eb",
+                 "border-right-color": "#7c3aed",
                  "border-bottom-width": "1px",
                  "border-bottom-style": "solid",
-                 "border-bottom-color": "#2563eb",
+                 "border-bottom-color": "#7c3aed",
                  "border-left-width": "1px",
                  "border-left-style": "solid",
-                 "border-left-color": "#2563eb",
+                 "border-left-color": "#7c3aed",
                  "border-top-left-radius": "10px",
                  "border-top-right-radius": "10px",
                  "border-bottom-right-radius": "10px",
@@ -2894,15 +2496,15 @@
                 }
                }
               },
-              "text": "Quero este",
+              "text": "Buy",
               "children": []
              }
             ]
            },
            {
-            "id": "agency117",
+            "id": "event96",
             "type": "article",
-            "name": "Artigo 13",
+            "name": "Article 10",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -2939,9 +2541,9 @@
             "text": null,
             "children": [
              {
-              "id": "agency118",
+              "id": "event97",
               "type": "heading",
-              "name": "Título 18",
+              "name": "Heading 15",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -2956,13 +2558,13 @@
                 }
                }
               },
-              "text": "Completo",
+              "text": "VIP",
               "children": []
              },
              {
-              "id": "agency119",
+              "id": "event98",
               "type": "paragraph",
-              "name": "Parágrafo 40",
+              "name": "Paragraph 31",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2978,13 +2580,13 @@
                 }
                }
               },
-              "text": "Sob consulta",
+              "text": "$990",
               "children": []
              },
              {
-              "id": "agency120",
+              "id": "event99",
               "type": "paragraph",
-              "name": "Parágrafo 41",
+              "name": "Paragraph 32",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2998,13 +2600,13 @@
                 }
                }
               },
-              "text": "Time dedicado.",
+              "text": "Workshops, lounge and dinner.",
               "children": []
              },
              {
-              "id": "agency121",
+              "id": "event100",
               "type": "button",
-              "name": "Botão 6",
+              "name": "Button 6",
               "tag": "button",
               "attributes": {},
               "classes": [],
@@ -3037,7 +2639,7 @@
                 }
                }
               },
-              "text": "Falar com a gente",
+              "text": "Buy",
               "children": []
              }
             ]
@@ -3049,9 +2651,9 @@
       ]
      },
      {
-      "id": "agency122",
+      "id": "event101",
       "type": "section",
-      "name": "Perguntas frequentes",
+      "name": "FAQ",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -3062,16 +2664,16 @@
          "padding-right": "40px",
          "padding-bottom": "96px",
          "padding-left": "40px",
-         "background-color": "#eff6ff"
+         "background-color": "#f5f3ff"
         }
        }
       },
       "text": null,
       "children": [
        {
-        "id": "agency123",
+        "id": "event102",
         "type": "div",
-        "name": "Contêiner 13",
+        "name": "Container 11",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -3087,9 +2689,9 @@
         "text": null,
         "children": [
          {
-          "id": "agency124",
+          "id": "event103",
           "type": "div",
-          "name": "Introdução 5",
+          "name": "Introduction 4",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -3107,16 +2709,16 @@
           "text": null,
           "children": [
            {
-            "id": "agency125",
+            "id": "event104",
             "type": "paragraph",
-            "name": "Parágrafo 42",
+            "name": "Paragraph 33",
             "tag": "p",
             "attributes": {},
             "classes": [],
             "styles": {
              "desktop": {
               "base": {
-               "color": "#2563eb",
+               "color": "#7c3aed",
                "font-size": "14px",
                "font-weight": "600",
                "letter-spacing": "0.08em",
@@ -3125,13 +2727,13 @@
               }
              }
             },
-            "text": "Dúvidas",
+            "text": "Questions",
             "children": []
            },
            {
-            "id": "agency126",
+            "id": "event105",
             "type": "heading",
-            "name": "Título 19",
+            "name": "Heading 16",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -3147,13 +2749,13 @@
               }
              }
             },
-            "text": "Perguntas frequentes",
+            "text": "Before you buy",
             "children": []
            },
            {
-            "id": "agency127",
+            "id": "event106",
             "type": "paragraph",
-            "name": "Parágrafo 43",
+            "name": "Paragraph 34",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -3168,15 +2770,15 @@
               }
              }
             },
-            "text": "O que perguntam antes de fechar.",
+            "text": "",
             "children": []
            }
           ]
          },
          {
-          "id": "agency128",
+          "id": "event107",
           "type": "div",
-          "name": "Perguntas",
+          "name": "Questions",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -3192,9 +2794,9 @@
           "text": null,
           "children": [
            {
-            "id": "agency129",
+            "id": "event108",
             "type": "details",
-            "name": "Detalhes",
+            "name": "Details",
             "tag": "details",
             "attributes": {},
             "classes": [],
@@ -3228,9 +2830,9 @@
             "text": null,
             "children": [
              {
-              "id": "agency130",
+              "id": "event109",
               "type": "summary",
-              "name": "Resumo",
+              "name": "Summary",
               "tag": "summary",
               "attributes": {},
               "classes": [],
@@ -3246,22 +2848,22 @@
               "text": null,
               "children": [
                {
-                "id": "agency131",
+                "id": "event110",
                 "type": "paragraph",
-                "name": "Parágrafo 44",
+                "name": "Paragraph 35",
                 "tag": "span",
                 "attributes": {},
                 "classes": [],
                 "styles": {},
-                "text": "Em quanto tempo vejo resultado?",
+                "text": "Can I transfer my ticket?",
                 "children": []
                }
               ]
              },
              {
-              "id": "agency132",
+              "id": "event111",
               "type": "paragraph",
-              "name": "Parágrafo 45",
+              "name": "Paragraph 36",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -3276,15 +2878,15 @@
                 }
                }
               },
-              "text": "Anúncios trazem contatos na primeira semana; SEO e conteúdo, a partir do terceiro mês.",
+              "text": "Yes, up to 7 days before the event, from the confirmation e-mail.",
               "children": []
              }
             ]
            },
            {
-            "id": "agency133",
+            "id": "event112",
             "type": "details",
-            "name": "Detalhes 2",
+            "name": "Details 2",
             "tag": "details",
             "attributes": {},
             "classes": [],
@@ -3318,9 +2920,9 @@
             "text": null,
             "children": [
              {
-              "id": "agency134",
+              "id": "event113",
               "type": "summary",
-              "name": "Resumo 2",
+              "name": "Summary 2",
               "tag": "summary",
               "attributes": {},
               "classes": [],
@@ -3336,22 +2938,22 @@
               "text": null,
               "children": [
                {
-                "id": "agency135",
+                "id": "event114",
                 "type": "paragraph",
-                "name": "Parágrafo 46",
+                "name": "Paragraph 37",
                 "tag": "span",
                 "attributes": {},
                 "classes": [],
                 "styles": {},
-                "text": "Preciso de contrato longo?",
+                "text": "Is there a certificate?",
                 "children": []
                }
               ]
              },
              {
-              "id": "agency136",
+              "id": "event115",
               "type": "paragraph",
-              "name": "Parágrafo 47",
+              "name": "Paragraph 38",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -3366,15 +2968,15 @@
                 }
                }
               },
-              "text": "Não. Os planos são mensais e você cancela com 30 dias de aviso.",
+              "text": "Yes, a digital one, with the hours of the talks you attended.",
               "children": []
              }
             ]
            },
            {
-            "id": "agency137",
+            "id": "event116",
             "type": "details",
-            "name": "Detalhes 3",
+            "name": "Details 3",
             "tag": "details",
             "attributes": {},
             "classes": [],
@@ -3408,9 +3010,9 @@
             "text": null,
             "children": [
              {
-              "id": "agency138",
+              "id": "event117",
               "type": "summary",
-              "name": "Resumo 3",
+              "name": "Summary 3",
               "tag": "summary",
               "attributes": {},
               "classes": [],
@@ -3426,22 +3028,22 @@
               "text": null,
               "children": [
                {
-                "id": "agency139",
+                "id": "event118",
                 "type": "paragraph",
-                "name": "Parágrafo 48",
+                "name": "Paragraph 39",
                 "tag": "span",
                 "attributes": {},
                 "classes": [],
                 "styles": {},
-                "text": "O investimento em anúncios está incluso?",
+                "text": "Is the event accessible?",
                 "children": []
                }
               ]
              },
              {
-              "id": "agency140",
+              "id": "event119",
               "type": "paragraph",
-              "name": "Parágrafo 49",
+              "name": "Paragraph 40",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -3456,7 +3058,7 @@
                 }
                }
               },
-              "text": "Não: a verba vai direto para o Google e a Meta, no seu cartão.",
+              "text": "Sign language interpreters for every talk on the main stage, and an accessible venue.",
               "children": []
              }
             ]
@@ -3468,30 +3070,30 @@
       ]
      },
      {
-      "id": "agency141",
+      "id": "event120",
       "type": "section",
-      "name": "Contato",
+      "name": "Map with address",
       "tag": "section",
       "attributes": {
-       "id": "contato"
+       "id": "venue"
       },
       "classes": [],
       "styles": {
        "desktop": {
         "base": {
-         "padding-top": "96px",
-         "padding-right": "40px",
-         "padding-bottom": "96px",
-         "padding-left": "40px"
+         "padding-top": "80px",
+         "padding-right": "24px",
+         "padding-bottom": "80px",
+         "padding-left": "24px"
         }
        }
       },
       "text": null,
       "children": [
        {
-        "id": "agency142",
+        "id": "event121",
         "type": "div",
-        "name": "Contêiner 14",
+        "name": "Container 12",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -3503,17 +3105,18 @@
            "margin-right": "auto",
            "display": "grid",
            "grid-template-columns": "repeat(auto-fit, minmax(300px, 1fr))",
-           "column-gap": "56px",
-           "row-gap": "32px"
+           "column-gap": "32px",
+           "row-gap": "32px",
+           "align-items": "center"
           }
          }
         },
         "text": null,
         "children": [
          {
-          "id": "agency143",
+          "id": "event122",
           "type": "div",
-          "name": "Texto 2",
+          "name": "Address",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -3521,9 +3124,9 @@
           "text": null,
           "children": [
            {
-            "id": "agency144",
+            "id": "event123",
             "type": "heading",
-            "name": "Título 20",
+            "name": "Heading 17",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -3534,53 +3137,121 @@
                "line-height": "1.2",
                "color": "#0f172a",
                "letter-spacing": "-0.01em",
-               "margin-bottom": "16px",
+               "margin-bottom": "12px",
+               "margin-top": "0px",
                "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
               }
              }
             },
-            "text": "Peça seu diagnóstico gratuito",
+            "text": "Venue",
             "children": []
            },
            {
-            "id": "agency145",
+            "id": "event124",
             "type": "paragraph",
-            "name": "Parágrafo 50",
+            "name": "Paragraph 41",
             "tag": "p",
             "attributes": {},
             "classes": [],
             "styles": {
              "desktop": {
               "base": {
-               "font-size": "18px",
+               "font-size": "16px",
                "line-height": "1.6",
-               "color": "#475569"
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "8px"
               }
              }
             },
-            "text": "Conte sobre sua empresa. Em até 24 horas mandamos uma análise com 3 oportunidades.",
+            "text": "Convention Center — 1000 Main Avenue, Downtown",
+            "children": []
+           },
+           {
+            "id": "event125",
+            "type": "paragraph",
+            "name": "Paragraph 42",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "16px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "24px"
+              }
+             }
+            },
+            "text": "Both days, 8 am to 7 pm",
+            "children": []
+           },
+           {
+            "id": "event126",
+            "type": "link",
+            "name": "Link 7",
+            "tag": "a",
+            "attributes": {
+             "href": "https://www.openstreetmap.org/directions?to=-23.5653%2C-46.6522",
+             "newTab": true
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "12px",
+               "padding-bottom": "12px",
+               "padding-left": "22px",
+               "padding-right": "22px",
+               "background-color": "#7c3aed",
+               "color": "#ffffff",
+               "font-weight": "600",
+               "font-size": "16px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#7c3aed",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#7c3aed",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#7c3aed",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#7c3aed",
+               "border-top-left-radius": "10px",
+               "border-top-right-radius": "10px",
+               "border-bottom-right-radius": "10px",
+               "border-bottom-left-radius": "10px",
+               "cursor": "pointer",
+               "text-decoration-line": "none",
+               "display": "inline-block"
+              }
+             }
+            },
+            "text": "Get directions",
             "children": []
            }
           ]
          },
          {
-          "id": "agency146",
-          "type": "form",
-          "name": "Formulário",
-          "tag": "form",
-          "attributes": {},
+          "id": "event127",
+          "type": "iframe",
+          "name": "Embedded frame",
+          "tag": "iframe",
+          "attributes": {
+           "src": "https://www.openstreetmap.org/export/embed.html?bbox=-46.6622%2C-23.5713%2C-46.6422%2C-23.5593&layer=mapnik&marker=-23.5653%2C-46.6522",
+           "loading": "lazy",
+           "title": "Map"
+          },
           "classes": [],
           "styles": {
            "desktop": {
             "base": {
-             "display": "flex",
-             "flex-direction": "column",
-             "row-gap": "16px",
-             "padding-top": "28px",
-             "padding-bottom": "28px",
-             "padding-left": "28px",
-             "padding-right": "28px",
-             "background-color": "#ffffff",
+             "width": "100%",
+             "height": "380px",
              "border-top-width": "1px",
              "border-top-style": "solid",
              "border-top-color": "#e2e8f0",
@@ -3601,175 +3272,16 @@
            }
           },
           "text": null,
-          "children": [
-           {
-            "id": "agency147",
-            "type": "label",
-            "name": "Rótulo",
-            "tag": "label",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "display": "flex",
-               "flex-direction": "column",
-               "row-gap": "6px"
-              }
-             }
-            },
-            "text": null,
-            "children": [
-             {
-              "id": "agency148",
-              "type": "paragraph",
-              "name": "Parágrafo 51",
-              "tag": "span",
-              "attributes": {},
-              "classes": [],
-              "styles": {
-               "desktop": {
-                "base": {
-                 "font-weight": "600",
-                 "color": "#0f172a"
-                }
-               }
-              },
-              "text": "Nome",
-              "children": []
-             },
-             {
-              "id": "agency149",
-              "type": "input",
-              "name": "Campo",
-              "tag": "input",
-              "attributes": {
-               "inputType": "text",
-               "name": "name"
-              },
-              "classes": [],
-              "styles": {
-               "desktop": {
-                "base": {
-                 "width": "100%"
-                }
-               }
-              },
-              "text": null,
-              "children": []
-             }
-            ]
-           },
-           {
-            "id": "agency150",
-            "type": "label",
-            "name": "Rótulo 2",
-            "tag": "label",
-            "attributes": {},
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "display": "flex",
-               "flex-direction": "column",
-               "row-gap": "6px"
-              }
-             }
-            },
-            "text": null,
-            "children": [
-             {
-              "id": "agency151",
-              "type": "paragraph",
-              "name": "Parágrafo 52",
-              "tag": "span",
-              "attributes": {},
-              "classes": [],
-              "styles": {
-               "desktop": {
-                "base": {
-                 "font-weight": "600",
-                 "color": "#0f172a"
-                }
-               }
-              },
-              "text": "E-mail",
-              "children": []
-             },
-             {
-              "id": "agency152",
-              "type": "input",
-              "name": "Campo 2",
-              "tag": "input",
-              "attributes": {
-               "inputType": "email",
-               "name": "email"
-              },
-              "classes": [],
-              "styles": {
-               "desktop": {
-                "base": {
-                 "width": "100%"
-                }
-               }
-              },
-              "text": null,
-              "children": []
-             }
-            ]
-           },
-           {
-            "id": "agency153",
-            "type": "button",
-            "name": "Botão 7",
-            "tag": "button",
-            "attributes": {
-             "buttonType": "submit"
-            },
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "padding-top": "14px",
-               "padding-bottom": "14px",
-               "padding-left": "24px",
-               "padding-right": "24px",
-               "background-color": "#2563eb",
-               "color": "#ffffff",
-               "font-weight": "600",
-               "border-top-width": "1px",
-               "border-top-style": "solid",
-               "border-top-color": "#2563eb",
-               "border-right-width": "1px",
-               "border-right-style": "solid",
-               "border-right-color": "#2563eb",
-               "border-bottom-width": "1px",
-               "border-bottom-style": "solid",
-               "border-bottom-color": "#2563eb",
-               "border-left-width": "1px",
-               "border-left-style": "solid",
-               "border-left-color": "#2563eb",
-               "border-top-left-radius": "10px",
-               "border-top-right-radius": "10px",
-               "border-bottom-right-radius": "10px",
-               "border-bottom-left-radius": "10px",
-               "align-self": "flex-start"
-              }
-             }
-            },
-            "text": "Quero o diagnóstico",
-            "children": []
-           }
-          ]
+          "children": []
          }
         ]
        }
       ]
      },
      {
-      "id": "agency154",
+      "id": "event128",
       "type": "footer",
-      "name": "Rodapé com colunas",
+      "name": "Footer with columns",
       "tag": "footer",
       "attributes": {},
       "classes": [],
@@ -3788,9 +3300,9 @@
       "text": null,
       "children": [
        {
-        "id": "agency155",
+        "id": "event129",
         "type": "div",
-        "name": "Contêiner 15",
+        "name": "Container 13",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -3810,9 +3322,9 @@
         "text": null,
         "children": [
          {
-          "id": "agency156",
+          "id": "event130",
           "type": "div",
-          "name": "Marca",
+          "name": "Brand",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -3820,9 +3332,9 @@
           "text": null,
           "children": [
            {
-            "id": "agency157",
+            "id": "event131",
             "type": "paragraph",
-            "name": "Parágrafo 53",
+            "name": "Paragraph 43",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -3836,13 +3348,13 @@
               }
              }
             },
-            "text": "Norte",
+            "text": "Conecta",
             "children": []
            },
            {
-            "id": "agency158",
+            "id": "event132",
             "type": "paragraph",
-            "name": "Parágrafo 54",
+            "name": "Paragraph 44",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -3856,15 +3368,15 @@
               }
              }
             },
-            "text": "Agência Norte — Florianópolis, SC. Atendemos todo o Brasil.",
+            "text": "Brought to you by the Conecta Community.",
             "children": []
            }
           ]
          },
          {
-          "id": "agency159",
+          "id": "event133",
           "type": "nav",
-          "name": "Navegação 2",
+          "name": "Navigation 2",
           "tag": "nav",
           "attributes": {},
           "classes": [],
@@ -3884,31 +3396,12 @@
           "text": null,
           "children": [
            {
-            "id": "agency160",
-            "type": "link",
-            "name": "Link 7",
-            "tag": "a",
-            "attributes": {
-             "href": "index.html"
-            },
-            "classes": [],
-            "styles": {
-             "desktop": {
-              "base": {
-               "color": "#cbd5e1"
-              }
-             }
-            },
-            "text": "Início",
-            "children": []
-           },
-           {
-            "id": "agency161",
+            "id": "event134",
             "type": "link",
             "name": "Link 8",
             "tag": "a",
             "attributes": {
-             "href": "index.html#cases"
+             "href": "index.html#schedule"
             },
             "classes": [],
             "styles": {
@@ -3918,16 +3411,16 @@
               }
              }
             },
-            "text": "Cases",
+            "text": "Schedule",
             "children": []
            },
            {
-            "id": "agency162",
+            "id": "event135",
             "type": "link",
             "name": "Link 9",
             "tag": "a",
             "attributes": {
-             "href": "index.html#contato"
+             "href": "index.html#speakers"
             },
             "classes": [],
             "styles": {
@@ -3937,15 +3430,34 @@
               }
              }
             },
-            "text": "Contato",
+            "text": "Speakers",
+            "children": []
+           },
+           {
+            "id": "event136",
+            "type": "link",
+            "name": "Link 10",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#venue"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "Venue",
             "children": []
            }
           ]
          },
          {
-          "id": "agency163",
+          "id": "event137",
           "type": "paragraph",
-          "name": "Parágrafo 55",
+          "name": "Paragraph 45",
           "tag": "p",
           "attributes": {},
           "classes": [],
@@ -3958,7 +3470,7 @@
             }
            }
           },
-          "text": "© 2026 Norte Marketing Digital.",
+          "text": "© 2026 Conecta.",
           "children": []
          }
         ]

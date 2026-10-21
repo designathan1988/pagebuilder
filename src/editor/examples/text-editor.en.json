@@ -1,18 +1,22 @@
 {
  "version": 4,
- "language": "pt-BR",
+ "language": "en",
  "codeLanguage": "en",
  "pages": [
   {
    "id": "textpage",
-   "name": "Editor de texto",
+   "name": "Text editor",
    "file": "index.html",
    "tree": {
     "id": "text45",
     "type": "page",
     "name": "Body",
     "tag": "body",
-    "attributes": {},
+    "attributes": {
+     "pageTitle": "Text editor",
+     "pageDescription": "A document editor: an editable area, a formatting toolbar and files — with the app layer alone.",
+     "pageLanguage": "en"
+    },
     "classes": [],
     "styles": {
      "desktop": {
@@ -65,7 +69,7 @@
        {
         "id": "text31",
         "type": "header",
-        "name": "Topo",
+        "name": "Top",
         "tag": "header",
         "attributes": {},
         "classes": [],
@@ -85,7 +89,7 @@
          {
           "id": "text30",
           "type": "div",
-          "name": "Titulos",
+          "name": "Titles",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -102,7 +106,7 @@
            {
             "id": "text28",
             "type": "heading",
-            "name": "Titulo",
+            "name": "Title",
             "tag": "h1",
             "attributes": {},
             "classes": [],
@@ -117,13 +121,13 @@
               }
              }
             },
-            "text": "Editor de texto",
+            "text": "Text editor",
             "children": []
            },
            {
             "id": "text29",
             "type": "paragraph",
-            "name": "Descricao",
+            "name": "Description",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -137,7 +141,7 @@
               }
              }
             },
-            "text": "Um editor de documentos: área editável, barra de formatação e arquivos — só com a camada de app.",
+            "text": "A document editor: an editable area, a formatting toolbar and files — with the app layer alone.",
             "children": []
            }
           ]
@@ -145,11 +149,11 @@
          {
           "id": "text24",
           "type": "input",
-          "name": "Nome do arquivo",
+          "name": "File name",
           "tag": "input",
           "attributes": {
            "inputType": "text",
-           "placeholder": "Nome do arquivo"
+           "placeholder": "File name"
           },
           "classes": [],
           "styles": {
@@ -192,7 +196,7 @@
          {
           "id": "text25",
           "type": "button",
-          "name": "Abrir",
+          "name": "Open",
           "tag": "button",
           "attributes": {
            "buttonType": "button"
@@ -230,7 +234,7 @@
             }
            }
           },
-          "text": "Abrir…",
+          "text": "Open…",
           "children": [],
           "logic": {
            "on": [
@@ -244,7 +248,7 @@
          {
           "id": "text26",
           "type": "button",
-          "name": "Baixar HTML",
+          "name": "Download HTML",
           "tag": "button",
           "attributes": {
            "buttonType": "button"
@@ -282,7 +286,7 @@
             }
            }
           },
-          "text": "Baixar .html",
+          "text": "Download .html",
           "children": [],
           "logic": {
            "on": [
@@ -296,7 +300,7 @@
          {
           "id": "text27",
           "type": "button",
-          "name": "Baixar texto",
+          "name": "Download text",
           "tag": "button",
           "attributes": {
            "buttonType": "button"
@@ -334,7 +338,7 @@
             }
            }
           },
-          "text": "Baixar .txt",
+          "text": "Download .txt",
           "children": [],
           "logic": {
            "on": [
@@ -350,7 +354,7 @@
        {
         "id": "text43",
         "type": "section",
-        "name": "Documento",
+        "name": "Document",
         "tag": "section",
         "attributes": {},
         "classes": [],
@@ -386,7 +390,7 @@
          {
           "id": "text40",
           "type": "div",
-          "name": "Barra",
+          "name": "Toolbar",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -410,7 +414,7 @@
            {
             "id": "text32",
             "type": "button",
-            "name": "Negrito",
+            "name": "Bold",
             "tag": "button",
             "attributes": {
              "buttonType": "button"
@@ -462,7 +466,7 @@
            {
             "id": "text33",
             "type": "button",
-            "name": "Italico",
+            "name": "Italic",
             "tag": "button",
             "attributes": {
              "buttonType": "button"
@@ -514,7 +518,7 @@
            {
             "id": "text34",
             "type": "button",
-            "name": "Sublinhado",
+            "name": "Underline",
             "tag": "button",
             "attributes": {
              "buttonType": "button"
@@ -566,7 +570,7 @@
            {
             "id": "text35",
             "type": "button",
-            "name": "Titulo",
+            "name": "Title",
             "tag": "button",
             "attributes": {
              "buttonType": "button"
@@ -618,7 +622,7 @@
            {
             "id": "text36",
             "type": "button",
-            "name": "Paragrafo",
+            "name": "Paragraph",
             "tag": "button",
             "attributes": {
              "buttonType": "button"
@@ -670,7 +674,7 @@
            {
             "id": "text37",
             "type": "button",
-            "name": "Lista",
+            "name": "List",
             "tag": "button",
             "attributes": {
              "buttonType": "button"
@@ -708,7 +712,7 @@
               }
              }
             },
-            "text": "• Lista",
+            "text": "• List",
             "children": [],
             "logic": {
              "on": [
@@ -722,7 +726,7 @@
            {
             "id": "text38",
             "type": "button",
-            "name": "Numerada",
+            "name": "Numbered",
             "tag": "button",
             "attributes": {
              "buttonType": "button"
@@ -760,7 +764,7 @@
               }
              }
             },
-            "text": "1. Lista",
+            "text": "1. List",
             "children": [],
             "logic": {
              "on": [
@@ -774,7 +778,7 @@
            {
             "id": "text39",
             "type": "button",
-            "name": "Limpar formato",
+            "name": "Clear formatting",
             "tag": "button",
             "attributes": {
              "buttonType": "button"
@@ -812,7 +816,7 @@
               }
              }
             },
-            "text": "Limpar",
+            "text": "Clear",
             "children": [],
             "logic": {
              "on": [
@@ -828,7 +832,7 @@
          {
           "id": "text41",
           "type": "div",
-          "name": "Pagina",
+          "name": "Page",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -867,7 +871,7 @@
          {
           "id": "text42",
           "type": "paragraph",
-          "name": "Contagem",
+          "name": "Count",
           "tag": "p",
           "attributes": {},
           "classes": [],
@@ -885,10 +889,10 @@
             }
            }
           },
-          "text": "14 palavras · salvo neste navegador",
+          "text": "14 words · saved in this browser",
           "children": [],
           "logic": {
-           "text": "fn.words(state.html) + ' palavras · salvo neste navegador'"
+           "text": "fn.words(state.html) + ' words · saved in this browser'"
           }
          }
         ]
@@ -904,20 +908,20 @@
    {
     "name": "html",
     "type": "text",
-    "initial": "<h2>Meu documento</h2><p>Escreva aqui. Selecione um trecho e use a barra acima.</p>",
+    "initial": "<h2>My document</h2><p>Write here. Select some text and use the toolbar above.</p>",
     "persist": true
    },
    {
     "name": "fileName",
     "type": "text",
-    "initial": "documento",
+    "initial": "document",
     "persist": true
    }
   ],
   "scripts": [
    {
     "name": "document",
-    "code": "// the editor's files: counting words, saving and opening documents\nexport function words(html) {\n  const text = new DOMParser().parseFromString(html, 'text/html').body.textContent || ''\n  return text.trim() === '' ? 0 : text.trim().split(/\\s+/).length\n}\n\nexport function download(kind) {\n  const name = (state.fileName.trim() || 'documento') + '.' + kind\n  if (kind === 'txt') app.download(name, new DOMParser().parseFromString(state.html, 'text/html').body.innerText, 'text/plain')\n  else app.download(name, '<!DOCTYPE html><meta charset=\"utf-8\"><title>' + state.fileName + '</title>' + state.html, 'text/html')\n}\n\nexport async function open() {\n  const file = await app.pick('.html,.htm,.txt,.md')\n  if (!file) return\n  state.fileName = file.name.replace(/\\.[^.]+$/, '')\n  const html = /\\.html?$/i.test(file.name) ? new DOMParser().parseFromString(file.text, 'text/html').body.innerHTML : file.text.split('\\n').map((line) => '<p>' + line.replace(/</g, '&lt;') + '</p>').join('')\n  state.html = html\n}\n"
+    "code": "// the editor's files: counting words, saving and opening documents\nexport function words(html) {\n  const text = new DOMParser().parseFromString(html, 'text/html').body.textContent || ''\n  return text.trim() === '' ? 0 : text.trim().split(/\\s+/).length\n}\n\nexport function download(kind) {\n  const name = (state.fileName.trim() || 'document') + '.' + kind\n  if (kind === 'txt') app.download(name, new DOMParser().parseFromString(state.html, 'text/html').body.innerText, 'text/plain')\n  else app.download(name, '<!DOCTYPE html><meta charset=\"utf-8\"><title>' + state.fileName + '</title>' + state.html, 'text/html')\n}\n\nexport async function open() {\n  const file = await app.pick('.html,.htm,.txt,.md')\n  if (!file) return\n  state.fileName = file.name.replace(/\\.[^.]+$/, '')\n  const html = /\\.html?$/i.test(file.name) ? new DOMParser().parseFromString(file.text, 'text/html').body.innerHTML : file.text.split('\\n').map((line) => '<p>' + line.replace(/</g, '&lt;') + '</p>').join('')\n  state.html = html\n}\n"
    }
   ]
  }

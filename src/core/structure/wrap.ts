@@ -20,7 +20,7 @@ import { firstLockRefusal, lockRefusal } from '../nodes/flags.ts';
 import { childrenRefusal, placementRefusal } from '../elements/content-model.ts';
 import { valuePredicateHolds } from '../style/couplings.ts';
 import { tracksForChildren } from '../style/tracks.ts';
-import { paletteNode, uniqueName } from './insert.ts';
+import { pageWordsAt, paletteNode, uniqueName } from './insert.ts';
 import { freshName, nodeMaker } from './node-maker.ts';
 import { selectionRoots } from './remove.ts';
 
@@ -232,11 +232,13 @@ export const unwrapCommand = registerHandler('element.unwrap', ({ state, rules }
 // which leave their places. The wrapper becomes the selection, in one undo step. A target that is the page root, a
 // moved node or inside one is refused; locked nodes stay (spec lock-element); the content model decides whether the
 // wrapper may stand there and hold them (content-model.ts), and nothing changes when it refuses.
-export const wrapBesideCommand = registerHandler('element.wrapBeside', ({ state, ids, rules, words }, { target, side, wrapper: kind, entry }): Outcome<never> => {
+export const wrapBesideCommand = registerHandler('element.wrapBeside', (context, { target, side, wrapper: kind, entry }): Outcome<never> => {
+  const { state, ids, rules, words, clock } = context;
   const at = locate(state.document, target);
   if (at === null) throw new Error(`element.wrapBeside: the document has no node ${target}`);
   if (at.parent === null) return { kind: 'refused', message: message('status.wrap.root') };
-  const make = nodeMaker(state.document, rules, ids, words);
+  // a palette element arriving says its texts in the language of the target's page (insert.ts pageWordsAt)
+  const make = nodeMaker(state.document, rules, ids, words, clock.now(), pageWordsAt(context, target));
   const arriving: DocNode[] = entry === undefined ? selectionRoots(state.document, state.selection).map((l) => l.node) : [paletteNode(make, entry)];
   if (arriving.length === 0) throw new Error('element.wrapBeside: nothing arrives');
   if (movesIntoItself(arriving, target)) return { kind: 'refused', message: message('status.refused.intoItself') };

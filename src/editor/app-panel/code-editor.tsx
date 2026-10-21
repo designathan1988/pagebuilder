@@ -2,20 +2,27 @@
 // written in CodeMirror 6 (codemirror.net) — the JavaScript grammar colours it, the parser marks the line that does
 // not parse as it is typed, and completion offers what the project holds (state.<variable>, fn.<export>, the app
 // helpers, the names of the repeated items) beside the language's own (local names, snippets). Like any field it
-// keeps its text in the document when the focus leaves it or on Ctrl+Enter (Cmd+Enter), one command each time; the
-// keys typed in it are its own, as a textarea's are the browser's, so none of them runs an editor shortcut but Escape,
-// which leaves the field.
+// holds its typing in the one registry of typing (input/held-draft.ts; rules G1 and G2) from its first key: a press
+// elsewhere, a command from outside the field, a selection changed, the focus leaving it, Ctrl+Enter (Cmd+Enter) or the
+// field going keep it, one command each time, with the keep given when the typing began, in the context of that first
+// key. The keys typed in it are its own, as a textarea's are the browser's, so none of them runs an editor shortcut but
+// Escape, which leaves the field.
 import { useEffect, useRef, type ReactNode } from 'react';
 import { autocompletion, closeBrackets, closeBracketsKeymap, completionKeymap, type Completion, type CompletionContext, type CompletionResult } from '@codemirror/autocomplete';
 import { defaultKeymap, history, historyKeymap, indentWithTab } from '@codemirror/commands';
 import { javascript, javascriptLanguage, completionPath } from '@codemirror/lang-javascript';
 import { bracketMatching, HighlightStyle, indentOnInput, syntaxHighlighting, syntaxTree } from '@codemirror/language';
 import { linter, type Diagnostic } from '@codemirror/lint';
-import { EditorState, type Extension } from '@codemirror/state';
+import { Annotation, Compartment, EditorState, Transaction, type Extension } from '@codemirror/state';
 import { EditorView, keymap, lineNumbers, placeholder as placeholderText } from '@codemirror/view';
 import { tags } from '@lezer/highlight';
 import type { CodeKind } from '../../core/logic/compile.ts';
+import type { EditContext } from '../../core/store/store.ts';
+import type { CommandId } from '../../generated/ids.ts';
 import { checkAppSyntax } from '../app-runtime/script.ts';
+import { heldDraft, type HeldDraft } from '../input/held-draft.ts';
+import { afterGesture } from '../input/pointer.ts';
+import { useStore } from '../store.ts';
 
 // What the project offers an expression where it stands: the variables, the functions the scripts export, and the
 // names the repeated ancestors give their item.
@@ -103,30 +110,75 @@ const COLOURS = HighlightStyle.define([
   { tag: [tags.definition(tags.variableName), tags.function(tags.variableName)], color: 'var(--color-syntax-selector)' },
 ]);
 
-export function CodeEditor({ value, kind, scope, onKeep, label, placeholder, disabled = false }: {
+// What keeps a field's text: the command, with the arguments the field stood for when its typing began, in the
+// context of the typing's first key.
+export type KeepCode = (text: string, context: EditContext) => void;
+
+// A change the field makes to show the document's text (an undo, a rename, another field): not the person's typing,
+// and not a step of the field's own undo history (Ctrl+Z inside the field never brings back a text the document held
+// before: the logic audit's LOGIC-4).
+const SHOWN = Annotation.define<boolean>();
+
+// The typing the field holds and no command has kept yet: what the field showed when it began, the keep given then,
+// and the text typed since.
+interface CodeTyping {
+  readonly from: string;
+  readonly keep: KeepCode;
+  text: string;
+}
+
+export function CodeEditor({ value, kind, scope, command, onKeep, label, placeholder, disabled = false }: {
   readonly value: string;
   readonly kind: CodeKind;
   readonly scope: CodeScope;
-  // the text to keep: called when it differs from `value`
-  readonly onKeep: (text: string) => void;
+  // the command that keeps the text: the field's own (input/pending.ts), run in the typing's context
+  readonly command: CommandId;
+  // the text to keep: called when it differs from what the field showed when the typing began
+  readonly onKeep: KeepCode;
   readonly label: string;
   readonly placeholder?: string;
   readonly disabled?: boolean;
 }): ReactNode {
+  const store = useStore();
   const host = useRef<HTMLDivElement>(null);
+  const content = useRef<HTMLElement | null>(null);
   const view = useRef<EditorView | null>(null);
   // the latest props, for the editor's callbacks, which are made once
-  const latest = useRef({ value, scope, onKeep });
+  const latest = useRef({ value, scope, onKeep, label, placeholder, disabled });
   useEffect(() => {
-    latest.current = { value, scope, onKeep };
+    latest.current = { value, scope, onKeep, label, placeholder, disabled };
   });
+  // the typing held, and the keep the registry runs, in the context of the typing's first key (rule G1); the keep is
+  // read when it runs, after the field may have gone
+  const typing = useRef<CodeTyping | null>(null);
+  const keepHeld = useRef<(context: EditContext) => void>((context) => {
+    const held = typing.current;
+    if (held === null) return;
+    typing.current = null;
+    if (held.text !== held.from) afterGesture(store, () => held.keep(held.text, context));
+  });
+  const registry = useRef<HeldDraft | null>(null);
+  useEffect(() => {
+    const draft = heldDraft(store, content, host, command, keepHeld);
+    registry.current = draft;
+    return () => {
+      draft.left();
+      registry.current = null;
+    };
+  }, [store, command]);
+  // the label, the read-only state and the placeholder change in place (the language switched, the door became
+  // unavailable): the view is never made again over a typing not kept
+  const labelled = useRef(new Compartment());
+  const editable = useRef(new Compartment());
+  const hinted = useRef(new Compartment());
   useEffect(() => {
     if (host.current === null) return undefined;
-    const keep = (target: EditorView) => {
-      const text = target.state.doc.toString();
-      if (text !== latest.current.value) latest.current.onKeep(text);
-      return true;
+    const typed = (text: string) => {
+      if (typing.current === null) typing.current = { from: latest.current.value, keep: latest.current.onKeep, text };
+      else typing.current.text = text;
+      registry.current?.typed();
     };
+    const now = latest.current;
     const extensions: Extension[] = [
       history(),
       indentOnInput(),
@@ -137,11 +189,18 @@ export function CodeEditor({ value, kind, scope, onKeep, label, placeholder, dis
       autocompletion({ activateOnTyping: true }),
       syntaxHighlighting(COLOURS),
       linter(problems(kind), { delay: 300 }),
-      keymap.of([{ key: 'Mod-Enter', run: keep }, ...closeBracketsKeymap, ...completionKeymap, ...historyKeymap, indentWithTab, ...defaultKeymap]),
+      // Ctrl+Enter keeps the typing through the registry, as leaving the field does
+      keymap.of([{ key: 'Mod-Enter', run: () => (registry.current?.left(), true) }, ...closeBracketsKeymap, ...completionKeymap, ...historyKeymap, indentWithTab, ...defaultKeymap]),
       EditorView.lineWrapping,
-      EditorView.contentAttributes.of({ 'aria-label': label, spellcheck: 'false', autocorrect: 'off', autocapitalize: 'off' }),
+      EditorView.contentAttributes.of({ spellcheck: 'false', autocorrect: 'off', autocapitalize: 'off' }),
+      labelled.current.of(EditorView.contentAttributes.of({ 'aria-label': now.label })),
+      // every change the person makes (a key, a paste, the field's own undo) is typing; the field's showing the
+      // document's text is not
+      EditorView.updateListener.of((update) => {
+        if (update.transactions.some((one) => one.docChanged && one.annotation(SHOWN) !== true)) typed(update.state.doc.toString());
+      }),
       EditorView.domEventHandlers({
-        blur: (_event, target) => void keep(target),
+        blur: () => void registry.current?.left(),
         // the field's keys are its own (the header's note); Escape leaves it for the editor
         keydown: (event, target) => {
           if (event.key === 'Escape' && !target.dom.querySelector('.cm-tooltip-autocomplete')) {
@@ -152,39 +211,47 @@ export function CodeEditor({ value, kind, scope, onKeep, label, placeholder, dis
           return false;
         },
       }),
-      EditorState.readOnly.of(disabled),
-      EditorView.editable.of(!disabled),
+      editable.current.of(editability(now.disabled)),
+      hinted.current.of(now.placeholder === undefined ? [] : placeholderText(now.placeholder)),
     ];
     if (kind === 'module') extensions.push(lineNumbers());
-    if (placeholder !== undefined) extensions.push(placeholderText(placeholder));
-    const made = new EditorView({ parent: host.current, state: EditorState.create({ doc: latest.current.value, extensions }) });
+    const made = new EditorView({ parent: host.current, state: EditorState.create({ doc: now.value, extensions }) });
     view.current = made;
+    content.current = made.contentDOM;
     return () => {
       made.destroy();
       view.current = null;
     };
-  }, [kind, label, placeholder, disabled]);
-  // the document changed under it (an undo, a rename, another field): it shows the document's text unless the
-  // person is typing in it
+  }, [kind]);
+  useEffect(() => {
+    view.current?.dispatch({
+      effects: [
+        labelled.current.reconfigure(EditorView.contentAttributes.of({ 'aria-label': label })),
+        editable.current.reconfigure(editability(disabled)),
+        hinted.current.reconfigure(placeholder === undefined ? [] : placeholderText(placeholder)),
+      ],
+    });
+  }, [label, disabled, placeholder]);
+  // the document changed under it (an undo, a rename, the keep of its own typing): it shows the document's text unless
+  // the person's typing is held (a change from elsewhere keeps that typing first: input/pending.ts). Only the part that
+  // differs is replaced, so the cursor stays where it was, and the change is no step of the field's own undo history.
   useEffect(() => {
     const made = view.current;
-    if (made === null || made.hasFocus) return;
+    if (made === null || typing.current !== null) return;
     const shown = made.state.doc.toString();
-    if (shown !== value) made.dispatch({ changes: { from: 0, to: shown.length, insert: value } });
+    if (shown === value) return;
+    let start = 0;
+    while (start < shown.length && start < value.length && shown[start] === value[start]) start += 1;
+    let end = 0;
+    while (end < shown.length - start && end < value.length - start && shown[shown.length - 1 - end] === value[value.length - 1 - end]) end += 1;
+    made.dispatch({
+      changes: { from: start, to: shown.length - end, insert: value.slice(start, value.length - end) },
+      annotations: [SHOWN.of(true), Transaction.addToHistory.of(false)],
+    });
   }, [value]);
   // an expression shows one line, an event's code three, a module eight and its line numbers (panel.css)
   return <div ref={host} className={`code-editor code-editor--${kind}`} data-local="code-editor" />;
 }
 
-// The names a script's code exports (export function f, export const f, export { a, b as c }): what fn. offers.
-export function exportedNames(code: string): readonly string[] {
-  const names = new Set<string>();
-  for (const match of code.matchAll(/export\s+(?:async\s+)?(?:function\*?|const|let|var|class)\s+([A-Za-z_$][\w$]*)/gu)) names.add(match[1] as string);
-  for (const match of code.matchAll(/export\s*\{([^}]*)\}/gu)) {
-    for (const part of (match[1] as string).split(',')) {
-      const name = part.trim().split(/\s+as\s+/u).pop()?.trim();
-      if (name !== undefined && /^[A-Za-z_$][\w$]*$/u.test(name) && name !== 'default') names.add(name);
-    }
-  }
-  return [...names];
-}
+// Whether the person can type in the field: an unavailable door's field reads only.
+const editability = (disabled: boolean | undefined): Extension => [EditorState.readOnly.of(disabled === true), EditorView.editable.of(disabled !== true)];

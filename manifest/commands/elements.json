@@ -4493,7 +4493,8 @@
         "status.attribute.eventHandler",
         "status.attribute.invalidName",
         "status.attribute.reserved",
-        "status.locked.edit"
+        "status.locked.edit",
+        "status.attribute.whatsappNumber"
       ],
       "confirmation": null,
       "history": {
@@ -4555,6 +4556,34 @@
             "fields": []
           },
           "args": {}
+        },
+        {
+          "id": "inspector-cart-whatsapp",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "templates-sections",
+          "panel": "inspector",
+          "control": "cart-whatsapp",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "inspector.cart.whatsapp",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-settings",
+            "order": 2081
+          },
+          "adapter": {
+            "selection": "single",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "name": "data-wc-whatsapp"
+          }
         }
       ]
     },

@@ -738,29 +738,45 @@ async function controlPoint(page: Page, ref: string, args: Record<string, unknow
   return { x: box.x + box.width / 2, y: box.y + box.height * at };
 }
 
-// Scrolls the canvas page so a node stands clear of the band along the frame's top and bottom edges where a held drag
-// scrolls it (interactions.json drop.autoscrollZone, in screen pixels), when it lies in that band; nothing otherwise.
+// Pans the canvas so a node stands clear of the band along the stage's top and bottom edges where a held drag pans it
+// (interactions.json drop.autoscrollZone, in screen pixels), when it lies in that band; nothing otherwise. The canvas
+// is an artboard (DCS-035): its page never scrolls, the wheel over the stage pans it (view.pan), as a person does.
 // how far above its slot a tile's drop into a container starts its last approach, in screen pixels
 const APPROACH = 24;
 
 async function keepAwayFromEdges(page: Page, id: string): Promise<void> {
   const zone = Number(interactions.constants.find((c) => c.id === 'drop.autoscrollZone')?.value ?? 0);
-  const moved = await page.evaluate(
-    ({ node, band }) => {
+  await panIntoView(page, `[data-node="${id}"]`, zone);
+}
+
+// Pans the canvas with the wheel over the stage until the page element the selector names stands in the middle of the
+// stage, when it lies within `band` screen px of the stage's top or bottom edge (or past them); nothing otherwise, nor
+// for an element too tall to stand clear of both bands.
+async function panIntoView(page: Page, selector: string, band: number): Promise<void> {
+  const wanted = await page.evaluate(
+    ({ selector, band }) => {
       const iframe = window.document.querySelector<HTMLIFrameElement>('.frame__page');
-      const el = iframe?.contentDocument?.querySelector(`[data-node="${node}"]`);
-      const view = iframe?.contentWindow;
-      if (!iframe || !el || !view) return false;
-      const inPage = band / iframe.currentCSSZoom;
+      const el = iframe?.contentDocument?.querySelector(selector);
+      const stage = window.document.querySelector('[data-canvas-stage]')?.getBoundingClientRect();
+      if (!iframe || !el || !stage) return null;
+      const zoom = iframe.currentCSSZoom;
+      const frame = iframe.getBoundingClientRect();
       const r = el.getBoundingClientRect();
-      if (r.top >= inPage && r.bottom <= view.innerHeight - inPage) return false;
-      if (r.height >= view.innerHeight - 2 * inPage) return false;
-      el.scrollIntoView({ block: 'center', behavior: 'instant' });
-      return true;
+      const top = frame.top + r.top * zoom;
+      const bottom = frame.top + r.bottom * zoom;
+      const header = window.document.querySelector('.frame__header')?.getBoundingClientRect();
+      const seenTop = Math.max(stage.top, header?.bottom ?? stage.top);
+      if (top >= seenTop + band && bottom <= stage.bottom - band) return null;
+      if (bottom - top >= stage.bottom - seenTop - 2 * band) return null;
+      const middle = (seenTop + stage.bottom) / 2;
+      return { x: stage.left + stage.width / 2, y: middle, by: (top + bottom) / 2 - middle };
     },
-    { node: id, band: zone },
+    { selector, band },
   );
-  if (moved) await nextFrames(page);
+  if (wanted === null) return;
+  await page.mouse.move(wanted.x, wanted.y);
+  await page.mouse.wheel(0, wanted.by);
+  await nextFrames(page);
 }
 
 async function canvasDropPoint(page: Page, document: unknown, drop: Drop, index: number | null): Promise<Point> {
@@ -1235,7 +1251,7 @@ async function runStep(page: Page, step: Step, ref: string, held: { current: Hel
   } else if (d.kind === 'canvas-click' && d.target === 'captured-element') {
     // an element of a captured page, pressed where the canvas shows it (its captured id is the step's target argument)
     if (typeof args.target !== 'string') throw new Error(`step ${ref}: a captured element is named by its target argument`);
-    await page.locator('.frame__page').evaluate((iframe: HTMLIFrameElement, id) => iframe.contentDocument?.querySelector(`[data-capture-node="${CSS.escape(id)}"]`)?.scrollIntoView({ block: 'center' }), args.target);
+    await panIntoView(page, `[data-capture-node="${await page.evaluate((id) => CSS.escape(id), args.target)}"]`, 0);
     const at = await nodeInsidePoint(page, args.target, 'data-capture-node');
     if (typeof at === 'string') throw new Error(`step ${ref}: ${args.target}: ${at}`);
     await page.mouse.click(at.x, at.y);
@@ -1903,35 +1919,24 @@ function setupCommands(s: Scenario): TestBootCommand[] {
 }
 // the zoom, once the editor is drawn: the canvas keeps its place on the stage it measures, as the zoom's door does
 const drawnCommands = (s: Scenario): TestBootCommand[] => (s.setup.zoom === 'fit' ? [] : [{ command: 'view.zoomTo', args: doorData(settingDoor('view.zoomTo', 'percent', s.setup.zoom)).args }]);
-// The page at its top once the setup's zoom has settled: a zoom keeps the middle of the view where it was, a scroll of
-// the page the frame holds for a few frames (canvas/frame.tsx) — taken when the page has laid itself out by then, lost
-// when it has not, so the starting point raced the page's layout (drag-autoscroll met its Title scrolled away, two
-// runs in sixteen). A scenario starts where an editor opens, the page at its top, whatever the race.
+// The page at its top once the setup's zoom has settled: a zoom keeps the middle of the stage where it was (the camera,
+// view/camera.ts, on both axes), so the page's top went up with it. A scenario starts where an editor opens, the
+// page's top under the frame's header at the fit margin: the wheel over the stage pans the page down there, as a person
+// does (DCS-035: the page never scrolls inside its frame).
 async function pageAtTop(page: Page): Promise<void> {
-  await page.evaluate(
-    () =>
-      new Promise<void>((resolve) => {
-        const view = () => document.querySelector<HTMLIFrameElement>('.frame__page')?.contentWindow ?? null;
-        let last = Number.NaN;
-        let still = 0;
-        let frames = 0;
-        const settle = () => {
-          const y = view()?.scrollY ?? 0;
-          still = y === last ? still + 1 : 0;
-          last = y;
-          frames += 1;
-          // the zoom's hold lasts eight frames at most: twelve unchanged mean it is over
-          if (still < 12 && frames < 120) {
-            requestAnimationFrame(settle);
-            return;
-          }
-          const inside = view();
-          if (inside !== null && inside.scrollY !== 0) inside.scrollTo(inside.scrollX, 0);
-          requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
-        };
-        requestAnimationFrame(settle);
-      }),
-  );
+  const margin = Number(interactions.constants.find((c) => c.id === 'zoom.fitMargin')?.value ?? 0);
+  const wanted = await page.evaluate((margin) => {
+    const stage = document.querySelector('[data-canvas-stage]')?.getBoundingClientRect();
+    const view = document.querySelector('.frame__view')?.getBoundingClientRect();
+    const header = document.querySelector('.frame__header')?.getBoundingClientRect();
+    if (stage === undefined || view === undefined || header === undefined) return null;
+    // the page's top where the camera's top 0 puts it: the fit margin, then the frame's header
+    return { x: stage.left + stage.width / 2, y: stage.top + stage.height / 2, by: view.top - (stage.top + margin + header.height) };
+  }, margin);
+  if (wanted === null || Math.abs(wanted.by) < 0.5) return;
+  await page.mouse.move(wanted.x, wanted.y);
+  await page.mouse.wheel(0, wanted.by);
+  await nextFrames(page);
 }
 // whether a scenario's steps touch the system clipboard: a command that reads it, or one that copies, cuts or pastes
 const touchesClipboard = (s: Scenario, action: string): boolean => s.setup.clipboard !== undefined || s.steps.some((step) => {

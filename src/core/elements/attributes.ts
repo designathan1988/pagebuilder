@@ -283,7 +283,21 @@ function oneSelected(state: { readonly document: DocumentJson; readonly selectio
   return only === undefined || others.length > 0 ? null : locate(state.document, only);
 }
 
-export const setCustomAttributeCommand = registerHandler('element.setCustomAttribute', ({ state, rules, words }, { name, value }): Outcome<never> => {
+// The number a shop's cart sends its orders to by WhatsApp (data-wc-whatsapp, read by src/editor/widgets/widgets.js
+// into https://wa.me/<digits>): the country code, the area code and the number, written with or without spaces,
+// dashes, dots, brackets and a leading +, kept as its digits only. E.164 numbers are at most 15 digits; with the
+// country and area codes no number is shorter than 10. Empty is allowed: no number yet (the Checks say so).
+const WHATSAPP_ATTRIBUTE = 'data-wc-whatsapp';
+const WHATSAPP_DIGITS = { min: 10, max: 15 } as const;
+export function whatsappNumber(value: string): string | null {
+  const written = value.trim();
+  if (written === '') return '';
+  if (!/^\+?[\d\s().-]+$/u.test(written)) return null;
+  const digits = written.replace(/\D/gu, '');
+  return digits.length >= WHATSAPP_DIGITS.min && digits.length <= WHATSAPP_DIGITS.max ? digits : null;
+}
+
+export const setCustomAttributeCommand = registerHandler('element.setCustomAttribute', ({ state, rules, words }, { name, value: written }): Outcome<never> => {
   const at = oneSelected(state);
   if (at === null) return { kind: 'refused', message: message('status.needsSingleSelection') };
   const typed = String(name).trim().toLowerCase();
@@ -291,6 +305,10 @@ export const setCustomAttributeCommand = registerHandler('element.setCustomAttri
   const owner = reservedAttributeOwner(typed, rules);
   if (owner !== null) return { kind: 'refused', message: message('status.attribute.reserved', { name: typed, owner: words(owner as never) }) };
   if (customAttributeRefusal(typed, rules) !== null) return { kind: 'refused', message: message('status.attribute.invalidName', { name: typed }) };
+  // the cart's WhatsApp number, from any field that writes it (its own Settings field, the custom attribute's row)
+  const number = typed === WHATSAPP_ATTRIBUTE ? whatsappNumber(String(written)) : undefined;
+  if (number === null) return { kind: 'refused', message: message('status.attribute.whatsappNumber', { value: String(written).trim(), min: WHATSAPP_DIGITS.min, max: WHATSAPP_DIGITS.max }) };
+  const value = number ?? written;
   // an address attribute's value passes the one rule of an address (the audit's XA1: formaction="javascript:…")
   const address = customAttributeValueRefusal(typed, String(value)) === null ? null : readAddress(String(value));
   if (address !== null && !address.ok) return { kind: 'refused', message: address.refusal };

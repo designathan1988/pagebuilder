@@ -23,6 +23,9 @@ export interface AppVariable {
   readonly initial: JsonValue;
   // kept in the visitor's browser (localStorage) between visits; absent while it starts over on every visit
   readonly persist?: true;
+  // the name the visitor's browser keeps a persisted variable under, set when it is renamed so the values visitors
+  // saved before the rename still reach it; absent while it is the variable's own name
+  readonly kept?: string;
 }
 
 // A script or a code component: a JavaScript module of the project, by its name.

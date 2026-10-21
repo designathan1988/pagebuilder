@@ -38,6 +38,13 @@ export function isLocale(value: unknown): value is Locale {
   return typeof value === 'string' && (LOCALES as readonly string[]).includes(value);
 }
 
+// The catalogue a page's language is written with (its <html lang>, a BCP 47 tag): the locale with the same primary
+// language (pt-PT reads the Portuguese catalogue, en-GB the English one); none for a language no catalogue has.
+export function localeOfLanguage(language: string): Locale | null {
+  const primary = (tag: string) => tag.trim().toLowerCase().split('-')[0];
+  return LOCALES.find((locale) => primary(locale) === primary(language)) ?? null;
+}
+
 // Whether the catalogue holds a text for a key (a value's own name: the font weights), without throwing:
 // the UI then shows the value itself (a keyword is its own name).
 export function hasText(locale: Locale, key: string): boolean {

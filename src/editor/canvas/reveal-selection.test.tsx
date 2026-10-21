@@ -45,7 +45,7 @@ afterEach(() => {
   host?.remove();
   host = null;
 });
-// the component over a stage, the pans it asks for counted
+// the component over a stage holding the page's view (canvas/reveal.ts visiblePage), the pans it asks for counted
 function draw(store: EditorStore): { readonly pans: () => number } {
   host = document.createElement('div');
   document.body.append(host);
@@ -57,7 +57,7 @@ function draw(store: EditorStore): { readonly pans: () => number } {
     return (dispatch as unknown as (c: CommandId, a: unknown) => unknown)(command, args);
   };
   const root = createRoot(host);
-  act(() => root.render(<StoreContext.Provider value={store}><div ref={stage} /><RevealSelection stage={stage} /></StoreContext.Provider>));
+  act(() => root.render(<StoreContext.Provider value={store}><div ref={stage} data-canvas-stage><div className="frame__view" /></div><RevealSelection stage={stage} /></StoreContext.Provider>));
   return { pans: () => pans };
 }
 

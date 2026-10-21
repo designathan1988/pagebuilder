@@ -12,7 +12,11 @@
     "type": "page",
     "name": "Body",
     "tag": "body",
-    "attributes": {},
+    "attributes": {
+     "pageTitle": "Planilha",
+     "pageDescription": "Fórmulas como =B2*C2 e =SUM(D2:D4): um componente de código desenha a grade, um script calcula.",
+     "pageLanguage": "pt-BR"
+    },
     "classes": [],
     "styles": {
      "desktop": {

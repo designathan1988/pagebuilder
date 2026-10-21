@@ -31,6 +31,7 @@ import { MODEL_RULES, useEditorState, useStore } from '../store.ts';
 import type { MessageId } from '../../generated/ids.ts';
 import { useT } from '../text.ts';
 import { canvasFrame, nodeBox } from './coordinates.ts';
+import { visiblePage } from './reveal.ts';
 import { breakpointWords, wordsOf } from '../../core/document/breakpoints.ts';
 import { usePointerValue } from '../input/pointer/use-views.ts';
 
@@ -432,8 +433,8 @@ export function QuickPanel({ stage }: { readonly stage: RefObject<HTMLDivElement
         const reveal = !seen && owed.current !== null && fitFrom.current === null;
         const fitting = seen && fitFrames.current > 0 && fitFrom.current === null;
         if (open && at !== undefined && (reveal || fitting)) {
-          const pageView = document.querySelector('.frame__view')?.getBoundingClientRect();
-          const top = Math.max(stageBox.top, pageView?.top ?? stageBox.top);
+          // the page's view under the frame's tabs, pinned to the stage's top while the page's top is above it
+          const top = visiblePage()?.top ?? stageBox.top;
           const dx = at.left < stageBox.left || at.right > stageBox.right ? stageBox.left + inset - at.left : 0;
           let dy = at.top < top ? top + inset - at.top : at.bottom > stageBox.bottom ? stageBox.bottom - inset - at.bottom : 0;
           // what the panel holds, scrolled or not, with its borders (its height counts them), at most its share of the

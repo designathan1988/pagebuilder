@@ -89,7 +89,7 @@
           "name": "Link",
           "tag": "a",
           "attributes": {
-           "href": "/"
+           "href": "index.html"
           },
           "classes": [],
           "styles": {
@@ -732,7 +732,7 @@
             "customAttributes": {
              "data-wc": "counter",
              "data-wc-to": "15",
-             "data-wc-suffix": " anos"
+             "data-wc-suffix": ""
             }
            },
            {
@@ -1432,8 +1432,8 @@
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&h=900&q=80",
-               "alt": "Galeria — foto 1",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Galeria — foto 1"
               },
               "classes": [],
               "styles": {
@@ -1483,8 +1483,8 @@
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=900&h=900&q=80",
-               "alt": "Galeria — foto 2",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Galeria — foto 2"
               },
               "classes": [],
               "styles": {
@@ -1534,8 +1534,8 @@
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=900&h=900&q=80",
-               "alt": "Galeria — foto 3",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Galeria — foto 3"
               },
               "classes": [],
               "styles": {
@@ -1585,8 +1585,8 @@
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&h=900&q=80",
-               "alt": "Galeria — foto 4",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Galeria — foto 4"
               },
               "classes": [],
               "styles": {
@@ -1636,8 +1636,8 @@
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=900&h=900&q=80",
-               "alt": "Galeria — foto 5",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Galeria — foto 5"
               },
               "classes": [],
               "styles": {
@@ -1687,8 +1687,8 @@
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=900&h=900&q=80",
-               "alt": "Galeria — foto 6",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Galeria — foto 6"
               },
               "classes": [],
               "styles": {
@@ -2493,8 +2493,8 @@
       "name": "Botão do WhatsApp",
       "tag": "a",
       "attributes": {
-       "href": "https://wa.me/5511999999999?text=Ol%C3%A1%21%20Vim%20pelo%20site.",
        "newTab": true,
+       "href": "https://wa.me/?text=Ol%C3%A1%21%20Vim%20pelo%20site.",
        "ariaLabel": "Fale conosco pelo WhatsApp"
       },
       "classes": [],
@@ -2623,7 +2623,7 @@
           "name": "Link 10",
           "tag": "a",
           "attributes": {
-           "href": "/"
+           "href": "index.html"
           },
           "classes": [],
           "styles": {
@@ -3151,8 +3151,8 @@
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&h=800&q=80",
-               "alt": "Costela na brasa (2 pessoas)",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Costela na brasa (2 pessoas)"
               },
               "classes": [],
               "styles": {
@@ -3358,8 +3358,8 @@
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=800&h=800&q=80",
-               "alt": "Picanha com arroz biro-biro",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Picanha com arroz biro-biro"
               },
               "classes": [],
               "styles": {
@@ -3565,8 +3565,8 @@
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=800&h=800&q=80",
-               "alt": "Pudim de doce de leite",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Pudim de doce de leite"
               },
               "classes": [],
               "styles": {
@@ -4032,7 +4032,7 @@
         ],
         "customAttributes": {
          "data-wc": "cart",
-         "data-wc-whatsapp": "5511999999999"
+         "data-wc-whatsapp": ""
         }
        }
       ]
@@ -4661,8 +4661,8 @@
       "name": "Botão do WhatsApp 2",
       "tag": "a",
       "attributes": {
-       "href": "https://wa.me/5511999999999?text=Ol%C3%A1%21%20Vim%20pelo%20site.",
        "newTab": true,
+       "href": "https://wa.me/?text=Ol%C3%A1%21%20Vim%20pelo%20site.",
        "ariaLabel": "Fale conosco pelo WhatsApp"
       },
       "classes": [],
@@ -4706,11 +4706,11 @@
    }
   },
   {
-   "id": "restaurant232",
+   "id": "restaurant241",
    "name": "Contato",
    "file": "contato.html",
    "tree": {
-    "id": "restaurant231",
+    "id": "restaurant240",
     "type": "page",
     "name": "Body",
     "tag": "body",
@@ -4791,7 +4791,7 @@
           "name": "Link 19",
           "tag": "a",
           "attributes": {
-           "href": "/"
+           "href": "index.html"
           },
           "classes": [],
           "styles": {
@@ -5136,7 +5136,10 @@
           "type": "form",
           "name": "Formulário",
           "tag": "form",
-          "attributes": {},
+          "attributes": {
+           "method": "post",
+           "formSubmit": "{\"destination\":\"native\",\"method\":\"POST\"}"
+          },
           "classes": [],
           "styles": {
            "desktop": {
@@ -5213,7 +5216,8 @@
               "tag": "input",
               "attributes": {
                "inputType": "text",
-               "name": "name"
+               "name": "name",
+               "formField": "{\"rules\":{\"required\":true}}"
               },
               "classes": [],
               "styles": {
@@ -5271,7 +5275,187 @@
               "tag": "input",
               "attributes": {
                "inputType": "email",
-               "name": "email"
+               "name": "email",
+               "formField": "{\"rules\":{\"required\":true,\"type\":\"email\"}}"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "restaurant213",
+            "type": "label",
+            "name": "Rótulo 3",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "restaurant214",
+              "type": "paragraph",
+              "name": "Parágrafo 58",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#1c1917"
+                }
+               }
+              },
+              "text": "Dia",
+              "children": []
+             },
+             {
+              "id": "restaurant215",
+              "type": "input",
+              "name": "Campo 3",
+              "tag": "input",
+              "attributes": {
+               "name": "date",
+               "formField": "{\"rules\":{\"required\":true,\"dateMinimum\":\"today\"}}",
+               "inputType": "date"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "restaurant216",
+            "type": "label",
+            "name": "Rótulo 4",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "restaurant217",
+              "type": "paragraph",
+              "name": "Parágrafo 59",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#1c1917"
+                }
+               }
+              },
+              "text": "Horário",
+              "children": []
+             },
+             {
+              "id": "restaurant218",
+              "type": "input",
+              "name": "Campo 4",
+              "tag": "input",
+              "attributes": {
+               "name": "time",
+               "formField": "{\"rules\":{\"required\":true}}",
+               "inputType": "time"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "restaurant219",
+            "type": "label",
+            "name": "Rótulo 5",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "restaurant220",
+              "type": "paragraph",
+              "name": "Parágrafo 60",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#1c1917"
+                }
+               }
+              },
+              "text": "Pessoas",
+              "children": []
+             },
+             {
+              "id": "restaurant221",
+              "type": "input",
+              "name": "Campo 5",
+              "tag": "input",
+              "attributes": {
+               "name": "guests",
+               "formField": "{\"rules\":{\"required\":true,\"minimum\":1,\"maximum\":40}}",
+               "inputType": "number",
+               "min": "1",
+               "max": "40"
               },
               "classes": [],
               "styles": {
@@ -5335,7 +5519,7 @@
       ]
      },
      {
-      "id": "restaurant213",
+      "id": "restaurant222",
       "type": "section",
       "name": "Mapa com endereço",
       "tag": "section",
@@ -5354,7 +5538,7 @@
       "text": null,
       "children": [
        {
-        "id": "restaurant214",
+        "id": "restaurant223",
         "type": "div",
         "name": "Contêiner 19",
         "tag": "div",
@@ -5377,7 +5561,7 @@
         "text": null,
         "children": [
          {
-          "id": "restaurant215",
+          "id": "restaurant224",
           "type": "div",
           "name": "Endereço",
           "tag": "div",
@@ -5387,7 +5571,7 @@
           "text": null,
           "children": [
            {
-            "id": "restaurant216",
+            "id": "restaurant225",
             "type": "heading",
             "name": "Título 16",
             "tag": "h2",
@@ -5410,9 +5594,9 @@
             "children": []
            },
            {
-            "id": "restaurant217",
+            "id": "restaurant226",
             "type": "paragraph",
-            "name": "Parágrafo 58",
+            "name": "Parágrafo 61",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -5431,9 +5615,9 @@
             "children": []
            },
            {
-            "id": "restaurant218",
+            "id": "restaurant227",
             "type": "paragraph",
-            "name": "Parágrafo 59",
+            "name": "Parágrafo 62",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -5452,7 +5636,7 @@
             "children": []
            },
            {
-            "id": "restaurant219",
+            "id": "restaurant228",
             "type": "link",
             "name": "Link 25",
             "tag": "a",
@@ -5500,14 +5684,14 @@
           ]
          },
          {
-          "id": "restaurant220",
+          "id": "restaurant229",
           "type": "iframe",
           "name": "Quadro incorporado",
           "tag": "iframe",
           "attributes": {
            "src": "https://www.openstreetmap.org/export/embed.html?bbox=-46.6622%2C-23.5713%2C-46.6422%2C-23.5593&layer=mapnik&marker=-23.5653%2C-46.6522",
-           "title": "Mapa",
-           "loading": "lazy"
+           "loading": "lazy",
+           "title": "Mapa"
           },
           "classes": [],
           "styles": {
@@ -5542,7 +5726,7 @@
       ]
      },
      {
-      "id": "restaurant221",
+      "id": "restaurant230",
       "type": "footer",
       "name": "Rodapé com colunas 3",
       "tag": "footer",
@@ -5563,7 +5747,7 @@
       "text": null,
       "children": [
        {
-        "id": "restaurant222",
+        "id": "restaurant231",
         "type": "div",
         "name": "Contêiner 20",
         "tag": "div",
@@ -5585,7 +5769,7 @@
         "text": null,
         "children": [
          {
-          "id": "restaurant223",
+          "id": "restaurant232",
           "type": "div",
           "name": "Marca 3",
           "tag": "div",
@@ -5595,9 +5779,9 @@
           "text": null,
           "children": [
            {
-            "id": "restaurant224",
+            "id": "restaurant233",
             "type": "paragraph",
-            "name": "Parágrafo 60",
+            "name": "Parágrafo 63",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -5615,9 +5799,9 @@
             "children": []
            },
            {
-            "id": "restaurant225",
+            "id": "restaurant234",
             "type": "paragraph",
-            "name": "Parágrafo 61",
+            "name": "Parágrafo 64",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -5637,7 +5821,7 @@
           ]
          },
          {
-          "id": "restaurant226",
+          "id": "restaurant235",
           "type": "nav",
           "name": "Navegação 6",
           "tag": "nav",
@@ -5659,7 +5843,7 @@
           "text": null,
           "children": [
            {
-            "id": "restaurant227",
+            "id": "restaurant236",
             "type": "link",
             "name": "Link 26",
             "tag": "a",
@@ -5678,7 +5862,7 @@
             "children": []
            },
            {
-            "id": "restaurant228",
+            "id": "restaurant237",
             "type": "link",
             "name": "Link 27",
             "tag": "a",
@@ -5697,7 +5881,7 @@
             "children": []
            },
            {
-            "id": "restaurant229",
+            "id": "restaurant238",
             "type": "link",
             "name": "Link 28",
             "tag": "a",
@@ -5718,9 +5902,9 @@
           ]
          },
          {
-          "id": "restaurant230",
+          "id": "restaurant239",
           "type": "paragraph",
-          "name": "Parágrafo 62",
+          "name": "Parágrafo 65",
           "tag": "p",
           "attributes": {},
           "classes": [],

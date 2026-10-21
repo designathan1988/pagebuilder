@@ -5776,7 +5776,7 @@
                       "text-decoration-line": "none"
                     },
                     "attributes": {
-                      "href": "/"
+                      "href": "index.html"
                     }
                   },
                   {
@@ -5813,8 +5813,8 @@
                       "padding-left": "0px",
                       "padding-right": "0px"
                     },
-                    "attributes": {
-                      "ariaLabel": "Menu"
+                    "attributeKeys": {
+                      "ariaLabel": "comp.menu.toggleLabel"
                     },
                     "customAttributes": {
                       "data-wc-toggle": ""
@@ -5850,7 +5850,7 @@
                           "padding-right": "4px"
                         },
                         "attributes": {
-                          "href": "/"
+                          "href": "index.html"
                         }
                       },
                       {
@@ -5866,7 +5866,7 @@
                           "padding-right": "4px"
                         },
                         "attributes": {
-                          "href": "/#sobre"
+                          "href": "index.html#sobre"
                         }
                       },
                       {
@@ -5882,7 +5882,7 @@
                           "padding-right": "4px"
                         },
                         "attributes": {
-                          "href": "/#servicos"
+                          "href": "index.html#servicos"
                         }
                       },
                       {
@@ -5898,7 +5898,7 @@
                           "padding-right": "4px"
                         },
                         "attributes": {
-                          "href": "/#contato"
+                          "href": "index.html#contato"
                         }
                       },
                       {
@@ -5933,7 +5933,7 @@
                           "text-decoration-line": "none"
                         },
                         "attributes": {
-                          "href": "/#contato"
+                          "href": "index.html#contato"
                         }
                       }
                     ]
@@ -5959,8 +5959,8 @@
               "padding-left": "24px",
               "padding-right": "24px"
             },
-            "attributes": {
-              "ariaLabel": "Fotos"
+            "attributeKeys": {
+              "ariaLabel": "comp.carousel.label"
             },
             "customAttributes": {
               "data-wc": "carousel",
@@ -6022,8 +6022,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-slide-1/1600/700",
-                              "alt": "Um primeiro slide marcante",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.carousel.one.alt"
                             }
                           },
                           {
@@ -6076,8 +6078,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-slide-2/1600/700",
-                              "alt": "Mostre seu melhor trabalho",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.carousel.two.alt"
                             }
                           },
                           {
@@ -6130,8 +6134,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-slide-3/1600/700",
-                              "alt": "E o que torna você diferente",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.carousel.three.alt"
                             }
                           },
                           {
@@ -6204,8 +6210,8 @@
                           "padding-left": "0px",
                           "padding-right": "0px"
                         },
-                        "attributes": {
-                          "ariaLabel": "Anterior"
+                        "attributeKeys": {
+                          "ariaLabel": "comp.prevLabel"
                         },
                         "customAttributes": {
                           "data-wc-prev": ""
@@ -6253,8 +6259,8 @@
                           "padding-left": "0px",
                           "padding-right": "0px"
                         },
-                        "attributes": {
-                          "ariaLabel": "Próximo"
+                        "attributeKeys": {
+                          "ariaLabel": "comp.nextLabel"
                         },
                         "customAttributes": {
                           "data-wc-next": ""
@@ -6284,8 +6290,8 @@
               "padding-right": "24px",
               "background-color": "#f8fafc"
             },
-            "attributes": {
-              "ariaLabel": "Depoimentos"
+            "attributeKeys": {
+              "ariaLabel": "comp.quotes.label"
             },
             "customAttributes": {
               "data-wc": "carousel"
@@ -6583,8 +6589,8 @@
                           "padding-left": "0px",
                           "padding-right": "0px"
                         },
-                        "attributes": {
-                          "ariaLabel": "Anterior"
+                        "attributeKeys": {
+                          "ariaLabel": "comp.prevLabel"
                         },
                         "customAttributes": {
                           "data-wc-prev": ""
@@ -6624,8 +6630,8 @@
                           "padding-left": "0px",
                           "padding-right": "0px"
                         },
-                        "attributes": {
-                          "ariaLabel": "Próximo"
+                        "attributeKeys": {
+                          "ariaLabel": "comp.nextLabel"
                         },
                         "customAttributes": {
                           "data-wc-next": ""
@@ -6738,8 +6744,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-gallery-1/900/900",
-                              "alt": "Foto 1",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.gallery.1.alt"
                             }
                           }
                         ]
@@ -6768,8 +6776,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-gallery-2/900/900",
-                              "alt": "Foto 2",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.gallery.2.alt"
                             }
                           }
                         ]
@@ -6798,8 +6808,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-gallery-3/900/900",
-                              "alt": "Foto 3",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.gallery.3.alt"
                             }
                           }
                         ]
@@ -6828,8 +6840,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-gallery-4/900/900",
-                              "alt": "Foto 4",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.gallery.4.alt"
                             }
                           }
                         ]
@@ -6858,8 +6872,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-gallery-5/900/900",
-                              "alt": "Foto 5",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.gallery.5.alt"
                             }
                           }
                         ]
@@ -6888,8 +6904,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-gallery-6/900/900",
-                              "alt": "Foto 6",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.gallery.6.alt"
                             }
                           }
                         ]
@@ -7523,8 +7541,10 @@
                     },
                     "attributes": {
                       "src": "https://www.openstreetmap.org/export/embed.html?bbox=-46.6622%2C-23.5713%2C-46.6422%2C-23.5593&layer=mapnik&marker=-23.5653%2C-46.6522",
-                      "title": "Mapa",
                       "loading": "lazy"
+                    },
+                    "attributeKeys": {
+                      "title": "comp.map.frame"
                     }
                   }
                 ]
@@ -7621,9 +7641,11 @@
                     },
                     "attributes": {
                       "src": "https://www.youtube-nocookie.com/embed/ScMzIvxBSi4",
-                      "title": "Vídeo",
                       "loading": "lazy",
                       "allow": "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                    },
+                    "attributeKeys": {
+                      "title": "comp.video.frame"
                     }
                   }
                 ]
@@ -7764,8 +7786,8 @@
                               "font-size": "13px",
                               "line-height": "22px"
                             },
-                            "attributes": {
-                              "ariaLabel": "Itens no carrinho"
+                            "attributeKeys": {
+                              "ariaLabel": "comp.shop.countLabel"
                             },
                             "customAttributes": {
                               "data-wc-count": ""
@@ -7832,8 +7854,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-product-1/800/800",
-                              "alt": "Café artesanal 500 g",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.shop.one.name"
                             }
                           },
                           {
@@ -7969,8 +7993,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-product-2/800/800",
-                              "alt": "Caneca de cerâmica",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.shop.two.name"
                             }
                           },
                           {
@@ -8106,8 +8132,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-product-3/800/800",
-                              "alt": "Caixa presente",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.shop.three.name"
                             }
                           },
                           {
@@ -8234,7 +8262,7 @@
                 },
                 "customAttributes": {
                   "data-wc": "cart",
-                  "data-wc-whatsapp": "5511999999999"
+                  "data-wc-whatsapp": ""
                 },
                 "children": [
                   {
@@ -8292,8 +8320,8 @@
                           "padding-left": "0px",
                           "padding-right": "0px"
                         },
-                        "attributes": {
-                          "ariaLabel": "Fechar"
+                        "attributeKeys": {
+                          "ariaLabel": "comp.closeLabel"
                         },
                         "customAttributes": {
                           "data-wc-close": ""
@@ -8663,9 +8691,11 @@
                         },
                         "attributes": {
                           "inputType": "search",
-                          "placeholder": "Buscar…",
-                          "name": "busca",
-                          "ariaLabel": "Buscar"
+                          "name": "search"
+                        },
+                        "attributeKeys": {
+                          "placeholder": "comp.blog.searchPlaceholder",
+                          "ariaLabel": "comp.blog.searchLabel"
                         },
                         "customAttributes": {
                           "data-wc-search": ""
@@ -8732,8 +8762,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-post-1/1200/675",
-                              "alt": "Cinco ideias para vender mais este mês",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.blog.one.title"
                             }
                           },
                           {
@@ -8805,7 +8837,7 @@
                                   "text-decoration-line": "none"
                                 },
                                 "attributes": {
-                                  "href": "/"
+                                  "href": "index.html"
                                 }
                               }
                             ]
@@ -8861,8 +8893,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-post-2/1200/675",
-                              "alt": "Nosso novo horário de funcionamento",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.blog.two.title"
                             }
                           },
                           {
@@ -8934,7 +8968,7 @@
                                   "text-decoration-line": "none"
                                 },
                                 "attributes": {
-                                  "href": "/"
+                                  "href": "index.html"
                                 }
                               }
                             ]
@@ -8990,8 +9024,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-post-3/1200/675",
-                              "alt": "Como tudo começou",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.blog.three.title"
                             }
                           },
                           {
@@ -9063,7 +9099,7 @@
                                   "text-decoration-line": "none"
                                 },
                                 "attributes": {
-                                  "href": "/"
+                                  "href": "index.html"
                                 }
                               }
                             ]
@@ -9111,8 +9147,10 @@
               "text-align": "center"
             },
             "customAttributes": {
-              "data-wc": "countdown",
-              "data-wc-date": "2026-12-31T23:59:00-03:00"
+              "data-wc": "countdown"
+            },
+            "customDaysAhead": {
+              "data-wc-date": 30
             },
             "children": [
               {
@@ -9498,7 +9536,7 @@
                         "customAttributes": {
                           "data-wc": "counter",
                           "data-wc-to": "15",
-                          "data-wc-suffix": " anos"
+                          "data-wc-suffix": ""
                         }
                       },
                       {
@@ -9650,8 +9688,10 @@
               "row-gap": "12px"
             },
             "attributes": {
-              "ariaLabel": "Cookies",
               "role": "region"
+            },
+            "attributeKeys": {
+              "ariaLabel": "comp.cookies.label"
             },
             "customAttributes": {
               "data-wc": "cookies"
@@ -9792,9 +9832,11 @@
               ]
             },
             "attributes": {
-              "href": "https://wa.me/5511999999999?text=Ol%C3%A1%21%20Vim%20pelo%20site.",
-              "newTab": true,
-              "ariaLabel": "Fale conosco pelo WhatsApp"
+              "newTab": true
+            },
+            "attributeKeys": {
+              "href": "comp.whatsapp.href",
+              "ariaLabel": "comp.whatsapp.label"
             }
           }
         },
@@ -9890,9 +9932,11 @@
                         "attributes": {
                           "inputType": "email",
                           "name": "email",
-                          "placeholder": "seu@email.com",
-                          "required": true,
-                          "ariaLabel": "E-mail"
+                          "required": true
+                        },
+                        "attributeKeys": {
+                          "placeholder": "comp.news.placeholder",
+                          "ariaLabel": "comp.news.emailLabel"
                         }
                       },
                       {
@@ -10858,8 +10902,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-team-one/400/400",
-                              "alt": "Marina Alves",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.team.one.name"
                             }
                           },
                           {
@@ -10911,8 +10957,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-team-two/400/400",
-                              "alt": "Rafael Costa",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.team.two.name"
                             }
                           },
                           {
@@ -10964,8 +11012,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-team-three/400/400",
-                              "alt": "Bruna Lopes",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.team.three.name"
                             }
                           },
                           {
@@ -11017,8 +11067,10 @@
                             },
                             "attributes": {
                               "src": "https://picsum.photos/seed/wc-team-four/400/400",
-                              "alt": "Tiago Nunes",
                               "loading": "lazy"
+                            },
+                            "attributeKeys": {
+                              "alt": "comp.team.four.name"
                             }
                           },
                           {

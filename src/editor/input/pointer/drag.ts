@@ -3,15 +3,20 @@
 import type { Message } from '../../../core/commands/registry.ts';
 import type { NodeId } from '../../../core/document/model.ts';
 import type { CommandId } from '../../../generated/ids.ts';
-import { canvasFrame, geometryOf, nodesUnder, screenToPage, scrollPage, type Point } from '../../canvas/coordinates.ts';
+import { canvasFrame, geometryOf, nodesUnder, screenToPage, type Point } from '../../canvas/coordinates.ts';
+import { visiblePage } from '../../canvas/reveal.ts';
+import { cameraTravel } from '../../view/camera.ts';
 import { drawnProposal, liveDrag } from '../../drag/drag-session.ts';
 import { rowDrop, SIDE_DWELL, type DropProposal } from '../../drag/drop.ts';
 import { DRAG_HYSTERESIS } from './machine.ts';
 import { NOT_PICKING, argsFor } from './press.ts';
 import { CONTAINERS, isInside, keepsSide, nearestAccepted, proposalAt, ROW_DROP, ROW_SELECT, rowUnder, sideAt } from '../drop-proposals.ts';
 import type { SideView } from './views.ts';
-import { leavesNow, dropDoor, ROW_DWELL, PILL_OFFSET, PILL_FREEZE, AUTOSCROLL_ZONE, AUTOSCROLL_MAX, TREE_SHARE, TREE_DWELL, EXPAND_DWELL, SIDE_ELEMENT, sideTileFor } from './common.ts';
+import { leavesNow, dropDoor, ROW_DWELL, PILL_OFFSET, PILL_FREEZE, AUTOSCROLL_ZONE, AUTOSCROLL_MAX, TREE_SHARE, TREE_DWELL, EXPAND_DWELL, SIDE_ELEMENT, sideTileFor, WHEEL_DOORS } from './common.ts';
 import type { PointerOwner } from './owner.ts';
+
+// the canvas's pan, the wheel's command (view/camera.ts): what the drag's autoscroll moves the page with
+const PAN = WHEEL_DOORS.find((d) => d.door.kind === 'canvas-wheel' && d.door.modifier === null && 'dx' in d.command.args);
 
 export function pointerDrag(p: PointerOwner): Pick<PointerOwner, 'pagePoint' | 'drawMarquee' | 'redraw' | 'sideView' | 'offer' | 'autoscroll' | 'rest' | 'stopDragTimers' | 'over'> {
   const { ps, shared, store } = p;
@@ -109,24 +114,39 @@ export function pointerDrag(p: PointerOwner): Pick<PointerOwner, 'pagePoint' | '
       p.redraw(ps.pointerAt, true);
     }, SIDE_DWELL);
   };
-  // Autoscroll (spec drag-autoscroll): while the pointer is within drop.autoscrollZone of the top or the bottom of a
-  // scroller — the page's visible box, or the Layers tree's — once it has been inside that box beyond the zone, that
-  // scroller moves each frame by up to drop.autoscrollMaxStep screen pixels, more the nearer the edge, and the
-  // proposal follows what the scroll brought under the pointer.
+  // Autoscroll (spec drag-autoscroll): while the pointer is within drop.autoscrollZone of an edge of a scroller — what
+  // the person sees of the page on the stage (canvas/reveal.ts visiblePage), or the Layers tree's box — once it has
+  // been inside that box beyond the zone, that scroller moves each frame by up to drop.autoscrollMaxStep screen pixels,
+  // more the nearer the edge, and the proposal follows what the move brought under the pointer. The page's scroller is
+  // the camera (DCS-035: the page never scrolls inside its frame): the canvas pans, down and up, and across.
   const autoscroll = () => {
     ps.scrolling = 0;
     const frame = canvasFrame();
     if (ps.dragging === null || !frame) return;
     let scrolled = false;
-    const box = frame.getBoundingClientRect();
-    const fromTop = ps.pointerAt.y - box.top;
-    const fromBottom = box.bottom - ps.pointerAt.y;
-    const across = ps.pointerAt.x >= box.left && ps.pointerAt.x <= box.right;
-    if (across && fromTop > AUTOSCROLL_ZONE && fromBottom > AUTOSCROLL_ZONE) ps.insideOnce = true;
-    let step = 0;
-    if (ps.insideOnce && across && fromTop >= 0 && fromTop < AUTOSCROLL_ZONE) step = -AUTOSCROLL_MAX * (1 - fromTop / AUTOSCROLL_ZONE);
-    else if (ps.insideOnce && across && fromBottom >= 0 && fromBottom < AUTOSCROLL_ZONE) step = AUTOSCROLL_MAX * (1 - fromBottom / AUTOSCROLL_ZONE);
-    if (step !== 0 && scrollPage(frame, step)) scrolled = true;
+    const box = visiblePage();
+    if (box !== null && PAN !== undefined) {
+      const at = ps.pointerAt;
+      const fromTop = at.y - box.top;
+      const fromBottom = box.bottom - at.y;
+      const fromLeft = at.x - box.left;
+      const fromRight = box.right - at.x;
+      const across = fromLeft >= 0 && fromRight >= 0;
+      const down = fromTop >= 0 && fromBottom >= 0;
+      if (across && down && fromTop > AUTOSCROLL_ZONE && fromBottom > AUTOSCROLL_ZONE && fromLeft > AUTOSCROLL_ZONE && fromRight > AUTOSCROLL_ZONE) ps.insideOnce = true;
+      // toward an edge the page goes on past (at the page's own end it stops, as a scroll does)
+      const stepOf = (near: number, far: number, before: boolean, after: boolean): number =>
+        near < AUTOSCROLL_ZONE && before ? -AUTOSCROLL_MAX * (1 - near / AUTOSCROLL_ZONE) : far < AUTOSCROLL_ZONE && after ? AUTOSCROLL_MAX * (1 - far / AUTOSCROLL_ZONE) : 0;
+      const stepY = ps.insideOnce && across && down ? stepOf(fromTop, fromBottom, box.hidden.top, box.hidden.bottom) : 0;
+      const stepX = ps.insideOnce && across && down ? stepOf(fromLeft, fromRight, box.hidden.left, box.hidden.right) : 0;
+      if (stepX !== 0 || stepY !== 0) {
+        // moved: the camera's place changed (at its bounds it stays)
+        const before = store.getState();
+        p.dispatchPan(PAN, { dx: -Math.round(stepX), dy: -Math.round(stepY) });
+        const travel = cameraTravel(before, store.getState());
+        if (travel.x !== 0 || travel.y !== 0) scrolled = true;
+      }
+    }
     // the Layers tree scrolls the same way while the pointer is over it (Problems in Pager 2: a row below its fold is
     // reached by dragging): its own box, its own arming, its own scrolled distance. Two things keep a drag aimed at a
     // visible row from having it carried away (the audit's tile onto a Layers row landed on the room the row had left):
@@ -165,9 +185,13 @@ export function pointerDrag(p: PointerOwner): Pick<PointerOwner, 'pagePoint' | '
     }
     // a scroller that moved carried the page under a still pointer: the proposal is taken again there (the drag's
     // hysteresis suppresses a proposal that changed while the pointer stood still, which a scroll must not)
+    // (once the canvas has drawn the camera's move: its render is flushed in a microtask queued before this one)
     if (scrolled) {
-      ps.dragging.takenAt = null;
-      p.over(ps.pointerAt, ps.dragging.inserting === null || nodesUnder(frame, ps.pointerAt).length > 0);
+      queueMicrotask(() => {
+        if (ps.dragging === null) return;
+        ps.dragging.takenAt = null;
+        p.over(ps.pointerAt, ps.dragging.inserting === null || nodesUnder(frame, ps.pointerAt).length > 0);
+      });
     }
     ps.scrolling = requestAnimationFrame(p.autoscroll);
   };

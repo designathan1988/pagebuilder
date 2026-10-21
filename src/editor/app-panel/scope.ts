@@ -3,8 +3,8 @@
 // `as`, and index) — the element's own repetition too, for every field but the one that says what it repeats.
 import { locate, type DocumentJson } from '../../core/document/model.ts';
 import type { NodeId } from '../../generated/commands.ts';
+import { exportedNames } from '../../core/logic/references.ts';
 import type { CodeScope } from './code-editor.tsx';
-import { exportedNames } from './code-editor.tsx';
 
 export function projectScope(document: DocumentJson): Pick<CodeScope, 'variables' | 'functions'> {
   const app = document.app ?? {};

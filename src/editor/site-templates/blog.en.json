@@ -1,0 +1,3190 @@
+{
+ "version": 4,
+ "language": "en",
+ "codeLanguage": "en",
+ "pages": [
+  {
+   "id": "blog77",
+   "name": "Blog",
+   "file": "index.html",
+   "tree": {
+    "id": "blog76",
+    "type": "page",
+    "name": "Body",
+    "tag": "body",
+    "attributes": {
+     "pageTitle": "Recipe Notebook — a cooking blog",
+     "pageDescription": "Tested recipes, kitchen tips and stories around the table.",
+     "pageLanguage": "en"
+    },
+    "classes": [],
+    "styles": {
+     "desktop": {
+      "base": {
+       "margin-top": "0",
+       "margin-right": "0",
+       "margin-bottom": "0",
+       "margin-left": "0",
+       "font-family": "Georgia, \"Times New Roman\", serif",
+       "color": "#111827",
+       "background-color": "#ffffff"
+      }
+     }
+    },
+    "text": null,
+    "children": [
+     {
+      "id": "blog1",
+      "type": "header",
+      "name": "Menu that folds on phones",
+      "tag": "header",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "14px",
+         "padding-right": "24px",
+         "padding-bottom": "14px",
+         "padding-left": "24px",
+         "background-color": "#ffffff",
+         "border-bottom-width": "1px",
+         "border-bottom-style": "solid",
+         "border-bottom-color": "#e2e8f0",
+         "position": "sticky",
+         "top": "0px",
+         "z-index": "50"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "blog2",
+        "type": "div",
+        "name": "Container",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "justify-content": "space-between",
+           "column-gap": "24px",
+           "row-gap": "12px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "blog3",
+          "type": "link",
+          "name": "Link",
+          "tag": "a",
+          "attributes": {
+           "href": "index.html"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "20px",
+             "font-weight": "700",
+             "color": "#111827",
+             "text-decoration-line": "none"
+            }
+           }
+          },
+          "text": "Recipe Notebook",
+          "children": []
+         },
+         {
+          "id": "blog4",
+          "type": "button",
+          "name": "Button",
+          "tag": "button",
+          "attributes": {
+           "ariaLabel": "Menu"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "width": "44px",
+             "height": "44px",
+             "border-top-left-radius": "999px",
+             "border-top-right-radius": "999px",
+             "border-bottom-right-radius": "999px",
+             "border-bottom-left-radius": "999px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#e2e8f0",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#e2e8f0",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#e2e8f0",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#e2e8f0",
+             "background-color": "#ffffff",
+             "color": "#111827",
+             "font-size": "20px",
+             "cursor": "pointer",
+             "display": "none",
+             "align-items": "center",
+             "justify-content": "center",
+             "padding-top": "0px",
+             "padding-bottom": "0px",
+             "padding-left": "0px",
+             "padding-right": "0px"
+            }
+           }
+          },
+          "text": "☰",
+          "children": [],
+          "customAttributes": {
+           "data-wc-toggle": ""
+          }
+         },
+         {
+          "id": "blog5",
+          "type": "nav",
+          "name": "Navigation",
+          "tag": "nav",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "0px",
+             "padding-right": "0px",
+             "padding-bottom": "0px",
+             "padding-left": "0px",
+             "display": "flex",
+             "flex-wrap": "wrap",
+             "align-items": "center",
+             "column-gap": "20px",
+             "row-gap": "8px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "blog6",
+            "type": "link",
+            "name": "Link 2",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#111827",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Home",
+            "children": []
+           },
+           {
+            "id": "blog7",
+            "type": "link",
+            "name": "Link 3",
+            "tag": "a",
+            "attributes": {
+             "href": "about.html"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#111827",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "About",
+            "children": []
+           },
+           {
+            "id": "blog8",
+            "type": "link",
+            "name": "Link 4",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#articles"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#111827",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Articles",
+            "children": []
+           },
+           {
+            "id": "blog9",
+            "type": "link",
+            "name": "Link 5",
+            "tag": "a",
+            "attributes": {
+             "href": "about.html#contact"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#111827",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Contact",
+            "children": []
+           },
+           {
+            "id": "blog10",
+            "type": "link",
+            "name": "Link 6",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#subscribe"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "12px",
+               "padding-bottom": "12px",
+               "padding-left": "22px",
+               "padding-right": "22px",
+               "background-color": "#be185d",
+               "color": "#ffffff",
+               "font-weight": "600",
+               "font-size": "15px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#be185d",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#be185d",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#be185d",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#be185d",
+               "border-top-left-radius": "10px",
+               "border-top-right-radius": "10px",
+               "border-bottom-right-radius": "10px",
+               "border-bottom-left-radius": "10px",
+               "cursor": "pointer",
+               "text-decoration-line": "none"
+              }
+             }
+            },
+            "text": "Subscribe",
+            "children": []
+           }
+          ],
+          "customAttributes": {
+           "data-wc-menu": ""
+          }
+         }
+        ]
+       }
+      ],
+      "customAttributes": {
+       "data-wc": "menu"
+      }
+     },
+     {
+      "id": "blog11",
+      "type": "section",
+      "name": "Hero with image",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px",
+         "background-color": "#fdf2f8"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "blog12",
+        "type": "div",
+        "name": "Container 2",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(300px, 1fr))",
+           "column-gap": "56px",
+           "row-gap": "40px",
+           "align-items": "center"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "blog13",
+          "type": "div",
+          "name": "Text",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "blog14",
+            "type": "paragraph",
+            "name": "Paragraph",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#be185d",
+               "font-size": "14px",
+               "font-weight": "600",
+               "letter-spacing": "0.08em",
+               "text-transform": "uppercase",
+               "margin-bottom": "12px"
+              }
+             }
+            },
+            "text": "Recipes tested at home",
+            "children": []
+           },
+           {
+            "id": "blog15",
+            "type": "heading",
+            "name": "Heading",
+            "tag": "h1",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(2.25rem, 5vw, 3.5rem)",
+               "line-height": "1.1",
+               "color": "#111827",
+               "letter-spacing": "-0.02em",
+               "margin-bottom": "20px",
+               "font-family": "Georgia, \"Times New Roman\", serif"
+              }
+             }
+            },
+            "text": "Good food, kept simple",
+            "children": []
+           },
+           {
+            "id": "blog16",
+            "type": "paragraph",
+            "name": "Paragraph 2",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-bottom": "32px"
+              }
+             }
+            },
+            "text": "A new recipe every week, explained step by step, with what worked and what didn't.",
+            "children": []
+           },
+           {
+            "id": "blog17",
+            "type": "div",
+            "name": "Actions",
+            "tag": "div",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-wrap": "wrap",
+               "column-gap": "12px",
+               "row-gap": "12px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "blog18",
+              "type": "button",
+              "name": "Button 2",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "14px",
+                 "padding-bottom": "14px",
+                 "padding-left": "24px",
+                 "padding-right": "24px",
+                 "background-color": "#be185d",
+                 "color": "#ffffff",
+                 "font-weight": "600",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#be185d",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#be185d",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#be185d",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#be185d",
+                 "border-top-left-radius": "10px",
+                 "border-top-right-radius": "10px",
+                 "border-bottom-right-radius": "10px",
+                 "border-bottom-left-radius": "10px"
+                }
+               }
+              },
+              "text": "Read the articles",
+              "children": []
+             },
+             {
+              "id": "blog19",
+              "type": "button",
+              "name": "Button 3",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "14px",
+                 "padding-bottom": "14px",
+                 "padding-left": "24px",
+                 "padding-right": "24px",
+                 "background-color": "#ffffff",
+                 "color": "#111827",
+                 "font-weight": "600",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#e2e8f0",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#e2e8f0",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#e2e8f0",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#e2e8f0",
+                 "border-top-left-radius": "10px",
+                 "border-top-right-radius": "10px",
+                 "border-bottom-right-radius": "10px",
+                 "border-bottom-left-radius": "10px"
+                }
+               }
+              },
+              "text": "Subscribe to the newsletter",
+              "children": []
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "id": "blog20",
+          "type": "image",
+          "name": "Image",
+          "tag": "img",
+          "attributes": {
+           "src": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&h=900&q=80",
+           "alt": "Good food, kept simple"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "max-width": "100%",
+             "width": "100%",
+             "aspect-ratio": "4 / 3",
+             "object-fit": "cover",
+             "border-top-left-radius": "20px",
+             "border-top-right-radius": "20px",
+             "border-bottom-right-radius": "20px",
+             "border-bottom-left-radius": "20px",
+             "background-color": "#e2e8f0"
+            }
+           }
+          },
+          "text": null,
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "blog21",
+      "type": "section",
+      "name": "Blog with search and categories",
+      "tag": "section",
+      "attributes": {
+       "id": "articles"
+      },
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "80px",
+         "padding-right": "24px",
+         "padding-bottom": "80px",
+         "padding-left": "24px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "blog22",
+        "type": "div",
+        "name": "Container 3",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "blog23",
+          "type": "div",
+          "name": "Introduction",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center",
+             "max-width": "720px",
+             "margin-left": "auto",
+             "margin-right": "auto",
+             "margin-bottom": "40px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "blog24",
+            "type": "heading",
+            "name": "Heading 2",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#111827",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "12px",
+               "margin-top": "0px",
+               "font-family": "Georgia, \"Times New Roman\", serif"
+              }
+             }
+            },
+            "text": "Articles",
+            "children": []
+           },
+           {
+            "id": "blog25",
+            "type": "paragraph",
+            "name": "Paragraph 3",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Filter by topic.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "blog26",
+          "type": "div",
+          "name": "Search and categories",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-wrap": "wrap",
+             "align-items": "center",
+             "justify-content": "space-between",
+             "column-gap": "16px",
+             "row-gap": "12px",
+             "margin-bottom": "24px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "blog27",
+            "type": "div",
+            "name": "Categories",
+            "tag": "div",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-wrap": "wrap",
+               "column-gap": "8px",
+               "row-gap": "8px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "blog28",
+              "type": "button",
+              "name": "Button 4",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "8px",
+                 "padding-bottom": "8px",
+                 "padding-left": "16px",
+                 "padding-right": "16px",
+                 "background-color": "#ffffff",
+                 "color": "#111827",
+                 "font-weight": "500",
+                 "font-size": "14px",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#e2e8f0",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#e2e8f0",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#e2e8f0",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#e2e8f0",
+                 "border-top-left-radius": "999px",
+                 "border-top-right-radius": "999px",
+                 "border-bottom-right-radius": "999px",
+                 "border-bottom-left-radius": "999px",
+                 "cursor": "pointer"
+                }
+               }
+              },
+              "text": "All",
+              "children": [],
+              "customAttributes": {
+               "data-wc-filter": "*"
+              }
+             },
+             {
+              "id": "blog29",
+              "type": "button",
+              "name": "Button 5",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "8px",
+                 "padding-bottom": "8px",
+                 "padding-left": "16px",
+                 "padding-right": "16px",
+                 "background-color": "#ffffff",
+                 "color": "#111827",
+                 "font-weight": "500",
+                 "font-size": "14px",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#e2e8f0",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#e2e8f0",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#e2e8f0",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#e2e8f0",
+                 "border-top-left-radius": "999px",
+                 "border-top-right-radius": "999px",
+                 "border-bottom-right-radius": "999px",
+                 "border-bottom-left-radius": "999px",
+                 "cursor": "pointer"
+                }
+               }
+              },
+              "text": "Tips",
+              "children": [],
+              "customAttributes": {
+               "data-wc-filter": "tips"
+              }
+             },
+             {
+              "id": "blog30",
+              "type": "button",
+              "name": "Button 6",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "8px",
+                 "padding-bottom": "8px",
+                 "padding-left": "16px",
+                 "padding-right": "16px",
+                 "background-color": "#ffffff",
+                 "color": "#111827",
+                 "font-weight": "500",
+                 "font-size": "14px",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#e2e8f0",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#e2e8f0",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#e2e8f0",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#e2e8f0",
+                 "border-top-left-radius": "999px",
+                 "border-top-right-radius": "999px",
+                 "border-bottom-right-radius": "999px",
+                 "border-bottom-left-radius": "999px",
+                 "cursor": "pointer"
+                }
+               }
+              },
+              "text": "Recipes",
+              "children": [],
+              "customAttributes": {
+               "data-wc-filter": "news"
+              }
+             },
+             {
+              "id": "blog31",
+              "type": "button",
+              "name": "Button 7",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "8px",
+                 "padding-bottom": "8px",
+                 "padding-left": "16px",
+                 "padding-right": "16px",
+                 "background-color": "#ffffff",
+                 "color": "#111827",
+                 "font-weight": "500",
+                 "font-size": "14px",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#e2e8f0",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#e2e8f0",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#e2e8f0",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#e2e8f0",
+                 "border-top-left-radius": "999px",
+                 "border-top-right-radius": "999px",
+                 "border-bottom-right-radius": "999px",
+                 "border-bottom-left-radius": "999px",
+                 "cursor": "pointer"
+                }
+               }
+              },
+              "text": "Stories",
+              "children": [],
+              "customAttributes": {
+               "data-wc-filter": "stories"
+              }
+             }
+            ]
+           },
+           {
+            "id": "blog32",
+            "type": "input",
+            "name": "Input",
+            "tag": "input",
+            "attributes": {
+             "inputType": "search",
+             "name": "search",
+             "placeholder": "Search…",
+             "ariaLabel": "Search"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "10px",
+               "padding-bottom": "10px",
+               "padding-left": "14px",
+               "padding-right": "14px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "10px",
+               "border-top-right-radius": "10px",
+               "border-bottom-right-radius": "10px",
+               "border-bottom-left-radius": "10px",
+               "min-width": "240px",
+               "font-size": "15px"
+              }
+             }
+            },
+            "text": null,
+            "children": [],
+            "customAttributes": {
+             "data-wc-search": ""
+            }
+           }
+          ]
+         },
+         {
+          "id": "blog33",
+          "type": "div",
+          "name": "Posts",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "grid",
+             "grid-template-columns": "repeat(auto-fit, minmax(280px, 1fr))",
+             "column-gap": "24px",
+             "row-gap": "24px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "blog34",
+            "type": "article",
+            "name": "Article",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "0px",
+               "padding-right": "0px",
+               "padding-bottom": "0px",
+               "padding-left": "0px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px",
+               "overflow-x": "hidden",
+               "overflow-y": "hidden",
+               "display": "flex",
+               "flex-direction": "column"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "blog35",
+              "type": "image",
+              "name": "Image 2",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1200&h=675&q=80",
+               "loading": "lazy",
+               "alt": "The 5 most common rice mistakes (and how to avoid them)"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "100%",
+                 "aspect-ratio": "16 / 9",
+                 "object-fit": "cover",
+                 "display": "block",
+                 "border-top-left-radius": "0px",
+                 "border-top-right-radius": "0px",
+                 "border-bottom-right-radius": "0px",
+                 "border-bottom-left-radius": "0px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             },
+             {
+              "id": "blog36",
+              "type": "div",
+              "name": "Text 2",
+              "tag": "div",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "20px",
+                 "padding-bottom": "20px",
+                 "padding-left": "20px",
+                 "padding-right": "20px",
+                 "display": "flex",
+                 "flex-direction": "column",
+                 "row-gap": "8px"
+                }
+               }
+              },
+              "text": null,
+              "children": [
+               {
+                "id": "blog37",
+                "type": "paragraph",
+                "name": "Paragraph 4",
+                "tag": "p",
+                "attributes": {},
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "font-size": "13px",
+                   "font-weight": "600",
+                   "color": "#be185d",
+                   "text-transform": "uppercase",
+                   "letter-spacing": "0.06em",
+                   "margin-top": "0px",
+                   "margin-bottom": "0px"
+                  }
+                 }
+                },
+                "text": "Tips",
+                "children": []
+               },
+               {
+                "id": "blog38",
+                "type": "heading",
+                "name": "Heading 3",
+                "tag": "h3",
+                "attributes": {},
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "font-size": "20px",
+                   "line-height": "1.3",
+                   "color": "#111827",
+                   "margin-top": "0px",
+                   "margin-bottom": "0px",
+                   "font-family": "Georgia, \"Times New Roman\", serif"
+                  }
+                 }
+                },
+                "text": "The 5 most common rice mistakes (and how to avoid them)",
+                "children": []
+               },
+               {
+                "id": "blog39",
+                "type": "paragraph",
+                "name": "Paragraph 5",
+                "tag": "p",
+                "attributes": {},
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "font-size": "14px",
+                   "line-height": "1.5",
+                   "color": "#475569",
+                   "margin-top": "0px",
+                   "margin-bottom": "0px"
+                  }
+                 }
+                },
+                "text": "Water, salt and time: small tweaks that change everything.",
+                "children": []
+               },
+               {
+                "id": "blog40",
+                "type": "paragraph",
+                "name": "Paragraph 6",
+                "tag": "p",
+                "attributes": {},
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "font-size": "13px",
+                   "line-height": "1.5",
+                   "color": "#475569",
+                   "margin-top": "0px",
+                   "margin-bottom": "0px"
+                  }
+                 }
+                },
+                "text": "12/10/2026",
+                "children": []
+               },
+               {
+                "id": "blog41",
+                "type": "link",
+                "name": "Link 7",
+                "tag": "a",
+                "attributes": {
+                 "href": "index.html"
+                },
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "color": "#be185d",
+                   "font-weight": "600",
+                   "text-decoration-line": "none"
+                  }
+                 }
+                },
+                "text": "Read more →",
+                "children": []
+               }
+              ]
+             }
+            ],
+            "customAttributes": {
+             "data-wc-item": "",
+             "data-wc-tags": "tips"
+            }
+           },
+           {
+            "id": "blog42",
+            "type": "article",
+            "name": "Article 2",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "0px",
+               "padding-right": "0px",
+               "padding-bottom": "0px",
+               "padding-left": "0px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px",
+               "overflow-x": "hidden",
+               "overflow-y": "hidden",
+               "display": "flex",
+               "flex-direction": "column"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "blog43",
+              "type": "image",
+              "name": "Image 3",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&h=675&q=80",
+               "loading": "lazy",
+               "alt": "Sourdough pizza at home"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "100%",
+                 "aspect-ratio": "16 / 9",
+                 "object-fit": "cover",
+                 "display": "block",
+                 "border-top-left-radius": "0px",
+                 "border-top-right-radius": "0px",
+                 "border-bottom-right-radius": "0px",
+                 "border-bottom-left-radius": "0px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             },
+             {
+              "id": "blog44",
+              "type": "div",
+              "name": "Text 3",
+              "tag": "div",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "20px",
+                 "padding-bottom": "20px",
+                 "padding-left": "20px",
+                 "padding-right": "20px",
+                 "display": "flex",
+                 "flex-direction": "column",
+                 "row-gap": "8px"
+                }
+               }
+              },
+              "text": null,
+              "children": [
+               {
+                "id": "blog45",
+                "type": "paragraph",
+                "name": "Paragraph 7",
+                "tag": "p",
+                "attributes": {},
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "font-size": "13px",
+                   "font-weight": "600",
+                   "color": "#be185d",
+                   "text-transform": "uppercase",
+                   "letter-spacing": "0.06em",
+                   "margin-top": "0px",
+                   "margin-bottom": "0px"
+                  }
+                 }
+                },
+                "text": "Recipes",
+                "children": []
+               },
+               {
+                "id": "blog46",
+                "type": "heading",
+                "name": "Heading 4",
+                "tag": "h3",
+                "attributes": {},
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "font-size": "20px",
+                   "line-height": "1.3",
+                   "color": "#111827",
+                   "margin-top": "0px",
+                   "margin-bottom": "0px",
+                   "font-family": "Georgia, \"Times New Roman\", serif"
+                  }
+                 }
+                },
+                "text": "Sourdough pizza at home",
+                "children": []
+               },
+               {
+                "id": "blog47",
+                "type": "paragraph",
+                "name": "Paragraph 8",
+                "tag": "p",
+                "attributes": {},
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "font-size": "14px",
+                   "line-height": "1.5",
+                   "color": "#475569",
+                   "margin-top": "0px",
+                   "margin-bottom": "0px"
+                  }
+                 }
+                },
+                "text": "The whole recipe, from the starter to a home oven.",
+                "children": []
+               },
+               {
+                "id": "blog48",
+                "type": "paragraph",
+                "name": "Paragraph 9",
+                "tag": "p",
+                "attributes": {},
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "font-size": "13px",
+                   "line-height": "1.5",
+                   "color": "#475569",
+                   "margin-top": "0px",
+                   "margin-bottom": "0px"
+                  }
+                 }
+                },
+                "text": "05/10/2026",
+                "children": []
+               },
+               {
+                "id": "blog49",
+                "type": "link",
+                "name": "Link 8",
+                "tag": "a",
+                "attributes": {
+                 "href": "index.html"
+                },
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "color": "#be185d",
+                   "font-weight": "600",
+                   "text-decoration-line": "none"
+                  }
+                 }
+                },
+                "text": "Read more →",
+                "children": []
+               }
+              ]
+             }
+            ],
+            "customAttributes": {
+             "data-wc-item": "",
+             "data-wc-tags": "news"
+            }
+           },
+           {
+            "id": "blog50",
+            "type": "article",
+            "name": "Article 3",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "0px",
+               "padding-right": "0px",
+               "padding-bottom": "0px",
+               "padding-left": "0px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px",
+               "overflow-x": "hidden",
+               "overflow-y": "hidden",
+               "display": "flex",
+               "flex-direction": "column"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "blog51",
+              "type": "image",
+              "name": "Image 4",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&h=675&q=80",
+               "loading": "lazy",
+               "alt": "My grandmother's notebook"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "100%",
+                 "aspect-ratio": "16 / 9",
+                 "object-fit": "cover",
+                 "display": "block",
+                 "border-top-left-radius": "0px",
+                 "border-top-right-radius": "0px",
+                 "border-bottom-right-radius": "0px",
+                 "border-bottom-left-radius": "0px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             },
+             {
+              "id": "blog52",
+              "type": "div",
+              "name": "Text 4",
+              "tag": "div",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "20px",
+                 "padding-bottom": "20px",
+                 "padding-left": "20px",
+                 "padding-right": "20px",
+                 "display": "flex",
+                 "flex-direction": "column",
+                 "row-gap": "8px"
+                }
+               }
+              },
+              "text": null,
+              "children": [
+               {
+                "id": "blog53",
+                "type": "paragraph",
+                "name": "Paragraph 10",
+                "tag": "p",
+                "attributes": {},
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "font-size": "13px",
+                   "font-weight": "600",
+                   "color": "#be185d",
+                   "text-transform": "uppercase",
+                   "letter-spacing": "0.06em",
+                   "margin-top": "0px",
+                   "margin-bottom": "0px"
+                  }
+                 }
+                },
+                "text": "Stories",
+                "children": []
+               },
+               {
+                "id": "blog54",
+                "type": "heading",
+                "name": "Heading 5",
+                "tag": "h3",
+                "attributes": {},
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "font-size": "20px",
+                   "line-height": "1.3",
+                   "color": "#111827",
+                   "margin-top": "0px",
+                   "margin-bottom": "0px",
+                   "font-family": "Georgia, \"Times New Roman\", serif"
+                  }
+                 }
+                },
+                "text": "My grandmother's notebook",
+                "children": []
+               },
+               {
+                "id": "blog55",
+                "type": "paragraph",
+                "name": "Paragraph 11",
+                "tag": "p",
+                "attributes": {},
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "font-size": "14px",
+                   "line-height": "1.5",
+                   "color": "#475569",
+                   "margin-top": "0px",
+                   "margin-bottom": "0px"
+                  }
+                 }
+                },
+                "text": "How it all began in a farmhouse kitchen.",
+                "children": []
+               },
+               {
+                "id": "blog56",
+                "type": "paragraph",
+                "name": "Paragraph 12",
+                "tag": "p",
+                "attributes": {},
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "font-size": "13px",
+                   "line-height": "1.5",
+                   "color": "#475569",
+                   "margin-top": "0px",
+                   "margin-bottom": "0px"
+                  }
+                 }
+                },
+                "text": "28/09/2026",
+                "children": []
+               },
+               {
+                "id": "blog57",
+                "type": "link",
+                "name": "Link 9",
+                "tag": "a",
+                "attributes": {
+                 "href": "index.html"
+                },
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "color": "#be185d",
+                   "font-weight": "600",
+                   "text-decoration-line": "none"
+                  }
+                 }
+                },
+                "text": "Read more →",
+                "children": []
+               }
+              ]
+             }
+            ],
+            "customAttributes": {
+             "data-wc-item": "",
+             "data-wc-tags": "stories"
+            }
+           }
+          ]
+         },
+         {
+          "id": "blog58",
+          "type": "paragraph",
+          "name": "Paragraph 13",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "16px",
+             "line-height": "1.6",
+             "color": "#475569",
+             "margin-top": "24px",
+             "margin-bottom": "0px",
+             "text-align": "center"
+            }
+           }
+          },
+          "text": "No post found.",
+          "children": [],
+          "customAttributes": {
+           "data-wc-empty": ""
+          }
+         }
+        ]
+       }
+      ],
+      "customAttributes": {
+       "data-wc": "filter"
+      }
+     },
+     {
+      "id": "blog59",
+      "type": "section",
+      "name": "Newsletter sign-up",
+      "tag": "section",
+      "attributes": {
+       "id": "subscribe"
+      },
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "80px",
+         "padding-right": "24px",
+         "padding-bottom": "80px",
+         "padding-left": "24px",
+         "background-color": "#fdf2f8"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "blog60",
+        "type": "div",
+        "name": "Container 4",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "640px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "text-align": "center"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "blog61",
+          "type": "heading",
+          "name": "Heading 6",
+          "tag": "h2",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+             "line-height": "1.2",
+             "color": "#111827",
+             "letter-spacing": "-0.01em",
+             "margin-bottom": "12px",
+             "margin-top": "0px",
+             "font-family": "Georgia, \"Times New Roman\", serif"
+            }
+           }
+          },
+          "text": "A new recipe every week in your inbox",
+          "children": []
+         },
+         {
+          "id": "blog62",
+          "type": "paragraph",
+          "name": "Paragraph 14",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "18px",
+             "line-height": "1.6",
+             "color": "#475569",
+             "margin-top": "0px",
+             "margin-bottom": "32px"
+            }
+           }
+          },
+          "text": "Every Thursday morning. Unsubscribe any time.",
+          "children": []
+         },
+         {
+          "id": "blog63",
+          "type": "form",
+          "name": "Form",
+          "tag": "form",
+          "attributes": {
+           "method": "post",
+           "formSubmit": "{\"destination\":\"native\",\"method\":\"POST\"}"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-wrap": "wrap",
+             "column-gap": "8px",
+             "row-gap": "8px",
+             "justify-content": "center"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "blog64",
+            "type": "input",
+            "name": "Input 2",
+            "tag": "input",
+            "attributes": {
+             "inputType": "email",
+             "name": "email",
+             "required": true,
+             "placeholder": "you@email.com",
+             "ariaLabel": "E-mail",
+             "formField": "{\"rules\":{\"required\":true,\"type\":\"email\"}}"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "12px",
+               "padding-bottom": "12px",
+               "padding-left": "14px",
+               "padding-right": "14px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "10px",
+               "border-top-right-radius": "10px",
+               "border-bottom-right-radius": "10px",
+               "border-bottom-left-radius": "10px",
+               "flex-grow": "1",
+               "min-width": "240px",
+               "font-size": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": []
+           },
+           {
+            "id": "blog65",
+            "type": "button",
+            "name": "Button 8",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "submit"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "12px",
+               "padding-bottom": "12px",
+               "padding-left": "22px",
+               "padding-right": "22px",
+               "background-color": "#be185d",
+               "color": "#ffffff",
+               "font-weight": "600",
+               "font-size": "16px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#be185d",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#be185d",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#be185d",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#be185d",
+               "border-top-left-radius": "10px",
+               "border-top-right-radius": "10px",
+               "border-bottom-right-radius": "10px",
+               "border-bottom-left-radius": "10px",
+               "cursor": "pointer"
+              }
+             }
+            },
+            "text": "Subscribe",
+            "children": []
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "blog66",
+      "type": "footer",
+      "name": "Footer with columns",
+      "tag": "footer",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "56px",
+         "padding-right": "40px",
+         "padding-bottom": "56px",
+         "padding-left": "40px",
+         "background-color": "#111827",
+         "color": "#cbd5e1"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "blog67",
+        "type": "div",
+        "name": "Container 5",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(200px, 1fr))",
+           "column-gap": "32px",
+           "row-gap": "24px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "blog68",
+          "type": "div",
+          "name": "Brand",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "blog69",
+            "type": "paragraph",
+            "name": "Paragraph 15",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "20px",
+               "font-weight": "700",
+               "color": "#ffffff",
+               "margin-bottom": "8px"
+              }
+             }
+            },
+            "text": "Recipe Notebook",
+            "children": []
+           },
+           {
+            "id": "blog70",
+            "type": "paragraph",
+            "name": "Paragraph 16",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "14px",
+               "line-height": "1.6",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Tested recipes, written by Joana Teixeira.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "blog71",
+          "type": "nav",
+          "name": "Navigation 2",
+          "tag": "nav",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "0px",
+             "padding-right": "0px",
+             "padding-bottom": "0px",
+             "padding-left": "0px",
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "8px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "blog72",
+            "type": "link",
+            "name": "Link 10",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "Home",
+            "children": []
+           },
+           {
+            "id": "blog73",
+            "type": "link",
+            "name": "Link 11",
+            "tag": "a",
+            "attributes": {
+             "href": "about.html"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "About",
+            "children": []
+           },
+           {
+            "id": "blog74",
+            "type": "link",
+            "name": "Link 12",
+            "tag": "a",
+            "attributes": {
+             "href": "about.html#contact"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "Contact",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "blog75",
+          "type": "paragraph",
+          "name": "Paragraph 17",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "14px",
+             "margin-top": "0px",
+             "margin-bottom": "0px"
+            }
+           }
+          },
+          "text": "© 2026 Recipe Notebook.",
+          "children": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "blog125",
+   "name": "About",
+   "file": "about.html",
+   "tree": {
+    "id": "blog124",
+    "type": "page",
+    "name": "Body",
+    "tag": "body",
+    "attributes": {
+     "pageTitle": "About Recipe Notebook",
+     "pageDescription": "Who writes it and how to reach me.",
+     "pageLanguage": "en"
+    },
+    "classes": [],
+    "styles": {
+     "desktop": {
+      "base": {
+       "margin-top": "0",
+       "margin-right": "0",
+       "margin-bottom": "0",
+       "margin-left": "0",
+       "font-family": "Georgia, \"Times New Roman\", serif",
+       "color": "#111827",
+       "background-color": "#ffffff"
+      }
+     }
+    },
+    "text": null,
+    "children": [
+     {
+      "id": "blog78",
+      "type": "header",
+      "name": "Menu that folds on phones 2",
+      "tag": "header",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "14px",
+         "padding-right": "24px",
+         "padding-bottom": "14px",
+         "padding-left": "24px",
+         "background-color": "#ffffff",
+         "border-bottom-width": "1px",
+         "border-bottom-style": "solid",
+         "border-bottom-color": "#e2e8f0",
+         "position": "sticky",
+         "top": "0px",
+         "z-index": "50"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "blog79",
+        "type": "div",
+        "name": "Container 6",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "justify-content": "space-between",
+           "column-gap": "24px",
+           "row-gap": "12px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "blog80",
+          "type": "link",
+          "name": "Link 13",
+          "tag": "a",
+          "attributes": {
+           "href": "index.html"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "20px",
+             "font-weight": "700",
+             "color": "#111827",
+             "text-decoration-line": "none"
+            }
+           }
+          },
+          "text": "Recipe Notebook",
+          "children": []
+         },
+         {
+          "id": "blog81",
+          "type": "button",
+          "name": "Button 9",
+          "tag": "button",
+          "attributes": {
+           "ariaLabel": "Menu"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "width": "44px",
+             "height": "44px",
+             "border-top-left-radius": "999px",
+             "border-top-right-radius": "999px",
+             "border-bottom-right-radius": "999px",
+             "border-bottom-left-radius": "999px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#e2e8f0",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#e2e8f0",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#e2e8f0",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#e2e8f0",
+             "background-color": "#ffffff",
+             "color": "#111827",
+             "font-size": "20px",
+             "cursor": "pointer",
+             "display": "none",
+             "align-items": "center",
+             "justify-content": "center",
+             "padding-top": "0px",
+             "padding-bottom": "0px",
+             "padding-left": "0px",
+             "padding-right": "0px"
+            }
+           }
+          },
+          "text": "☰",
+          "children": [],
+          "customAttributes": {
+           "data-wc-toggle": ""
+          }
+         },
+         {
+          "id": "blog82",
+          "type": "nav",
+          "name": "Navigation 3",
+          "tag": "nav",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "0px",
+             "padding-right": "0px",
+             "padding-bottom": "0px",
+             "padding-left": "0px",
+             "display": "flex",
+             "flex-wrap": "wrap",
+             "align-items": "center",
+             "column-gap": "20px",
+             "row-gap": "8px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "blog83",
+            "type": "link",
+            "name": "Link 14",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#111827",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Home",
+            "children": []
+           },
+           {
+            "id": "blog84",
+            "type": "link",
+            "name": "Link 15",
+            "tag": "a",
+            "attributes": {
+             "href": "about.html"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#111827",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "About",
+            "children": []
+           },
+           {
+            "id": "blog85",
+            "type": "link",
+            "name": "Link 16",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#articles"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#111827",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Articles",
+            "children": []
+           },
+           {
+            "id": "blog86",
+            "type": "link",
+            "name": "Link 17",
+            "tag": "a",
+            "attributes": {
+             "href": "about.html#contact"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#111827",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Contact",
+            "children": []
+           },
+           {
+            "id": "blog87",
+            "type": "link",
+            "name": "Link 18",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#subscribe"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "12px",
+               "padding-bottom": "12px",
+               "padding-left": "22px",
+               "padding-right": "22px",
+               "background-color": "#be185d",
+               "color": "#ffffff",
+               "font-weight": "600",
+               "font-size": "15px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#be185d",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#be185d",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#be185d",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#be185d",
+               "border-top-left-radius": "10px",
+               "border-top-right-radius": "10px",
+               "border-bottom-right-radius": "10px",
+               "border-bottom-left-radius": "10px",
+               "cursor": "pointer",
+               "text-decoration-line": "none"
+              }
+             }
+            },
+            "text": "Subscribe",
+            "children": []
+           }
+          ],
+          "customAttributes": {
+           "data-wc-menu": ""
+          }
+         }
+        ]
+       }
+      ],
+      "customAttributes": {
+       "data-wc": "menu"
+      }
+     },
+     {
+      "id": "blog88",
+      "type": "section",
+      "name": "Hero with image 2",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px",
+         "background-color": "#fdf2f8"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "blog89",
+        "type": "div",
+        "name": "Container 7",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(300px, 1fr))",
+           "column-gap": "56px",
+           "row-gap": "40px",
+           "align-items": "center"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "blog90",
+          "type": "div",
+          "name": "Text 5",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "blog91",
+            "type": "paragraph",
+            "name": "Paragraph 18",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#be185d",
+               "font-size": "14px",
+               "font-weight": "600",
+               "letter-spacing": "0.08em",
+               "text-transform": "uppercase",
+               "margin-bottom": "12px"
+              }
+             }
+            },
+            "text": "Who writes",
+            "children": []
+           },
+           {
+            "id": "blog92",
+            "type": "heading",
+            "name": "Heading 7",
+            "tag": "h1",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(2.25rem, 5vw, 3.5rem)",
+               "line-height": "1.1",
+               "color": "#111827",
+               "letter-spacing": "-0.02em",
+               "margin-bottom": "20px",
+               "font-family": "Georgia, \"Times New Roman\", serif"
+              }
+             }
+            },
+            "text": "Hi, I'm Joana",
+            "children": []
+           },
+           {
+            "id": "blog93",
+            "type": "paragraph",
+            "name": "Paragraph 19",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-bottom": "32px"
+              }
+             }
+            },
+            "text": "A weekend cook and a weekday teacher. I've been writing here since 2018 for anyone who wants to cook better without spending the whole day at it.",
+            "children": []
+           },
+           {
+            "id": "blog94",
+            "type": "div",
+            "name": "Actions 2",
+            "tag": "div",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-wrap": "wrap",
+               "column-gap": "12px",
+               "row-gap": "12px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "blog95",
+              "type": "button",
+              "name": "Button 10",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "14px",
+                 "padding-bottom": "14px",
+                 "padding-left": "24px",
+                 "padding-right": "24px",
+                 "background-color": "#be185d",
+                 "color": "#ffffff",
+                 "font-weight": "600",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#be185d",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#be185d",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#be185d",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#be185d",
+                 "border-top-left-radius": "10px",
+                 "border-top-right-radius": "10px",
+                 "border-bottom-right-radius": "10px",
+                 "border-bottom-left-radius": "10px"
+                }
+               }
+              },
+              "text": "Read the articles",
+              "children": []
+             },
+             {
+              "id": "blog96",
+              "type": "button",
+              "name": "Button 11",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "14px",
+                 "padding-bottom": "14px",
+                 "padding-left": "24px",
+                 "padding-right": "24px",
+                 "background-color": "#ffffff",
+                 "color": "#111827",
+                 "font-weight": "600",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#e2e8f0",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#e2e8f0",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#e2e8f0",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#e2e8f0",
+                 "border-top-left-radius": "10px",
+                 "border-top-right-radius": "10px",
+                 "border-bottom-right-radius": "10px",
+                 "border-bottom-left-radius": "10px"
+                }
+               }
+              },
+              "text": "Talk to me",
+              "children": []
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "id": "blog97",
+          "type": "image",
+          "name": "Image 5",
+          "tag": "img",
+          "attributes": {
+           "src": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=1200&h=900&q=80",
+           "alt": "Hi, I'm Joana"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "max-width": "100%",
+             "width": "100%",
+             "aspect-ratio": "4 / 3",
+             "object-fit": "cover",
+             "border-top-left-radius": "20px",
+             "border-top-right-radius": "20px",
+             "border-bottom-right-radius": "20px",
+             "border-bottom-left-radius": "20px",
+             "background-color": "#e2e8f0"
+            }
+           }
+          },
+          "text": null,
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "blog98",
+      "type": "section",
+      "name": "Contact",
+      "tag": "section",
+      "attributes": {
+       "id": "contact"
+      },
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "blog99",
+        "type": "div",
+        "name": "Container 8",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(300px, 1fr))",
+           "column-gap": "56px",
+           "row-gap": "32px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "blog100",
+          "type": "div",
+          "name": "Text 6",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "blog101",
+            "type": "heading",
+            "name": "Heading 8",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#111827",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "16px",
+               "font-family": "Georgia, \"Times New Roman\", serif"
+              }
+             }
+            },
+            "text": "Get in touch",
+            "children": []
+           },
+           {
+            "id": "blog102",
+            "type": "paragraph",
+            "name": "Paragraph 20",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569"
+              }
+             }
+            },
+            "text": "Questions about a recipe, partnerships or suggestions.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "blog103",
+          "type": "form",
+          "name": "Form 2",
+          "tag": "form",
+          "attributes": {
+           "method": "post",
+           "formSubmit": "{\"destination\":\"native\",\"method\":\"POST\"}"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "16px",
+             "padding-top": "28px",
+             "padding-bottom": "28px",
+             "padding-left": "28px",
+             "padding-right": "28px",
+             "background-color": "#ffffff",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#e2e8f0",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#e2e8f0",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#e2e8f0",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#e2e8f0",
+             "border-top-left-radius": "16px",
+             "border-top-right-radius": "16px",
+             "border-bottom-right-radius": "16px",
+             "border-bottom-left-radius": "16px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "blog104",
+            "type": "label",
+            "name": "Label",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "blog105",
+              "type": "paragraph",
+              "name": "Paragraph 21",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#111827"
+                }
+               }
+              },
+              "text": "Name",
+              "children": []
+             },
+             {
+              "id": "blog106",
+              "type": "input",
+              "name": "Input 3",
+              "tag": "input",
+              "attributes": {
+               "inputType": "text",
+               "name": "name",
+               "formField": "{\"rules\":{\"required\":true}}"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "blog107",
+            "type": "label",
+            "name": "Label 2",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "blog108",
+              "type": "paragraph",
+              "name": "Paragraph 22",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#111827"
+                }
+               }
+              },
+              "text": "Email",
+              "children": []
+             },
+             {
+              "id": "blog109",
+              "type": "input",
+              "name": "Input 4",
+              "tag": "input",
+              "attributes": {
+               "inputType": "email",
+               "name": "email",
+               "formField": "{\"rules\":{\"required\":true,\"type\":\"email\"}}"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "blog111",
+            "type": "label",
+            "name": "Label 3",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "blog112",
+              "type": "paragraph",
+              "name": "Paragraph 23",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#111827"
+                }
+               }
+              },
+              "text": "Message",
+              "children": []
+             },
+             {
+              "id": "blog113",
+              "type": "textarea",
+              "name": "Textarea",
+              "tag": "textarea",
+              "attributes": {
+               "name": "message",
+               "formField": "{\"rules\":{\"required\":true}}",
+               "rows": 4
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": "",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "blog110",
+            "type": "button",
+            "name": "Button 12",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "submit"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "14px",
+               "padding-bottom": "14px",
+               "padding-left": "24px",
+               "padding-right": "24px",
+               "background-color": "#be185d",
+               "color": "#ffffff",
+               "font-weight": "600",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#be185d",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#be185d",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#be185d",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#be185d",
+               "border-top-left-radius": "10px",
+               "border-top-right-radius": "10px",
+               "border-bottom-right-radius": "10px",
+               "border-bottom-left-radius": "10px",
+               "align-self": "flex-start"
+              }
+             }
+            },
+            "text": "Send",
+            "children": []
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "blog114",
+      "type": "footer",
+      "name": "Footer with columns 2",
+      "tag": "footer",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "56px",
+         "padding-right": "40px",
+         "padding-bottom": "56px",
+         "padding-left": "40px",
+         "background-color": "#111827",
+         "color": "#cbd5e1"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "blog115",
+        "type": "div",
+        "name": "Container 9",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(200px, 1fr))",
+           "column-gap": "32px",
+           "row-gap": "24px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "blog116",
+          "type": "div",
+          "name": "Brand 2",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "blog117",
+            "type": "paragraph",
+            "name": "Paragraph 24",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "20px",
+               "font-weight": "700",
+               "color": "#ffffff",
+               "margin-bottom": "8px"
+              }
+             }
+            },
+            "text": "Recipe Notebook",
+            "children": []
+           },
+           {
+            "id": "blog118",
+            "type": "paragraph",
+            "name": "Paragraph 25",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "14px",
+               "line-height": "1.6",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Tested recipes, written by Joana Teixeira.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "blog119",
+          "type": "nav",
+          "name": "Navigation 4",
+          "tag": "nav",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "0px",
+             "padding-right": "0px",
+             "padding-bottom": "0px",
+             "padding-left": "0px",
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "8px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "blog120",
+            "type": "link",
+            "name": "Link 19",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "Home",
+            "children": []
+           },
+           {
+            "id": "blog121",
+            "type": "link",
+            "name": "Link 20",
+            "tag": "a",
+            "attributes": {
+             "href": "about.html"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "About",
+            "children": []
+           },
+           {
+            "id": "blog122",
+            "type": "link",
+            "name": "Link 21",
+            "tag": "a",
+            "attributes": {
+             "href": "about.html#contact"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "Contact",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "blog123",
+          "type": "paragraph",
+          "name": "Paragraph 26",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "14px",
+             "margin-top": "0px",
+             "margin-bottom": "0px"
+            }
+           }
+          },
+          "text": "© 2026 Recipe Notebook.",
+          "children": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}

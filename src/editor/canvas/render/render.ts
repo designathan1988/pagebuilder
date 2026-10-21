@@ -42,7 +42,7 @@
 import type { NodeId } from '../../../generated/commands.ts';
 import { baseCss, capturedBaseCss } from '../../../core/render/base.ts';
 import { formNodes } from '../../../core/export/authoring.ts';
-import { classesCss, elementAttributes, fileUrlsIn, nodeCss, outputModelFromManifest, type OutputModel } from '../../../core/render/output.ts';
+import { canvasViewport, classesCss, elementAttributes, fileUrlsIn, nodeCss, outputModelFromManifest, type OutputModel } from '../../../core/render/output.ts';
 export {  nodeCss,   } from '../../../core/render/output.ts';
 import type { ElementsFile, InteractionsFile, PropertiesFile } from '../../../manifest/schema.ts';
 import { locate, walk, type DocNode, type DocumentJson } from '../../../core/document/model.ts';
@@ -160,18 +160,37 @@ function scrollbarWidth(): number {
   return measuredScrollbar;
 }
 
-export function editorCss(model: RenderModel, screenHeight?: number): string {
+// The screen a renderer draws the page for: the breakpoint's width and screen height; `artboard` on the editing
+// canvas, whose frame is as tall as the whole page (DCS-035: artboardCss).
+export interface CanvasScreen {
+  readonly height: number;
+  readonly width?: number;
+  readonly artboard?: boolean;
+}
+
+// The editing canvas's frame is as tall as the whole page and never scrolls (DCS-035), so the page's own viewport is
+// the page's height. Its root is pinned to the breakpoint's screen instead: the html box is the screen tall, and a
+// transform makes it the containing block of every fixed element (the site's first screen: a bar fixed at the bottom
+// stands at the first screen's bottom, not the page's), while the content past it still overflows into the page's
+// scrollable height, which the frame measures (canvas/frame.tsx). A spike in Chrome (2026-10-21): `contain: layout` on
+// the root captured fixed elements too, but its content no longer counted in the root's scrollHeight; a transform
+// keeps both. Important, as a captured site's own sheets may size its root too.
+const ARTBOARD_STYLE_ATTRIBUTE = 'data-artboard-style';
+export const artboardCss = (screenHeight: number): string => `html { height: ${screenHeight}px !important; min-height: 0 !important; max-height: none !important; transform: translate(0) !important; }`;
+
+export function editorCss(model: RenderModel, screenHeight?: number, artboard = false): string {
   // The page lays out at the width a real browser gives it: the scrollbar's own width stays free whatever the zoom (the
   // canvas draws no scrollbar inside the frame; the stage scrolls the page), so the usable width is the site's at any
   // zoom (the user's real-use audit, item A3.22). The frame sets the variable from the browser's own scrollbar.
   // An empty page's root takes the breakpoint's screen height (`screenHeight`): an empty body is 0 px tall, so its
   // selection was a line at the frame's top and its size read "1440 × 0" (the user's audit order of 2026-10-05); with
   // nothing inside, nothing it holds is laid out otherwise than the site lays it out. Never taller than the frame
-  // shows (100vh, the frame's own height): an empty page that scrolls moved the Layout tool's first stroke off it.
+  // shows (100vh, the frame's own height): an empty page that scrolls moved the Layout tool's first stroke off it. On
+  // the artboard (DCS-035) the frame is the page's height, so the screen is said in px alone.
   // A phone's or a tablet's browser draws its scrollbar over the page, taking no width, so a screen narrower than
   // OVERLAY_SCROLLBAR_BELOW keeps its whole width: the phone breakpoint measured 375 px for its 390 (the user's audit
   // order of 2026-10-05). The media query reads the frame's own width, the breakpoint's.
-  return `html { padding-right: ${scrollbarWidth()}px; scrollbar-width: none; }\n@media (max-width: ${OVERLAY_SCROLLBAR_BELOW - 0.02}px) { html { padding-right: 0; } }\n:where(body:empty) { min-height: ${screenHeight === undefined ? '100vh' : `min(${screenHeight}px, 100vh)`}; }\n:where([${CONTAINER_ATTRIBUTE}]:empty) { min-height: ${model.emptyContainerMinHeight}px; }\n:where([${EMPTY_TEXT_ATTRIBUTE}]) { min-height: ${model.emptyTextMinHeight}px; outline: 1px dashed currentColor; outline-offset: -1px; }\n[${HIDDEN_ATTRIBUTE}] { display: none !important; }\n[${EMBED_FRAME_ATTRIBUTE}] { display: block; width: 100%; min-height: ${model.emptyContainerMinHeight}px; border: 0; pointer-events: none; }\n:where([${COMPONENT_ATTRIBUTE}]:empty)::before { content: '{ } ' attr(${COMPONENT_ATTRIBUTE}); display: flex; align-items: center; justify-content: center; min-height: ${model.emptyContainerMinHeight * 2}px; border: 1px dashed currentColor; opacity: 0.55; font: 13px/1.4 ui-monospace, monospace; }`;
+  return `html { padding-right: ${scrollbarWidth()}px; scrollbar-width: none; }\n@media (max-width: ${OVERLAY_SCROLLBAR_BELOW - 0.02}px) { html { padding-right: 0; } }\n:where(body:empty) { min-height: ${screenHeight === undefined ? '100vh' : artboard ? `${screenHeight}px` : `min(${screenHeight}px, 100vh)`}; }\n:where([${CONTAINER_ATTRIBUTE}]:empty) { min-height: ${model.emptyContainerMinHeight}px; }\n:where([${EMPTY_TEXT_ATTRIBUTE}]) { min-height: ${model.emptyTextMinHeight}px; outline: 1px dashed currentColor; outline-offset: -1px; }\n[${HIDDEN_ATTRIBUTE}] { display: none !important; }\n[${EMBED_FRAME_ATTRIBUTE}] { display: block; width: 100%; min-height: ${model.emptyContainerMinHeight}px; border: 0; pointer-events: none; }\n:where([${COMPONENT_ATTRIBUTE}]:empty)::before { content: '{ } ' attr(${COMPONENT_ATTRIBUTE}); display: flex; align-items: center; justify-content: center; min-height: ${model.emptyContainerMinHeight * 2}px; border: 1px dashed currentColor; opacity: 0.55; font: 13px/1.4 ui-monospace, monospace; }`;
 }
 
 // The selector of a node's element: its id quoted as a CSS string.
@@ -267,7 +286,7 @@ export class PageRenderer {
     private readonly page = 0,
     // the breakpoint's screen the canvas resolves vh, svh, dvh and lvh against (item 2.3); null in the export's own
     // writing, which keeps the units the person typed
-    private readonly screen: { readonly height: number; readonly width?: number } | null = null,
+    private readonly screen: CanvasScreen | null = null,
     // how a stored attribute value is written (core/files/values.ts): the canvas hands a source that names a project
     // file over as its object URL and a reference as the target's id attribute; null writes nothing
     private readonly address: (name: string, value: string) => string | null = (_name, value) => value,
@@ -351,7 +370,7 @@ export class PageRenderer {
             })
             .filter((c) => c !== '')
             .join('\n');
-    const resolved = this.fileCss(css);
+    const resolved = this.canvasCss(css);
     let sheet = this.target.head.querySelector(`style[${PREVIEW_STYLE_ATTRIBUTE}]`);
     if (resolved === '') {
       sheet?.remove();
@@ -390,7 +409,7 @@ export class PageRenderer {
       sheet.setAttribute(KEYFRAMES_STYLE_ATTRIBUTE, '');
       this.target.head.append(sheet);
     }
-    const css = this.fileCss(blocks.join('\n'));
+    const css = this.canvasCss(blocks.join('\n'));
     if (sheet.textContent !== css) sheet.textContent = css;
   }
 
@@ -401,7 +420,7 @@ export class PageRenderer {
     const tree = doc.pages[this.page]?.tree ?? null;
     const node = preview === null || tree === null ? null : findNode(tree, preview.node);
     const animation = node === null || preview === null ? null : (node.animations ?? []).find((a) => a.name === preview.animation) ?? null;
-    const css = node === null || animation === null || preview === null ? '' : this.fileCss(`${nodeSelector(node.id)} { ${previewDeclarations(animation, preview.time, preview.playing, preview.loop).join(' ')} }`);
+    const css = node === null || animation === null || preview === null ? '' : this.canvasCss(`${nodeSelector(node.id)} { ${previewDeclarations(animation, preview.time, preview.playing, preview.loop).join(' ')} }`);
     let sheet = this.target.head.querySelector(`style[${PLAY_STYLE_ATTRIBUTE}]`);
     if (css === '') {
       sheet?.remove();
@@ -561,7 +580,8 @@ export class PageRenderer {
     if (capturedPage?.capture !== undefined) {
       this.sheets.clear();
       this.elements.clear();
-      for (const [id, element] of mountCaptured(this.target, doc, capturedPage, this.screen?.width ?? this.target.defaultView?.innerWidth ?? 1440)) this.elements.set(id as NodeId, element);
+      for (const [id, element] of mountCaptured(this.target, doc, capturedPage, this.screen?.width ?? this.target.defaultView?.innerWidth ?? 1440, (css) => this.viewport(css))) this.elements.set(id as NodeId, element);
+      this.writeArtboard();
       return;
     }
     // the style elements of every node, also those a previous renderer of this document left
@@ -578,12 +598,12 @@ export class PageRenderer {
     // out as the site does (the user's real-use audit, items 2.4 and 7.7)
     const base = this.target.createElement('style');
     base.setAttribute(BASE_STYLE_ATTRIBUTE, '');
-    base.textContent = baseCss();
+    base.textContent = this.viewport(baseCss());
     this.target.head.prepend(base);
     // the editor's style element, next, so every node's rules come after it
     const editor = this.target.createElement('style');
     editor.setAttribute(EDITOR_STYLE_ATTRIBUTE, '');
-    editor.textContent = editorCss(this.model, this.screen?.height);
+    editor.textContent = editorCss(this.model, this.screen?.height, this.screen?.artboard === true);
     base.after(editor);
     const tokens = this.target.createElement('style');
     tokens.setAttribute(TOKENS_STYLE_ATTRIBUTE, '');
@@ -602,6 +622,7 @@ export class PageRenderer {
     tokens.after(capture);
     this.writeCapture(doc);
     this.writeKeyframes(doc);
+    this.writeArtboard();
     const body = this.target.body;
     body.replaceChildren();
     const tree = doc.pages[this.page]?.tree ?? null;
@@ -731,8 +752,16 @@ export class PageRenderer {
 
   // A stylesheet's text with its project-file addresses resolved to the files' object URLs (files.ts resolvedSource):
   // what the canvas writes; the export writes the same CSS with its paths, which the archive's folder serves.
-  private fileCss(css: string): string {
-    return this.doc === null ? css : fileUrlsIn(css, (address) => resolvedSource(this.doc as DocumentJson, address));
+  private canvasCss(css: string): string {
+    return this.viewport(this.doc === null ? css : fileUrlsIn(css, (address) => resolvedSource(this.doc as DocumentJson, address)));
+  }
+
+  // The one writer of the canvas's viewport (DCS-035; core/render/output.ts canvasViewport): every stylesheet the
+  // renderer writes passes here, so vh and the height media features measure the breakpoint's screen in each of them
+  // (the node rules, the classes, the tokens, the keyframes, the previews, the base and the captured CSS); the export's
+  // own writing (no screen) keeps what the person wrote.
+  private viewport(css: string): string {
+    return this.screen === null ? css : canvasViewport(css, { width: this.screen.width ?? this.target.defaultView?.innerWidth ?? 0, height: this.screen.height });
   }
 
   // The node's own attributes (elementAttributes, the output's) and text on its element, with the editor's own marks,
@@ -840,10 +869,42 @@ export class PageRenderer {
     markupLast(element);
   }
 
+  // The page's height on the artboard (DCS-035), in page px, the breakpoint's screen at least; null in a renderer of
+  // another frame. The page is laid out with its frame the screen tall and its root's scrollable height read, then the
+  // frame is given that height, in one task with no paint between: nothing in the page measures the frame's own height
+  // (every viewport unit, height media feature and the root are the screen's: canvasViewport, artboardCss), so a page
+  // as tall as its frame never grows by being measured (canvas/frame.tsx asks, and draws the frame at the same height).
+  extent(): number | null {
+    const frame = this.target.defaultView?.frameElement;
+    if (this.screen?.artboard !== true || frame === null || frame === undefined) return null;
+    const style = (frame as HTMLElement).style;
+    style.height = `${this.screen.height}px`;
+    const measured = Math.max(this.screen.height, Math.ceil(this.target.documentElement.scrollHeight));
+    style.height = `${measured}px`;
+    return measured;
+  }
+
+  // The editing canvas's root pinned to the breakpoint's screen (artboardCss), in its own style element; none in a
+  // renderer of another frame (a side frame scrolls its page as a browser does).
+  private writeArtboard(): void {
+    const css = this.screen?.artboard === true ? artboardCss(this.screen.height) : '';
+    let sheet = this.target.head.querySelector(`style[${ARTBOARD_STYLE_ATTRIBUTE}]`);
+    if (css === '') {
+      sheet?.remove();
+      return;
+    }
+    if (sheet === null) {
+      sheet = this.target.createElement('style');
+      sheet.setAttribute(ARTBOARD_STYLE_ATTRIBUTE, '');
+      this.target.head.append(sheet);
+    }
+    if (sheet.textContent !== css) sheet.textContent = css;
+  }
+
   // The :root rule of the project's design tokens, in their style element.
   private writeTokens(doc: DocumentJson): void {
     const sheet = this.target.head.querySelector(`style[${TOKENS_STYLE_ATTRIBUTE}]`);
-    const css = rootCss(doc.tokens ?? []);
+    const css = this.viewport(rootCss(doc.tokens ?? []));
     if (sheet !== null && sheet.textContent !== css) sheet.textContent = css;
   }
 
@@ -861,9 +922,9 @@ export class PageRenderer {
     const sheet = this.target.head.querySelector(`style[${CAPTURE_STYLE_ATTRIBUTE}]`);
     const base = this.target.head.querySelector(`style[${BASE_STYLE_ATTRIBUTE}]`);
     const page = doc.pages[this.page];
-    const css = page === undefined ? '' : fileUrlsIn(capturedPageCss(doc, page), (address) => resolvedSource(doc, captureAssetPath(page, address)));
+    const css = page === undefined ? '' : this.viewport(fileUrlsIn(capturedPageCss(doc, page), (address) => resolvedSource(doc, captureAssetPath(page, address))));
     const hasCapture = page !== undefined && doc.files?.some(file => file.path === capturedPageStylePath(page));
-    const starting = hasCapture ? capturedBaseCss() : baseCss();
+    const starting = this.viewport(hasCapture ? capturedBaseCss() : baseCss());
     if (base !== null && base.textContent !== starting) base.textContent = starting;
     this.target.documentElement.toggleAttribute('data-builder-capture', hasCapture === true);
     if (sheet !== null && sheet.textContent !== css) sheet.textContent = css;
@@ -872,7 +933,7 @@ export class PageRenderer {
   // The rules of the project's style classes, in their style element.
   private writeClasses(doc: DocumentJson): void {
     const sheet = this.target.head.querySelector(`style[${CLASSES_STYLE_ATTRIBUTE}]`);
-    const css = this.fileCss(classesCss(doc.classes ?? [], this.model));
+    const css = this.canvasCss(classesCss(doc.classes ?? [], this.model));
     if (sheet !== null && sheet.textContent !== css) sheet.textContent = css;
   }
 
@@ -911,7 +972,7 @@ export class PageRenderer {
   }
 
   private writeStyle(node: DocNode): void {
-    const css = this.fileCss(nodeCss(node, nodeSelector(node.id), this.model, 'line', this.screen));
+    const css = this.canvasCss(nodeCss(node, nodeSelector(node.id), this.model, 'line'));
     let sheet = this.sheets.get(node.id);
     if (css === '') {
       sheet?.remove();

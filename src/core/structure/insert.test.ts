@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import type { NodeId } from '../../generated/commands.ts';
 import type { MessageId } from '../../generated/ids.ts';
-import { translate } from '../../i18n/index.ts';
+import { localeOfLanguage, translate } from '../../i18n/index.ts';
 import { manifest } from '../../manifest/runtime.ts';
+import type { TemplateNode } from '../../manifest/schema.ts';
 import type { HandlerContext } from '../commands/registry.ts';
 import { allNodes, walk, type DocNode, type DocumentJson } from '../document/model.ts';
 import { rulesFromManifest } from '../document/validate.ts';
@@ -173,5 +174,54 @@ describe('element.insert into a Link Block (spec elements-structure, Problems in
     const placed = insert(['Card'], { entry: 'link-block' });
     expect(placed.kind).toBe('change');
     expect(placed.kind === 'change' ? placed.message?.params?.parent : null).not.toBe('Card');
+  });
+});
+
+describe('element.insert writes a palette element in the language of the page, not the editor’s (the audit’s TPL-3)', () => {
+  const entry = manifest.elements.palette.flatMap((group) => group.entries).find((one) => one.id === 'comp-newsletter');
+  const inLanguage = (document: string | undefined, page: string | undefined): DocumentJson => ({
+    ...DOC,
+    ...(document === undefined ? {} : { language: document }),
+    pages: DOC.pages.map((one) => ({ ...one, tree: { ...one.tree, attributes: page === undefined ? {} : ({ pageLanguage: page } as DocNode['attributes']) } })),
+  });
+  const insert = (document: DocumentJson, ui: 'en' | 'pt-BR') => {
+    const outcome = insertCommand.run(
+      {
+        state: { document, selection: [], history: EMPTY_HISTORY, message: null, ui: undefined as never },
+        clock: manualClock(),
+        ids: sequentialIds('new'),
+        rules: RULES,
+        words: (key: MessageId) => translate(ui, key),
+        // as the editor's store gives it (src/editor/store.ts)
+        pageWords: (language: string, key: MessageId) => translate(localeOfLanguage(language) ?? ui, key),
+        layout: noLayout,
+        css: anyCss,
+      },
+      { entry: 'comp-newsletter' } as never,
+    );
+    if (outcome.kind !== 'change') throw new Error(`not a change: ${JSON.stringify(outcome)}`);
+    return applyPatches(document, outcome.patches ?? []).document.pages[0]?.tree.children.at(-1) as DocNode;
+  };
+  // every text and attribute the template names by a catalogue key, beside what the inserted node holds
+  const said = (spec: TemplateNode, node: DocNode, locale: 'en' | 'pt-BR'): [string | null | undefined, string][] => [
+    ...(spec.textKey === undefined ? [] : [[node.text, translate(locale, spec.textKey as MessageId)] as [string | null, string]]),
+    ...Object.entries(spec.attributeKeys ?? {}).map(([name, key]): [string | undefined, string] => [node.attributes[name as keyof DocNode['attributes']] as string | undefined, translate(locale, key as MessageId)]),
+    ...(spec.children ?? []).flatMap((child, i) => said(child, node.children[i] as DocNode, locale)),
+  ];
+
+  it('an English page while the editor speaks Portuguese gets English texts, alt texts and placeholders, and the other way round', () => {
+    if (entry?.template === undefined || entry.template === null) throw new Error('the palette has no comp-newsletter template');
+    const template = entry.template;
+    const english = said(template, insert(inLanguage('en', undefined), 'pt-BR'), 'en');
+    // the template says texts and attributes (the e-mail field's placeholder and label) that differ by language
+    const portuguese = said(template, insert(inLanguage('en', undefined), 'pt-BR'), 'pt-BR');
+    expect(english.filter(([, wanted], i) => wanted !== portuguese[i]?.[1]).length).toBeGreaterThan(3);
+    for (const [held, wanted] of english) expect(held).toBe(wanted);
+    // the page's own language wins over the project's
+    for (const [held, wanted] of said(template, insert(inLanguage('en', 'pt-BR'), 'en'), 'pt-BR')) expect(held).toBe(wanted);
+    // a page in a language no catalogue has keeps the editor's
+    for (const [held, wanted] of said(template, insert(inLanguage('es', undefined), 'pt-BR'), 'pt-BR')) expect(held).toBe(wanted);
+    // the Layers names stay in the editor's language
+    expect(insert(inLanguage('en', undefined), 'pt-BR').children[0]?.name).toBe(translate('pt-BR', 'comp.container' as MessageId));
   });
 });

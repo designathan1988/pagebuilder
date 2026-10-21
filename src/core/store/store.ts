@@ -165,6 +165,8 @@ export interface StoreOptions<Ui> {
   readonly ids: IdGenerator;
   // a catalogue text in the language the editor state holds (the core never reads the editor state itself)
   readonly words: (ui: Ui, key: MessageId, params?: Readonly<Record<string, string | number>>) => string;
+  // a catalogue text in the language a page is written in (HandlerContext.pageWords); the person's words when absent
+  readonly pageWords?: (ui: Ui, language: string, key: MessageId, params?: Readonly<Record<string, string | number>>) => string;
   readonly language?: (ui: Ui) => string;
   // where the canvas draws the page's nodes (the editor's canvas); none drawn when absent
   readonly layout?: Layout;
@@ -386,6 +388,7 @@ export function createStore<Ui>(options: StoreOptions<Ui>): Store<Ui> {
   // animation's keyframes — so the undo of anything else leaves the Timeline as the person has it (DCS-016, DEF-0532).
   const recorded = (context: EditContext, patches: readonly Patch[]): EditContext =>
     context.keyframe === null || context.keyframe === undefined || patches.some((patch) => patch.path.includes('keyframes')) ? context : { ...context, keyframe: null };
+  const pageWords = options.pageWords;
   const handlerContext = (confirmed = false, at?: EditContext): HandlerContext<Ui> => {
     const ui = state.ui;
     const layered = layeredNow(at);
@@ -396,6 +399,7 @@ export function createStore<Ui>(options: StoreOptions<Ui>): Store<Ui> {
       ...(options.siteScripts === undefined ? {} : { siteScripts: options.siteScripts }),
       rules: layered,
       words: (key, params) => options.words(ui, key, params),
+      ...(pageWords === undefined ? {} : { pageWords: (language: string, key: MessageId, params?: Readonly<Record<string, string | number>>) => pageWords(ui, language, key, params) }),
       ...(options.language === undefined ? {} : { language: options.language(ui) }),
       layout: options.layout ?? noLayout,
       css: options.css ?? anyCss,

@@ -1,0 +1,1518 @@
+{
+ "version": 4,
+ "language": "pt-BR",
+ "codeLanguage": "en",
+ "pages": [
+  {
+   "id": "clubpage",
+   "name": "Comunidade",
+   "file": "index.html",
+   "tree": {
+    "id": "club184",
+    "type": "page",
+    "name": "Body",
+    "tag": "body",
+    "attributes": {
+     "pageTitle": "Comunidade",
+     "pageDescription": "Cadastro e login de membros, um mural público e notas privadas: tudo num banco de dados, sem servidor para configurar.",
+     "pageLanguage": "pt-BR"
+    },
+    "classes": [],
+    "styles": {
+     "desktop": {
+      "base": {
+       "margin-top": "0",
+       "margin-right": "0",
+       "margin-bottom": "0",
+       "margin-left": "0",
+       "background-color": "#f4f5f9",
+       "color": "#14161f",
+       "font-family": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+       "min-height": "100vh"
+      }
+     }
+    },
+    "text": null,
+    "children": [
+     {
+      "id": "club183",
+      "type": "main",
+      "name": "App",
+      "tag": "main",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "max-width": "1080px",
+         "margin-left": "auto",
+         "margin-right": "auto",
+         "padding-top": "24px",
+         "padding-bottom": "40px",
+         "padding-left": "20px",
+         "padding-right": "20px",
+         "display": "flex",
+         "flex-direction": "column",
+         "row-gap": "16px"
+        }
+       },
+       "phone": {
+        "base": {
+         "padding-left": "12px",
+         "padding-right": "12px",
+         "padding-top": "12px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "club147",
+        "type": "header",
+        "name": "Topo",
+        "tag": "header",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "column-gap": "8px",
+           "row-gap": "8px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "club146",
+          "type": "div",
+          "name": "Titulos",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-right": "auto",
+             "min-width": "0"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "club144",
+            "type": "heading",
+            "name": "Titulo",
+            "tag": "h1",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "font-size": "24px",
+               "line-height": "1.2",
+               "margin-right": "auto"
+              }
+             }
+            },
+            "text": "Comunidade",
+            "children": []
+           },
+           {
+            "id": "club145",
+            "type": "paragraph",
+            "name": "Descricao",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "color": "#5b6170",
+               "font-size": "14px"
+              }
+             }
+            },
+            "text": "Cadastro e login de membros, um mural público e notas privadas: tudo num banco de dados, sem servidor para configurar.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "club142",
+          "type": "paragraph",
+          "name": "Saudacao",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-top": "0",
+             "margin-bottom": "0",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600"
+            }
+           }
+          },
+          "text": "Olá, Ana",
+          "children": [],
+          "logic": {
+           "show": "app.auth.user",
+           "text": "app.auth.user ? 'Olá, ' + (app.auth.user.name || app.auth.user.email) + (app.auth.user.role === 'admin' ? ' (admin)' : '') : ''"
+          }
+         },
+         {
+          "id": "club143",
+          "type": "button",
+          "name": "Sair",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Sair",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "await fn.leave()"
+            }
+           ],
+           "show": "app.auth.user"
+          }
+         }
+        ]
+       },
+       {
+        "id": "club157",
+        "type": "section",
+        "name": "Entrar",
+        "tag": "section",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "background-color": "#ffffff",
+           "border-top-width": "1px",
+           "border-right-width": "1px",
+           "border-bottom-width": "1px",
+           "border-left-width": "1px",
+           "border-top-style": "solid",
+           "border-right-style": "solid",
+           "border-bottom-style": "solid",
+           "border-left-style": "solid",
+           "border-top-color": "#dfe3ea",
+           "border-right-color": "#dfe3ea",
+           "border-bottom-color": "#dfe3ea",
+           "border-left-color": "#dfe3ea",
+           "border-top-left-radius": "12px",
+           "border-top-right-radius": "12px",
+           "border-bottom-left-radius": "12px",
+           "border-bottom-right-radius": "12px",
+           "padding-top": "16px",
+           "padding-right": "16px",
+           "padding-bottom": "16px",
+           "padding-left": "16px",
+           "display": "flex",
+           "flex-direction": "column",
+           "row-gap": "10px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "club150",
+          "type": "div",
+          "name": "Abas",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-wrap": "wrap",
+             "align-items": "center",
+             "column-gap": "8px",
+             "row-gap": "8px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "club148",
+            "type": "button",
+            "name": "Aba Entrar",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "button"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "14px",
+               "padding-right": "14px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#dfe3ea",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#dfe3ea",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#dfe3ea",
+               "background-color": "#ffffff",
+               "color": "#14161f",
+               "font-size": "14px",
+               "font-weight": "600",
+               "cursor": "pointer",
+               "font-family": "inherit"
+              }
+             }
+            },
+            "text": "Entrar",
+            "children": [],
+            "logic": {
+             "on": [
+              {
+               "event": "click",
+               "code": "state.mode = 'login'\nstate.error = ''"
+              }
+             ],
+             "binds": {
+              "style:background-color": "state.mode === 'login' ? '#eef0ff' : ''",
+              "style:border-color": "state.mode === 'login' ? '#4f46e5' : ''"
+             }
+            }
+           },
+           {
+            "id": "club149",
+            "type": "button",
+            "name": "Aba Criar conta",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "button"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "14px",
+               "padding-right": "14px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#dfe3ea",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#dfe3ea",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#dfe3ea",
+               "background-color": "#ffffff",
+               "color": "#14161f",
+               "font-size": "14px",
+               "font-weight": "600",
+               "cursor": "pointer",
+               "font-family": "inherit"
+              }
+             }
+            },
+            "text": "Criar conta",
+            "children": [],
+            "logic": {
+             "on": [
+              {
+               "event": "click",
+               "code": "state.mode = 'signup'\nstate.error = ''"
+              }
+             ],
+             "binds": {
+              "style:background-color": "state.mode === 'signup' ? '#eef0ff' : ''",
+              "style:border-color": "state.mode === 'signup' ? '#4f46e5' : ''"
+             }
+            }
+           }
+          ]
+         },
+         {
+          "id": "club156",
+          "type": "form",
+          "name": "Acesso",
+          "tag": "form",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "10px",
+             "max-width": "420px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "club151",
+            "type": "input",
+            "name": "Nome",
+            "tag": "input",
+            "attributes": {
+             "inputType": "text",
+             "placeholder": "Seu nome",
+             "autocomplete": "name"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "10px",
+               "padding-right": "10px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#dfe3ea",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#dfe3ea",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#dfe3ea",
+               "font-size": "14px",
+               "font-family": "inherit",
+               "background-color": "#ffffff",
+               "color": "#14161f"
+              }
+             }
+            },
+            "text": null,
+            "children": [],
+            "logic": {
+             "model": "state.form.name",
+             "show": "state.mode === 'signup'"
+            }
+           },
+           {
+            "id": "club152",
+            "type": "input",
+            "name": "Email",
+            "tag": "input",
+            "attributes": {
+             "inputType": "email",
+             "placeholder": "E-mail",
+             "autocomplete": "email",
+             "required": true
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "10px",
+               "padding-right": "10px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#dfe3ea",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#dfe3ea",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#dfe3ea",
+               "font-size": "14px",
+               "font-family": "inherit",
+               "background-color": "#ffffff",
+               "color": "#14161f"
+              }
+             }
+            },
+            "text": null,
+            "children": [],
+            "logic": {
+             "model": "state.form.email"
+            }
+           },
+           {
+            "id": "club153",
+            "type": "input",
+            "name": "Senha",
+            "tag": "input",
+            "attributes": {
+             "inputType": "password",
+             "placeholder": "Senha (8 caracteres ou mais)",
+             "autocomplete": "current-password",
+             "required": true
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "10px",
+               "padding-right": "10px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#dfe3ea",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#dfe3ea",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#dfe3ea",
+               "font-size": "14px",
+               "font-family": "inherit",
+               "background-color": "#ffffff",
+               "color": "#14161f"
+              }
+             }
+            },
+            "text": null,
+            "children": [],
+            "logic": {
+             "model": "state.form.password"
+            }
+           },
+           {
+            "id": "club154",
+            "type": "button",
+            "name": "Enviar",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "submit"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "14px",
+               "padding-right": "14px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#4f46e5",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#4f46e5",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#4f46e5",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#4f46e5",
+               "background-color": "#4f46e5",
+               "color": "#ffffff",
+               "font-size": "14px",
+               "font-weight": "600",
+               "cursor": "pointer",
+               "font-family": "inherit"
+              }
+             }
+            },
+            "text": "Entrar",
+            "children": [],
+            "logic": {
+             "text": "state.busy ? 'Aguarde…' : state.mode === 'signup' ? 'Criar conta' : 'Entrar'",
+             "binds": {
+              "attr:disabled": "state.busy"
+             }
+            }
+           },
+           {
+            "id": "club155",
+            "type": "paragraph",
+            "name": "Erro",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "color": "#b91c1c",
+               "font-size": "14px"
+              }
+             }
+            },
+            "text": "",
+            "children": [],
+            "logic": {
+             "show": "state.error",
+             "text": "state.error"
+            }
+           }
+          ],
+          "logic": {
+           "on": [
+            {
+             "event": "submit",
+             "code": "$event.preventDefault()\nawait fn.enter()"
+            }
+           ]
+          }
+         }
+        ],
+        "logic": {
+         "show": "!app.auth.user"
+        }
+       },
+       {
+        "id": "club182",
+        "type": "div",
+        "name": "Colunas",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "flex-start",
+           "column-gap": "16px",
+           "row-gap": "8px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "club171",
+          "type": "section",
+          "name": "Mural",
+          "tag": "section",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "background-color": "#ffffff",
+             "border-top-width": "1px",
+             "border-right-width": "1px",
+             "border-bottom-width": "1px",
+             "border-left-width": "1px",
+             "border-top-style": "solid",
+             "border-right-style": "solid",
+             "border-bottom-style": "solid",
+             "border-left-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-color": "#dfe3ea",
+             "border-top-left-radius": "12px",
+             "border-top-right-radius": "12px",
+             "border-bottom-left-radius": "12px",
+             "border-bottom-right-radius": "12px",
+             "padding-top": "16px",
+             "padding-right": "16px",
+             "padding-bottom": "16px",
+             "padding-left": "16px",
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "10px",
+             "flex-grow": "2",
+             "flex-basis": "360px",
+             "min-width": "0"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "club158",
+            "type": "heading",
+            "name": "Titulo mural",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "font-size": "18px",
+               "line-height": "1.2",
+               "margin-right": "auto"
+              }
+             }
+            },
+            "text": "Mural",
+            "children": []
+           },
+           {
+            "id": "club161",
+            "type": "form",
+            "name": "Novo recado",
+            "tag": "form",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "10px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "club159",
+              "type": "textarea",
+              "name": "Recado",
+              "tag": "textarea",
+              "attributes": {
+               "placeholder": "Escreva um recado para todos",
+               "rows": "3"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "8px",
+                 "padding-bottom": "8px",
+                 "padding-left": "10px",
+                 "padding-right": "10px",
+                 "border-top-left-radius": "8px",
+                 "border-top-right-radius": "8px",
+                 "border-bottom-left-radius": "8px",
+                 "border-bottom-right-radius": "8px",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#dfe3ea",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#dfe3ea",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#dfe3ea",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#dfe3ea",
+                 "font-size": "14px",
+                 "font-family": "inherit",
+                 "background-color": "#ffffff",
+                 "color": "#14161f",
+                 "width": "100%",
+                 "box-sizing": "border-box"
+                }
+               }
+              },
+              "text": "",
+              "children": [],
+              "logic": {
+               "model": "state.draft"
+              }
+             },
+             {
+              "id": "club160",
+              "type": "button",
+              "name": "Publicar",
+              "tag": "button",
+              "attributes": {
+               "buttonType": "submit"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "8px",
+                 "padding-bottom": "8px",
+                 "padding-left": "14px",
+                 "padding-right": "14px",
+                 "border-top-left-radius": "8px",
+                 "border-top-right-radius": "8px",
+                 "border-bottom-left-radius": "8px",
+                 "border-bottom-right-radius": "8px",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#4f46e5",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#4f46e5",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#4f46e5",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#4f46e5",
+                 "background-color": "#4f46e5",
+                 "color": "#ffffff",
+                 "font-size": "14px",
+                 "font-weight": "600",
+                 "cursor": "pointer",
+                 "font-family": "inherit"
+                }
+               }
+              },
+              "text": "Publicar",
+              "children": []
+             }
+            ],
+            "logic": {
+             "show": "app.auth.user",
+             "on": [
+              {
+               "event": "submit",
+               "code": "$event.preventDefault()\nawait fn.post()"
+              }
+             ]
+            }
+           },
+           {
+            "id": "club162",
+            "type": "paragraph",
+            "name": "Convite",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "color": "#5b6170",
+               "font-size": "14px"
+              }
+             }
+            },
+            "text": "Entre para publicar no mural.",
+            "children": [],
+            "logic": {
+             "show": "!app.auth.user"
+            }
+           },
+           {
+            "id": "club169",
+            "type": "list",
+            "name": "Recados",
+            "tag": "ul",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "list-style-type": "none",
+               "padding-left": "0",
+               "margin-top": "0",
+               "margin-bottom": "0"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "club168",
+              "type": "listItem",
+              "name": "Item recado",
+              "tag": "li",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "12px",
+                 "padding-bottom": "12px",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#dfe3ea"
+                }
+               }
+              },
+              "text": null,
+              "children": [
+               {
+                "id": "club166",
+                "type": "div",
+                "name": "Cabecalho recado",
+                "tag": "div",
+                "attributes": {},
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "display": "flex",
+                   "flex-wrap": "wrap",
+                   "align-items": "center",
+                   "column-gap": "8px",
+                   "row-gap": "8px"
+                  }
+                 }
+                },
+                "text": null,
+                "children": [
+                 {
+                  "id": "club163",
+                  "type": "paragraph",
+                  "name": "Autor",
+                  "tag": "p",
+                  "attributes": {},
+                  "classes": [],
+                  "styles": {
+                   "desktop": {
+                    "base": {
+                     "margin-top": "0",
+                     "margin-bottom": "0",
+                     "color": "#14161f",
+                     "font-size": "14px",
+                     "font-weight": "600",
+                     "margin-right": "auto"
+                    }
+                   }
+                  },
+                  "text": "Ana",
+                  "children": [],
+                  "logic": {
+                   "text": "row.autor"
+                  }
+                 },
+                 {
+                  "id": "club164",
+                  "type": "paragraph",
+                  "name": "Quando",
+                  "tag": "p",
+                  "attributes": {},
+                  "classes": [],
+                  "styles": {
+                   "desktop": {
+                    "base": {
+                     "margin-top": "0",
+                     "margin-bottom": "0",
+                     "color": "#5b6170",
+                     "font-size": "14px"
+                    }
+                   }
+                  },
+                  "text": "21/10/2026 09:00",
+                  "children": [],
+                  "logic": {
+                   "text": "fn.when(row._created)"
+                  }
+                 },
+                 {
+                  "id": "club165",
+                  "type": "button",
+                  "name": "Apagar recado",
+                  "tag": "button",
+                  "attributes": {
+                   "buttonType": "button"
+                  },
+                  "classes": [],
+                  "styles": {
+                   "desktop": {
+                    "base": {
+                     "padding-top": "8px",
+                     "padding-bottom": "8px",
+                     "padding-left": "14px",
+                     "padding-right": "14px",
+                     "border-top-left-radius": "8px",
+                     "border-top-right-radius": "8px",
+                     "border-bottom-left-radius": "8px",
+                     "border-bottom-right-radius": "8px",
+                     "border-top-width": "1px",
+                     "border-top-style": "solid",
+                     "border-top-color": "#dfe3ea",
+                     "border-right-width": "1px",
+                     "border-right-style": "solid",
+                     "border-right-color": "#dfe3ea",
+                     "border-bottom-width": "1px",
+                     "border-bottom-style": "solid",
+                     "border-bottom-color": "#dfe3ea",
+                     "border-left-width": "1px",
+                     "border-left-style": "solid",
+                     "border-left-color": "#dfe3ea",
+                     "background-color": "#ffffff",
+                     "color": "#14161f",
+                     "font-size": "14px",
+                     "font-weight": "600",
+                     "cursor": "pointer",
+                     "font-family": "inherit"
+                    }
+                   }
+                  },
+                  "text": "Apagar",
+                  "children": [],
+                  "logic": {
+                   "on": [
+                    {
+                     "event": "click",
+                     "code": "await fn.removePost(row.id)"
+                    }
+                   ],
+                   "show": "fn.mine(row)"
+                  }
+                 }
+                ]
+               },
+               {
+                "id": "club167",
+                "type": "paragraph",
+                "name": "Texto recado",
+                "tag": "p",
+                "attributes": {},
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "margin-top": "6px",
+                   "margin-bottom": "0"
+                  }
+                 }
+                },
+                "text": "Bem-vindos à comunidade!",
+                "children": [],
+                "logic": {
+                 "text": "row.texto"
+                }
+               }
+              ],
+              "logic": {
+               "each": "state.posts",
+               "as": "row",
+               "key": "row.id"
+              }
+             }
+            ]
+           },
+           {
+            "id": "club170",
+            "type": "paragraph",
+            "name": "Mural vazio",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "color": "#5b6170",
+               "font-size": "14px"
+              }
+             }
+            },
+            "text": "Nenhum recado ainda.",
+            "children": [],
+            "logic": {
+             "show": "state.posts.length === 0"
+            }
+           }
+          ]
+         },
+         {
+          "id": "club181",
+          "type": "aside",
+          "name": "Notas",
+          "tag": "aside",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "background-color": "#ffffff",
+             "border-top-width": "1px",
+             "border-right-width": "1px",
+             "border-bottom-width": "1px",
+             "border-left-width": "1px",
+             "border-top-style": "solid",
+             "border-right-style": "solid",
+             "border-bottom-style": "solid",
+             "border-left-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-color": "#dfe3ea",
+             "border-top-left-radius": "12px",
+             "border-top-right-radius": "12px",
+             "border-bottom-left-radius": "12px",
+             "border-bottom-right-radius": "12px",
+             "padding-top": "16px",
+             "padding-right": "16px",
+             "padding-bottom": "16px",
+             "padding-left": "16px",
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "10px",
+             "flex-grow": "1",
+             "flex-basis": "260px",
+             "min-width": "0"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "club172",
+            "type": "heading",
+            "name": "Titulo notas",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "font-size": "18px",
+               "line-height": "1.2",
+               "margin-right": "auto"
+              }
+             }
+            },
+            "text": "Minhas notas",
+            "children": []
+           },
+           {
+            "id": "club173",
+            "type": "paragraph",
+            "name": "Explicacao notas",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "color": "#5b6170",
+               "font-size": "14px"
+              }
+             }
+            },
+            "text": "Só você vê as suas notas.",
+            "children": []
+           },
+           {
+            "id": "club176",
+            "type": "form",
+            "name": "Nova nota",
+            "tag": "form",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-wrap": "wrap",
+               "align-items": "center",
+               "column-gap": "8px",
+               "row-gap": "8px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "club174",
+              "type": "input",
+              "name": "Nota",
+              "tag": "input",
+              "attributes": {
+               "inputType": "text",
+               "placeholder": "Uma nota só sua"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "8px",
+                 "padding-bottom": "8px",
+                 "padding-left": "10px",
+                 "padding-right": "10px",
+                 "border-top-left-radius": "8px",
+                 "border-top-right-radius": "8px",
+                 "border-bottom-left-radius": "8px",
+                 "border-bottom-right-radius": "8px",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#dfe3ea",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#dfe3ea",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#dfe3ea",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#dfe3ea",
+                 "font-size": "14px",
+                 "font-family": "inherit",
+                 "background-color": "#ffffff",
+                 "color": "#14161f",
+                 "flex-grow": "1",
+                 "min-width": "0"
+                }
+               }
+              },
+              "text": null,
+              "children": [],
+              "logic": {
+               "model": "state.note"
+              }
+             },
+             {
+              "id": "club175",
+              "type": "button",
+              "name": "Guardar",
+              "tag": "button",
+              "attributes": {
+               "buttonType": "submit"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "8px",
+                 "padding-bottom": "8px",
+                 "padding-left": "14px",
+                 "padding-right": "14px",
+                 "border-top-left-radius": "8px",
+                 "border-top-right-radius": "8px",
+                 "border-bottom-left-radius": "8px",
+                 "border-bottom-right-radius": "8px",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#4f46e5",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#4f46e5",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#4f46e5",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#4f46e5",
+                 "background-color": "#4f46e5",
+                 "color": "#ffffff",
+                 "font-size": "14px",
+                 "font-weight": "600",
+                 "cursor": "pointer",
+                 "font-family": "inherit"
+                }
+               }
+              },
+              "text": "Guardar",
+              "children": []
+             }
+            ],
+            "logic": {
+             "on": [
+              {
+               "event": "submit",
+               "code": "$event.preventDefault()\nawait fn.addNote()"
+              }
+             ]
+            }
+           },
+           {
+            "id": "club180",
+            "type": "list",
+            "name": "Lista notas",
+            "tag": "ul",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "list-style-type": "none",
+               "padding-left": "0",
+               "margin-top": "0",
+               "margin-bottom": "0"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "club179",
+              "type": "listItem",
+              "name": "Item nota",
+              "tag": "li",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "display": "flex",
+                 "flex-wrap": "wrap",
+                 "align-items": "center",
+                 "column-gap": "8px",
+                 "row-gap": "8px",
+                 "padding-top": "8px",
+                 "padding-bottom": "8px",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#dfe3ea"
+                }
+               }
+              },
+              "text": null,
+              "children": [
+               {
+                "id": "club177",
+                "type": "paragraph",
+                "name": "Texto nota",
+                "tag": "p",
+                "attributes": {},
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "margin-top": "0",
+                   "margin-bottom": "0",
+                   "flex-grow": "1",
+                   "min-width": "0"
+                  }
+                 }
+                },
+                "text": "Minha primeira nota",
+                "children": [],
+                "logic": {
+                 "text": "note.texto"
+                }
+               },
+               {
+                "id": "club178",
+                "type": "button",
+                "name": "Apagar nota",
+                "tag": "button",
+                "attributes": {
+                 "buttonType": "button"
+                },
+                "classes": [],
+                "styles": {
+                 "desktop": {
+                  "base": {
+                   "padding-top": "8px",
+                   "padding-bottom": "8px",
+                   "padding-left": "14px",
+                   "padding-right": "14px",
+                   "border-top-left-radius": "8px",
+                   "border-top-right-radius": "8px",
+                   "border-bottom-left-radius": "8px",
+                   "border-bottom-right-radius": "8px",
+                   "border-top-width": "1px",
+                   "border-top-style": "solid",
+                   "border-top-color": "#dfe3ea",
+                   "border-right-width": "1px",
+                   "border-right-style": "solid",
+                   "border-right-color": "#dfe3ea",
+                   "border-bottom-width": "1px",
+                   "border-bottom-style": "solid",
+                   "border-bottom-color": "#dfe3ea",
+                   "border-left-width": "1px",
+                   "border-left-style": "solid",
+                   "border-left-color": "#dfe3ea",
+                   "background-color": "#ffffff",
+                   "color": "#14161f",
+                   "font-size": "14px",
+                   "font-weight": "600",
+                   "cursor": "pointer",
+                   "font-family": "inherit"
+                  }
+                 }
+                },
+                "text": "Apagar",
+                "children": [],
+                "logic": {
+                 "on": [
+                  {
+                   "event": "click",
+                   "code": "await fn.removeNote(note.id)"
+                  }
+                 ]
+                }
+               }
+              ],
+              "logic": {
+               "each": "state.notes",
+               "as": "note",
+               "key": "note.id"
+              }
+             }
+            ]
+           }
+          ],
+          "logic": {
+           "show": "app.auth.user"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "logic": {
+     "on": [
+      {
+       "event": "mount",
+       "code": "await fn.load()"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "app": {
+  "variables": [
+   {
+    "name": "mode",
+    "type": "text",
+    "initial": "login"
+   },
+   {
+    "name": "form",
+    "type": "object",
+    "initial": {
+     "email": "",
+     "password": "",
+     "name": ""
+    }
+   },
+   {
+    "name": "error",
+    "type": "text",
+    "initial": ""
+   },
+   {
+    "name": "busy",
+    "type": "boolean",
+    "initial": false
+   },
+   {
+    "name": "posts",
+    "type": "list",
+    "initial": []
+   },
+   {
+    "name": "notes",
+    "type": "list",
+    "initial": []
+   },
+   {
+    "name": "draft",
+    "type": "text",
+    "initial": ""
+   },
+   {
+    "name": "note",
+    "type": "text",
+    "initial": ""
+   }
+  ],
+  "tables": [
+   {
+    "name": "recados",
+    "read": "public",
+    "write": "members"
+   },
+   {
+    "name": "notas",
+    "read": "owner",
+    "write": "members"
+   }
+  ],
+  "scripts": [
+   {
+    "name": "club",
+    "code": "// The community's code: the members sign up and in with app.auth, the wall and the notes live in the database\n// (app.db). Published on the platform, they are kept in the cloud; in the preview, in this browser.\nexport async function load() {\n  try {\n    state.posts = await app.db.list('recados', { order: '-_created', limit: 50 })\n    state.notes = app.auth.user ? await app.db.list('notas', { mine: true }) : []\n  } catch (error) {\n    state.error = error.message\n  }\n}\n\nexport async function enter() {\n  state.error = ''\n  state.busy = true\n  try {\n    const { email, password, name } = state.form\n    if (state.mode === 'signup') await app.auth.signup({ email, password, name })\n    else await app.auth.login({ email, password })\n    state.form = { email: '', password: '', name: '' }\n    await load()\n    app.toast('Bem-vindo, ' + (app.auth.user.name || app.auth.user.email) + '!')\n  } catch (error) {\n    state.error = error.message\n  } finally {\n    state.busy = false\n  }\n}\n\nexport async function leave() {\n  app.auth.logout()\n  await load()\n}\n\nexport async function post() {\n  const text = state.draft.trim()\n  if (text === '') return\n  const user = app.auth.user\n  await app.db.add('recados', { texto: text, autor: user.name || user.email })\n  state.draft = ''\n  await load()\n  app.toast('Recado publicado')\n}\n\nexport async function removePost(id) {\n  await app.db.remove('recados', id)\n  await load()\n}\n\nexport async function addNote() {\n  const text = state.note.trim()\n  if (text === '') return\n  await app.db.add('notas', { texto: text })\n  state.note = ''\n  await load()\n}\n\nexport async function removeNote(id) {\n  await app.db.remove('notas', id)\n  await load()\n}\n\n// who may remove a row: the member who wrote it, or an admin of the site\nexport function mine(row) {\n  const user = app.auth.user\n  return user !== null && (user.role === 'admin' || row._owner === user.id)\n}\n\nexport function when(iso) {\n  return new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })\n}\n"
+   }
+  ]
+ }
+}

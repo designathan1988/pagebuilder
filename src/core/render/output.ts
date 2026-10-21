@@ -92,13 +92,92 @@ export function outputModelFromManifest(elements: ElementsFile, properties: Prop
 // The CSS of one node: every declaration of every breakpoint and state it stores, for the selector given; each rule on
 // one line for the canvas, or, laid out as a stylesheet a person reads (the export), one declaration per line indented
 // by two spaces.
-// The units the canvas resolves itself (the user's real-use audit, item 2.3): the page inside the editor's frame takes
-// the breakpoint's screen as its viewport, so vh, svh, dvh and lvh measure that screen — what the site shows in a
-// window of the breakpoint's size — wherever a value writes them, while the export keeps the units the person typed. vw
-// and its siblings need no rewriting: the frame is exactly the breakpoint wide.
+// The viewport the canvas resolves itself (the user's real-use audit, item 2.3; DCS-035): the canvas frame is as tall
+// as the whole page, so the page inside it would take that height as its viewport; it takes the breakpoint's screen
+// instead — what the site shows in a window of the breakpoint's size. vh, svh, dvh and lvh become that screen's px, and
+// a media query's height features (height, aspect-ratio, orientation, and their device- and min-/max- forms) are
+// decided against the breakpoint's width × that screen, wherever a stylesheet of the canvas writes them; the export
+// keeps the units and queries the person wrote. vw and the width features need no rewriting: the frame is exactly the
+// breakpoint wide. The one writer of the canvas's stylesheets (editor/canvas/render/render.ts canvasCss) runs every
+// sheet through canvasViewport.
 const VIEWPORT_HEIGHT = new RegExp('(^|[^a-z0-9.-])(-?(?:[0-9]+[.]?[0-9]*|[.][0-9]+))(svh|dvh|lvh|vh)(?![a-z])', 'gi');
 function viewportUnits(text: string, screen: { readonly height: number }): string {
   return text.replace(VIEWPORT_HEIGHT, (_all, before: string, n: string) => `${before}${Math.round((Number(n) * screen.height) / 100 * 100) / 100}px`);
+}
+// a feature that always holds and one that never does, in place of a height feature decided against the screen (the
+// frame is never 0 px wide)
+const HOLDS = '(min-width: 0px)';
+const FAILS = '(max-width: 0px)';
+// (the height, the ratio of width to height, their device- forms, the orientation)
+const HEIGHT_FEATURE = /^(?:device-)?(?:height|aspect-ratio)$|^orientation$/;
+const isRatio = (name: string): boolean => name.endsWith('ratio');
+const MEDIA_PRELUDE = /@media\b([^{};]*)\{/g;
+const FEATURE = /\(([^()]*)\)/g;
+// a length or a ratio of a media feature, in px (a ratio as width over height); null for a value this reader does not
+// know (left to the browser as written)
+function featureValue(text: string, ratio: boolean): number | null {
+  const value = text.trim();
+  if (ratio) {
+    const [w, h] = value.split('/').map((part) => Number(part.trim()));
+    if (w === undefined || !Number.isFinite(w)) return null;
+    const over = h === undefined ? 1 : h;
+    return Number.isFinite(over) && over > 0 ? w / over : null;
+  }
+  const length = /^(-?[0-9]*\.?[0-9]+)(px|em|rem)?$/i.exec(value);
+  if (length === null) return null;
+  const n = Number(length[1]);
+  const unit = length[2]?.toLowerCase();
+  // a bare number is a length only when it is 0; em and rem in a media query are the initial font size's (16 px)
+  if (unit === undefined) return n === 0 ? 0 : null;
+  return unit === 'px' ? n : n * 16;
+}
+const compare = (a: number, op: string, b: number): boolean => (op === '<' ? a < b : op === '<=' ? a <= b : op === '>' ? a > b : op === '>=' ? a >= b : Math.abs(a - b) < 1e-9);
+const flipped: Readonly<Record<string, string>> = { '<': '>', '<=': '>=', '>': '<', '>=': '<=', '=': '=' };
+// One height feature of a media query decided against the screen: true or false, or null where it is no height
+// feature or its value is one this reader does not know.
+function heightFeature(text: string, screen: { readonly width: number; readonly height: number }): boolean | null {
+  const actual = (name: string): number => (isRatio(name) ? screen.width / screen.height : screen.height);
+  const plain = /^\s*(min-|max-)?([a-z-]+)\s*(?::\s*(.+?))?\s*$/i.exec(text);
+  if (plain !== null && plain[2] !== undefined && HEIGHT_FEATURE.test(plain[2].toLowerCase())) {
+    const name = plain[2].toLowerCase();
+    const raw = plain[3];
+    if (name === 'orientation') {
+      const portrait = screen.height >= screen.width;
+      return raw === undefined ? true : raw.trim().toLowerCase() === 'portrait' ? portrait : raw.trim().toLowerCase() === 'landscape' ? !portrait : null;
+    }
+    if (raw === undefined) return plain[1] === undefined ? actual(name) > 0 : null;
+    const wanted = featureValue(raw, isRatio(name));
+    if (wanted === null) return null;
+    return compare(actual(name), plain[1] === 'min-' ? '>=' : plain[1] === 'max-' ? '<=' : '=', wanted);
+  }
+  // the range form: (height > 600px), (400px <= height < 900px), (16/9 < aspect-ratio)
+  const range = /^\s*(?:([^<>=]+?)\s*(<=|>=|<|>|=)\s*)?([a-z-]+)\s*(?:(<=|>=|<|>|=)\s*([^<>=]+?))?\s*$/i.exec(text);
+  if (range === null || range[3] === undefined || !HEIGHT_FEATURE.test(range[3].toLowerCase()) || range[3].toLowerCase() === 'orientation') return null;
+  if (range[1] === undefined && range[4] === undefined) return null;
+  const name = range[3].toLowerCase();
+  let holds = true;
+  if (range[1] !== undefined && range[2] !== undefined) {
+    const low = featureValue(range[1], isRatio(name));
+    if (low === null) return null;
+    holds = holds && compare(actual(name), flipped[range[2]] ?? '=', low);
+  }
+  if (range[4] !== undefined && range[5] !== undefined) {
+    const high = featureValue(range[5], isRatio(name));
+    if (high === null) return null;
+    holds = holds && compare(actual(name), range[4], high);
+  }
+  return holds;
+}
+// A stylesheet of the canvas with its viewport resolved against the breakpoint's screen (above).
+export function canvasViewport(css: string, screen: { readonly width: number; readonly height: number }): string {
+  const units = viewportUnits(css, screen);
+  return units.replace(MEDIA_PRELUDE, (rule: string, prelude: string) => {
+    const decided = prelude.replace(FEATURE, (feature: string, inner: string) => {
+      const holds = heightFeature(inner, screen);
+      return holds === null ? feature : holds ? HOLDS : FAILS;
+    });
+    return decided === prelude ? rule : `@media${decided}{`;
+  });
 }
 
 // The media query a breakpoint's rules are written in: desktop-first, the breakpoint's width as the widest it covers.
@@ -107,7 +186,7 @@ export function mediaQuery(breakpoint: { readonly width: number }): string {
   return `@media (max-width: ${breakpoint.width}px)`;
 }
 
-export function nodeCss(node: Pick<DocNode, 'styles'> & { readonly type?: string }, selector: string, model: OutputModel, layout: 'line' | 'block' = 'line', screen: { readonly height: number } | null = null, extra: readonly string[] = []): string {
+export function nodeCss(node: Pick<DocNode, 'styles'> & { readonly type?: string }, selector: string, model: OutputModel, layout: 'line' | 'block' = 'line', extra: readonly string[] = []): string {
   const blocks: string[] = [];
   for (const breakpoint of model.breakpoints) {
     const byState = node.styles[breakpoint.id as keyof DocNode['styles']];
@@ -123,7 +202,7 @@ export function nodeCss(node: Pick<DocNode, 'styles'> & { readonly type?: string
       // class holds no type of its own and writes what it holds
       if (details.elements !== null && node.type !== undefined && !details.elements.includes(node.type)) continue;
       const pseudo = details.pseudo;
-      const lines = declarationLines(declarations ?? {}, model, layout, screen).concat(added);
+      const lines = declarationLines(declarations ?? {}, model, layout).concat(added);
       if (lines.length === 0) continue;
       const indent = breakpoint.base ? '' : '  ';
       rules.push(layout === 'line' ? `${selector}${pseudo ?? ''} { ${lines.join(' ')} }` : `${indent}${selector}${pseudo ?? ''} {\n${lines.map((l) => `${indent}  ${l}`).join('\n')}\n${indent}}`);
@@ -135,21 +214,16 @@ export function nodeCss(node: Pick<DocNode, 'styles'> & { readonly type?: string
 }
 
 // The declarations of one layer's values as CSS lines ("width: 240px;"), in the order they are stored: a recipe by its
-// own declarations, a structured value (a shadow's layers) by its writer, everything else its stored text; the units
-// the canvas resolves itself (vh, svh, dvh, lvh) as the screen the page takes. The one writer of a declarations
-// object, read by the node rules and by an animation's keyframes (core/animation/animation.ts keyframesCss).
-export function declarationLines(
-  declarations: Readonly<Record<string, unknown>>,
-  model: OutputModel,
-  layout: 'line' | 'block' = 'line',
-  screen: { readonly height: number } | null = null,
-): string[] {
+// own declarations, a structured value (a shadow's layers) by its writer, everything else its stored text (the canvas
+// resolves its viewport units in its one stylesheet writer: canvasViewport). The one writer of a declarations object,
+// read by the node rules and by an animation's keyframes (core/animation/animation.ts keyframesCss).
+export function declarationLines(declarations: Readonly<Record<string, unknown>>, model: OutputModel, layout: 'line' | 'block' = 'line'): string[] {
   const lines = Object.entries(declarations).flatMap(([property, value]) => {
     const recipe = model.recipes.get(property);
     if (recipe) return recipe.map((d) => `${d.property}: ${d.value ?? String(value)};`);
     const fields = model.structures.get(property);
     if (fields !== undefined && Array.isArray(value)) return [`${property}: ${structuredCss(value as readonly Readonly<Record<string, string | boolean>>[], fields)};`];
-    return [`${property}: ${screen === null ? String(value) : viewportUnits(String(value), screen)};`];
+    return [`${property}: ${String(value)};`];
   });
   return layout === 'block' ? compactDeclarations(lines, model.composites ?? []) : lines;
 }

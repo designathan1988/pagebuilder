@@ -10,7 +10,8 @@
 //    set and do not reach the 4.5:1 contrast WCAG asks for body text; an embedded frame with no title; an image with no
 //    source (export: the canvas draws a placeholder in its place, the exported page nothing — the journey "site"); a
 //    form with no submit button (WCAG technique H32: a visitor has no way to send it; the audit's AUD-22, the one
-//    html-validate error of a fixture export left to the person, src/core/export/validity.test.ts).
+//    html-validate error of a fixture export left to the person, src/core/export/validity.test.ts); a WhatsApp link
+//    with no phone number, and a shop's cart with no number or e-mail to send the order to.
 //  - A value the reader cannot understand (a colour that is a variable, a gradient background) is left alone: a check
 //    never guesses, and a page that says nothing about colour is never reported.
 import type { MessageId } from '../../generated/ids.ts';
@@ -99,6 +100,19 @@ function submitsWithin(form: DocNode): boolean {
   return form.children.some(sends);
 }
 
+// A WhatsApp link that names no phone number (wa.me/ with nothing but a message): it opens WhatsApp to pick a contact,
+// so a visitor's "talk to us" reaches nobody. The ready-made blocks ship this way, for the business to type its own
+// number (the audit's TPL-13: a sample number sent orders to a stranger).
+const WHATSAPP_WITHOUT_NUMBER = /^https?:\/\/wa\.me\/?(?:[?#]|$)/u;
+
+// A shop's cart (the Components' cart, data-wc="cart", read by src/editor/widgets/widgets.js) with neither a WhatsApp
+// number nor an e-mail to send the order to: its checkout button does nothing.
+function cartWithoutAddress(node: DocNode): boolean {
+  const custom = node.customAttributes;
+  if (custom?.['data-wc'] !== 'cart') return false;
+  return (custom['data-wc-whatsapp'] ?? '').replace(/\D/gu, '') === '' && (custom['data-wc-email'] ?? '').trim() === '';
+}
+
 export function checksOf(document: DocumentJson, properties: CheckProperties): readonly CheckIssue[] {
   const issues: CheckIssue[] = [];
   const visit = (node: DocNode, hidden: boolean, background: readonly [number, number, number] | null, seenHeading: number): number => {
@@ -119,7 +133,9 @@ export function checksOf(document: DocumentJson, properties: CheckProperties): r
     if (node.tag === 'a') {
       if (node.attributes.href === undefined || String(node.attributes.href) === '') issues.push({ node: node.id, category: 'links', rule: 'checks.linkHref', fix: 'checks.linkHref.fix' });
       if (textWithin(node) === '') issues.push({ node: node.id, category: 'links', rule: 'checks.linkText', fix: 'checks.linkText.fix' });
+      if (WHATSAPP_WITHOUT_NUMBER.test(String(node.attributes.href ?? ''))) issues.push({ node: node.id, category: 'links', rule: 'checks.whatsappLink', fix: 'checks.whatsappLink.fix' });
     }
+    if (cartWithoutAddress(node)) issues.push({ node: node.id, category: 'export', rule: 'checks.cartDestination', fix: 'checks.cartDestination.fix' });
     // text with a colour of its own over a background that is known: below the contrast WCAG asks for is an issue
     const colour = readColour(baseValue(node, properties.colourProperty) ?? '');
     if (colour !== null && own !== null && textWithin(node) !== '' && contrast(colour, own) < CONTRAST_MINIMUM) {

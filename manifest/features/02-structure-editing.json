@@ -17899,7 +17899,7 @@
           "Release."
         ],
         "expected": [
-          "The page (and the Layers tree) scroll while the pointer rests within drop.autoscrollZone of the edge, faster the nearer the edge, up to drop.autoscrollMaxStep a frame.",
+          "The page (and the Layers tree) scroll while the pointer rests within drop.autoscrollZone of the edge, faster the nearer the edge, up to drop.autoscrollMaxStep a frame; the page's scroll is the canvas's pan (the frame is as tall as the page), toward any edge of the stage the page goes on past, and it stops at the page's end.",
           "The scroll arms only once the pointer has been inside the scroller beyond the zone (spec drag-layout, row 8): a drag that starts at the edge scrolls nothing at first.",
           "The insertion line and the drop label follow the scrolled page; the release lands on what the scroll brought under the pointer."
         ]

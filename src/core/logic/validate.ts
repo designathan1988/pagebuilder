@@ -38,6 +38,23 @@ export function nameRefusal(name: unknown): string | null {
   return null;
 }
 
+// The words an item name cannot be: the item is declared as a constant inside the site's module
+// (js/app-layer/main.js, core/logic/compile.ts), where JavaScript's reserved words, its strict mode's own words
+// (arguments, eval, let, static, implements…) and the compiler's own names ($l, the item's locals; $v, a field's value)
+// stop the module (the audit's LOGIC-2).
+const NOT_AN_ITEM = new Set([
+  'break', 'case', 'catch', 'class', 'const', 'continue', 'debugger', 'default', 'delete', 'do', 'else', 'enum', 'export', 'extends', 'false', 'finally', 'for',
+  'function', 'if', 'import', 'in', 'instanceof', 'new', 'null', 'return', 'super', 'switch', 'this', 'throw', 'true', 'try', 'typeof', 'var', 'void', 'while',
+  'with', 'yield', 'let', 'static', 'implements', 'interface', 'package', 'private', 'protected', 'public', 'await', 'arguments', 'eval', '$l', '$v',
+]);
+
+// Why an item's name (a repeated element's `as`) is not one, or null.
+export function itemNameRefusal(name: unknown): string | null {
+  if (name === 'item') return null;
+  if (typeof name === 'string' && NOT_AN_ITEM.has(name)) return `${name} is a word of JavaScript or of the site's code, not a name`;
+  return nameRefusal(name);
+}
+
 function listProblems(value: unknown, at: string, what: string, each: (one: Readonly<Record<string, unknown>>, at: string) => string | null, problems: AppProblem[]): void {
   if (value === undefined) return;
   if (!Array.isArray(value) || value.length === 0) {
@@ -73,9 +90,19 @@ export function appProblems(document: DocumentJson): readonly AppProblem[] {
         if (!(VARIABLE_TYPES as readonly unknown[]).includes(one.type)) return `a variable's type is one of ${VARIABLE_TYPES.join(', ')}`;
         if (!initialFits(one.type as VariableType, one.initial)) return `the first value is not a ${String(one.type)}`;
         if ('persist' in one && one.persist !== true) return 'persist is true, or absent';
-        const extraKeys = Object.keys(one).filter((key) => !['name', 'type', 'initial', 'persist'].includes(key));
-        return extraKeys.length > 0 ? `a variable holds only its name, type, first value and persist, not ${extraKeys.join(', ')}` : null;
+        if ('kept' in one && (nameRefusal(one.kept) !== null || one.kept === one.name || one.persist !== true)) return 'kept is the stored name of a persisted variable, other than its name, or absent';
+        const extraKeys = Object.keys(one).filter((key) => !['name', 'type', 'initial', 'persist', 'kept'].includes(key));
+        return extraKeys.length > 0 ? `a variable holds only its name, type, first value, persist and kept, not ${extraKeys.join(', ')}` : null;
       }, problems);
+      // two persisted variables kept under one name would write each other's saved values in the visitor's browser
+      const stored = new Set<string>();
+      (Array.isArray(app.variables) ? app.variables : []).forEach((one: unknown, i) => {
+        if (!isObject(one) || one.persist !== true) return;
+        const name = typeof one.kept === 'string' ? one.kept : one.name;
+        if (typeof name !== 'string') return;
+        if (stored.has(name)) problems.push({ path: `/app/variables/${i}`, message: `another persisted variable is already kept under ${name}` });
+        stored.add(name);
+      });
       const moduleCheck = (one: Readonly<Record<string, unknown>>) => (codeText(one.code) && Object.keys(one).length === 2 ? null : 'a module holds its name and its code');
       listProblems(app.scripts, '/app/scripts', 'scripts', moduleCheck, problems);
       listProblems(app.components, '/app/components', 'components', moduleCheck, problems);
@@ -118,7 +145,10 @@ export function logicProblems(node: DocNode, at: string, components: ReadonlySet
   for (const key of Object.keys(logic)) if (![...LOGIC_FIELDS, 'binds', 'on'].includes(key)) bad(`/${key}`, `${key} is no field of an element's logic`);
   for (const field of ['text', 'html', 'show', 'each', 'key'] as const) if (field in logic && !expression(logic[field])) bad(`/${field}`, 'an expression is non-empty code');
   if ('text' in logic && 'html' in logic) bad('/html', 'an element shows a text or an HTML, not both');
-  if ('as' in logic && (nameRefusal(logic.as) !== null && logic.as !== 'item')) bad('/as', 'the item is named by an identifier');
+  if ('as' in logic) {
+    const why = itemNameRefusal(logic.as);
+    if (why !== null) bad('/as', `the item is named by an identifier: ${why}`);
+  }
   if (('as' in logic || 'key' in logic) && !('each' in logic)) bad('/each', 'an item name and a key belong to a repeated element');
   if ('model' in logic && (typeof logic.model !== 'string' || !ASSIGNABLE.test(logic.model))) bad('/model', 'a field writes to a variable path (state.name, state.form.email) or a field of an item (item.done)');
   if ('component' in logic && !components.has(logic.component)) bad('/component', `${String(logic.component)} is no code component of the project`);

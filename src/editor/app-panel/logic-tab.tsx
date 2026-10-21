@@ -15,6 +15,7 @@ import { useEditorState } from '../store.ts';
 import { useT } from '../text.ts';
 import type { CodeScope } from './code-editor.tsx';
 import { DoorCode } from './door-code.tsx';
+import { LogicTextField } from './logic-field.tsx';
 import { localsAt, projectScope } from './scope.ts';
 import './panel.css';
 
@@ -67,7 +68,7 @@ export function LogicTab(): ReactNode {
   const inside: CodeScope = { ...project, locals: localsAt(document, node.id as NodeId, true) };
   const outside: CodeScope = { ...project, locals: localsAt(document, node.id as NodeId, false) };
   const expression = (field: ExpressionField, scope: CodeScope, hint?: MessageId) => (
-    <DoorCode entry={FIELD} args={{ field }} name="value" value={logic[field] ?? ''} kind="expression" scope={scope} label={t(`logic.field.${field}` as MessageId)} {...(hint === undefined ? {} : { placeholder: t(hint) })} />
+    <DoorCode entry={FIELD} args={{ field }} name="value" value={logic[field] ?? ''} kind="expression" scope={scope} target={node.id} label={t(`logic.field.${field}` as MessageId)} {...(hint === undefined ? {} : { placeholder: t(hint) })} />
   );
   const components: Option[] = [{ value: '', label: '—' }, ...(document.app?.components ?? []).map((one) => ({ value: one.name, label: one.name }))];
   const binds = Object.entries(logic.binds ?? {});
@@ -82,7 +83,9 @@ export function LogicTab(): ReactNode {
         </span>
         <DoorControl entry={CLEAR} />
       </div>
-      <div className="inspector-scroll">
+      {/* the fields of one element are its own: another element's are drawn anew, so no field carries a typing, a text
+          or an undo history of the element shown before (the logic audit's LOGIC-3 and LOGIC-4) */}
+      <div key={node.id} className="inspector-scroll">
         <p className="logic-tab__note">{t('logic.help')}</p>
         <Group title={t('logic.section.content')}>
           <Row label={t('logic.field.text')}>{expression('text', inside, 'logic.hint.text')}</Row>
@@ -96,15 +99,15 @@ export function LogicTab(): ReactNode {
         <Group title={t('logic.section.repeat')}>
           <Row label={t('logic.field.each')}>{expression('each', outside, 'logic.hint.each')}</Row>
           <Row label={t('logic.field.as')}>
-            <DoorField entry={FIELD} args={{ field: 'as' }} name="value" value={logic.as ?? ''} label={t('logic.field.as')} />
+            <LogicTextField entry={FIELD} args={{ field: 'as' }} name="value" value={logic.as ?? ''} target={node.id} label={t('logic.field.as')} />
           </Row>
           <Row label={t('logic.field.key')}>{expression('key', inside)}</Row>
         </Group>
         <Group title={t('logic.section.bindings')}>
           {binds.map(([binding, code]) => (
             <div key={binding} className="logic-binding">
-              <DoorField entry={BINDING} args={{ previous: binding, value: code }} name="binding" value={binding} className="logic-binding__name" />
-              <DoorCode entry={BINDING} args={{ binding }} name="value" value={code} kind="expression" scope={inside} label={`${t('logic.binding.value')} · ${binding}`} />
+              <LogicTextField entry={BINDING} args={{ previous: binding, value: code }} name="binding" value={binding} target={node.id} className="logic-binding__name" />
+              <DoorCode entry={BINDING} args={{ binding }} name="value" value={code} kind="expression" scope={inside} target={node.id} label={`${t('logic.binding.value')} · ${binding}`} />
             </div>
           ))}
           <DoorForm entry={ADD_BINDING} args={{}} className="logic-binding__add">
@@ -118,10 +121,10 @@ export function LogicTab(): ReactNode {
             // a handler is named by its place (logic.updateHandler)
             <div key={index} className="logic-handler">
               <div className="logic-handler__row">
-                <DoorField entry={HANDLER_EVENT} args={{ handler: index }} name="event" value={handler.event} className="logic-handler__event" />
+                <LogicTextField entry={HANDLER_EVENT} args={{ handler: index }} name="event" value={handler.event} target={node.id} className="logic-handler__event" />
                 <DoorControl entry={HANDLER_REMOVE} args={{ handler: index }} label={`${t('command.logic.removeHandler')} ${handler.event}`} />
               </div>
-              <DoorCode entry={HANDLER_CODE} args={{ handler: index }} name="code" value={handler.code} kind="statements" scope={{ ...inside, event: true }} label={`${t('logic.handler.code')} · ${handler.event}`} />
+              <DoorCode entry={HANDLER_CODE} args={{ handler: index }} name="code" value={handler.code} kind="statements" scope={{ ...inside, event: true }} target={node.id} label={`${t('logic.handler.code')} · ${handler.event}`} />
             </div>
           ))}
           <DoorControl entry={ADD_HANDLER} />

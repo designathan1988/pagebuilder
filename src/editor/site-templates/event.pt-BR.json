@@ -13,7 +13,7 @@
     "name": "Body",
     "tag": "body",
     "attributes": {
-     "pageTitle": "Conecta 2026 — Conferência de tecnologia e negócios",
+     "pageTitle": "Conecta — Conferência de tecnologia e negócios",
      "pageDescription": "Dois dias de palestras, oficinas e networking. Ingressos com desconto até o fim do lote.",
      "pageLanguage": "pt-BR"
     },
@@ -89,7 +89,7 @@
           "name": "Link",
           "tag": "a",
           "attributes": {
-           "href": "/"
+           "href": "index.html"
           },
           "classes": [],
           "styles": {
@@ -102,7 +102,7 @@
             }
            }
           },
-          "text": "Conecta 2026",
+          "text": "Conecta",
           "children": []
          },
          {
@@ -407,7 +407,7 @@
               }
              }
             },
-            "text": "14 e 15 de março · São Paulo",
+            "text": "Dois dias de conferência · São Paulo",
             "children": []
            },
            {
@@ -1060,7 +1060,7 @@
             }
            }
           },
-          "text": "O evento começou!",
+          "text": "O 2º lote acabou: os ingressos seguem à venda no preço do 3º lote.",
           "children": [],
           "customAttributes": {
            "data-wc-done": ""
@@ -1071,7 +1071,7 @@
       ],
       "customAttributes": {
        "data-wc": "countdown",
-       "data-wc-date": "2026-12-31T23:59:00-03:00"
+       "data-wc-date": "P30D"
       }
      },
      {
@@ -1702,8 +1702,8 @@
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&h=400&q=80",
-               "alt": "Renata Duarte",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Renata Duarte"
               },
               "classes": [],
               "styles": {
@@ -1800,8 +1800,8 @@
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&h=400&q=80",
-               "alt": "Felipe Araújo",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Felipe Araújo"
               },
               "classes": [],
               "styles": {
@@ -1898,8 +1898,8 @@
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=400&h=400&q=80",
-               "alt": "Sofia Castro",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Sofia Castro"
               },
               "classes": [],
               "styles": {
@@ -1996,8 +1996,8 @@
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&h=400&q=80",
-               "alt": "Gustavo Pires",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Gustavo Pires"
               },
               "classes": [],
               "styles": {
@@ -3185,7 +3185,7 @@
               }
              }
             },
-            "text": "14 e 15 de março, das 8h às 19h",
+            "text": "Os dois dias, das 8h às 19h",
             "children": []
            },
            {
@@ -3243,8 +3243,8 @@
           "tag": "iframe",
           "attributes": {
            "src": "https://www.openstreetmap.org/export/embed.html?bbox=-46.6622%2C-23.5713%2C-46.6422%2C-23.5593&layer=mapnik&marker=-23.5653%2C-46.6522",
-           "title": "Mapa",
-           "loading": "lazy"
+           "loading": "lazy",
+           "title": "Mapa"
           },
           "classes": [],
           "styles": {
@@ -3348,7 +3348,7 @@
               }
              }
             },
-            "text": "Conecta 2026",
+            "text": "Conecta",
             "children": []
            },
            {

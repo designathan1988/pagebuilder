@@ -25,16 +25,20 @@ FORMATS = [
         ('sw.js', ["self.addEventListener('install'", '"./index.html"', '"./css/styles.css"']),
     ]),
     ('menu-file-android', 'android', 'command.exportAndroid', 'smartphone', 'app-android.zip', [
-        ('capacitor.config.json', ['"webDir": "www"', '"appId": "com.webconstructor.home"']),
-        ('package.json', ['"@capacitor/android"', '"@capacitor/cli"']),
+        # the identifier is seeded by the start page's internal id (aurora's p-home), never by its title
+        ('capacitor.config.json', ['"webDir": "www"', '"appId": "com.webconstructor.sited323941b"']),
+        ('package.json', ['"@capacitor/android"', '"@capacitor/cli"', '"@capacitor/assets"']),
         ('www/index.html', ['<h1>Welcome to Aurora</h1>']),
-        ('LEIA-ME.md', ['npx cap add android']),
+        ('assets/icon-only.png', []),
+        # the README speaks the site's language: aurora names none, so English
+        ('README.md', ['npx cap add android', 'npx @capacitor/assets generate']),
     ]),
     ('menu-file-desktop', 'desktop', 'command.exportDesktop', 'monitor', 'app-desktop.zip', [
         ('package.json', ['"@electron-forge/maker-squirrel"', '"make": "electron-forge make"', '"main": "main.js"']),
-        ('main.js', ["protocol.registerSchemesAsPrivileged", "app://bundle/index.html"]),
+        ('main.js', ["protocol.registerSchemesAsPrivileged", "app://bundle/index.html", "'will-navigate'"]),
         ('app/index.html', ['<h1>Welcome to Aurora</h1>']),
-        ('LEIA-ME.md', ['npm run make']),
+        ('build/icon.ico', []),
+        ('README.md', ['npm run make']),
     ]),
 ]
 
@@ -112,7 +116,7 @@ save('manifest/features/28-export-packages.json', {'group': 'export-packages', '
         ],
         'expected': [
             'Every page links the manifest and registers the service worker; the manifest names a 192px and a 512px icon, a start_url and a display.',
-            'Each project holds a LEIA-ME.md with the commands that build it.',
+            "Each project holds a README in the site's language (README.md, or LEIA-ME.md for a Portuguese site) with the commands that build it.",
         ],
     },
     'scenarios': scenarios,

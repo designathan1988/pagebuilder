@@ -76,6 +76,10 @@ export interface HandlerContext<Ui> {
   // and the fragments a message is composed of (the import report, core/import/import.ts), with their placeholders
   // filled
   words(key: MessageId, params?: Readonly<Record<string, string | number>>): string;
+  // a catalogue text in the language a page is written in (the language its <html lang> says: export/names.ts
+  // pageLanguage), for the texts and attributes a palette element fills that page with (the audit's TPL-3); absent (a
+  // context built outside the store), the person's words above
+  pageWords?(language: string, key: MessageId, params?: Readonly<Record<string, string | number>>): string;
   // where the canvas draws the nodes of the page it shows, for a handler that acts on what a gesture covers (the
   // marquee)
   readonly layout: Layout;

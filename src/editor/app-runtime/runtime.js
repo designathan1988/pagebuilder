@@ -56,6 +56,8 @@ function flush() {
     pending.clear();
     for (const effect of now) effect.run();
   }
+  // the bindings still waiting kept redrawing each other: they are stopped for this change, and the page says which
+  if (pending.size > 0) report([...new Set([...pending].map((one) => one.where ?? WORDS.binding))].join(', '), new Error(WORDS.loop));
   pending.clear();
   flushing = false;
 }
@@ -89,6 +91,9 @@ export function reactive(target) {
       const value = Reflect.get(raw, key, receiver);
       if (typeof key === 'symbol') return value;
       track(raw, Array.isArray(raw) && key === 'length' ? ITERATE : key);
+      // a place of a list (items[0]) moves with every mutation of the list (sort, shift, splice…), which triggers the
+      // list as a whole: the reader of a place hears it too
+      if (Array.isArray(raw) && key !== 'length') track(raw, ITERATE);
       return reactive(value);
     },
     set(raw, key, value) {
@@ -120,11 +125,13 @@ export function reactive(target) {
   return proxy;
 }
 
-// A function that runs now and again whenever something it read changes; stop() ends it.
-export function effect(fn, scope) {
+// A function that runs now and again whenever something it read changes; stop() ends it. `where` names it in the
+// errors it reports (the element and its field: "Title (text)").
+export function effect(fn, scope, where) {
   const one = {
     deps: [],
     stopped: false,
+    where,
     run() {
       if (one.stopped) return;
       for (const set of one.deps) set.delete(one);
@@ -134,7 +141,7 @@ export function effect(fn, scope) {
       try {
         fn();
       } catch (error) {
-        report(one.where ?? 'binding', error);
+        report(one.where ?? WORDS.binding, error);
       } finally {
         running = previous;
       }
@@ -166,29 +173,121 @@ export const fn = {};
 
 // ---------------------------------------------------------------- errors
 
+// each message reported, by its text: the same one again (a frame handler that throws 60 times a second) counts on
+// its first line instead of adding lines, and the box keeps at most MOST_LINES different ones
+const reported = new Map();
+const MOST_LINES = 50;
+
 function report(where, error) {
+  const said = `${where}: ${error && error.message ? error.message : String(error)}`;
+  const known = reported.get(said);
+  if (known !== undefined) {
+    known.count += 1;
+    if (known.line !== null) known.line.textContent = `${said} (×${known.count})`;
+    return;
+  }
+  const entry = { count: 1, line: null };
+  // a page that keeps reporting different messages keeps no endless record of them
+  if (reported.size >= 1000) reported.clear();
+  reported.set(said, entry);
   console.error(`[app] ${where}:`, error);
-  if (!document.documentElement.hasAttribute('data-app-debug')) return;
+  if (!document.documentElement.hasAttribute('data-app-debug') || reported.size > MOST_LINES) return;
   let box = document.querySelector('[data-app-errors]');
   if (box === null) {
     box = document.createElement('div');
     box.setAttribute('data-app-errors', '');
     box.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;z-index:2147483647;max-height:40vh;overflow:auto;background:#7f1d1d;color:#fff;font:13px/1.4 ui-monospace,monospace;padding:10px 12px;border-radius:8px;box-shadow:0 8px 30px rgba(0,0,0,.35);white-space:pre-wrap';
-    box.addEventListener('click', () => box.remove());
+    // closing the box starts the count over: a message reported again opens it again
+    box.addEventListener('click', () => {
+      box.remove();
+      reported.clear();
+    });
     box.title = WORDS.closeErrors;
     document.body.appendChild(box);
   }
   const line = document.createElement('div');
-  line.textContent = `${where}: ${error && error.message ? error.message : String(error)}`;
+  line.textContent = said;
+  entry.line = line;
   box.appendChild(line);
 }
 
 // ---------------------------------------------------------------- app helpers
 
-const STORE_PREFIX = 'app:';
 const MISSING = Symbol('missing');
-// whether this browser keeps values (a sandboxed frame without its origin, a private mode, a full disk keep none)
-let storable = true;
+
+// ---- what this browser keeps for the site
+// Every key the runtime keeps is the site's own: its host and the folder its pages stand in, so two sites served from
+// one origin (opened from file://, or in two folders of one domain) never share kept variables, rows, members or a
+// session (the audit's LOGIC-15). Within it each part has its own name: app.store's values ("store:"), the kept
+// variables ("state:"), the browser's database ("db:", "db-members") and the session ("auth"), so app.store never
+// writes over the others.
+let siteKey = null;
+function keyOf(part) {
+  if (siteKey === null) siteKey = `${location.host}${location.pathname.replace(/[^/]*$/, '')}`;
+  return `app:${siteKey}|${part}`;
+}
+
+// what this browser keeps when localStorage is closed to it (a sandboxed preview, a private mode, a full disk): the
+// page's own memory, for this visit; the console says so once
+const memory = new Map();
+let warned = false;
+function unkept(error) {
+  if (warned) return;
+  warned = true;
+  console.warn('[app] this browser keeps no values: they last this visit only.', error);
+}
+
+// a value is kept as its JSON text, in localStorage or in memory alike, so it is read back as a copy
+function keep(key, value) {
+  const written = JSON.stringify(value);
+  try {
+    localStorage.setItem(key, written);
+    memory.delete(key);
+  } catch (error) {
+    unkept(error);
+    memory.set(key, written);
+  }
+}
+
+function kept(key, fallback) {
+  let held = memory.has(key) ? memory.get(key) : null;
+  if (held === null) {
+    try {
+      held = localStorage.getItem(key);
+    } catch (error) {
+      unkept(error);
+    }
+  }
+  if (held === null || held === undefined) return fallback;
+  try {
+    return JSON.parse(held);
+  } catch (error) {
+    console.warn(`[app] the value kept as ${key} is no JSON and is read as none:`, error);
+    return fallback;
+  }
+}
+
+function forget(key) {
+  memory.delete(key);
+  try {
+    localStorage.removeItem(key);
+  } catch (error) {
+    unkept(error);
+  }
+}
+
+// a page address of the site, relative to it ("contato.html", "blog/post.html#top"): no scheme, not "//host", not
+// "/root"
+const SITE_PAGE = /^(?![a-z][a-z0-9+.-]*:|\/)[^?#]*\.html?(?:[?#].*)?$/i;
+
+// a value a request sends as JSON: a plain object or a list (a FormData, a Blob, a URLSearchParams, an ArrayBuffer or
+// a stream is sent as it is)
+const plainBody = (value) => {
+  if (value === null || typeof value !== 'object') return false;
+  if (Array.isArray(value)) return true;
+  const proto = Object.getPrototypeOf(toRaw(value));
+  return proto === Object.prototype || proto === null;
+};
 
 export const app = {
   state,
@@ -197,15 +296,28 @@ export const app = {
   data: {},
   // go to a page of the site ("contato.html"), an address, or back (-1)
   go(where) {
-    if (where === -1) history.back();
-    else location.href = String(where);
+    if (where === -1) {
+      history.back();
+      return;
+    }
+    const address = String(where);
+    // the preview (data-app-debug) is a page written into the editor's frame: its own address is the editor's, so a
+    // page of the site is asked of the editor, which shows it (the audit's LOGIC-22), never loaded from the editor's
+    // address
+    if (document.documentElement.hasAttribute('data-app-debug') && SITE_PAGE.test(address)) {
+      parent.postMessage({ builderPreviewPage: address }, '*');
+      return;
+    }
+    location.href = address;
   },
   // the response of an address: its JSON when it says so, else its text; refused with the status when not ok
   async fetch(url, options = {}) {
     const init = { ...options };
-    if (init.body !== undefined && typeof init.body === 'object' && !(init.body instanceof FormData) && !(init.body instanceof Blob)) {
+    if (plainBody(init.body)) {
+      const headers = new Headers(init.headers);
+      if (!headers.has('content-type')) headers.set('content-type', 'application/json');
       init.body = JSON.stringify(toRaw(init.body));
-      init.headers = { 'content-type': 'application/json', ...(init.headers || {}) };
+      init.headers = headers;
     }
     const response = await fetch(url, init);
     const type = response.headers.get('content-type') || '';
@@ -213,31 +325,16 @@ export const app = {
     if (!response.ok) throw Object.assign(new Error(`HTTP ${response.status}`), { status: response.status, body });
     return body;
   },
-  // values kept in this browser
+  // values kept in this browser, the site's own
   store: {
     get(key, fallback = null) {
-      try {
-        const held = localStorage.getItem(STORE_PREFIX + key);
-        return held === null ? fallback : JSON.parse(held);
-      } catch {
-        return fallback;
-      }
+      return kept(keyOf(`store:${key}`), fallback);
     },
     set(key, value) {
-      if (!storable) return;
-      try {
-        localStorage.setItem(STORE_PREFIX + key, JSON.stringify(toRaw(value)));
-      } catch (error) {
-        storable = false;
-        console.warn('[app] this browser keeps no values:', error);
-      }
+      keep(keyOf(`store:${key}`), toRaw(value));
     },
     remove(key) {
-      try {
-        localStorage.removeItem(STORE_PREFIX + key);
-      } catch {
-        /* storage unavailable */
-      }
+      forget(keyOf(`store:${key}`));
     },
   },
   toast(text, ms = 3000) {
@@ -306,79 +403,92 @@ export const app = {
 // the platform both talk to /_api/ on the site's own address (the sites' Worker hands them to the site-data function,
 // which checks each table's rules); anywhere else (the preview, an exported site on another host, an app package)
 // the rows and the members stay in this browser, under the same rules, so the app works the same way to try it out.
+// Which of the two is decided only by a definite answer (the audit's LOGIC-10): the preview and a page that is not
+// served over http(s) are the browser's; elsewhere /_api/ping names the platform's data service, or the host has none
+// (404, a page, any other answer). A request that gets no answer in time, or a server error, is the database being
+// unavailable now (error.unavailable), never a switch to this browser: rows saved there would reach no one else.
 
 const API = '/_api/';
-const SESSION_KEY = 'app:auth';
-const LOCAL_ROWS = 'app:db:';
-const LOCAL_MEMBERS = 'app:db-members';
+// the session of the signed-in member: its user and, on the platform, the bearer token its requests carry. It is kept
+// in localStorage, the one place a static page has that lasts between visits: a script of the page itself can read
+// it, as it can read anything the page shows. The platform's sign-in is a token, not a cookie the server sets
+// (HttpOnly), so no safer place is open to the runtime; what closes the door is that no binding writes a visitor's
+// data as code (setAttribute, writeField below).
+const SESSION_KEY = () => keyOf('auth');
+const LOCAL_ROWS = (table) => keyOf(`db:${table}`);
+const LOCAL_MEMBERS = () => keyOf('db-members');
 const READS = ['public', 'members', 'owner', 'admin'];
+// how long a request to the platform waits for its answer, and how long the start waits for the session's check
+const WAIT = 10000;
+const WAIT_SESSION = 3000;
 let tables = [];
 let backend = null;
 const session = reactive({ user: null, ready: false });
-// what this browser keeps when localStorage is closed to it (a sandboxed preview): the page's own memory
-const memory = new Map();
-
-function keep(key, value) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    memory.set(key, value);
-  }
-}
-
-function kept(key, fallback) {
-  try {
-    const held = localStorage.getItem(key);
-    if (held !== null) return JSON.parse(held);
-  } catch {
-    /* storage unavailable */
-  }
-  return memory.has(key) ? memory.get(key) : fallback;
-}
-
-function forget(key) {
-  try {
-    localStorage.removeItem(key);
-  } catch {
-    /* storage unavailable */
-  }
-  memory.delete(key);
-}
 
 // an error's message is the visitor's words for its code (WORDS['error.<code>']); a code without words (http_502)
 // is its own message
 const fail = (code, status) => Object.assign(new Error(Object.hasOwn(WORDS, `error.${code}`) ? WORDS[`error.${code}`] : code), { code, status });
+const unavailable = (status, cause) => Object.assign(fail('unavailable', status), cause === undefined ? {} : { cause });
+const timed = () => (typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function' ? AbortSignal.timeout(WAIT) : undefined);
 
-async function cloud() {
+// the answer's JSON, or null when it holds none
+async function jsonOf(response) {
+  if (!(response.headers.get('content-type') || '').includes('json')) return null;
+  try {
+    return await response.json();
+  } catch (error) {
+    console.warn(`[app] ${response.url} said it answers JSON and does not:`, error);
+    return null;
+  }
+}
+
+async function ping() {
+  if (!/^https?:$/.test(location.protocol) || document.documentElement.hasAttribute('data-app-debug')) return false;
+  let response;
+  try {
+    response = await fetch(API + 'ping', { headers: { accept: 'application/json' }, signal: timed() });
+  } catch (error) {
+    throw unavailable(503, error);
+  }
+  if (response.status >= 500 || response.status === 429) throw unavailable(response.status);
+  const body = response.ok ? await jsonOf(response) : null;
+  return body !== null && body.service === 'webconstructor-data';
+}
+
+// Whether the rows and the members live on the platform. A definite answer is kept for the visit; a failure is
+// thrown to the caller (error.unavailable) and the next call asks again.
+function cloud() {
   if (backend === null) {
-    backend = (async () => {
-      if (!/^https?:$/.test(location.protocol)) return false;
-      try {
-        const response = await fetch(API + 'ping', { headers: { accept: 'application/json' } });
-        if (!response.ok) return false;
-        const body = await response.json();
-        return body !== null && body.service === 'webconstructor-data';
-      } catch {
-        return false;
-      }
-    })();
+    const asked = ping();
+    backend = asked;
+    // the callers awaiting `asked` receive its failure; only the memory of it is dropped here
+    asked.then(null, () => {
+      if (backend === asked) backend = null;
+    });
   }
   return backend;
 }
 
 async function remote(method, path, body, query) {
-  const held = kept(SESSION_KEY, null);
+  const held = kept(SESSION_KEY(), null);
   const headers = { accept: 'application/json' };
   if (body !== undefined) headers['content-type'] = 'application/json';
   if (held && held.token) headers.authorization = `Bearer ${held.token}`;
   const address = API + path + (query === undefined ? '' : `?q=${encodeURIComponent(JSON.stringify(query))}`);
-  const response = await fetch(address, { method, headers, ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
-  const answer = await response.json().catch(() => ({}));
+  let response;
+  try {
+    response = await fetch(address, { method, headers, signal: timed(), ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
+  } catch (error) {
+    throw unavailable(503, error);
+  }
+  const answer = await jsonOf(response);
   if (!response.ok) {
     // a session the server no longer knows ends here too
     if (response.status === 401 && held) signedOut();
-    throw fail(answer.error || `http_${response.status}`, response.status);
+    if (answer !== null && typeof answer.error === 'string') throw fail(answer.error, response.status);
+    throw response.status >= 500 ? unavailable(response.status) : fail(`http_${response.status}`, response.status);
   }
+  if (answer === null) throw unavailable(502);
   return answer;
 }
 
@@ -422,8 +532,8 @@ function sortRows(rows, order) {
 }
 
 const local = {
-  rows: (table) => kept(LOCAL_ROWS + table, []),
-  save: (table, rows) => keep(LOCAL_ROWS + table, rows),
+  rows: (table) => kept(LOCAL_ROWS(table), []),
+  save: (table, rows) => keep(LOCAL_ROWS(table), rows),
   list(table, query = {}) {
     const rule = ruleOf(table);
     const user = session.user;
@@ -494,38 +604,48 @@ const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,189}\.[^\s@]{2,}$/;
 const userOut = (one) => ({ id: one.id, email: one.email, name: one.name, role: one.role });
 
 function signedIn(user, token) {
-  keep(SESSION_KEY, { user, token: token || null });
+  keep(SESSION_KEY(), { user, token: token || null });
   session.user = user;
   document.dispatchEvent(new CustomEvent('auth', { detail: { user } }));
   return user;
 }
 
 function signedOut() {
-  forget(SESSION_KEY);
+  forget(SESSION_KEY());
   session.user = null;
   document.dispatchEvent(new CustomEvent('auth', { detail: { user: null } }));
 }
 
+// a row's address on the platform: the table and the id each one segment of the path, whatever they hold ("/", "?",
+// "#", ".."), so an id read from the address never reaches another endpoint (the audit's LOGIC-21)
+// ("." and "..", which an address reads as a step through the path even encoded, name no table and no row)
+const segment = (value) => {
+  const written = String(value);
+  if (written === '.' || written === '..') throw fail('not_found', 404);
+  return encodeURIComponent(written);
+};
+const rowPath = (table, id) => `db/${segment(table)}${id === undefined ? '' : `/${segment(id)}`}`;
+
 app.db = {
   // the rows of a table: { where: { field: value }, order: 'field' | '-field', limit, offset, mine }
   async list(table, query = {}) {
-    if (await cloud()) return (await remote('GET', `db/${table}`, undefined, toRaw(query))).items;
+    if (await cloud()) return (await remote('GET', rowPath(table), undefined, toRaw(query))).items;
     return local.list(table, query);
   },
   async get(table, id) {
-    if (await cloud()) return (await remote('GET', `db/${table}/${id}`)).item;
+    if (await cloud()) return (await remote('GET', rowPath(table, id))).item;
     return local.get(table, id);
   },
   async add(table, data) {
-    if (await cloud()) return (await remote('POST', `db/${table}`, { data: clean(data) })).item;
+    if (await cloud()) return (await remote('POST', rowPath(table), { data: clean(data) })).item;
     return local.add(table, data);
   },
   async update(table, id, data) {
-    if (await cloud()) return (await remote('PATCH', `db/${table}/${id}`, { data: clean(data) })).item;
+    if (await cloud()) return (await remote('PATCH', rowPath(table, id), { data: clean(data) })).item;
     return local.update(table, id, data);
   },
   async remove(table, id) {
-    if (await cloud()) await remote('DELETE', `db/${table}/${id}`);
+    if (await cloud()) await remote('DELETE', rowPath(table, id));
     else local.remove(table, id);
     return true;
   },
@@ -552,12 +672,12 @@ app.auth = {
     }
     if (!EMAIL.test(address)) throw fail('invalid_email', 400);
     if (String(password || '').length < 8) throw fail('weak_password', 400);
-    const members = kept(LOCAL_MEMBERS, []);
+    const members = kept(LOCAL_MEMBERS(), []);
     if (members.some((one) => one.email === address)) throw fail('email_taken', 409);
     const salt = app.uid();
     // in the browser the first member is the app's admin, so every rule can be tried out
     const member = { id: crypto.randomUUID ? crypto.randomUUID() : app.uid(), email: address, name: String(name).slice(0, 120), role: members.length === 0 ? 'admin' : 'member', salt, hash: await digest(String(password), salt) };
-    keep(LOCAL_MEMBERS, [...members, member]);
+    keep(LOCAL_MEMBERS(), [...members, member]);
     return signedIn(userOut(member));
   },
   async login({ email, password } = {}) {
@@ -566,7 +686,7 @@ app.auth = {
       const answer = await remote('POST', 'auth/login', { email: address, password });
       return signedIn(answer.user, answer.token);
     }
-    const member = kept(LOCAL_MEMBERS, []).find((one) => one.email === address);
+    const member = kept(LOCAL_MEMBERS(), []).find((one) => one.email === address);
     if (member === undefined || member.hash !== (await digest(String(password || ''), member.salt))) throw fail('invalid_credentials', 401);
     return signedIn(userOut(member));
   },
@@ -576,19 +696,20 @@ app.auth = {
 };
 
 async function restoreSession() {
-  const held = kept(SESSION_KEY, null);
+  const held = kept(SESSION_KEY(), null);
   try {
     if (held && held.user) {
       if (await cloud()) {
         const answer = await remote('GET', 'auth/me');
         if (answer.user) signedIn(answer.user, held.token);
         else signedOut();
-      } else if (kept(LOCAL_MEMBERS, []).some((one) => one.id === held.user.id)) session.user = held.user;
+      } else if (kept(LOCAL_MEMBERS(), []).some((one) => one.id === held.user.id)) session.user = held.user;
       else signedOut();
     }
   } catch (error) {
     report('app.auth', error);
   } finally {
+    // a binding that reads app.auth.ready redraws now, also when the start stopped waiting (WAIT_SESSION)
     session.ready = true;
   }
 }
@@ -599,10 +720,11 @@ let definitions = {};
 let componentLoaders = {};
 
 function newScope() {
-  return { effects: [], cleanups: [], children: [] };
+  return { effects: [], cleanups: [], children: [], disposed: false };
 }
 
 function dispose(scope) {
+  scope.disposed = true;
   for (const child of scope.children) dispose(child);
   for (const one of scope.effects) one.stop();
   for (const cleanup of scope.cleanups) {
@@ -619,15 +741,66 @@ function dispose(scope) {
 
 const text = (value) => (value === null || value === undefined ? '' : typeof value === 'object' ? JSON.stringify(toRaw(value)) : String(value));
 
-function setAttribute(el, name, value) {
+// ---- the sinks a binding writes a value into (the audit's LOGIC-5): a value is data, never code. The editor's own
+// address rule (core/elements/address.ts readAddress) refuses an address that runs code (javascript:, vbscript:) or
+// carries a document inline (data:); the runtime holds the same rule for what the page's data writes, which the editor
+// never sees (a member's website saved through app.db).
+// the attributes whose value the browser opens as an address
+const URL_ATTRIBUTES = new Set(['href', 'xlink:href', 'src', 'action', 'formaction', 'poster', 'data', 'background', 'cite', 'ping', 'longdesc', 'codebase', 'manifest', 'lowsrc', 'dynsrc']);
+// an image, a sound or a video picked by the visitor (app.pick's data URL) is shown from its data: address by a
+// media element; a frame or an object would open a data: document
+const MEDIA_ADDRESS = /^data:(?:image|audio|video)\//;
+const MEDIA_ATTRIBUTES = new Set(['src', 'poster']);
+const FRAMES = new Set(['IFRAME', 'FRAME', 'EMBED', 'OBJECT']);
+
+// Why an attribute's value is not written, or null: an event attribute or srcdoc (a document written inline) is code
+// whatever its value; an address runs code when its scheme is javascript: or vbscript:, or opens a data: document.
+function unsafeAttribute(el, name, value) {
+  const key = name.toLowerCase();
+  if (key.startsWith('on') || key === 'srcdoc') return name;
+  if (!URL_ATTRIBUTES.has(key)) return null;
+  // the URL parser drops control characters, spaces, tabs and line breaks before it reads the scheme (WHATWG URL)
+  const address = [...String(value)].filter((character) => character.charCodeAt(0) > 0x20 && character.charCodeAt(0) !== 0x7f).join('').toLowerCase();
+  const scheme = /^([a-z][a-z0-9+.-]*):/.exec(address)?.[1];
+  if (scheme === 'javascript' || scheme === 'vbscript') return address.slice(0, 80);
+  if (scheme === 'data' && !(MEDIA_ATTRIBUTES.has(key) && !FRAMES.has(el.tagName) && MEDIA_ADDRESS.test(address))) return address.slice(0, 80);
+  return null;
+}
+
+function setAttribute(el, name, value, where) {
   if (name === 'value' && 'value' in el) el.value = text(value);
   else if (name === 'checked' && 'checked' in el) el.checked = Boolean(value);
   else if (value === false || value === null || value === undefined) el.removeAttribute(name);
-  else el.setAttribute(name, value === true ? '' : text(value));
+  else {
+    const written = value === true ? '' : text(value);
+    const unsafe = unsafeAttribute(el, name, written);
+    if (unsafe === null) el.setAttribute(name, written);
+    else {
+      el.removeAttribute(name);
+      report(where, new Error(`${WORDS.unsafeAddress} ${unsafe}`));
+    }
+  }
 }
 
+// The HTML a rich editable field (contenteditable) shows: the markup of its text (bold, lists, links), never what
+// runs. Parsed in a template, where nothing loads and nothing runs, then the elements that run or load a document
+// and every attribute unsafeAttribute refuses are taken out.
+const NOT_IN_TEXT = 'script, iframe, frame, frameset, object, embed, applet, style, link, meta, base, form, template, noscript, animate, set, animateMotion, animateTransform, foreignObject';
+function safeHtml(html) {
+  const holder = document.createElement('template');
+  holder.innerHTML = html;
+  for (const one of holder.content.querySelectorAll(NOT_IN_TEXT)) one.remove();
+  for (const one of holder.content.querySelectorAll('*')) for (const attribute of [...one.attributes]) if (unsafeAttribute(one, attribute.name, attribute.value) !== null) one.removeAttribute(attribute.name);
+  return holder.innerHTML;
+}
+
+// A field kept equal to a variable: an editable element writes its text when it edits plain text
+// (contenteditable="plaintext-only"), and its HTML, made safe (safeHtml), when it edits rich text — the visitor's own
+// markup, never markup that runs.
+const plainEditable = (el) => el.contentEditable === 'plaintext-only';
+
 function readField(el) {
-  if (el.isContentEditable) return el.innerHTML;
+  if (el.isContentEditable) return plainEditable(el) ? el.textContent : el.innerHTML;
   if (el.type === 'checkbox') return el.checked;
   if (el.type === 'radio') return el.checked ? el.value : undefined;
   if (el.type === 'number' || el.type === 'range') return el.value === '' ? null : Number(el.value);
@@ -637,28 +810,47 @@ function readField(el) {
 
 function writeField(el, value) {
   if (el.isContentEditable) {
-    if (document.activeElement !== el && el.innerHTML !== text(value)) el.innerHTML = text(value);
+    if (document.activeElement === el) return;
+    if (plainEditable(el)) {
+      if (el.textContent !== text(value)) el.textContent = text(value);
+    } else {
+      const html = safeHtml(text(value));
+      if (el.innerHTML !== html) el.innerHTML = html;
+    }
   } else if (el.type === 'checkbox') el.checked = Boolean(value);
   else if (el.type === 'radio') el.checked = el.value === text(value);
   else if (el.tagName === 'SELECT' && el.multiple) for (const option of el.options) option.selected = Array.isArray(value) && value.map(String).includes(option.value);
   else if (el.value !== text(value)) el.value = text(value);
 }
 
+// What an error names: the element and the field it came from ("Title (text)", "Link (attr:href)"), the field in the
+// page's language (the audit's LOGIC-18).
+const fieldOf = (def, field) => `${def.name} (${Object.hasOwn(WORDS, `field.${field}`) ? WORDS[`field.${field}`] : field})`;
+
 function runHandler(def, index, event, el, locals) {
   try {
     const result = def.on[index][1](event, el, state, app, fn, locals);
-    if (result && typeof result.catch === 'function') result.catch((error) => report(`${def.name} ${def.on[index][0]}`, error));
+    if (result && typeof result.catch === 'function') result.catch((error) => report(fieldOf(def, def.on[index][0]), error));
   } catch (error) {
-    report(`${def.name} ${def.on[index][0]}`, error);
+    report(fieldOf(def, def.on[index][0]), error);
   }
 }
 
+// The mount handlers of the page wait for the start to wire it whole, which runs them; an element wired after the
+// start (a row a repeat adds) runs its own once it stands in the page, in a microtask (the audit's LOGIC-7).
+let started = false;
 const mounts = [];
 
 function wireHandlers(el, def, locals, scope) {
   def.on.forEach(([event], index) => {
-    if (event === 'mount') mounts.push(() => runHandler(def, index, { type: 'mount' }, el, locals));
-    else if (event === 'frame') {
+    if (event === 'mount') {
+      const run = () => runHandler(def, index, { type: 'mount' }, el, locals);
+      if (!started) mounts.push(run);
+      else
+        queueMicrotask(() => {
+          if (!scope.disposed && el.isConnected) run();
+        });
+    } else if (event === 'frame') {
       let last = performance.now();
       let id = 0;
       const tick = (time) => {
@@ -688,7 +880,7 @@ function wireHandlers(el, def, locals, scope) {
 async function mountComponent(el, def, locals, scope) {
   const name = def.component;
   const props = reactive({});
-  for (const [key, read] of Object.entries(def.props || {})) effect(() => (props[key] = read(state, app, fn, locals)), scope);
+  for (const [key, read] of Object.entries(def.props || {})) effect(() => (props[key] = read(state, app, fn, locals)), scope, fieldOf(def, `prop:${key}`));
   let instance = null;
   let alive = true;
   scope.cleanups.push(() => {
@@ -733,27 +925,47 @@ async function mountComponent(el, def, locals, scope) {
   }
 }
 
+// The CSS properties whose number has no unit: a number bound to any other is in pixels (the audit's LOGIC-19).
+const UNITLESS = /^(?:opacity|z-index|order|font-weight|line-height|scale|zoom|flex|flex-grow|flex-shrink|grid-(?:row|column)(?:-start|-end)?|grid-area|aspect-ratio|column-count|columns|tab-size|orphans|widows|animation-iteration-count|font-size-adjust|fill-opacity|stroke-opacity|flood-opacity|stop-opacity|stroke-miterlimit|shape-image-threshold|initial-letter|math-depth|box-flex|line-clamp|-webkit-line-clamp)$/;
+
 function wireElement(el, def, locals, scope) {
-  if (def.text) effect(() => (el.textContent = text(def.text(state, app, fn, locals))), scope);
-  if (def.html) effect(() => (el.innerHTML = text(def.html(state, app, fn, locals))), scope);
+  if (def.text) effect(() => (el.textContent = text(def.text(state, app, fn, locals))), scope, fieldOf(def, 'text'));
+  if (def.html) effect(() => (el.innerHTML = text(def.html(state, app, fn, locals))), scope, fieldOf(def, 'html'));
   if (def.show) {
     effect(() => {
       if (def.show(state, app, fn, locals)) el.style.removeProperty('display');
       else el.style.setProperty('display', 'none', 'important');
-    }, scope);
+    }, scope, fieldOf(def, 'show'));
   }
-  for (const [name, read] of def.attrs || []) effect(() => setAttribute(el, name, read(state, app, fn, locals)), scope);
-  for (const [name, read] of def.classes || []) effect(() => el.classList.toggle(name, Boolean(read(state, app, fn, locals))), scope);
+  for (const [name, read] of def.attrs || []) {
+    const at = fieldOf(def, `attr:${name}`);
+    effect(() => setAttribute(el, name, read(state, app, fn, locals), at), scope, at);
+  }
+  for (const [name, read] of def.classes || []) effect(() => el.classList.toggle(name, Boolean(read(state, app, fn, locals))), scope, fieldOf(def, `class:${name}`));
   for (const [name, read] of def.styles || []) {
     effect(() => {
       const value = read(state, app, fn, locals);
       if (value === null || value === undefined || value === false || value === '') el.style.removeProperty(name);
-      else el.style.setProperty(name, typeof value === 'number' && !name.startsWith('--') && !/^(opacity|z-index|flex-grow|flex-shrink|order|font-weight|line-height|scale)$/.test(name) ? `${value}px` : String(value));
-    }, scope);
+      else el.style.setProperty(name, typeof value === 'number' && !name.startsWith('--') && !UNITLESS.test(name) ? `${value}px` : String(value));
+    }, scope, fieldOf(def, `style:${name}`));
   }
   if (def.model) {
     const [read, write] = def.model;
-    effect(() => writeField(el, read(state, app, fn, locals)), scope);
+    const at = fieldOf(def, 'model');
+    effect(() => writeField(el, read(state, app, fn, locals)), scope, at);
+    // a select whose options a repeat writes (or redraws) takes the variable's value again once they stand in it: its
+    // value was written before they were there (the audit's LOGIC-9)
+    if (el.tagName === 'SELECT' && typeof MutationObserver === 'function') {
+      const options = new MutationObserver(() => {
+        try {
+          writeField(el, untracked(() => read(state, app, fn, locals)));
+        } catch (error) {
+          report(at, error);
+        }
+      });
+      options.observe(el, { childList: true, subtree: true });
+      scope.cleanups.push(() => options.disconnect());
+    }
     const event = el.isContentEditable || (el.tagName !== 'SELECT' && el.type !== 'checkbox' && el.type !== 'radio') ? 'input' : 'change';
     const listener = () => {
       const value = readField(el);
@@ -761,7 +973,7 @@ function wireElement(el, def, locals, scope) {
       try {
         write(state, locals, value);
       } catch (error) {
-        report(`${def.name} model`, error);
+        report(at, error);
       }
     };
     el.addEventListener(event, listener);
@@ -793,10 +1005,12 @@ function wireRepeat(el, def, locals, scope) {
           try {
             key = def.key(state, app, fn, own);
           } catch (error) {
-            report(`${def.name} key`, error);
+            report(fieldOf(def, 'key'), error);
           }
         }
-        const kept = def.key ? byKey.get(key) : undefined;
+        // a keyed row stays with its item; a row of a list without a key stays at its place and shows the item now
+        // there, so writing one item (a field with model state.list[index]) redraws no row and keeps the focus
+        const kept = def.key ? byKey.get(key) : rows[index];
         if (kept !== undefined) {
           byKey.delete(key);
           kept.locals[def.as] = item;
@@ -810,11 +1024,16 @@ function wireRepeat(el, def, locals, scope) {
         return { key, node: clone, scope: child, locals: own };
       });
       const keep = new Set(next);
+      const gone = new Set();
       for (const row of rows) {
         if (keep.has(row)) continue;
         dispose(row.scope);
+        gone.add(row.scope);
         row.node.remove();
       }
+      // a row that is gone leaves its scope too, so a list redrawn every frame holds only the rows it shows (the
+      // audit's LOGIC-8)
+      if (gone.size > 0) scope.children = scope.children.filter((child) => !gone.has(child));
       let after = anchor;
       for (const row of next) {
         if (after.nextSibling !== row.node) after.after(row.node);
@@ -822,17 +1041,28 @@ function wireRepeat(el, def, locals, scope) {
       }
       rows = next;
     });
-  }, scope);
+  }, scope, fieldOf(def, 'each'));
 }
 
 function wireTree(el, locals, scope, cloned = false) {
   const id = el.getAttribute && el.getAttribute('data-app');
   const def = id ? definitions[id] : undefined;
-  if (def !== undefined) {
-    if (def.each && !cloned) return wireRepeat(el, def, locals, scope);
-    wireElement(el, def, locals, scope);
-  }
-  for (const child of [...el.children]) wireTree(child, locals, scope);
+  if (def !== undefined && def.each && !cloned) return wireRepeat(el, def, locals, scope);
+  // a field's children are wired first: a select's options a repeat writes stand in it before the field takes its
+  // variable's value (the audit's LOGIC-9)
+  if (def !== undefined && def.model) for (const child of [...el.children]) wireTree(child, locals, scope);
+  if (def !== undefined) wireElement(el, def, locals, scope);
+  if (def === undefined || !def.model) for (const child of [...el.children]) wireTree(child, locals, scope);
+}
+
+// Whether a kept value is one of its variable's type (core/logic/model.ts initialFits).
+function fits(type, value) {
+  if (type === 'text') return typeof value === 'string';
+  if (type === 'number') return typeof value === 'number' && Number.isFinite(value);
+  if (type === 'boolean') return typeof value === 'boolean';
+  if (type === 'list') return Array.isArray(value);
+  if (type === 'object') return value !== null && typeof value === 'object' && !Array.isArray(value);
+  return false;
 }
 
 // Starts the application: the variables (with the ones kept in this browser), the scripts, the code components and
@@ -844,9 +1074,13 @@ export async function start(config) {
   tables = config.tables || [];
   const sessionChecked = restoreSession();
   for (const variable of config.variables || []) {
-    const kept = variable.persist ? app.store.get(`state.${variable.name}`, MISSING) : MISSING;
-    state[variable.name] = kept === MISSING ? structuredClone(variable.initial) : kept;
-    if (variable.persist) effect(() => app.store.set(`state.${variable.name}`, JSON.parse(JSON.stringify(state[variable.name] ?? null))));
+    // a kept variable is the site's own (keyOf), apart from app.store's values; a value kept while the variable had
+    // another type (a list that became a text) starts over from the first value (the audit's LOGIC-15); a renamed
+    // variable is kept under the name it had when visitors saved it (kept, the audit's LOGIC-12)
+    const at = keyOf(`state:${variable.kept ?? variable.name}`);
+    const saved = variable.persist ? kept(at, MISSING) : MISSING;
+    state[variable.name] = saved !== MISSING && fits(variable.type, saved) ? saved : structuredClone(variable.initial);
+    if (variable.persist) effect(() => keep(at, JSON.parse(JSON.stringify(state[variable.name] ?? null))), undefined, `state.${variable.name}`);
   }
   for (const [name, load] of Object.entries(config.scripts || {})) {
     try {
@@ -857,10 +1091,13 @@ export async function start(config) {
       report(`script ${name}`, error);
     }
   }
-  await sessionChecked;
+  // the session's check is awaited at most WAIT_SESSION: a platform slow to answer never leaves the page unwired, and
+  // app.auth.ready tells the bindings when it is done
+  await Promise.race([sessionChecked, new Promise((resolve) => setTimeout(resolve, WAIT_SESSION))]);
   const root = newScope();
   if (document.readyState === 'loading') await new Promise((resolve) => document.addEventListener('DOMContentLoaded', resolve, { once: true }));
   wireTree(document.documentElement, {}, root);
+  started = true;
   for (const mount of mounts.splice(0)) mount();
   document.documentElement.setAttribute('data-app-ready', '');
   document.dispatchEvent(new CustomEvent('app:ready'));

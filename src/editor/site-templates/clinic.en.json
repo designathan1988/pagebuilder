@@ -1,21 +1,21 @@
 {
  "version": 4,
- "language": "pt-BR",
+ "language": "en",
  "codeLanguage": "en",
  "pages": [
   {
-   "id": "clinic125",
-   "name": "Clínica",
+   "id": "clinic132",
+   "name": "Clinic",
    "file": "index.html",
    "tree": {
-    "id": "clinic124",
+    "id": "clinic131",
     "type": "page",
     "name": "Body",
     "tag": "body",
     "attributes": {
-     "pageTitle": "Clínica Viva — Saúde da família",
-     "pageDescription": "Consultas com clínico geral, pediatria, cardiologia e dermatologia. Agende online.",
-     "pageLanguage": "pt-BR"
+     "pageTitle": "Viva Clinic — Family health",
+     "pageDescription": "Appointments in general practice, paediatrics, cardiology and dermatology. Book online.",
+     "pageLanguage": "en"
     },
     "classes": [],
     "styles": {
@@ -36,7 +36,7 @@
      {
       "id": "clinic1",
       "type": "header",
-      "name": "Menu que recolhe no celular",
+      "name": "Menu that folds on phones",
       "tag": "header",
       "attributes": {},
       "classes": [],
@@ -62,7 +62,7 @@
        {
         "id": "clinic2",
         "type": "div",
-        "name": "Contêiner",
+        "name": "Container",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -89,7 +89,7 @@
           "name": "Link",
           "tag": "a",
           "attributes": {
-           "href": "/"
+           "href": "index.html"
           },
           "classes": [],
           "styles": {
@@ -102,13 +102,13 @@
             }
            }
           },
-          "text": "Clínica Viva",
+          "text": "Viva Clinic",
           "children": []
          },
          {
           "id": "clinic4",
           "type": "button",
-          "name": "Botão",
+          "name": "Button",
           "tag": "button",
           "attributes": {
            "ariaLabel": "Menu"
@@ -158,7 +158,7 @@
          {
           "id": "clinic5",
           "type": "nav",
-          "name": "Navegação",
+          "name": "Navigation",
           "tag": "nav",
           "attributes": {},
           "classes": [],
@@ -201,7 +201,7 @@
               }
              }
             },
-            "text": "Início",
+            "text": "Home",
             "children": []
            },
            {
@@ -210,7 +210,7 @@
             "name": "Link 3",
             "tag": "a",
             "attributes": {
-             "href": "index.html#equipe"
+             "href": "index.html#team"
             },
             "classes": [],
             "styles": {
@@ -226,7 +226,7 @@
               }
              }
             },
-            "text": "Equipe",
+            "text": "Team",
             "children": []
            },
            {
@@ -235,7 +235,7 @@
             "name": "Link 4",
             "tag": "a",
             "attributes": {
-             "href": "index.html#especialidades"
+             "href": "index.html#specialties"
             },
             "classes": [],
             "styles": {
@@ -251,7 +251,7 @@
               }
              }
             },
-            "text": "Especialidades",
+            "text": "Specialties",
             "children": []
            },
            {
@@ -260,7 +260,7 @@
             "name": "Link 5",
             "tag": "a",
             "attributes": {
-             "href": "index.html#contato"
+             "href": "index.html#contact"
             },
             "classes": [],
             "styles": {
@@ -276,7 +276,7 @@
               }
              }
             },
-            "text": "Contato",
+            "text": "Contact",
             "children": []
            },
            {
@@ -285,7 +285,7 @@
             "name": "Link 6",
             "tag": "a",
             "attributes": {
-             "href": "index.html#contato"
+             "href": "index.html#contact"
             },
             "classes": [],
             "styles": {
@@ -320,7 +320,7 @@
               }
              }
             },
-            "text": "Agendar consulta",
+            "text": "Book an appointment",
             "children": []
            }
           ],
@@ -338,7 +338,7 @@
      {
       "id": "clinic11",
       "type": "section",
-      "name": "Destaque com imagem",
+      "name": "Hero with image",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -358,7 +358,7 @@
        {
         "id": "clinic12",
         "type": "div",
-        "name": "Contêiner 2",
+        "name": "Container 2",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -381,7 +381,7 @@
          {
           "id": "clinic13",
           "type": "div",
-          "name": "Texto",
+          "name": "Text",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -391,7 +391,7 @@
            {
             "id": "clinic14",
             "type": "paragraph",
-            "name": "Parágrafo",
+            "name": "Paragraph",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -407,13 +407,13 @@
               }
              }
             },
-            "text": "Saúde da família",
+            "text": "Family health",
             "children": []
            },
            {
             "id": "clinic15",
             "type": "heading",
-            "name": "Título",
+            "name": "Heading",
             "tag": "h1",
             "attributes": {},
             "classes": [],
@@ -429,13 +429,13 @@
               }
              }
             },
-            "text": "Cuidado próximo, consulta sem espera",
+            "text": "Close care, appointments without the wait",
             "children": []
            },
            {
             "id": "clinic16",
             "type": "paragraph",
-            "name": "Parágrafo 2",
+            "name": "Paragraph 2",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -449,13 +449,13 @@
               }
              }
             },
-            "text": "Especialistas, exames e retorno pelo WhatsApp. Atendemos convênios e particular.",
+            "text": "Specialists, tests and follow-ups on WhatsApp. We accept insurance and private patients.",
             "children": []
            },
            {
             "id": "clinic17",
             "type": "div",
-            "name": "Ações",
+            "name": "Actions",
             "tag": "div",
             "attributes": {},
             "classes": [],
@@ -474,7 +474,7 @@
              {
               "id": "clinic18",
               "type": "button",
-              "name": "Botão 2",
+              "name": "Button 2",
               "tag": "button",
               "attributes": {},
               "classes": [],
@@ -507,13 +507,13 @@
                 }
                }
               },
-              "text": "Agendar consulta",
+              "text": "Book an appointment",
               "children": []
              },
              {
               "id": "clinic19",
               "type": "button",
-              "name": "Botão 3",
+              "name": "Button 3",
               "tag": "button",
               "attributes": {},
               "classes": [],
@@ -546,7 +546,7 @@
                 }
                }
               },
-              "text": "Ver especialidades",
+              "text": "See the specialties",
               "children": []
              }
             ]
@@ -556,11 +556,11 @@
          {
           "id": "clinic20",
           "type": "image",
-          "name": "Imagem",
+          "name": "Image",
           "tag": "img",
           "attributes": {
            "src": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&h=900&q=80",
-           "alt": "Cuidado próximo, consulta sem espera"
+           "alt": "Close care, appointments without the wait"
           },
           "classes": [],
           "styles": {
@@ -588,10 +588,10 @@
      {
       "id": "clinic21",
       "type": "section",
-      "name": "Recursos",
+      "name": "Features",
       "tag": "section",
       "attributes": {
-       "id": "especialidades"
+       "id": "specialties"
       },
       "classes": [],
       "styles": {
@@ -609,7 +609,7 @@
        {
         "id": "clinic22",
         "type": "div",
-        "name": "Contêiner 3",
+        "name": "Container 3",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -627,7 +627,7 @@
          {
           "id": "clinic23",
           "type": "div",
-          "name": "Introdução",
+          "name": "Introduction",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -647,7 +647,7 @@
            {
             "id": "clinic24",
             "type": "paragraph",
-            "name": "Parágrafo 3",
+            "name": "Paragraph 3",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -663,13 +663,13 @@
               }
              }
             },
-            "text": "Especialidades",
+            "text": "Specialties",
             "children": []
            },
            {
             "id": "clinic25",
             "type": "heading",
-            "name": "Título 2",
+            "name": "Heading 2",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -685,13 +685,13 @@
               }
              }
             },
-            "text": "Tudo o que sua família precisa",
+            "text": "Everything your family needs",
             "children": []
            },
            {
             "id": "clinic26",
             "type": "paragraph",
-            "name": "Parágrafo 4",
+            "name": "Paragraph 4",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -706,7 +706,7 @@
               }
              }
             },
-            "text": "Do check-up ao acompanhamento contínuo.",
+            "text": "From a check-up to ongoing care.",
             "children": []
            }
           ]
@@ -714,7 +714,7 @@
          {
           "id": "clinic27",
           "type": "div",
-          "name": "Grade",
+          "name": "Grid",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -733,7 +733,7 @@
            {
             "id": "clinic28",
             "type": "article",
-            "name": "Artigo",
+            "name": "Article",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -769,7 +769,7 @@
              {
               "id": "clinic29",
               "type": "heading",
-              "name": "Título 3",
+              "name": "Heading 3",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -783,13 +783,13 @@
                 }
                }
               },
-              "text": "Clínica geral e pediatria",
+              "text": "General practice and paediatrics",
               "children": []
              },
              {
               "id": "clinic30",
               "type": "paragraph",
-              "name": "Parágrafo 5",
+              "name": "Paragraph 5",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -804,7 +804,7 @@
                 }
                }
               },
-              "text": "Consultas de rotina, vacinas e acompanhamento do crescimento.",
+              "text": "Routine visits, vaccines and growth check-ups.",
               "children": []
              }
             ]
@@ -812,7 +812,7 @@
            {
             "id": "clinic31",
             "type": "article",
-            "name": "Artigo 2",
+            "name": "Article 2",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -848,7 +848,7 @@
              {
               "id": "clinic32",
               "type": "heading",
-              "name": "Título 4",
+              "name": "Heading 4",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -862,13 +862,13 @@
                 }
                }
               },
-              "text": "Cardiologia",
+              "text": "Cardiology",
               "children": []
              },
              {
               "id": "clinic33",
               "type": "paragraph",
-              "name": "Parágrafo 6",
+              "name": "Paragraph 6",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -883,7 +883,7 @@
                 }
                }
               },
-              "text": "Eletrocardiograma, MAPA e Holter no mesmo dia.",
+              "text": "ECG, blood pressure and Holter monitoring on the same day.",
               "children": []
              }
             ]
@@ -891,7 +891,7 @@
            {
             "id": "clinic34",
             "type": "article",
-            "name": "Artigo 3",
+            "name": "Article 3",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -927,7 +927,7 @@
              {
               "id": "clinic35",
               "type": "heading",
-              "name": "Título 5",
+              "name": "Heading 5",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -941,13 +941,13 @@
                 }
                }
               },
-              "text": "Dermatologia",
+              "text": "Dermatology",
               "children": []
              },
              {
               "id": "clinic36",
               "type": "paragraph",
-              "name": "Parágrafo 7",
+              "name": "Paragraph 7",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -962,7 +962,7 @@
                 }
                }
               },
-              "text": "Avaliação de pintas, acne e tratamentos clínicos.",
+              "text": "Mole checks, acne and medical treatments.",
               "children": []
              }
             ]
@@ -976,7 +976,7 @@
      {
       "id": "clinic37",
       "type": "section",
-      "name": "Números que contam",
+      "name": "Numbers that count up",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -995,7 +995,7 @@
        {
         "id": "clinic38",
         "type": "div",
-        "name": "Contêiner 4",
+        "name": "Container 4",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -1017,7 +1017,7 @@
          {
           "id": "clinic39",
           "type": "div",
-          "name": "Contêiner 5",
+          "name": "Container 5",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1033,7 +1033,7 @@
            {
             "id": "clinic40",
             "type": "paragraph",
-            "name": "Parágrafo 8",
+            "name": "Paragraph 8",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1049,7 +1049,7 @@
               }
              }
             },
-            "text": "15 mil",
+            "text": "15,000",
             "children": [],
             "customAttributes": {
              "data-wc": "counter",
@@ -1060,7 +1060,7 @@
            {
             "id": "clinic41",
             "type": "paragraph",
-            "name": "Parágrafo 9",
+            "name": "Paragraph 9",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1075,7 +1075,7 @@
               }
              }
             },
-            "text": "pacientes atendidos",
+            "text": "patients seen",
             "children": []
            }
           ]
@@ -1083,7 +1083,7 @@
          {
           "id": "clinic42",
           "type": "div",
-          "name": "Contêiner 6",
+          "name": "Container 6",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1099,7 +1099,7 @@
            {
             "id": "clinic43",
             "type": "paragraph",
-            "name": "Parágrafo 10",
+            "name": "Paragraph 10",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1115,18 +1115,18 @@
               }
              }
             },
-            "text": "20 anos",
+            "text": "20 years",
             "children": [],
             "customAttributes": {
              "data-wc": "counter",
              "data-wc-to": "15",
-             "data-wc-suffix": " anos"
+             "data-wc-suffix": ""
             }
            },
            {
             "id": "clinic44",
             "type": "paragraph",
-            "name": "Parágrafo 11",
+            "name": "Paragraph 11",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1141,7 +1141,7 @@
               }
              }
             },
-            "text": "de cuidado no bairro",
+            "text": "caring for the neighbourhood",
             "children": []
            }
           ]
@@ -1149,7 +1149,7 @@
          {
           "id": "clinic45",
           "type": "div",
-          "name": "Contêiner 7",
+          "name": "Container 7",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1165,7 +1165,7 @@
            {
             "id": "clinic46",
             "type": "paragraph",
-            "name": "Parágrafo 12",
+            "name": "Paragraph 12",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1192,7 +1192,7 @@
            {
             "id": "clinic47",
             "type": "paragraph",
-            "name": "Parágrafo 13",
+            "name": "Paragraph 13",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1207,7 +1207,7 @@
               }
              }
             },
-            "text": "convênios aceitos",
+            "text": "insurance plans accepted",
             "children": []
            }
           ]
@@ -1215,7 +1215,7 @@
          {
           "id": "clinic48",
           "type": "div",
-          "name": "Contêiner 8",
+          "name": "Container 8",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1231,7 +1231,7 @@
            {
             "id": "clinic49",
             "type": "paragraph",
-            "name": "Parágrafo 14",
+            "name": "Paragraph 14",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1258,7 +1258,7 @@
            {
             "id": "clinic50",
             "type": "paragraph",
-            "name": "Parágrafo 15",
+            "name": "Paragraph 15",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1273,7 +1273,7 @@
               }
              }
             },
-            "text": "para sua consulta",
+            "text": "to your appointment",
             "children": []
            }
           ]
@@ -1285,10 +1285,10 @@
      {
       "id": "clinic51",
       "type": "section",
-      "name": "Equipe",
+      "name": "Team",
       "tag": "section",
       "attributes": {
-       "id": "equipe"
+       "id": "team"
       },
       "classes": [],
       "styles": {
@@ -1306,7 +1306,7 @@
        {
         "id": "clinic52",
         "type": "div",
-        "name": "Contêiner 9",
+        "name": "Container 9",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -1324,7 +1324,7 @@
          {
           "id": "clinic53",
           "type": "div",
-          "name": "Introdução 2",
+          "name": "Introduction 2",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1344,7 +1344,7 @@
            {
             "id": "clinic54",
             "type": "heading",
-            "name": "Título 6",
+            "name": "Heading 6",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -1361,13 +1361,13 @@
               }
              }
             },
-            "text": "Nossa equipe",
+            "text": "Our team",
             "children": []
            },
            {
             "id": "clinic55",
             "type": "paragraph",
-            "name": "Parágrafo 16",
+            "name": "Paragraph 16",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1382,7 +1382,7 @@
               }
              }
             },
-            "text": "Médicos que acompanham você de perto.",
+            "text": "Doctors who follow your care closely.",
             "children": []
            }
           ]
@@ -1390,7 +1390,7 @@
          {
           "id": "clinic56",
           "type": "div",
-          "name": "Pessoas",
+          "name": "People",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1409,7 +1409,7 @@
            {
             "id": "clinic57",
             "type": "article",
-            "name": "Artigo 4",
+            "name": "Article 4",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1433,12 +1433,12 @@
              {
               "id": "clinic58",
               "type": "image",
-              "name": "Imagem 2",
+              "name": "Image 2",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=400&h=400&q=80",
-               "alt": "Dra. Paula Neves",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Dr. Paula Neves"
               },
               "classes": [],
               "styles": {
@@ -1462,7 +1462,7 @@
              {
               "id": "clinic59",
               "type": "heading",
-              "name": "Título 7",
+              "name": "Heading 7",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1478,13 +1478,13 @@
                 }
                }
               },
-              "text": "Dra. Paula Neves",
+              "text": "Dr. Paula Neves",
               "children": []
              },
              {
               "id": "clinic60",
               "type": "paragraph",
-              "name": "Parágrafo 17",
+              "name": "Paragraph 17",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1499,7 +1499,7 @@
                 }
                }
               },
-              "text": "Clínica geral — CRM 000000",
+              "text": "General practice — Licence 000000",
               "children": []
              }
             ]
@@ -1507,7 +1507,7 @@
            {
             "id": "clinic61",
             "type": "article",
-            "name": "Artigo 5",
+            "name": "Article 5",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1531,12 +1531,12 @@
              {
               "id": "clinic62",
               "type": "image",
-              "name": "Imagem 3",
+              "name": "Image 3",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=400&h=400&q=80",
-               "alt": "Dr. Henrique Melo",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Dr. Henrique Melo"
               },
               "classes": [],
               "styles": {
@@ -1560,7 +1560,7 @@
              {
               "id": "clinic63",
               "type": "heading",
-              "name": "Título 8",
+              "name": "Heading 8",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1582,7 +1582,7 @@
              {
               "id": "clinic64",
               "type": "paragraph",
-              "name": "Parágrafo 18",
+              "name": "Paragraph 18",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1597,7 +1597,7 @@
                 }
                }
               },
-              "text": "Cardiologia — CRM 000000",
+              "text": "Cardiology — Licence 000000",
               "children": []
              }
             ]
@@ -1605,7 +1605,7 @@
            {
             "id": "clinic65",
             "type": "article",
-            "name": "Artigo 6",
+            "name": "Article 6",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1629,12 +1629,12 @@
              {
               "id": "clinic66",
               "type": "image",
-              "name": "Imagem 4",
+              "name": "Image 4",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=400&h=400&q=80",
-               "alt": "Dra. Larissa Rocha",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Dr. Larissa Rocha"
               },
               "classes": [],
               "styles": {
@@ -1658,7 +1658,7 @@
              {
               "id": "clinic67",
               "type": "heading",
-              "name": "Título 9",
+              "name": "Heading 9",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1674,13 +1674,13 @@
                 }
                }
               },
-              "text": "Dra. Larissa Rocha",
+              "text": "Dr. Larissa Rocha",
               "children": []
              },
              {
               "id": "clinic68",
               "type": "paragraph",
-              "name": "Parágrafo 19",
+              "name": "Paragraph 19",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1695,7 +1695,7 @@
                 }
                }
               },
-              "text": "Pediatria — CRM 000000",
+              "text": "Paediatrics — Licence 000000",
               "children": []
              }
             ]
@@ -1703,7 +1703,7 @@
            {
             "id": "clinic69",
             "type": "article",
-            "name": "Artigo 7",
+            "name": "Article 7",
             "tag": "article",
             "attributes": {},
             "classes": [],
@@ -1727,12 +1727,12 @@
              {
               "id": "clinic70",
               "type": "image",
-              "name": "Imagem 5",
+              "name": "Image 5",
               "tag": "img",
               "attributes": {
                "src": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=400&h=400&q=80",
-               "alt": "Dr. Eduardo Pinto",
-               "loading": "lazy"
+               "loading": "lazy",
+               "alt": "Dr. Eduardo Pinto"
               },
               "classes": [],
               "styles": {
@@ -1756,7 +1756,7 @@
              {
               "id": "clinic71",
               "type": "heading",
-              "name": "Título 10",
+              "name": "Heading 10",
               "tag": "h3",
               "attributes": {},
               "classes": [],
@@ -1778,7 +1778,7 @@
              {
               "id": "clinic72",
               "type": "paragraph",
-              "name": "Parágrafo 20",
+              "name": "Paragraph 20",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -1793,7 +1793,7 @@
                 }
                }
               },
-              "text": "Dermatologia — CRM 000000",
+              "text": "Dermatology — Licence 000000",
               "children": []
              }
             ]
@@ -1807,7 +1807,7 @@
      {
       "id": "clinic73",
       "type": "section",
-      "name": "Perguntas frequentes",
+      "name": "FAQ",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -1827,7 +1827,7 @@
        {
         "id": "clinic74",
         "type": "div",
-        "name": "Contêiner 10",
+        "name": "Container 10",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -1845,7 +1845,7 @@
          {
           "id": "clinic75",
           "type": "div",
-          "name": "Introdução 3",
+          "name": "Introduction 3",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1865,7 +1865,7 @@
            {
             "id": "clinic76",
             "type": "paragraph",
-            "name": "Parágrafo 21",
+            "name": "Paragraph 21",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1881,13 +1881,13 @@
               }
              }
             },
-            "text": "Dúvidas",
+            "text": "Questions",
             "children": []
            },
            {
             "id": "clinic77",
             "type": "heading",
-            "name": "Título 11",
+            "name": "Heading 11",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -1903,13 +1903,13 @@
               }
              }
             },
-            "text": "Perguntas frequentes",
+            "text": "Frequently asked questions",
             "children": []
            },
            {
             "id": "clinic78",
             "type": "paragraph",
-            "name": "Parágrafo 22",
+            "name": "Paragraph 22",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -1932,7 +1932,7 @@
          {
           "id": "clinic79",
           "type": "div",
-          "name": "Perguntas",
+          "name": "Questions",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -1950,7 +1950,7 @@
            {
             "id": "clinic80",
             "type": "details",
-            "name": "Detalhes",
+            "name": "Details",
             "tag": "details",
             "attributes": {},
             "classes": [],
@@ -1986,7 +1986,7 @@
              {
               "id": "clinic81",
               "type": "summary",
-              "name": "Resumo",
+              "name": "Summary",
               "tag": "summary",
               "attributes": {},
               "classes": [],
@@ -2004,12 +2004,12 @@
                {
                 "id": "clinic82",
                 "type": "paragraph",
-                "name": "Parágrafo 23",
+                "name": "Paragraph 23",
                 "tag": "span",
                 "attributes": {},
                 "classes": [],
                 "styles": {},
-                "text": "Quais convênios vocês aceitam?",
+                "text": "Which insurance plans do you accept?",
                 "children": []
                }
               ]
@@ -2017,7 +2017,7 @@
              {
               "id": "clinic83",
               "type": "paragraph",
-              "name": "Parágrafo 24",
+              "name": "Paragraph 24",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2032,7 +2032,7 @@
                 }
                }
               },
-              "text": "Unimed, Bradesco Saúde, SulAmérica, Amil e outros. Confirme pelo WhatsApp.",
+              "text": "Most major plans. Check yours with us on WhatsApp.",
               "children": []
              }
             ]
@@ -2040,7 +2040,7 @@
            {
             "id": "clinic84",
             "type": "details",
-            "name": "Detalhes 2",
+            "name": "Details 2",
             "tag": "details",
             "attributes": {},
             "classes": [],
@@ -2076,7 +2076,7 @@
              {
               "id": "clinic85",
               "type": "summary",
-              "name": "Resumo 2",
+              "name": "Summary 2",
               "tag": "summary",
               "attributes": {},
               "classes": [],
@@ -2094,12 +2094,12 @@
                {
                 "id": "clinic86",
                 "type": "paragraph",
-                "name": "Parágrafo 25",
+                "name": "Paragraph 25",
                 "tag": "span",
                 "attributes": {},
                 "classes": [],
                 "styles": {},
-                "text": "Fazem exames no local?",
+                "text": "Do you run tests on site?",
                 "children": []
                }
               ]
@@ -2107,7 +2107,7 @@
              {
               "id": "clinic87",
               "type": "paragraph",
-              "name": "Parágrafo 26",
+              "name": "Paragraph 26",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2122,7 +2122,7 @@
                 }
                }
               },
-              "text": "Sim: laboratório, eletrocardiograma e ultrassom.",
+              "text": "Yes: lab tests, ECG and ultrasound.",
               "children": []
              }
             ]
@@ -2130,7 +2130,7 @@
            {
             "id": "clinic88",
             "type": "details",
-            "name": "Detalhes 3",
+            "name": "Details 3",
             "tag": "details",
             "attributes": {},
             "classes": [],
@@ -2166,7 +2166,7 @@
              {
               "id": "clinic89",
               "type": "summary",
-              "name": "Resumo 3",
+              "name": "Summary 3",
               "tag": "summary",
               "attributes": {},
               "classes": [],
@@ -2184,12 +2184,12 @@
                {
                 "id": "clinic90",
                 "type": "paragraph",
-                "name": "Parágrafo 27",
+                "name": "Paragraph 27",
                 "tag": "span",
                 "attributes": {},
                 "classes": [],
                 "styles": {},
-                "text": "Posso remarcar a consulta?",
+                "text": "Can I reschedule my appointment?",
                 "children": []
                }
               ]
@@ -2197,7 +2197,7 @@
              {
               "id": "clinic91",
               "type": "paragraph",
-              "name": "Parágrafo 28",
+              "name": "Paragraph 28",
               "tag": "p",
               "attributes": {},
               "classes": [],
@@ -2212,7 +2212,7 @@
                 }
                }
               },
-              "text": "Sim, até 24 horas antes, pelo WhatsApp ou telefone.",
+              "text": "Yes, up to 24 hours before, on WhatsApp or by phone.",
               "children": []
              }
             ]
@@ -2226,10 +2226,10 @@
      {
       "id": "clinic92",
       "type": "section",
-      "name": "Contato",
+      "name": "Contact",
       "tag": "section",
       "attributes": {
-       "id": "contato"
+       "id": "contact"
       },
       "classes": [],
       "styles": {
@@ -2247,7 +2247,7 @@
        {
         "id": "clinic93",
         "type": "div",
-        "name": "Contêiner 11",
+        "name": "Container 11",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -2269,7 +2269,7 @@
          {
           "id": "clinic94",
           "type": "div",
-          "name": "Texto 2",
+          "name": "Text 2",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -2279,7 +2279,7 @@
            {
             "id": "clinic95",
             "type": "heading",
-            "name": "Título 12",
+            "name": "Heading 12",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -2295,13 +2295,13 @@
               }
              }
             },
-            "text": "Agende sua consulta",
+            "text": "Book your appointment",
             "children": []
            },
            {
             "id": "clinic96",
             "type": "paragraph",
-            "name": "Parágrafo 29",
+            "name": "Paragraph 29",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -2314,7 +2314,7 @@
               }
              }
             },
-            "text": "Deixe seu nome e e-mail e diga a especialidade. Confirmamos o horário em até 2 horas.",
+            "text": "Leave your name and e-mail and choose the specialty. We confirm the time within 2 hours.",
             "children": []
            }
           ]
@@ -2322,9 +2322,12 @@
          {
           "id": "clinic97",
           "type": "form",
-          "name": "Formulário",
+          "name": "Form",
           "tag": "form",
-          "attributes": {},
+          "attributes": {
+           "method": "post",
+           "formSubmit": "{\"destination\":\"native\",\"method\":\"POST\"}"
+          },
           "classes": [],
           "styles": {
            "desktop": {
@@ -2361,7 +2364,7 @@
            {
             "id": "clinic98",
             "type": "label",
-            "name": "Rótulo",
+            "name": "Label",
             "tag": "label",
             "attributes": {},
             "classes": [],
@@ -2379,7 +2382,7 @@
              {
               "id": "clinic99",
               "type": "paragraph",
-              "name": "Parágrafo 30",
+              "name": "Paragraph 30",
               "tag": "span",
               "attributes": {},
               "classes": [],
@@ -2391,17 +2394,18 @@
                 }
                }
               },
-              "text": "Nome",
+              "text": "Name",
               "children": []
              },
              {
               "id": "clinic100",
               "type": "input",
-              "name": "Campo",
+              "name": "Input",
               "tag": "input",
               "attributes": {
                "inputType": "text",
-               "name": "name"
+               "name": "name",
+               "formField": "{\"rules\":{\"required\":true}}"
               },
               "classes": [],
               "styles": {
@@ -2419,7 +2423,7 @@
            {
             "id": "clinic101",
             "type": "label",
-            "name": "Rótulo 2",
+            "name": "Label 2",
             "tag": "label",
             "attributes": {},
             "classes": [],
@@ -2437,7 +2441,7 @@
              {
               "id": "clinic102",
               "type": "paragraph",
-              "name": "Parágrafo 31",
+              "name": "Paragraph 31",
               "tag": "span",
               "attributes": {},
               "classes": [],
@@ -2449,17 +2453,18 @@
                 }
                }
               },
-              "text": "E-mail",
+              "text": "Email",
               "children": []
              },
              {
               "id": "clinic103",
               "type": "input",
-              "name": "Campo 2",
+              "name": "Input 2",
               "tag": "input",
               "attributes": {
                "inputType": "email",
-               "name": "email"
+               "name": "email",
+               "formField": "{\"rules\":{\"required\":true,\"type\":\"email\"}}"
               },
               "classes": [],
               "styles": {
@@ -2475,9 +2480,120 @@
             ]
            },
            {
+            "id": "clinic105",
+            "type": "label",
+            "name": "Label 3",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "clinic106",
+              "type": "paragraph",
+              "name": "Paragraph 32",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a"
+                }
+               }
+              },
+              "text": "Specialty",
+              "children": []
+             },
+             {
+              "id": "clinic107",
+              "type": "select",
+              "name": "Select",
+              "tag": "select",
+              "attributes": {
+               "name": "specialty",
+               "formField": "{\"rules\":{\"required\":true}}"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": [
+               {
+                "id": "clinic108",
+                "type": "option",
+                "name": "Option",
+                "tag": "option",
+                "attributes": {
+                 "value": "General practice"
+                },
+                "classes": [],
+                "styles": {},
+                "text": "General practice",
+                "children": []
+               },
+               {
+                "id": "clinic109",
+                "type": "option",
+                "name": "Option 2",
+                "tag": "option",
+                "attributes": {
+                 "value": "Paediatrics"
+                },
+                "classes": [],
+                "styles": {},
+                "text": "Paediatrics",
+                "children": []
+               },
+               {
+                "id": "clinic110",
+                "type": "option",
+                "name": "Option 3",
+                "tag": "option",
+                "attributes": {
+                 "value": "Cardiology"
+                },
+                "classes": [],
+                "styles": {},
+                "text": "Cardiology",
+                "children": []
+               },
+               {
+                "id": "clinic111",
+                "type": "option",
+                "name": "Option 4",
+                "tag": "option",
+                "attributes": {
+                 "value": "Dermatology"
+                },
+                "classes": [],
+                "styles": {},
+                "text": "Dermatology",
+                "children": []
+               }
+              ]
+             }
+            ]
+           },
+           {
             "id": "clinic104",
             "type": "button",
-            "name": "Botão 4",
+            "name": "Button 4",
             "tag": "button",
             "attributes": {
              "buttonType": "submit"
@@ -2513,7 +2629,7 @@
               }
              }
             },
-            "text": "Pedir horário",
+            "text": "Request a time",
             "children": []
            }
           ]
@@ -2523,9 +2639,9 @@
       ]
      },
      {
-      "id": "clinic105",
+      "id": "clinic112",
       "type": "section",
-      "name": "Mapa com endereço",
+      "name": "Map with address",
       "tag": "section",
       "attributes": {},
       "classes": [],
@@ -2542,9 +2658,9 @@
       "text": null,
       "children": [
        {
-        "id": "clinic106",
+        "id": "clinic113",
         "type": "div",
-        "name": "Contêiner 12",
+        "name": "Container 12",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -2565,9 +2681,9 @@
         "text": null,
         "children": [
          {
-          "id": "clinic107",
+          "id": "clinic114",
           "type": "div",
-          "name": "Endereço",
+          "name": "Address",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -2575,9 +2691,9 @@
           "text": null,
           "children": [
            {
-            "id": "clinic108",
+            "id": "clinic115",
             "type": "heading",
-            "name": "Título 13",
+            "name": "Heading 13",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -2594,13 +2710,13 @@
               }
              }
             },
-            "text": "Onde estamos",
+            "text": "Where we are",
             "children": []
            },
            {
-            "id": "clinic109",
+            "id": "clinic116",
             "type": "paragraph",
-            "name": "Parágrafo 32",
+            "name": "Paragraph 33",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -2615,13 +2731,13 @@
               }
              }
             },
-            "text": "Rua Harmonia, 500 — Vila Madalena, São Paulo",
+            "text": "500 Harmony Street, Hillside",
             "children": []
            },
            {
-            "id": "clinic110",
+            "id": "clinic117",
             "type": "paragraph",
-            "name": "Parágrafo 33",
+            "name": "Paragraph 34",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -2636,11 +2752,11 @@
               }
              }
             },
-            "text": "Segunda a sábado, das 7h às 19h",
+            "text": "Monday to Saturday, 7 am to 7 pm",
             "children": []
            },
            {
-            "id": "clinic111",
+            "id": "clinic118",
             "type": "link",
             "name": "Link 7",
             "tag": "a",
@@ -2682,20 +2798,20 @@
               }
              }
             },
-            "text": "Como chegar",
+            "text": "Get directions",
             "children": []
            }
           ]
          },
          {
-          "id": "clinic112",
+          "id": "clinic119",
           "type": "iframe",
-          "name": "Quadro incorporado",
+          "name": "Embedded frame",
           "tag": "iframe",
           "attributes": {
            "src": "https://www.openstreetmap.org/export/embed.html?bbox=-46.6622%2C-23.5713%2C-46.6422%2C-23.5593&layer=mapnik&marker=-23.5653%2C-46.6522",
-           "title": "Mapa",
-           "loading": "lazy"
+           "loading": "lazy",
+           "title": "Map"
           },
           "classes": [],
           "styles": {
@@ -2730,9 +2846,9 @@
       ]
      },
      {
-      "id": "clinic113",
+      "id": "clinic120",
       "type": "footer",
-      "name": "Rodapé com colunas",
+      "name": "Footer with columns",
       "tag": "footer",
       "attributes": {},
       "classes": [],
@@ -2751,9 +2867,9 @@
       "text": null,
       "children": [
        {
-        "id": "clinic114",
+        "id": "clinic121",
         "type": "div",
-        "name": "Contêiner 13",
+        "name": "Container 13",
         "tag": "div",
         "attributes": {},
         "classes": [],
@@ -2773,9 +2889,9 @@
         "text": null,
         "children": [
          {
-          "id": "clinic115",
+          "id": "clinic122",
           "type": "div",
-          "name": "Marca",
+          "name": "Brand",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -2783,9 +2899,9 @@
           "text": null,
           "children": [
            {
-            "id": "clinic116",
+            "id": "clinic123",
             "type": "paragraph",
-            "name": "Parágrafo 34",
+            "name": "Paragraph 35",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -2799,13 +2915,13 @@
               }
              }
             },
-            "text": "Clínica Viva",
+            "text": "Viva Clinic",
             "children": []
            },
            {
-            "id": "clinic117",
+            "id": "clinic124",
             "type": "paragraph",
-            "name": "Parágrafo 35",
+            "name": "Paragraph 36",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -2819,15 +2935,15 @@
               }
              }
             },
-            "text": "Clínica Viva — Responsável técnico: Dra. Paula Neves, CRM 000000.",
+            "text": "Viva Clinic — Medical director: Dr. Paula Neves, Licence 000000.",
             "children": []
            }
           ]
          },
          {
-          "id": "clinic118",
+          "id": "clinic125",
           "type": "nav",
-          "name": "Navegação 2",
+          "name": "Navigation 2",
           "tag": "nav",
           "attributes": {},
           "classes": [],
@@ -2847,7 +2963,7 @@
           "text": null,
           "children": [
            {
-            "id": "clinic119",
+            "id": "clinic126",
             "type": "link",
             "name": "Link 8",
             "tag": "a",
@@ -2862,16 +2978,16 @@
               }
              }
             },
-            "text": "Início",
+            "text": "Home",
             "children": []
            },
            {
-            "id": "clinic120",
+            "id": "clinic127",
             "type": "link",
             "name": "Link 9",
             "tag": "a",
             "attributes": {
-             "href": "index.html#equipe"
+             "href": "index.html#team"
             },
             "classes": [],
             "styles": {
@@ -2881,16 +2997,16 @@
               }
              }
             },
-            "text": "Equipe",
+            "text": "Team",
             "children": []
            },
            {
-            "id": "clinic121",
+            "id": "clinic128",
             "type": "link",
             "name": "Link 10",
             "tag": "a",
             "attributes": {
-             "href": "index.html#contato"
+             "href": "index.html#contact"
             },
             "classes": [],
             "styles": {
@@ -2900,15 +3016,15 @@
               }
              }
             },
-            "text": "Contato",
+            "text": "Contact",
             "children": []
            }
           ]
          },
          {
-          "id": "clinic122",
+          "id": "clinic129",
           "type": "paragraph",
-          "name": "Parágrafo 36",
+          "name": "Paragraph 37",
           "tag": "p",
           "attributes": {},
           "classes": [],
@@ -2921,7 +3037,7 @@
             }
            }
           },
-          "text": "© 2026 Clínica Viva.",
+          "text": "© 2026 Viva Clinic.",
           "children": []
          }
         ]
@@ -2929,14 +3045,14 @@
       ]
      },
      {
-      "id": "clinic123",
+      "id": "clinic130",
       "type": "link",
-      "name": "Botão do WhatsApp",
+      "name": "WhatsApp button",
       "tag": "a",
       "attributes": {
-       "href": "https://wa.me/5511999999999?text=Ol%C3%A1%21%20Vim%20pelo%20site.",
        "newTab": true,
-       "ariaLabel": "Fale conosco pelo WhatsApp"
+       "href": "https://wa.me/?text=Hello%21%20I%20found%20you%20on%20the%20website.",
+       "ariaLabel": "Talk to us on WhatsApp"
       },
       "classes": [],
       "styles": {
