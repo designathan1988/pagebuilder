@@ -89,7 +89,7 @@
          {
           "id": "todo3",
           "type": "div",
-          "name": "Titulos",
+          "name": "Títulos",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -106,7 +106,7 @@
            {
             "id": "todo1",
             "type": "heading",
-            "name": "Titulo",
+            "name": "Título",
             "tag": "h1",
             "attributes": {},
             "classes": [],
@@ -127,7 +127,7 @@
            {
             "id": "todo2",
             "type": "paragraph",
-            "name": "Descricao",
+            "name": "Descrição",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -151,7 +151,7 @@
        {
         "id": "todo21",
         "type": "section",
-        "name": "Cartao",
+        "name": "Cartão",
         "tag": "section",
         "attributes": {},
         "classes": [],
@@ -701,7 +701,7 @@
          {
           "id": "todo20",
           "type": "div",
-          "name": "Rodape",
+          "name": "Rodapé",
           "tag": "div",
           "attributes": {},
           "classes": [],

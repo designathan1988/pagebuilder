@@ -89,7 +89,7 @@
          {
           "id": "club146",
           "type": "div",
-          "name": "Titulos",
+          "name": "Títulos",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -106,7 +106,7 @@
            {
             "id": "club144",
             "type": "heading",
-            "name": "Titulo",
+            "name": "Título",
             "tag": "h1",
             "attributes": {},
             "classes": [],
@@ -127,7 +127,7 @@
            {
             "id": "club145",
             "type": "paragraph",
-            "name": "Descricao",
+            "name": "Descrição",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -149,7 +149,7 @@
          {
           "id": "club142",
           "type": "paragraph",
-          "name": "Saudacao",
+          "name": "Saudação",
           "tag": "p",
           "attributes": {},
           "classes": [],
@@ -716,7 +716,7 @@
            {
             "id": "club158",
             "type": "heading",
-            "name": "Titulo mural",
+            "name": "Título mural",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -920,7 +920,7 @@
                {
                 "id": "club166",
                 "type": "div",
-                "name": "Cabecalho recado",
+                "name": "Cabeçalho recado",
                 "tag": "div",
                 "attributes": {},
                 "classes": [],
@@ -1140,7 +1140,7 @@
            {
             "id": "club172",
             "type": "heading",
-            "name": "Titulo notas",
+            "name": "Título notas",
             "tag": "h2",
             "attributes": {},
             "classes": [],
@@ -1161,7 +1161,7 @@
            {
             "id": "club173",
             "type": "paragraph",
-            "name": "Explicacao notas",
+            "name": "Explicação notas",
             "tag": "p",
             "attributes": {},
             "classes": [],

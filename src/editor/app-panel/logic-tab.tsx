@@ -111,7 +111,11 @@ export function LogicTab(): ReactNode {
               <DoorCode entry={BINDING} args={{ binding }} name="value" value={code} kind="expression" scope={inside} target={node.id} label={`${t('logic.binding.value')} · ${binding}`} />
             </div>
           ))}
-          <DoorForm entry={ADD_BINDING} args={{}} className="logic-binding__add">
+          {/* the add row starts empty again once its binding is in (its key is the element's bindings, so a binding added
+              draws it anew; a refusal or a binding already there as typed keeps what was typed to correct): pressed
+              again it no longer adds the same binding and leaves the last message standing as if it had (the real-use
+              audit's V-7) */}
+          <DoorForm key={JSON.stringify(binds)} entry={ADD_BINDING} args={{}} className="logic-binding__add">
             {/* the example of a binding's name stands in a line of its own under the field, wrapping in any width: as the
                 field's placeholder it was cut mid-word (the real-use audit, USE-12) */}
             <input className="input" name="binding" aria-label={t('command.logic.addBinding')} aria-describedby={example} autoComplete="off" spellCheck={false} />

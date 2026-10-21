@@ -1376,6 +1376,7 @@
   "panel.variables": "Variáveis",
   "panel.workbench": "Bancada",
   "preview.pageLabel": "A página como é exportada",
+  "preview.scaled": "Mostrada a {zoom} % para caber na janela",
   "property.accentColor": "Cor de destaque",
   "property.alignContent": "Alinhar conteúdo",
   "property.alignItems": "Alinhar itens",

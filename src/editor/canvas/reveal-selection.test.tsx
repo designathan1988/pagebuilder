@@ -28,8 +28,10 @@ const memory = (): { read(): string | null; write(text: string): void } => {
   let held: string | null = null;
   return { read: () => held, write: (text) => void (held = text) };
 };
-function storeOf(): EditorStore {
+// `cart`: the node of that name made a cart drawer, a part the canvas opens only while it is selected (render.ts)
+function storeOf(cart?: string): EditorStore {
   const document = JSON.parse(readFileSync('manifest/features/fixtures/aurora.json', 'utf8')) as DocumentJson;
+  if (cart !== undefined) for (const page of document.pages) for (const node of walk(page.tree)) if (node.name === cart) (node as { customAttributes?: Record<string, string> }).customAttributes = { ...node.customAttributes, 'data-wc': 'cart' };
   return createEditorStore({ storage: memory(), workspace: memory(), clock: manualClock(1_000_000), ids: sequentialIds('p'), restored: { document, selection: [] }, ports: { readOnly: () => false }, freeze: true });
 }
 const idOf = (store: EditorStore, name: string): string => {
@@ -81,6 +83,15 @@ describe('the canvas brings a selection into view', () => {
     views.setPressRegion('elsewhere');
     await frames();
     expect(pans()).toBe(0);
+  });
+
+  it('for a Layers row of a part the canvas opens only while it is selected (the cart drawer)', async () => {
+    const store = storeOf('Footer');
+    const { pans } = draw(store);
+    pointerViews(store).setPressRegion('layers');
+    act(() => void select(store, idOf(store, 'Footer')));
+    await frames();
+    expect(pans()).toBe(1);
   });
 
   it('for a selection made during a drag, once the drag ends', async () => {

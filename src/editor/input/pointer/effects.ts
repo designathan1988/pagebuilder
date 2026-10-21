@@ -16,6 +16,7 @@ import { argsFor, clickDoor, editEndDoor, laysGrid, type PressFacts } from './pr
 import { CONTAINERS, isInside, ROW_DROP, ROW_SELECT } from '../drop-proposals.ts';
 import type { Inserting } from './views.ts';
 import { viewportWidth } from '../../view/breakpoints.ts';
+import { zoomOf } from '../../view/camera.ts';
 import { MARQUEE, MARQUEE_ELEMENT, marqueeMode, ELEMENT_DRAGS, FREE_DRAG, dropDoor, DUPLICATE_KEY, DUPLICATE_DRAG, DRAG_MODIFIERS, DRAG_ONLY_MODIFIERS, tileDrag, SIDE_ELEMENT, wrapped, sideTileFor, FRAME_EDGE, EXPLORER_OPEN, pickingOf } from './common.ts';
 import type { PointerOwner } from './owner.ts';
 
@@ -93,8 +94,12 @@ export function pointerEffects(p: PointerOwner): Pick<PointerOwner, 'factsOf' | 
       if (press.on === 'column') ps.columning = { press, over: null };
       // a press on a splitter starts its drag, which the moves run; the size it shows now is the one Escape puts back
       if (press.on === 'splitter') {
-        const from = press.entry.door.kind === 'panel-drag' && press.entry.door.source === FRAME_EDGE ? viewportWidth(store.getState()) : splitterSize(store.getState().ui, String(press.args.splitter ?? ''));
+        const edge = press.entry.door.kind === 'panel-drag' && press.entry.door.source === FRAME_EDGE;
+        const from = edge ? viewportWidth(store.getState()) : splitterSize(store.getState().ui, String(press.args.splitter ?? ''));
         if (from !== null) ps.splitting = { press, start: ps.machine.start, from };
+        // the frame's edge holds the press's zoom until the release (view/frame-edge.ts): at Fit, the zoom no longer
+        // follows the width the drag sets, so the edge keeps under the pointer
+        if (edge && from !== null) p.views.holdZoom(zoomOf(store.getState()));
       }
       // a press on a panel's header starts its drag: the panel follows the pointer as a hint of where it would land
       if (press.on === 'panel') ps.panelling = { press };
@@ -207,6 +212,8 @@ export function pointerEffects(p: PointerOwner): Pick<PointerOwner, 'factsOf' | 
       ps.columning = null;
       ps.lighting = null;
       ps.gripping = null;
+      // the edge's drag ended: the canvas fits again (at Fit) to the width it set
+      if (ps.splitting !== null) p.views.holdZoom(null);
       ps.splitting = null;
       ps.pressed = null;
       setDrag(null);

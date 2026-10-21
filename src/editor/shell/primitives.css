@@ -218,8 +218,11 @@ input[type='radio'] {
   border-radius: var(--radius-xs);
 }
 
+/* the previous colour is a door too: under the pointer it keeps its colour, where the door's hover plate would paint
+   over it (panel-editors.css rings it instead) */
 .swatch,
-.picker__swatch {
+.picker__swatch,
+.picker__swatch.door:not(.is-unavailable):hover {
   --swatch-colour: var(--color-surface);
   background:
     linear-gradient(var(--swatch-colour), var(--swatch-colour)),

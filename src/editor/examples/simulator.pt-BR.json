@@ -89,7 +89,7 @@
          {
           "id": "sim126",
           "type": "div",
-          "name": "Titulos",
+          "name": "Títulos",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -106,7 +106,7 @@
            {
             "id": "sim124",
             "type": "heading",
-            "name": "Titulo",
+            "name": "Título",
             "tag": "h1",
             "attributes": {},
             "classes": [],
@@ -127,7 +127,7 @@
            {
             "id": "sim125",
             "type": "paragraph",
-            "name": "Descricao",
+            "name": "Descrição",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -357,7 +357,7 @@
            {
             "id": "sim129",
             "type": "paragraph",
-            "name": "Rotulo gravidade",
+            "name": "Rótulo gravidade",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -421,7 +421,7 @@
            {
             "id": "sim132",
             "type": "paragraph",
-            "name": "Rotulo elasticidade",
+            "name": "Rótulo elasticidade",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -485,7 +485,7 @@
            {
             "id": "sim135",
             "type": "paragraph",
-            "name": "Rotulo quantidade",
+            "name": "Rótulo quantidade",
             "tag": "p",
             "attributes": {},
             "classes": [],

@@ -23,8 +23,9 @@
 // Where a style write on an element of an instance goes, and the root of an instance, are read by
 // core/design/instances.ts.
 import type { NodeId } from '../../generated/commands.ts';
+import type { MessageId } from '../../generated/ids.ts';
 import { message, registerHandler, registerPredicate, type Message, type Outcome } from '../commands/registry.ts';
-import { locate, walk, type ComponentDefinition, type DocNode, type DocumentJson } from '../document/model.ts';
+import { locate, walk, type ComponentDefinition, type DocNode, type DocumentJson, type Location, type Selection } from '../document/model.ts';
 import type { ModelRules } from '../document/validate.ts';
 import { htmlIdMapOf, refreshCopiedIdentities, withFreshAnimationNames } from '../document/clone.ts';
 import { placementRefusal } from '../elements/content-model.ts';
@@ -32,6 +33,7 @@ import type { Patch } from '../history/transaction.ts';
 import { deepEqual } from '../history/transaction.ts';
 import { firstLockRefusal, lockRefusal } from '../nodes/flags.ts';
 import { leavingNames, releaseReferencesPatch, withoutReferencesTo } from '../document/tree.ts';
+import type { IdGenerator } from '../ports/ids.ts';
 import { placement } from '../structure/insert.ts';
 import { nodeMaker, type NodeMaker } from '../structure/node-maker.ts';
 import { copyName } from '../structure/duplicate.ts';
@@ -129,30 +131,47 @@ export const createComponentCommand = registerHandler('components.create', ({ st
   return { kind: 'change', patches: [added, { op: 'replace', path: found.path, value: marked(found.node, [], name) }], message: message('status.components.created', { name }) };
 });
 
+// A new instance of a component (components.insertInstance): the definition's elements, each with a new id and a name
+// no element has, the root named after its component with a simple number (the audit's A3.12): "Card", "Card 2"
+export function newInstance(document: DocumentJson, rules: ModelRules, ids: IdGenerator, words: (key: MessageId) => string, definition: ComponentDefinition): DocNode {
+  const make = nodeMaker(document, rules, ids, words);
+  const name = copyName(definition.name, make.taken);
+  make.taken.add(name);
+  const plainCopy = copied(definition.tree, () => ids.next() as NodeId, make, true);
+  const copiedTree = refreshCopiedIdentities(document, [{ source: definition.tree, copy: plainCopy }])[0];
+  if (copiedTree === undefined) throw new Error('components.insertInstance: the instance copy is missing');
+  return marked({ ...copiedTree, name }, [], definition.name);
+}
+
+// Where components.insertInstance puts a new instance (the one rule its doors and the Insert panel's line that says
+// where a click lands follow, G3): placed by the one rule a palette tile is placed by (insert.ts placement, given the
+// instance): a header's component with a header selected lands after it, never inside it where it is refused (the
+// real-use audit, USE-7). An instance lies inside no other instance: placed by the selection (no parent given) inside
+// an instance, the new one goes right after that instance, in its parent, as an element follows a selected element of
+// its own kind (the audit's STRUCT-8: a second click on the Card tile, the first Card selected, was refused with the
+// words of components.create).
+export function instanceLanding(
+  state: { readonly document: DocumentJson; readonly selection: Selection; readonly ui?: unknown },
+  rules: ModelRules,
+  node: DocNode,
+  parent: NodeId | undefined,
+  index: number | undefined
+): { readonly parent: Location; readonly index: number } | null {
+  const placed = placement(state, state.selection, rules, parent, index, node);
+  if (placed === null) return null;
+  const hostOfPlace = parent === undefined ? instanceRootOf(state.document, placed.parent.node.id) : null;
+  const hostAt = hostOfPlace === null ? null : locate(state.document, hostOfPlace.id as NodeId);
+  const hostParent = hostAt?.parent === null || hostAt === null ? null : locate(state.document, hostAt.parent.id as NodeId);
+  return hostAt === null || hostParent === null ? placed : { parent: hostParent, index: hostAt.index + 1 };
+}
+
 export const insertInstanceCommand = registerHandler('components.insertInstance', ({ state, ids, rules, words }, { component, parent, index }): Outcome<never> => {
   const definition = componentsOf(state.document).find((c) => c.name === component);
   // every tile stands for a component of the project, so an unknown one is a defect of the door
   if (definition === undefined) throw new Error(`components.insertInstance: the project has no component ${component}`);
-  const make = nodeMaker(state.document, rules, ids, words);
-  // the instance is named after its component, with a simple number (the audit's A3.12): "Card", "Card 2", "Card 3"
-  const name = copyName(definition.name, make.taken);
-  make.taken.add(name);
-  const plainCopy = copied(definition.tree, () => ids.next() as NodeId, make, true);
-  const copiedTree = refreshCopiedIdentities(state.document, [{ source: definition.tree, copy: plainCopy }])[0];
-  if (copiedTree === undefined) throw new Error('components.insertInstance: the instance copy is missing');
-  const node = marked({ ...copiedTree, name }, [], definition.name);
-  // placed by the one rule a palette tile is placed by (insert.ts placement, given the instance): a header's component
-  // with a header selected lands after it, never inside it where it is refused (the real-use audit, USE-7)
-  const placed = placement(state, state.selection, rules, parent, index, node);
-  if (placed === null) throw new Error(`components.insertInstance: the document has no node ${String(parent)}`);
-  // an instance lies inside no other instance: placed by the selection (no parent given) inside an instance, the new
-  // one goes right after that instance, in its parent, as an element follows a selected element of its own kind (the
-  // audit's STRUCT-8: a second click on the Card tile, the first Card selected, was refused with the words of
-  // components.create)
-  const hostOfPlace = parent === undefined ? instanceRootOf(state.document, placed.parent.node.id) : null;
-  const hostAt = hostOfPlace === null ? null : locate(state.document, hostOfPlace.id as NodeId);
-  const hostParent = hostAt?.parent === null || hostAt === null ? null : locate(state.document, hostAt.parent.id as NodeId);
-  const at = hostAt === null || hostParent === null ? placed : { parent: hostParent, index: hostAt.index + 1 };
+  const node = newInstance(state.document, rules, ids, words, definition);
+  const at = instanceLanding(state, rules, node, parent, index);
+  if (at === null) throw new Error(`components.insertInstance: the document has no node ${String(parent)}`);
   const receiver = at.parent.node;
   const locked = lockRefusal(state.document, receiver.id, 'status.locked.insert');
   if (locked !== null) return { kind: 'refused', message: locked };

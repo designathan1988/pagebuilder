@@ -20,7 +20,7 @@
 // - An optional control — a spacing band no mode pins, an edge grip, a resize handle — is drawn only where it takes a
 //   press under the controls above it (a higher layer, or the same layer drawn after it): the band of an element with
 //   no padding lies wholly under its edge grip, the handle at an edge an anchor pins under the anchor's tab (which
-//   takes that press on purpose).
+//   takes that press on purpose), the top handle of an element whose label is wider than half of it under the label.
 import type { Box } from './placement.ts';
 
 export interface Point {
@@ -29,7 +29,9 @@ export interface Point {
 }
 
 // the layers of the canvas controls, bottom to top
-export const CANVAS_LAYERS = ['band', 'edge', 'direct', 'label', 'chip', 'handle', 'rotation', 'anchor', 'panel'] as const;
+// the label and its chip stand over the resize handles: a handle on the frame's top line lay over the label's words
+// (the verification by use of 2026-10-21, V-4), and a handle the label mostly covers gives way (yieldingAt)
+export const CANVAS_LAYERS = ['band', 'edge', 'direct', 'handle', 'label', 'chip', 'rotation', 'anchor', 'panel'] as const;
 export type CanvasLayer = (typeof CANVAS_LAYERS)[number];
 
 // the five points a press is tried at, along the control's longer side, and how many must reach it

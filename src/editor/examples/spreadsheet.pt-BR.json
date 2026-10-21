@@ -89,7 +89,7 @@
          {
           "id": "sheet50",
           "type": "div",
-          "name": "Titulos",
+          "name": "Títulos",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -106,7 +106,7 @@
            {
             "id": "sheet48",
             "type": "heading",
-            "name": "Titulo",
+            "name": "Título",
             "tag": "h1",
             "attributes": {},
             "classes": [],
@@ -127,7 +127,7 @@
            {
             "id": "sheet49",
             "type": "paragraph",
-            "name": "Descricao",
+            "name": "Descrição",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -255,7 +255,7 @@
        {
         "id": "sheet55",
         "type": "section",
-        "name": "Formula",
+        "name": "Fórmula",
         "tag": "section",
         "attributes": {},
         "classes": [],
@@ -296,7 +296,7 @@
          {
           "id": "sheet52",
           "type": "paragraph",
-          "name": "Celula",
+          "name": "Célula",
           "tag": "p",
           "attributes": {},
           "classes": [],
@@ -320,7 +320,7 @@
          {
           "id": "sheet53",
           "type": "input",
-          "name": "Conteudo",
+          "name": "Conteúdo",
           "tag": "input",
           "attributes": {
            "inputType": "text",

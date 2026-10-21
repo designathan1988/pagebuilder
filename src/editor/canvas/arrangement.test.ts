@@ -34,6 +34,13 @@ describe('the layers of the canvas controls', () => {
   });
 });
 
+describe('the selection label', () => {
+  it('stands over the resize handles and under the chip, so a handle on the frame line never hides its words (V-4)', () => {
+    expect(CANVAS_LAYERS.indexOf('label')).toBeGreaterThan(CANVAS_LAYERS.indexOf('handle'));
+    expect(CANVAS_LAYERS.indexOf('label')).toBeLessThan(CANVAS_LAYERS.indexOf('chip'));
+  });
+});
+
 describe('the rotation zones', () => {
   const area = { width: 1000, height: 700 };
   it('first stand a fixed distance outside their corner, inside it where outside would leave the canvas', () => {

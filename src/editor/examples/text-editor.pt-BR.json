@@ -89,7 +89,7 @@
          {
           "id": "text30",
           "type": "div",
-          "name": "Titulos",
+          "name": "Títulos",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -106,7 +106,7 @@
            {
             "id": "text28",
             "type": "heading",
-            "name": "Titulo",
+            "name": "Título",
             "tag": "h1",
             "attributes": {},
             "classes": [],
@@ -127,7 +127,7 @@
            {
             "id": "text29",
             "type": "paragraph",
-            "name": "Descricao",
+            "name": "Descrição",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -466,7 +466,7 @@
            {
             "id": "text33",
             "type": "button",
-            "name": "Italico",
+            "name": "Itálico",
             "tag": "button",
             "attributes": {
              "buttonType": "button"
@@ -570,7 +570,7 @@
            {
             "id": "text35",
             "type": "button",
-            "name": "Titulo",
+            "name": "Título",
             "tag": "button",
             "attributes": {
              "buttonType": "button"
@@ -622,7 +622,7 @@
            {
             "id": "text36",
             "type": "button",
-            "name": "Paragrafo",
+            "name": "Parágrafo",
             "tag": "button",
             "attributes": {
              "buttonType": "button"
@@ -832,7 +832,7 @@
          {
           "id": "text41",
           "type": "div",
-          "name": "Pagina",
+          "name": "Página",
           "tag": "div",
           "attributes": {},
           "classes": [],

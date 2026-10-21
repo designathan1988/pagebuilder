@@ -27,7 +27,7 @@ import { pickingTarget } from '../../inspector/pick-target.ts';
 import { motionPicking } from '../../motion/state.ts';
 import { findTimeline } from '../../../core/motion/document.ts';
 import { requireDoor, drawnAs } from './doors.tsx';
-import { insertDestination } from './insert.tsx';
+import { insertDestination, useAimedTile } from './insert.tsx';
 import { usePointerValue, usePointerViews } from '../../input/pointer/use-views.ts';
 
 const LAYERS_HEADER = requireDoor('explorer-layers', (d) => drawnAs(d) === 'disclosure');
@@ -458,9 +458,10 @@ export function LayersSection() {
   const collapsed = useEditorState((s) => s.ui.layers.collapsed);
   const query = useEditorState((s) => s.ui.layers.query);
   const view = useMemo(() => (tree ? searchView(tree, query) : null), [tree, query]);
-  // where a palette click would insert now, as one JSON text (the hook's value stays stable)
+  // where a click on the tile aimed at would insert now, as one JSON text (the hook's value stays stable)
+  const aimed = useAimedTile();
   const said = useEditorState((s) => {
-    const at = insertDestination(s);
+    const at = insertDestination(s, aimed);
     return at === null ? null : JSON.stringify({ parent: at.parent.node.id, previous: at.previous?.id ?? null });
   });
   const insertAt = useMemo(() => (said === null ? null : (JSON.parse(said) as InsertAt)), [said]);

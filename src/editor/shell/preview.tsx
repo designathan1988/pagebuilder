@@ -1,10 +1,12 @@
 // The preview (preview-bar; spec preview-mode): while the editor previews
 // (view/preview.ts), the preview bar replaces the top bar (its doors: the breakpoints, Exit preview, Export) and the
-// page is shown as it is exported (core/export/export.ts previewPage), at the active breakpoint's width and at 100 %,
+// page is shown as it is exported (core/export/export.ts previewPage), at the active breakpoint's width and at 100 % —
+// in a window narrower than that width, laid out at the breakpoint's width and scaled down to the window's, centred,
+// the bar saying the scale (the owner's choice for V-11 of 2026-10-21: the page's right part was out of view) —
 // in a frame of its own that runs it as a browser would (its scripts and embeds, its hover and details) and opens its
 // links in a new tab:
 // sandboxed, never the editing canvas. No selection, guides, handles, docks or rulers are drawn.
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { message } from '../../core/commands/registry.ts';
 import type { Page } from '../../core/document/model.ts';
 import { previewPage } from '../../core/export/export.ts';
@@ -20,10 +22,44 @@ import { Slots } from './slots.tsx';
 import { breakpointTabSlot, PreviewBreakpointTab } from './breakpoint-tabs.tsx';
 
 export function PreviewBar() {
+  const t = useT();
+  const scale = useShownScale();
   return (
     <header className="preview-bar" data-region="preview-bar" data-key-context="preview">
       <Slots region="preview-bar" render={(slot) => breakpointTabSlot('preview-bar', slot, (entry, breakpoint, args) => <PreviewBreakpointTab key={`${entry.ref}:${breakpoint.id}`} entry={entry} breakpoint={breakpoint} args={args} />)} />
+      {scale < 1 ? <span className="preview-bar__scale" data-region="preview-scale">{t('preview.scaled', { zoom: Math.round(scale * 100) })}</span> : null}
     </header>
+  );
+}
+
+// The scale the preview shows its page at, one per editor (its store): 1 while the preview's stage holds the
+// breakpoint's width, below that the stage's width over the breakpoint's; PreviewPage measures it, the bar says it.
+interface ShownScale {
+  value: number;
+  readonly listeners: Set<() => void>;
+}
+const SCALES = new WeakMap<object, ShownScale>();
+function shownScaleOf(store: object): ShownScale {
+  const held = SCALES.get(store);
+  if (held !== undefined) return held;
+  const made: ShownScale = { value: 1, listeners: new Set() };
+  SCALES.set(store, made);
+  return made;
+}
+function setShownScale(store: object, value: number): void {
+  const shown = shownScaleOf(store);
+  if (shown.value === value) return;
+  shown.value = value;
+  for (const listener of [...shown.listeners]) listener();
+}
+function useShownScale(): number {
+  const shown = shownScaleOf(useStore());
+  return useSyncExternalStore(
+    (listener) => {
+      shown.listeners.add(listener);
+      return () => void shown.listeners.delete(listener);
+    },
+    () => shown.value
   );
 }
 
@@ -37,6 +73,24 @@ export function PreviewPage() {
   const html = useMemo(() => withPreviewStore(withKeyRelay(previewPage(document, MODEL_RULES, page, siteScripts)), PREVIEW_KEPT), [document, page]);
   const frame = useRef<HTMLIFrameElement>(null);
   const store = useStore();
+  useEffect(() => forgetPreviewValuesOnLoad(store), [store]);
+  // the stage's size, measured before the first paint and on every resize: the page is laid out at the breakpoint's
+  // width and, where the stage is narrower, zoomed down to the stage's width (the frame's height grows by as much, so
+  // the zoomed frame still fills the stage's height)
+  const stage = useRef<HTMLElement>(null);
+  const [room, setRoom] = useState({ width: 0, height: 0 });
+  useLayoutEffect(() => {
+    const element = stage.current;
+    if (element === null) return;
+    const measure = () => setRoom({ width: element.clientWidth, height: element.clientHeight });
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+  const scale = room.width > 0 && width > room.width ? room.width / width : 1;
+  useLayoutEffect(() => setShownScale(store, scale), [store, scale]);
+  useEffect(() => () => setShownScale(store, 1), [store]);
   // a key the page relays (KEY_RELAY) is pressed again on the preview bar, in the preview's key context, so the keymap
   // runs its door as if the editor had the focus; a page of the site the page's application goes to (app.go, the
   // audit's LOGIC-22) is opened as the Explorer's page row opens it, and the preview follows the open page
@@ -71,8 +125,8 @@ export function PreviewPage() {
     return () => window.removeEventListener('message', relay);
   }, [store]);
   return (
-    <main className="preview-stage">
-      <iframe ref={frame} className="preview__page" data-region="preview-page" title={t('preview.pageLabel')} srcDoc={html} sandbox="allow-scripts allow-popups allow-forms allow-popups-to-escape-sandbox" style={{ width }} />
+    <main ref={stage} className={`preview-stage${scale < 1 ? ' is-scaled' : ''}`}>
+      <iframe ref={frame} className="preview__page" data-region="preview-page" title={t('preview.pageLabel')} srcDoc={html} sandbox="allow-scripts allow-popups allow-forms allow-popups-to-escape-sandbox" style={scale < 1 ? { width, height: room.height / scale, zoom: scale } : { width }} />
     </main>
   );
 }
@@ -117,6 +171,17 @@ const withKeyRelay =(html: string): string => (html.includes('</body>') ? html.r
 // preview, start with them, as a site's next page and next visit start with what the visitor's browser keeps. Written
 // first in the head, before any script of the page; the preview's page alone has it, never the export.
 const PREVIEW_KEPT = new Map<string, string>();
+// The values belong to the open project: a project opened, started or restored (a load replaces the pages whole,
+// src/core/store/store.ts) starts its previews with none, as a visitor of another site starts with nothing kept.
+const WATCHED = new WeakSet<object>();
+function forgetPreviewValuesOnLoad(store: ReturnType<typeof useStore>): void {
+  if (WATCHED.has(store)) return;
+  WATCHED.add(store);
+  store.subscribeDocument((change) => {
+    const [only] = change.patches;
+    if (change.patches.length === 1 && only !== undefined && only.op === 'replace' && only.path.length === 1 && only.path[0] === 'pages') PREVIEW_KEPT.clear();
+  });
+}
 const previewStoreScript = (kept: ReadonlyMap<string, string>): string => `<script>(function () {
   var held = ${JSON.stringify(Object.fromEntries(kept)).replace(/</g, '\\u003c')};
   var send = function (key, value) { parent.postMessage({ builderPreviewStore: { key: key, value: value } }, '*'); };

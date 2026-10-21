@@ -41,6 +41,18 @@
   cursor: pointer;
 }
 
+/* a chip under the pointer keeps its colour (the door's hover plate, primitives.css, painted it over and hid the colour
+   about to be picked): the pointer rings it instead; so does the previous colour's swatch */
+.picker__chip.door:not(.is-unavailable):hover {
+  background: var(--swatch-colour);
+}
+
+.picker__chip.door:not(.is-unavailable):hover,
+.picker__swatch.door:not(.is-unavailable):hover {
+  outline: 1px solid var(--color-text);
+  outline-offset: 1px;
+}
+
 /* a variable of the project: its colour, ringed so it reads as a named value (color.tsx VariableChip) */
 .picker__chip--variable {
   border-radius: var(--radius-pill);

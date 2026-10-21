@@ -279,6 +279,16 @@ function markupLast(element: Element): void {
   if (group !== undefined && element.lastElementChild !== group) element.append(group);
 }
 
+// Editor-only: a part drawn open on the canvas only while it, or a node inside it, is selected (PageRenderer.reveal): a
+// closed <details> or <dialog>, a web component's closed part (core/render/base.ts widgetClosedPart)
+export const opensWhenSelected = (node: DocNode): boolean => node.tag === 'details' || node.tag === 'dialog' || widgetClosedPart(node.customAttributes ?? {});
+// the parts a selected node opens: itself and its ancestors that open when selected, nearest first
+export function openedBySelection(doc: DocumentJson, id: NodeId): readonly NodeId[] {
+  const opened: NodeId[] = [];
+  for (let at = locate(doc, id); at !== null; at = at.parent === null ? null : locate(doc, at.parent.id)) if (opensWhenSelected(at.node)) opened.push(at.node.id);
+  return opened;
+}
+
 export class PageRenderer {
   private readonly elements = new Map<NodeId, Element>();
   private readonly sheets = new Map<NodeId, HTMLStyleElement>();
@@ -323,11 +333,7 @@ export class PageRenderer {
   // opened the same way, with the mark its site script opens it with (data-wc-open).
   reveal(doc: DocumentJson, selection: readonly NodeId[]): void {
     const wanted = new Set<NodeId>();
-    for (const id of selection) {
-      for (let at = locate(doc, id); at !== null; at = at.parent === null ? null : locate(doc, at.parent.id)) {
-        if (at.node.tag === 'details' || at.node.tag === 'dialog' || widgetClosedPart(at.node.customAttributes ?? {})) wanted.add(at.node.id);
-      }
-    }
+    for (const id of selection) for (const opened of openedBySelection(doc, id)) wanted.add(opened);
     const changed = [...wanted].filter((id) => !this.revealed.has(id)).concat([...this.revealed].filter((id) => !wanted.has(id)));
     this.revealed = wanted;
     const tree = doc.pages[this.page]?.tree ?? null;

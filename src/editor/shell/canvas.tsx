@@ -325,7 +325,9 @@ export function CanvasColumn() {
   const pageWidth = useEditorState((s) => viewportWidth(s));
   // the breakpoint's screen height: what vh measures in the page and where the fold lines fall (item 2.3)
   const pageHeight = useEditorState((s) => activeBreakpoint(s).height);
-  const zoom = chosen !== undefined ? chosen / 100 : fitZoom(size.width, pageWidth);
+  // while the frame's edge is dragged, the zoom of its press (view/frame-edge.ts): Fit fits again at the release
+  const held = usePointerValue('heldZoom');
+  const zoom = chosen !== undefined ? chosen / 100 : (held ?? fitZoom(size.width, pageWidth));
   // The page's height (the frame measures it: canvas/frame.tsx) and the frame's header of tabs and badges: what the
   // camera bounds its pan with, reported to it as they change so its handlers bound with the same measures
   const [extent, setExtent] = useState(0);
@@ -393,7 +395,7 @@ export function CanvasColumn() {
                   {/* a selection made away from the canvas brings it into view (canvas/reveal-selection.tsx) */}
                   <RevealSelection stage={stage} />
                   {/* the first look at an empty project: a ready page or section to start from (start-screen.tsx) */}
-                  <StartScreen />
+                  <StartScreen below={top + pinned + measures.header} />
                 </div>
               </div>
             </div>

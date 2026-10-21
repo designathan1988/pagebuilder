@@ -144,7 +144,8 @@ const sameKind = (selected: DocNode, incoming: DocNode): boolean => selected.typ
 
 // Where the new element goes: the parent and the index among its children; null when the parent given is no node.
 // With nothing selected the element goes at the end of the root of the page the editor shows (openedPage, its one
-// owner), never of the project's first page: an insert with another page open lands on that page. A page block coming
+// owner), never of the project's first page: an insert with another page open lands on that page; a page that ends
+// with its footer takes it right before that footer (pageEnd). A page block coming
 // in (`incoming`: a section, a header, a footer; elements.json pageBlock) lands right after the page block that is or
 // holds the selection, so a page is built by clicking its blocks in order (spec palette-click-insert, Problems 4).
 export function placement(
@@ -186,14 +187,59 @@ export function placement(
     if (up && incoming !== undefined && placementRefusal(document, rules, primary.node.id, [incoming]) !== null && placementRefusal(document, rules, up.node.id, [incoming]) === null) {
       return { parent: up, index: primary.index + 1 };
     }
-    return { parent: primary, index: primary.node.children.length };
+    // the page root selected takes the element at the page's end, as with nothing selected (pageEnd)
+    return { parent: primary, index: primary.parent === null ? pageEnd(primary.node, rules, incoming) : primary.node.children.length };
   }
   if (primary?.parent) {
     const up = locate(document, primary.parent.id);
     if (up) return { parent: up, index: primary.index + 1 };
   }
   const at = root === null ? null : locate(document, root.id);
-  return at === null ? null : { parent: at, index: at.node.children.length };
+  return at === null ? null : { parent: at, index: pageEnd(at.node, rules, incoming) };
+}
+
+// Whether an element is a page's footer landmark: a <footer>, or an element given the footer's role (contentinfo)
+const isFooter = (node: DocNode): boolean => node.tag === 'footer' || node.customAttributes?.role === 'contentinfo';
+
+// Whether an element is out of the page's flow (its base style positions it fixed or absolute: a floating WhatsApp
+// button, a cookie notice), so it does not take a place at the page's end
+function outOfFlow(node: DocNode, rules: ModelRules): boolean {
+  const base = (node.styles as Readonly<Record<string, Readonly<Record<string, Readonly<Record<string, unknown>>>>>>)[rules.baseLayer.breakpoint]?.[rules.baseLayer.state];
+  return base?.position === 'fixed' || base?.position === 'absolute';
+}
+
+// Where the page's end is for a new element (the real-use audit's V-8, decided by the owner: a ready section inserted
+// with nothing selected landed below the footer, and the published page showed the footer above it): right before the
+// footer that closes the page (the root's last child that is a footer landmark, only out-of-flow elements after it),
+// else after the root's last child. A footer coming in goes at the very end, after the page's own footer.
+function pageEnd(root: DocNode, rules: ModelRules, incoming: DocNode | undefined): number {
+  const count = root.children.length;
+  if (incoming !== undefined && isFooter(incoming)) return count;
+  for (let i = count - 1; i >= 0; i -= 1) {
+    const child = root.children[i] as DocNode;
+    if (isFooter(child)) return i;
+    if (!outOfFlow(child, rules)) return count;
+  }
+  return count;
+}
+
+// Where element.insert puts a new node (the one rule every door that inserts a palette entry follows, and the Insert
+// panel's line that says where a click lands, G3): `placement`, then, placed at a grid's end or beside an element of
+// its kind in a grid with no place asked for, the grid's first empty cell, which the node takes (`cell`, emptyCell).
+export function insertLanding(
+  state: { readonly document: DocumentJson; readonly selection: Selection; readonly ui?: unknown },
+  rules: ModelRules,
+  node: DocNode,
+  parent: NodeId | undefined,
+  index: number | undefined
+): { readonly parent: Location; readonly index: number; readonly cell: boolean } | null {
+  const at = placement(state, state.selection, rules, parent, index, node);
+  if (at === null) return null;
+  const receiver = at.parent.node;
+  const selected = state.selection[0] === undefined ? null : locate(state.document, state.selection[0]);
+  const beside = parent === undefined && selected !== null && selected.parent?.id === receiver.id && sameKind(selected.node, node);
+  const cell = index === undefined && (at.index === receiver.children.length || beside) ? emptyCell(receiver, rules) : -1;
+  return cell >= 0 ? { parent: at.parent, index: cell, cell: true } : { parent: at.parent, index: at.index, cell: false };
 }
 
 // The new node of a palette entry (elements.json palette): a template's tree, else a new element of the entry's type
@@ -285,7 +331,7 @@ export const insertCommand = registerHandler('element.insert', (context, { entry
   const { state, ids, rules, words, clock } = context;
   const near = parent ?? state.selection[0];
   const node = paletteNode(nodeMaker(state.document, rules, ids, words, clock.now(), pageWordsAt(context, near)), entry);
-  const at = placement(state, state.selection, rules, parent, index, node);
+  const at = insertLanding(state, rules, node, parent, index);
   if (at === null) throw new Error(`element.insert: the document has no node ${String(parent)}`);
   const receiver = at.parent.node;
   // a locked parent, or one inside a locked element, takes no new child (spec lock-element)
@@ -295,11 +341,9 @@ export const insertCommand = registerHandler('element.insert', (context, { entry
   const refused = placementRefusal(state.document, rules, receiver.id, [node]);
   if (refused !== null) return { kind: 'refused', message: refused };
   const placed = withSiblingClasses(node, receiver.children);
-  // placed at a grid's end, or beside an element of its kind in a grid, with no place asked for: it takes the grid's
-  // first empty cell (emptyCell)
-  const beside = parent === undefined && state.selection[0] !== undefined && locate(state.document, state.selection[0])?.parent?.id === receiver.id && sameKind(locate(state.document, state.selection[0])?.node ?? node, node);
-  const cell = index === undefined && (at.index === receiver.children.length || beside) ? emptyCell(receiver, rules) : -1;
-  if (cell >= 0) {
+  // the grid's first empty cell (insertLanding): the node takes its place
+  if (at.cell) {
+    const cell = at.index;
     const path = [...at.parent.path, 'children', cell];
     // the cell leaves: what pointed at it lets go in the same change (the audit's RF2), as a delete releases it
     const replaced = receiver.children[cell];

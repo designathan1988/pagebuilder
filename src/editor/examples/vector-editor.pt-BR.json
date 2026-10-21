@@ -89,7 +89,7 @@
          {
           "id": "vector85",
           "type": "div",
-          "name": "Titulos",
+          "name": "Títulos",
           "tag": "div",
           "attributes": {},
           "classes": [],
@@ -106,7 +106,7 @@
            {
             "id": "vector83",
             "type": "heading",
-            "name": "Titulo",
+            "name": "Título",
             "tag": "h1",
             "attributes": {},
             "classes": [],
@@ -127,7 +127,7 @@
            {
             "id": "vector84",
             "type": "paragraph",
-            "name": "Descricao",
+            "name": "Descrição",
             "tag": "p",
             "attributes": {},
             "classes": [],
@@ -300,7 +300,7 @@
          {
           "id": "vector88",
           "type": "button",
-          "name": "Retangulo",
+          "name": "Retângulo",
           "tag": "button",
           "attributes": {
            "buttonType": "button"
@@ -621,7 +621,7 @@
          {
           "id": "vector96",
           "type": "button",
-          "name": "Enviar para tras",
+          "name": "Enviar para trás",
           "tag": "button",
           "attributes": {
            "buttonType": "button"

@@ -25,7 +25,7 @@ import type { PointerOwner } from './owner.ts';
 
 export function pointerEvents(p: PointerOwner): Pick<PointerOwner, 'onDoubleClick' | 'onDown' | 'onMove' | 'onUp' | 'onCancel' | 'onLostCapture' | 'onNative' | 'onContextMenu' | 'onMouseDown'> {
   const { ps, shared, store } = p;
-  const { pointerPressing, setPressing, setPressRegion, publishOutsidePress, setResizing, setPanView, setPressPoint, setGhostReturn, setMenuOver, setCanvasPointer, setBanding, setGuideOnRuler, setHovered, guideOverRuler } = p.views;
+  const { pointerPressing, setPressing, setPressRegion, publishOutsidePress, setResizing, setPanView, setPressPoint, setGhostReturn, setMenuOver, setTileOver, setCanvasPointer, setBanding, setGuideOnRuler, setHovered, guideOverRuler } = p.views;
   // the box the canvas draws for the one element selected, on the screen; null for none, or for more than one
   const selectionBox = () => {
     const frame = canvasFrame();
@@ -254,6 +254,10 @@ export function pointerEvents(p: PointerOwner): Pick<PointerOwner, 'onDoubleClic
       return;
     }
     const under = p.underPointer(event);
+    // the Insert panel's tile under the pointer (its arguments), for the panel's line that says where a click on it
+    // lands (sidebar/insert.tsx useAimedTile)
+    const tile = under instanceof Element ? under.closest('[data-region="palette-tiles"] [data-door][data-args]') : null;
+    setTileOver(tile?.getAttribute('data-args') ?? null);
     // an application menu's button under the pointer (the open menu's backdrop covers the window: the buttons are
     // looked for by their boxes), for the menu bar's hover switch
     const menuButton = [...document.querySelectorAll<HTMLElement>('[data-region="top-bar"] [data-menu]')].find((b) => {

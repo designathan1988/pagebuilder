@@ -611,6 +611,20 @@
   overflow: auto;
 }
 
+/* scaled to the window (preview.tsx): the zoomed frame is the stage's size, so nothing scrolls */
+.preview-stage.is-scaled {
+  overflow: hidden;
+}
+
+/* the scale the page is shown at, at the bar's end (preview.tsx) */
+.preview-bar__scale {
+  flex: none;
+  margin-left: auto;
+  color: var(--color-text-muted);
+  font: var(--fw-caption) var(--fs-caption) / var(--lh-caption) var(--font-ui);
+  white-space: nowrap;
+}
+
 .preview__page {
   display: block;
   height: 100%;

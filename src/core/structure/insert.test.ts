@@ -14,7 +14,7 @@ import { manualClock } from '../ports/clock.ts';
 import { sequentialIds } from '../ports/ids.ts';
 import { anyCss } from '../ports/css.ts';
 import { noLayout } from '../ports/layout.ts';
-import { insertCommand, uniqueName } from './insert.ts';
+import { insertCommand, insertLanding, uniqueName } from './insert.ts';
 import { deepFreeze } from '../store/store.ts';
 
 const RULES = rulesFromManifest(manifest.elements, manifest.properties, manifest.html);
@@ -223,5 +223,52 @@ describe('element.insert writes a palette element in the language of the page, n
     for (const [held, wanted] of said(template, insert(inLanguage('es', undefined), 'pt-BR'), 'pt-BR')) expect(held).toBe(wanted);
     // the Layers names stay in the editor's language
     expect(insert(inLanguage('en', undefined), 'pt-BR').children[0]?.name).toBe(translate('pt-BR', 'comp.container' as MessageId));
+  });
+});
+
+// The page's end is before the footer that closes it (the real-use audit's V-8, decided by the owner): a ready section,
+// a plain element and a saved component inserted with nothing or the page root selected land above the footer, and a
+// floating element after the footer does not move the end; a footer coming in goes last.
+describe('element.insert at the end of a page that ends with its footer (V-8)', () => {
+  const FIXED = { desktop: { base: { position: 'fixed' } } } as DocNode['styles'];
+  const page = (children: DocNode[]): DocumentJson => ({ version: 4, pages: [{ id: 'p', name: 'Home', file: 'index.html', tree: node('Page', 'page', 'body', { children }) }] });
+  const SITE = page([node('Hero', 'section', 'section'), node('Foot', 'footer', 'footer'), node('Float', 'link', 'a', { styles: FIXED })]);
+  function runIn(document: DocumentJson, selection: string[], entry: string) {
+    const context = {
+      state: { document, selection: selection as NodeId[], history: EMPTY_HISTORY, message: null, ui: undefined as never },
+      clock: manualClock(), ids: sequentialIds('new'), rules: RULES, words: (key: MessageId) => translate('en', key), layout: noLayout, css: anyCss,
+    } satisfies HandlerContext<never>;
+    const outcome = insertCommand.run(context, { entry } as never);
+    if (outcome.kind !== 'change') throw new Error(`not a change: ${JSON.stringify(outcome)}`);
+    return outcome;
+  }
+  const namesAfter = (document: DocumentJson, selection: string[], entry: string): string[] => {
+    const outcome = runIn(document, selection, entry);
+    const doc = applyPatches(document, outcome.patches ?? []).document;
+    return (doc.pages[0]?.tree.children ?? []).map((one) => (one.id.startsWith('new') ? 'NEW' : one.name));
+  };
+
+  it('puts a ready section, a plain section and a paragraph right before the footer, past a floating element', () => {
+    expect(namesAfter(SITE, [], 'comp-shop')).toEqual(['Hero', 'NEW', 'Foot', 'Float']);
+    expect(namesAfter(SITE, [], 'section')).toEqual(['Hero', 'NEW', 'Foot', 'Float']);
+    expect(namesAfter(SITE, ['Page'], 'paragraph')).toEqual(['Hero', 'NEW', 'Foot', 'Float']);
+  });
+
+  it('takes an element given the footer role as the footer, and puts a footer coming in last', () => {
+    const role = page([node('Hero', 'section', 'section'), node('Foot', 'div', 'div', { customAttributes: { role: 'contentinfo' } })]);
+    expect(namesAfter(role, [], 'section')).toEqual(['Hero', 'NEW', 'Foot']);
+    expect(namesAfter(SITE, [], 'footer')).toEqual(['Hero', 'Foot', 'Float', 'NEW']);
+  });
+
+  it('appends after everything when the page does not end with a footer', () => {
+    expect(namesAfter(page([node('Foot', 'footer', 'footer'), node('After', 'section', 'section')]), [], 'section')).toEqual(['Foot', 'After', 'NEW']);
+    expect(namesAfter(page([node('Hero', 'section', 'section')]), [], 'section')).toEqual(['Hero', 'NEW']);
+  });
+
+  it('lands where insertLanding says, the rule the Insert panel\u2019s line reads (V-5)', () => {
+    const outcome = runIn(SITE, [], 'comp-shop');
+    const landing = insertLanding({ document: SITE, selection: [] }, RULES, node('probe', 'section', 'section'), undefined, undefined);
+    expect(landing?.index).toBe(1);
+    expect(outcome.message).toMatchObject({ params: { parent: 'Page', position: 2, count: 4 } });
   });
 });

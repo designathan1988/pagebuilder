@@ -6,9 +6,9 @@
     "doors": 1401,
     "scenarios": 1872,
     "modules": 519,
-    "lines": 92416,
+    "lines": 92657,
     "fields": 207,
-    "interactive": 270
+    "interactive": 271
   },
   "features": [
     {
@@ -4145,7 +4145,7 @@
       "local": 19,
       "none": 87,
       "spread": 6,
-      "wraps-door": 23
+      "wraps-door": 24
     },
     "elements": [
       {
@@ -6022,6 +6022,16 @@
         "role": null,
         "handlers": [
           "onClick"
+        ],
+        "owner": "wraps-door"
+      },
+      {
+        "key": "src/editor/shell/sidebar/insert.tsx|div|className,onBlur,onFocus|1",
+        "tag": "div",
+        "role": null,
+        "handlers": [
+          "onFocus",
+          "onBlur"
         ],
         "owner": "wraps-door"
       },

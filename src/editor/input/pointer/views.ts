@@ -112,6 +112,9 @@ function createPointerViews() {
   // the pointer moving onto another menu's button opens that one instead, as a desktop menu bar does (the dogfooding
   // pass: each menu wanted its own click).
   const menuOver = published<string | null>(null);
+  // The Insert panel's tile the pointer stands on (the JSON of its arguments: {"entry": …} or {"component": …}), or
+  // null: the panel's line says where a click on that tile lands (the real-use audit's V-5).
+  const tileOver = published<string | null>(null);
   // Whether Alt is held (spec hover-measure): while it is, the canvas draws the distances from the selection to the
   // element under the pointer. The keymap, the owner of keys, says when it goes down and up (holdAlt); nothing changes
   // in the document or the selection.
@@ -128,6 +131,9 @@ function createPointerViews() {
   // the ruler a guide being dragged is over, its own (the chrome's delete hint), or null
   const guideOverRuler = published<string | null>(null);
   const panState = published<PanView>('idle');
+  // The zoom a drag of the frame's edge holds while it lasts (view/frame-edge.ts), or null: at Fit the canvas keeps the
+  // press's zoom, so the frame stays centred and its edge keeps under the pointer, and fits again at the release.
+  const heldZoom = published<number | null>(null);
   const drag = published<DragView | null>(null);
   const lastDrop = published<Dropped | null>(null, () => false);
   const ghostReturn = published<GhostReturn | null>(null, (a, b) => a === null && b === null);
@@ -155,6 +161,8 @@ function createPointerViews() {
     setHovered: hover.set,
     menuOver: { get: menuOver.get, subscribe: menuOver.subscribe },
     setMenuOver: menuOver.set,
+    tileOver: { get: tileOver.get, subscribe: tileOver.subscribe },
+    setTileOver: tileOver.set,
     measuring: { get: measuring.get, subscribe: measuring.subscribe },
     // whether Alt is held now, for the installer's own decisions (the leaves marquee, the duplicating drag)
     altHeld: measuring.get,
@@ -187,6 +195,8 @@ function createPointerViews() {
     setGuideOnRuler: guideOverRuler.set,
     panState: { get: panState.get, subscribe: panState.subscribe },
     setPanView: panState.set,
+    heldZoom: { get: heldZoom.get, subscribe: heldZoom.subscribe },
+    holdZoom: heldZoom.set,
     drag: { get: drag.get, subscribe: drag.subscribe },
     setDrag: drag.set,
     lastDrop: { get: lastDrop.get, subscribe: lastDrop.subscribe },

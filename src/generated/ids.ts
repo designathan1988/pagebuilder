@@ -4507,6 +4507,7 @@ export const MESSAGE_IDS = [
   "panel.variables",
   "panel.workbench",
   "preview.pageLabel",
+  "preview.scaled",
   "property.accentColor",
   "property.alignContent",
   "property.alignItems",

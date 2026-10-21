@@ -10,6 +10,9 @@
 // chooses an element far below in the Layers, then drags one at the page's top, which must stay where it was. The press
 // is the one that made the change, read as the selection changes: read later, it was at times the next press (the
 // Inspector's field typed in after a Layers row was chosen), and the canvas moved away under the person.
+// A part the canvas opens only while it or something inside it is selected (render.ts openedBySelection: the cart
+// drawer, a phone menu, a closed dialog) is the exception: a Layers row inside it opens it where it lies, often far
+// from the view (the drawer is fixed at the artboard's top), and nothing seen changed; the canvas brings it in.
 import { useEffect, type RefObject } from 'react';
 import type { NodeId } from '../../core/document/model.ts';
 import type { CommandId } from '../../generated/ids.ts';
@@ -17,6 +20,7 @@ import { manifest } from '../../manifest/runtime.ts';
 import { usePointerViews } from '../input/pointer/use-views.ts';
 import { useStore } from '../store.ts';
 import { canvasFrame, nodeBox } from './coordinates.ts';
+import { openedBySelection } from './render/render.ts';
 import { travelInto, visiblePage } from './reveal.ts';
 
 // the canvas's pan, the wheel's command: what moves the page under the stage (the quick panel's reveal uses it too)
@@ -62,7 +66,8 @@ export function RevealSelection({ stage }: { readonly stage: RefObject<HTMLDivEl
         duringDrag = true;
         return;
       }
-      if (primary === null || views.pressRegion() === 'layers') return;
+      if (primary === null) return;
+      if (views.pressRegion() === 'layers' && openedBySelection(store.getState().document, primary).length === 0) return;
       reveal(primary);
     };
     let previous = store.getState().selection[0] ?? null;

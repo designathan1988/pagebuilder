@@ -57,13 +57,15 @@ function BriefField({ entry }: { readonly entry: NonNullable<typeof AI_BRIEF> })
 }
 const ENTRIES = OFFERED.map((id) => manifest.elements.palette.flatMap((g) => g.entries).find((e) => e.id === id)).filter((e) => e !== undefined);
 
-export function StartScreen() {
+// `below`: the bottom of the frame's header (its breakpoint tabs and bands) on the stage, in the stage's pixels; the
+// card's layer begins there, so the tabs (glued to the frame's top, the owner's decision D-1) stay whole and in reach
+export function StartScreen({ below }: { readonly below: number }) {
   const t = useT();
   const empty = useEditorState((s) => isEmptyProject(s.document));
   if (!empty) return null;
   const [landing, ...sections] = ENTRIES;
   return (
-    <div className="start-screen" data-start-screen>
+    <div className="start-screen" data-start-screen style={{ top: Math.max(0, below) }}>
       <div className="start-screen__card">
         <h2 className="start-screen__title">{t('start.title')}</h2>
         <p className="start-screen__lead">{t('start.lead')}</p>

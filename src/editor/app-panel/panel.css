@@ -73,6 +73,16 @@
   border-radius: var(--radius-sm);
 }
 
+/* a field standing alone in a card's column (a binding's name, a variable's first value) takes its own height: the
+   fields' flex basis (data/panel.css .data-field, a width in a row) became a height there, and an added binding drew
+   as a tall box with empty space above its name (V-12) */
+.app-variable > .data-field,
+.app-module > .data-field,
+.logic-handler > .data-field,
+.logic-binding > .data-field {
+  flex: none;
+}
+
 .app-variable,
 .app-module,
 .app-variable > *,
@@ -89,6 +99,19 @@
   align-items: center;
   gap: var(--space-1);
   min-width: 0;
+}
+
+/* a worded control of the row (Keep in the visitor's browser) takes the row's width at most and wraps its words inside
+   its border: in pt-BR at 1280 px "Guardar no navegador do visitante" ran 2 px past its border (V-10) */
+.app-variable__row > .door:not(.door--icon-button) {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  height: auto;
+  min-height: var(--size-control-lg);
+  padding-block: var(--space-1);
+  white-space: normal;
+  text-align: start;
 }
 
 .app-variable__prefix {
@@ -139,6 +162,15 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+}
+
+/* their fields keep their own height: the form's rule for a row (data/panel.css .data-form .input, flex 1 1 0%) gave
+   them none in this column, and they were drawn 16 px high where a field is 24 */
+.app-library__add.data-form > *,
+.app-library__add.data-form > .input,
+.logic-binding__add.data-form > *,
+.logic-binding__add.data-form > .input {
+  flex: none;
 }
 
 /* the example of a binding's name under its field (logic-tab.tsx): code, wrapping at its commas in any width */

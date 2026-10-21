@@ -1376,6 +1376,7 @@
   "panel.variables": "Variables",
   "panel.workbench": "Workbench",
   "preview.pageLabel": "The page as it is exported",
+  "preview.scaled": "Shown at {zoom} % to fit the window",
   "property.accentColor": "Accent colour",
   "property.alignContent": "Align content",
   "property.alignItems": "Align items",

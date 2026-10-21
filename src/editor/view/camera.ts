@@ -79,7 +79,10 @@ export function reportFrame(measures: FrameMeasures): void {
 export const fitZoom = (width: number, page: number = BASE_BREAKPOINT.width): number => (width > 0 && page > 0 ? Math.min(1, ZOOM_MAX / 100, Math.max(ZOOM_MIN / 100, (width - 2 * FIT_MARGIN) / page)) : 1);
 
 // the zoom the canvas shows, as a factor: the chosen one, or the one that fits the stage
-export const zoomOf = (shown: Shown, width: number = measure().width): number => (shown.ui.preferences.zoom !== undefined ? shown.ui.preferences.zoom / 100 : fitZoom(width, viewportWidth(shown)));
+export const zoomOf = (shown: Shown, width: number = measure().width): number => zoomShowing(shown, viewportWidth(shown), width);
+// the zoom the canvas shows while it shows a page `page` px wide: the chosen one, or the one that fits that width (the
+// frame's edge reads the zoom at its press's width, whatever width the drag shows now: view/frame-edge.ts)
+export const zoomShowing = (shown: Shown, page: number, width: number = measure().width): number => (shown.ui.preferences.zoom !== undefined ? shown.ui.preferences.zoom / 100 : fitZoom(width, page));
 
 // the page the camera's top belongs to: the shown page's id
 type Paged = Shown & { readonly document: { readonly pages: readonly Page[] } };
