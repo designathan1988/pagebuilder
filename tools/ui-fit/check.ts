@@ -11,16 +11,15 @@
 // The measurement is kept beside the hash of the stylesheets it was taken with: a stylesheet changed since makes it
 // stale, which is a finding; and every door whose label no measurement reaches is named, in a region whose reason is
 // written below (none is skipped in silence).
-import crypto from 'node:crypto';
 import fs from 'node:fs';
-import path from 'node:path';
 import { textWidth, uiFont, type Font, type Weight } from './font.ts';
 import { commandsFileSchema } from '../../src/manifest/schema.ts';
 import { loadManifest } from '../manifest/load.ts';
 import { mutatedSource } from '../runner/mutants.ts';
+import { cssHash as stylesheetsHash, UI_WIDTHS } from './css-hash.ts';
 
 // The measured widths (tools/ui-fit/measure.spec.ts): one entry per door and per screen condition.
-export const UI_WIDTHS = 'manifest/generated/ui-widths.json';
+export { UI_WIDTHS };
 
 // Why the doors of a region have labels no measurement reaches: the measurer opens the editor's first screen, every
 // menu of the top bar, the command bar with a query, the quick panel, the context menu of an element, the colour
@@ -116,23 +115,8 @@ export function pseudoExpansion(text: string): string {
   return `【${accented.padEnd(Math.round(text.length * 1.4), '·')}】`;
 }
 
-// the hash of every stylesheet of the application, sorted, read with the passage of the mutant under run swapped and
-// without its comments (a comment draws nothing, so rewording one keeps the measurement): the key of a measurement
-// (the measurer writes the same hash: tools/ui-fit/measure.spec.ts)
-export function cssHash(root = ''): string {
-  const files: string[] = [];
-  const walk = (dir: string): void => {
-    for (const entry of fs.readdirSync(`${root}${dir}`, { withFileTypes: true })) {
-      const full = path.join(dir, entry.name);
-      if (entry.isDirectory()) walk(full);
-      else if (entry.name.endsWith('.css')) files.push(full);
-    }
-  };
-  walk('src');
-  const hash = crypto.createHash('sha256');
-  for (const file of files.sort()) hash.update(`${file}\n${mutatedSource(file.split(path.sep).join('/'), fs.readFileSync(`${root}${file}`, 'utf8')).replace(/\/\*[\s\S]*?\*\//gu, '')}`);
-  return hash.digest('hex');
-}
+// the key of a measurement (tools/ui-fit/css-hash.ts), read with the passage of the mutant under run swapped
+export const cssHash = (root = ''): string => stylesheetsHash(root, mutatedSource);
 
 interface Labels {
   readonly ptBR: Readonly<Record<string, unknown>>;

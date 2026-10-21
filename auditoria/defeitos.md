@@ -2462,7 +2462,7 @@
 - Prova: em repouso a linha não reserva espaço (nome 97/97 px, fotos `final-two/P01`, `P08`); com ponteiro, foco ou seleção a tag sai e o chip fica inteiro antes da faixa opaca (chip 171–185, faixa 189–261; `P02`–`P04`, `P09`, `P10`); `fitNames` mede em repouso (`data-at-rest`).
 
 ## DEF-0791 — no Celular, o cabeçalho da Landing page cola "Marca" em "Início"
-- Status: aberto (a correção no manifesto foi barrada pela permissão desta sessão)
+- Status: corrigido (fim da etapa, 2026-10-21)
 - Sintoma: Landing page completa em pt-BR, aba Celular: "Marca", a navegação e "Entrar" ficam na mesma linha com 3 px entre eles (foto `final-two/P06`); em inglês os textos maiores quebram a linha.
 - Causa: `manifest/elements.json:2378` (cabeçalho da Landing) e `:12372` (modelo de barra de navegação) têm `row-gap` sem `column-gap`.
-- Prova: medido no iframe: `gap: 12px normal`, filhos em x 40, 87 e 274 numa área de 310 px. Correção proposta: `"column-gap": "24px"`, como o menu de `components.py:156`.
+- Prova: antes, `gap: 12px normal` com filhos a 3 px; com `"column-gap": "24px"` nos dois cabeçalhos (como o menu de `components.py:156`), no Celular: Marca → navegação 82,7 px, entre os links 24,0 px, "Entrar" na segunda linha 12 px abaixo, em pt-BR e en (fotos `def0791/*`); cenário `the-navbar-template-inserts-its-tree` atualizado.

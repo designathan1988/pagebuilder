@@ -18,6 +18,7 @@
 //   --no-browser  skip the smoke
 import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
+import { measurementIsCurrent } from '../ui-fit/css-hash.ts';
 
 interface Step {
   readonly name: string;
@@ -132,6 +133,12 @@ for (const step of steps.filter((one) => !AT_ONCE.has(one.name))) {
     continue;
   }
   if (!(await timed(step))) failed = true;
+}
+// the labels' measurement is the end of a stage's (it runs a browser in three screen conditions): the check says when
+// the stylesheets moved since, so it is never forgotten, without making every change wait for it
+if (!measurementIsCurrent()) {
+  console.log('note: manifest/generated/ui-widths.json was measured with other stylesheets; measure it at the end of the stage:');
+  console.log('  npm run ui-fit:measure, then with E2E_SCROLLBARS=shown E2E_SCALE=1.25, then with UI_FIT_CONDITION=ptbr E2E_SCROLLBARS=shown E2E_SCALE=1.25');
 }
 console.log(`${failed ? 'FAILED' : 'passed'} in ${((Date.now() - started) / 1000).toFixed(1)} s (${changed.length} changed files)`);
 process.exit(failed ? 1 : 0);
