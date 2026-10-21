@@ -12,7 +12,7 @@ import { createPortal } from 'react-dom';
 import type { KeyContextId } from '../../generated/ids.ts';
 import { useEditorState } from '../store.ts';
 import { useOutsideLayer } from './outside-layer.ts';
-import { floatBelow, type Placed } from './float.ts';
+import { floatBelow, floatView, type Placed } from './float.ts';
 import { INNER_LAYER, onInnerLayerDismiss } from '../input/inner-layer.ts';
 
 export interface PopoverState {
@@ -72,7 +72,7 @@ export function Popover({ anchor, className, children, role = 'dialog', label, k
     const edge = parseFloat(style.getPropertyValue('--space-4')) || 0;
     const space = gap === 'small' ? parseFloat(style.getPropertyValue('--space-2')) || 0 : 0;
     const { width, height } = panel.getBoundingClientRect();
-    setAt(floatBelow(from, { width, height }, { width: window.innerWidth, height: window.innerHeight }, edge, space));
+    setAt(floatBelow(from, { width, height }, floatView(), edge, space));
   }, [anchor, gap]);
   // the focus goes into the layer once it is placed (hidden while it is measured, it could take none): to the control
   // the layer marks data-autofocus, else its first; the first alone put "+ Class" on the list of classes above its

@@ -348,6 +348,7 @@
 
 ## DCS-065 — as ações da linha de Camadas aparecem com o ponteiro, o foco ou a seleção
 - **Decidido (autorização do dono, 2026-10-21):** como nas camadas do Figma, os botões da linha (ocultar, travar, cor, escolher alvo) só aparecem enquanto a linha está sob o ponteiro, tem o foco do teclado (`:focus-within`) ou está selecionada; em repouso nome, chip do componente e tag têm a linha inteira. Quando aparecem, ficam no fim da linha sobre o fundo da própria linha (`--row-face`), a tag sai e nome e chip terminam antes deles. Linha oculta, travada ou com botão de escolha visível mantém o espaço como antes. Os nomes são medidos em repouso (`data-at-rest`, `src/editor/shell/sidebar/name-first.ts`; `src/editor/shell/sidebar.css` `.row--tree`).
+- **Revisto em 2026-10-21 (autorização do dono):** a seleção deixa de mostrar as ações; elas aparecem só com o ponteiro sobre a linha ou com o foco do teclado na linha ou dentro dela (`:focus-visible`, `:has(:focus-visible)`). Uma linha só selecionada fica em repouso, com o nome inteiro (antes "Cabeçalho do si" e a tag "H…"); a linha focada por um clique também fica em repouso, e a navegação pelo teclado mostra as ações.
 
 ## DCS-066 — idioma de um projeto novo e do texto inserido
 - **Origem:** na conferência do DEF-0791, um cabeçalho inserido com a interface em inglês saiu em português; a dúvida era se isso é defeito.

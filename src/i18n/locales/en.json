@@ -872,7 +872,7 @@
   "field.reset.none": "Nothing to reset.",
   "field.reset.of": "Reset {property}",
   "field.slider.none": "This value holds no number to slide.",
-  "field.swatch.of": "Open the colour picker of {property}",
+  "field.swatch.of": "Open the colour picker: {property}",
   "field.slider.of": "Slide {property}",
   "field.stepDown": "Step down",
   "field.stepDown.of": "Step {property} down",

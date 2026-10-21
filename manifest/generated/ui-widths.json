@@ -1,7 +1,7 @@
 {
   "$generated": {
     "by": "tools/ui-fit/measure.spec.ts",
-    "css": "e8d4c7b0e600eb1b6eb56b3af3f933672b4b2559e547c96e6d5924eca3d8e9af"
+    "css": "971ef39eb3d76d272ff0da860eb824df6dfe1d6772596b95f1bfe913e04b0d10"
   },
   "regions": {
     "activity-bar": {
@@ -4841,12 +4841,12 @@
         "text": "Hero"
       },
       "ptbr": {
-        "width": 61,
+        "width": 65.875,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
         "textTransform": "none",
-        "text": "Title"
+        "text": "CardA"
       }
     },
     "layers.startRename#menu-arrange": {

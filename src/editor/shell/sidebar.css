@@ -653,10 +653,13 @@
   padding-right: calc(var(--space-3) + var(--row-actions-room));
 }
 
-/* A Layers row's actions show only while the row is hovered, holds the keyboard's focus or is selected (DCS-065, as a
-   design tool's layers show their eye and lock): at rest the row keeps no room for them, so its name, its component
-   chip and its tag have the whole row ("Cabeçalho do site 2" at depth 1 in pt-BR ended in "…" beside three transparent
-   buttons). A row with an action shown at rest (a pressed Hide or Lock, a pick button) keeps the room as before.
+/* A Layers row's actions show only while the row is hovered or holds the keyboard's focus (DCS-065, revised
+   2026-10-21, as a design tool's layers show their eye and lock): at rest the row keeps no room for them, so its name,
+   its component chip and its tag have the whole row ("Cabeçalho do site 2" at depth 1 in pt-BR ended in "…" beside
+   three transparent buttons). A row that is only selected stays at rest: its name is whole ("Cabeçalho do si" and a
+   tag cut to "H…" while the actions showed on selection). The keyboard's focus is :focus-visible on the row or within
+   it, so a row a press focused stays at rest and a row reached by the keyboard shows its actions. A row with an action
+   shown at rest (a pressed Hide or Lock, a pick button) keeps the room as before.
    While the actions show, the row keeps their room and its tag leaves it: the strip lies over the row's end on the
    row's own face (--row-face), and the name and the chip end before it (the strip drew over the chip's icon where the
    tag, with less width than the strip, let the chip run into it). The names are measured at rest
@@ -678,13 +681,13 @@
   --row-face: var(--color-surface-selected);
 }
 
-.row--tree:not(.row--hidden, .row--locked, :has(.row__actions .door--button, .row__actions .row__button)):is(:not(:hover, :focus-within, .is-selected), [data-at-rest] *) {
+.row--tree:not(.row--hidden, .row--locked, :has(.row__actions .door--button, .row__actions .row__button)):is(:not(:hover, :focus-visible, :has(:focus-visible)), [data-at-rest] *) {
   --row-actions-room: var(--space-0);
   --row-actions-shown: hidden;
 }
 
 .row--tree:is(.row--hidden, .row--locked, :has(.row__actions .door--button, .row__actions .row__button)) > .row__meta,
-.row--tree:is(:hover, :focus-within, .is-selected):not([data-at-rest] *) > .row__meta {
+.row--tree:is(:hover, :focus-visible, :has(:focus-visible)):not([data-at-rest] *) > .row__meta {
   display: none;
 }
 
@@ -723,13 +726,13 @@
 }
 
 /* a Layers row's strip: seen while the row shows its actions, on the row's own face, its buttons opaque while the row
-   is hovered, focused or selected (DCS-065) */
+   is hovered or holds the keyboard's focus (DCS-065) */
 .row.row--tree .row__actions {
   visibility: var(--row-actions-shown);
   background: var(--row-face);
 }
 
-.row--tree:is(:focus-within, .is-selected) .row__actions .door {
+.row--tree:is(:focus-visible, :has(:focus-visible)) .row__actions .door {
   opacity: 1;
 }
 

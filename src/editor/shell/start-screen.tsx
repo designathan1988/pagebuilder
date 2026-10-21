@@ -57,16 +57,25 @@ function BriefField({ entry }: { readonly entry: NonNullable<typeof AI_BRIEF> })
 }
 const ENTRIES = OFFERED.map((id) => manifest.elements.palette.flatMap((g) => g.entries).find((e) => e.id === id)).filter((e) => e !== undefined);
 
-// `below`: the bottom of the frame's header (its breakpoint tabs and bands) on the stage, in the stage's pixels; the
-// card's layer begins there, so the tabs (glued to the frame's top, the owner's decision D-1) stay whole and in reach
-export function StartScreen({ below }: { readonly below: number }) {
+// `box`: the part of the blank page the stage shows, in the stage's pixels. Its top is the bottom of the frame's header
+// (its breakpoint tabs and bands), so the tabs (glued to the frame's top, the owner's decision D-1) stay whole and in
+// reach; its bottom and sides are the page's edges within the stage. The card's layer is that box, and the card scrolls
+// when it is taller (data-own-scroll: the wheel scrolls it, pointer/tools.ts), so the card never hangs past the page.
+export interface StartBox {
+  readonly top: number;
+  readonly bottom: number;
+  readonly left: number;
+  readonly right: number;
+}
+export function StartScreen({ box }: { readonly box: StartBox }) {
   const t = useT();
   const empty = useEditorState((s) => isEmptyProject(s.document));
   if (!empty) return null;
   const [landing, ...sections] = ENTRIES;
+  const top = Math.max(0, box.top);
   return (
-    <div className="start-screen" data-start-screen style={{ top: Math.max(0, below) }}>
-      <div className="start-screen__card">
+    <div className="start-screen" data-start-screen style={{ top, left: box.left, width: Math.max(0, box.right - box.left), height: Math.max(0, box.bottom - top) }}>
+      <div className="start-screen__card" data-own-scroll>
         <h2 className="start-screen__title">{t('start.title')}</h2>
         <p className="start-screen__lead">{t('start.lead')}</p>
         {AI_BRIEF === undefined || AI_OPEN === undefined ? null : (

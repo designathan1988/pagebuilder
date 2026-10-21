@@ -396,7 +396,14 @@ export function CanvasColumn() {
                   {/* a selection made away from the canvas brings it into view (canvas/reveal-selection.tsx) */}
                   <RevealSelection stage={stage} />
                   {/* the first look at an empty project: a ready page or section to start from (start-screen.tsx) */}
-                  <StartScreen below={top + pinned + measures.header} />
+                  <StartScreen
+                    box={{
+                      top: top + pinned + measures.header,
+                      bottom: Math.min(size.height, top + measures.header + measures.extent * zoom),
+                      left: Math.max(0, left),
+                      right: Math.min(size.width, left + pageWidth * zoom),
+                    }}
+                  />
                 </div>
               </div>
             </div>

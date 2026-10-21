@@ -2502,3 +2502,27 @@
 - Sintoma: pt-BR misturava "Buscar", "Pesquisar", "Procurar" e "Encontrar" nos campos de busca; criar coleção dizia "Coleção Coleção criada."; "Element matches: 1 / 105" sob um resultado que é componente.
 - Causa: mensagens `layers.search`, `inspector.searchProperty`, `assetPicker.search`, `feature.*Search*`, `status.layers.searchCleared`, `status.data.created` e `palette.search.matchCount` nos catálogos.
 - Prova: pt-BR usa "Buscar"/"Busca" (o verbo mais usado) em todos; "Coleção criada com o nome Coleção." / "Created a collection named Collection."; "Resultados: 1 / 105" / "Matches: 1 / 105" (o total já conta os componentes, `insert.tsx:184`); vistos no uso.
+
+## DEF-0798 — linha selecionada de Camadas corta o nome
+- Status: corrigido (não commitado, 2026-10-21)
+- Sintoma: ao selecionar "Cabeçalho do site" em Camadas, a linha mostrava "Cabeçalho do si" (1280 pt-BR) e a tag "H…" (1440 en), porque os botões da linha apareciam na seleção.
+- Causa: `src/editor/shell/sidebar.css:681,687,732` (antes) tratavam `.is-selected` (e `:focus-within`, verdadeiro após um clique) como linha com ações à vista.
+- Prova: as regras agora usam só `:hover`, `:focus-visible` e `:has(:focus-visible)`; nome medido em repouso (`name-first.ts:30`). No uso: selecionada por clique, nome 89/89 px e ações ocultas; com setas do teclado, ações visíveis (DCS-065 revisto).
+
+## DEF-0799 — cartão inicial sai da página vazia
+- Status: corrigido (não commitado, 2026-10-21)
+- Sintoma: em 1440×900 (en) o cartão "Start your site" passava da página branca para o fundo escuro, e o topo (título e IA) ficava escondido sob as abas.
+- Causa: `src/editor/shell/canvas.css:1512` a camada cobria o palco inteiro (`inset: 0`) e centralizava o cartão nele; a roda do palco nunca rolava o cartão (`pointer/tools.ts:53`).
+- Prova: a camada agora é a parte visível da página (`canvas.tsx` caixa `box`, `start-screen.tsx`), o cartão tem `max-height: 100%` e rola (`data-own-scroll`, respeitado pela roda sem modificador em `tools.ts`). No uso: cartão 182–653 dentro da página 166–669 em 1440×900; título à vista; roda rola o cartão, fora dele move o palco, Ctrl+roda dá zoom.
+
+## DEF-0800 — seletor de cor cobre a barra de status
+- Status: corrigido (não commitado, 2026-10-21)
+- Sintoma: em 1440×900, abrindo o seletor de uma cor baixa no Inspector, a borda de baixo cobria o começo da barra de status ("…ments").
+- Causa: `src/editor/shell/color.tsx:339` e `popover.tsx:75` limitavam a camada pela altura da janela, não pelo topo da barra de status.
+- Prova: `floatView` (`src/editor/shell/float.ts`) dá a área acima da barra de status e os dois a usam. No uso: seletor 408–876 com a barra em 876 (1440 en) e 228–696 com a barra em 696 (1280 pt-BR); a barra inteira visível.
+
+## DEF-0801 — nome acessível da amostra de cor lia mal
+- Status: corrigido (não commitado, 2026-10-21)
+- Sintoma: leitores de tela diziam "Abrir o seletor de cor de Cor do texto" e "Open the colour picker of Border colour".
+- Causa: mensagem `field.swatch.of` nos catálogos (`en.json:875`, `pt-BR.json:875`), usada em `field.tsx:1280`.
+- Prova: agora "Abrir o seletor de cor: {property}" / "Open the colour picker: {property}"; no uso, "Abrir o seletor de cor: Fundo" e "Open the colour picker: Background".

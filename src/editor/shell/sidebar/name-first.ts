@@ -27,9 +27,9 @@ function freeRoom(row: HTMLElement, gap: number): number {
 }
 
 export function fitNames(list: HTMLElement): void {
-  // measured at rest: a Layers row keeps its actions' room only while they show (hovered, focused or selected;
-  // sidebar.css .row--tree, DCS-065), and judged there the selected row's tag and chip left as it was selected and came
-  // back as it was left. The mark is taken off before the frame paints.
+  // measured at rest: a Layers row keeps its actions' room only while they show (hovered or holding the keyboard's
+  // focus; sidebar.css .row--tree, DCS-065), and judged there a focused row's tag and chip left as it was focused and
+  // came back as it was left. The mark is taken off before the frame paints.
   list.dataset.atRest = '';
   for (const row of list.querySelectorAll<HTMLElement>(ROWS)) fitRow(row);
   delete list.dataset.atRest;

@@ -1507,14 +1507,15 @@
   color: var(--color-text);
 }
 
-/* the first look at an empty project (start-screen.tsx): a card centred over the blank page; only the card takes the
+/* the first look at an empty project (start-screen.tsx): a card centred over the blank page, its layer the page's part
+   the stage shows (its place and size set there), so the card never hangs past the page; only the card takes the
    pointer, so the stage around it stays the stage */
 .start-screen {
   position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  padding: var(--space-9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-7);
   pointer-events: none;
 }
 
@@ -1524,9 +1525,13 @@
   display: none;
 }
 
+/* a card taller than the page's shown part scrolls inside it (data-own-scroll: the wheel scrolls it) */
 .start-screen__card {
   pointer-events: auto;
   width: min(var(--size-start-card), 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: var(--space-10);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -1652,11 +1657,6 @@
 }
 
 /* the site the assistant makes from a description (spec site-templates): the brief and its button, first on the card */
-.start-screen {
-  overflow: auto;
-  place-items: safe center;
-}
-
 .start-screen__ai {
   display: flex;
   flex-direction: column;

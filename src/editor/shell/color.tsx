@@ -40,6 +40,7 @@ import { tokensOf } from '../../core/design/tokens.ts';
 import { contrast, CONTRAST_MINIMUM } from '../../core/a11y/checks.ts';
 import { locate } from '../../core/document/model.ts';
 import { manifest } from '../../manifest/runtime.ts';
+import { floatView } from './float.ts';
 
 // the picker's parts, in their order (layout.json region color-picker)
 const PARTS = doorSlots('color-picker');
@@ -333,10 +334,10 @@ function useAnchor(property: string): RefObject<HTMLDivElement | null> {
     if (COLOR_SWATCH === undefined || element === null) return;
     const swatch = document.querySelector(`[data-door="${COLOR_SWATCH.ref}"][data-args='${JSON.stringify({ property })}']`);
     // placed again whenever the popover changes size (a format whose channels and gamut note make it taller): it stays
-    // inside the window, its Apply reachable
+    // inside the window above the status bar (float.ts floatView), its Apply reachable
     const place = () => {
       const box = swatch?.getBoundingClientRect();
-      const top = box ? Math.max(0, Math.min(box.top, window.innerHeight - element.offsetHeight)) : 0;
+      const top = box ? Math.max(0, Math.min(box.top, floatView().height - element.offsetHeight)) : 0;
       element.style.setProperty('--picker-top', `${top}px`);
     };
     place();

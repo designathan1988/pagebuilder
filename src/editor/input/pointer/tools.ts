@@ -50,6 +50,10 @@ export function pointerTools(p: PointerOwner): Pick<PointerOwner, 'dropTool' | '
     const modifier = event.ctrlKey || event.metaKey ? 'Ctrl' : event.shiftKey ? 'Shift' : null;
     const entry = WHEEL_DOORS.find((d) => d.door.kind === 'canvas-wheel' && d.door.modifier === modifier);
     if (!entry) return;
+    // a plain wheel over a layer of the stage that scrolls its own content (data-own-scroll: the first-look card,
+    // start-screen.tsx) scrolls that layer while it has more to show
+    const own = modifier === null && event.target instanceof Element ? event.target.closest('[data-own-scroll]') : null;
+    if (own !== null && own.scrollHeight > own.clientHeight) return;
     event.preventDefault();
     // a page-mode wheel moves the canvas by one stage's height (the canvas's own page: the camera moves the frame)
     const stage = event.target instanceof Element ? event.target.closest('[data-canvas-stage]') : null;

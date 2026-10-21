@@ -51,5 +51,14 @@ export function floatBeside(item: Box, size: Size, view: Size, edge: number, ins
   return { left, top: Math.max(edge, Math.min(item.top - inset, view.height - size.height - edge)) };
 }
 
+// The room a floating panel (a popover, the colour picker) is drawn in: the window above the status bar, so a panel
+// never covers the bar's messages and controls (the colour picker at 1440 × 900 lay over the bar's "…ments"). The
+// window's whole height where no status bar is drawn (the preview).
+export function floatView(): Size {
+  const bar = document.querySelector('[data-region="status-bar"]');
+  const top = bar === null ? window.innerHeight : bar.getBoundingClientRect().top;
+  return { width: window.innerWidth, height: Math.min(window.innerHeight, top) };
+}
+
 // the point a layer opens at (the context menu at the pointer), as an anchor of no size
 export const pointAnchor = (x: number, y: number): Box => ({ left: x, top: y, right: x, bottom: y });
