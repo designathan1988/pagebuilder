@@ -649,15 +649,16 @@ const number = registerCodec('number', {
   },
   write: (value) => (value.kind === 'keyword' ? value.keyword : value.kind === 'expression' ? value.text : ''),
 });
-// An opacity: a number from 0 to 1, or a percentage from 0 to 100 written as its number (50% is 0.5). A bare number
-// above 1 is a percentage too: the field shows an opacity as a percentage ("100 %"), so what a person types there is
-// one (the audit's S-020: "40" was refused).
+// An opacity: a percentage from 0 to 100, written as its number from 0 to 1 (50% is 0.5). A bare number is a
+// percentage as well, on every scale: the field shows an opacity as a percentage ("100 %"), so what a person types
+// there is one, "1" being 1% as "2" is 2% (the audit's S-020: "40" was refused; STYLE-11: "1" read as 100% beside
+// "2" as 2%).
+// The doors that hold a fraction (the slider, the presets) hand a percentage.
 const alpha = registerCodec('alpha', {
   read(text) {
     const typed = text.trim();
-    const percent = /^(\d+(?:\.\d*)?|\.\d+)%$/.exec(typed);
-    const bare = /^(?:\d+(?:\.\d*)?|\.\d+)$/.test(typed) ? Number(typed) : Number.NaN;
-    const n = percent !== null ? Number(percent[1]) / 100 : bare > 1 ? bare / 100 : bare;
+    const percent = /^(\d+(?:\.\d*)?|\.\d+)%?$/.exec(typed);
+    const n = percent === null ? Number.NaN : Number(percent[1]) / 100;
     return Number.isFinite(n) && n >= 0 && n <= 1 ? { kind: 'expression', text: writeNumber(n) } : null;
   },
   write: (value) => (value.kind === 'expression' ? value.text : ''),

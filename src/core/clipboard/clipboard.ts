@@ -34,11 +34,11 @@ import { animationNamesOf, withFreshAnimationNames } from '../document/clone.ts'
 import { pageCss, pageLines } from '../export/export.ts';
 import { applyPatches, deepEqual, type Patch } from '../history/transaction.ts';
 import { nodesFromExternal, reportNotes } from '../import/import.ts';
-import { firstLockRefusal, lockRefusal } from '../nodes/flags.ts';
+import { lockRefusal } from '../nodes/flags.ts';
 import { openedPage, pageShown } from '../project/pages.ts';
 import { freshName, nodeMaker, type NodeMaker } from '../structure/node-maker.ts';
 import type { IdGenerator } from '../ports/ids.ts';
-import { styleHolders } from '../style/set.ts';
+import { styleHolders, styleLockRefusal } from '../style/set.ts';
 import { deleteCommand, selectionRoots } from '../structure/remove.ts';
 
 // the name of the app's element format, the first field of its JSON text
@@ -369,7 +369,8 @@ export const pasteStyleCommand = registerHandler('clipboard.pasteStyle', (contex
   if (styles === null) return { kind: 'refused', message: message('status.paste.empty') };
   const roots = selectionRoots(state.document, state.selection);
   if (roots.length === 0) return { kind: 'refused', message: message('refusal.nothingSelected') };
-  const locked = firstLockRefusal(state.document, roots.map((root) => root.node.id), 'status.locked.edit');
+  // the elements pasted onto and every page element the paste reaches through them (an instance's part): STRUCT-9
+  const locked = styleLockRefusal(context, roots);
   if (locked !== null) return { kind: 'refused', message: locked };
   const holders = styleHolders(context, roots);
   const said = holders.length === 1 ? message('status.style.pasted', { name: holders[0]?.name ?? '' }) : message('status.style.pastedMany', { count: holders.length });

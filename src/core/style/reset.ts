@@ -9,10 +9,9 @@
 // holds exactly the value the coupling wrote: a rule width reset takes the solid rule style it made with it, and a
 // style a person set otherwise stays.
 import { message, registerHandler, type HandlerContext, type Outcome } from '../commands/registry.ts';
-import { locate, type NodeId } from '../document/model.ts';
+import { locate } from '../document/model.ts';
 import type { Patch } from '../history/transaction.ts';
-import { firstLockRefusal } from '../nodes/flags.ts';
-import { propertyName, styleHolders, writeDeclarations, writeKeyframeDeclarations } from './set.ts';
+import { propertyName, styleHolders, styleLockRefusal, writeDeclarations, writeKeyframeDeclarations } from './set.ts';
 import { storedValue } from './stored.ts';
 
 export function removeStyle<Ui>(context: HandlerContext<Ui>, property: string): Outcome<Ui> {
@@ -20,7 +19,7 @@ export function removeStyle<Ui>(context: HandlerContext<Ui>, property: string): 
   const nodes = state.selection.map((id) => locate(state.document, id)).filter((found) => found !== null);
   const primary = nodes[0];
   if (primary === undefined) return { kind: 'change' };
-  const locked = firstLockRefusal(state.document, nodes.map((found) => found.node.id as NodeId), 'status.locked.edit');
+  const locked = styleLockRefusal(context, nodes);
   if (locked !== null) return { kind: 'refused', message: locked };
   const names = rules.compositeFacts.get(property)?.longhands ?? [property];
   const gone = Object.fromEntries(names.map((name) => [name, null] as const));
@@ -56,7 +55,7 @@ export const resetAllCommand = registerHandler('style.resetAll', (context) => {
   const nodes = state.selection.map((id) => locate(state.document, id)).filter((found) => found !== null);
   const primary = nodes[0];
   if (primary === undefined) return { kind: 'change' };
-  const locked = firstLockRefusal(state.document, nodes.map((found) => found.node.id as NodeId), 'status.locked.edit');
+  const locked = styleLockRefusal(context, nodes);
   if (locked !== null) return { kind: 'refused', message: locked };
   const holders = styleHolders(context, nodes);
   const patches: Patch[] = holders.filter((held) => Object.keys(held.node.styles).length > 0).map((held) => ({ op: 'replace', path: [...held.path, 'styles'], value: {} }));

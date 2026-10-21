@@ -249,3 +249,41 @@
 - **Origem:** o dono notou que a página fica presa numa moldura da altura da área, que rola por dentro; pediu para ver a página inteira, com pan, zoom e rolagem no canvas, como no Figma.
 - **Medido:** a 15 % de zoom, a moldura continua com 665 px de altura (a página do Restaurante tem 7.520 px); Espaço + arraste só rola a página por dentro; a roda horizontal não faz nada.
 - **Decidido:** proposta registrada para o dono aprovar (resposta da sessão de 2026-10-21); nada mudou no modelo da câmera neste lote.
+
+## DCS-036 — as palavras da faixa do breakpoint e o rótulo da seleção (DEC-70)
+- **Origem:** auditoria de 2026-10-21 (UI-3, DEF-0676): no Tablet, rótulo e chip de um elemento do topo da página cobriam as palavras da faixa do breakpoint.
+- **Decidido:** as palavras da faixa ficam alinhadas ao fim (`justify-content: safe flex-end`), o que preserva DEC-70. O caso restante, um elemento estreito no topo à direita da página, mantém o comportamento atual (rótulo sobre as palavras). Para resolvê-lo seria preciso pôr as palavras da faixa entre os obstáculos de `clearedLabel` (`EDITOR_CONTROLS` em `src/editor/canvas/chrome.tsx`), o que estende a exceção de 2026-10-07 de DEC-70; fica para o dono decidir, com foto.
+
+## DCS-037 — excluir ou desagrupar um pai destravado leva junto um filho travado
+- **Origem:** auditoria de 2026-10-21 (STRUCT-10): excluir uma Caixa destravada exclui o parágrafo travado dentro dela; desagrupar a Caixa move o parágrafo travado para o pai dela.
+- **Decidido (2026-10-21):** comportamento do Figma: a trava protege o próprio elemento, não impede que o pai seja excluído ou desagrupado. O comentário de `src/core/document/model.ts:50-52` deve dizer isso.
+
+## DCS-038 — o Compositor de layout continua dono dos tamanhos que escreve
+- **Origem:** auditoria de 2026-10-21 (DATA-14): o compositor grava por cima das declarações da pessoa nas propriedades que escreve (`min-width`, gap) e as tira ao sair (`withoutDeclaredSizes`/`releasedSizes`, `src/modules/layout-composer/host/handlers.ts:223-245`).
+- **Decidido:** preserva-se o comportamento atual: o layout é dono dos seus tamanhos. A alternativa (guardar `{propriedade: valor}` em `owns` e só retomar a propriedade enquanto ela guarda o valor gravado) muda o esquema do registro e fica para o dono, se pedir.
+
+## DCS-039 — número sem unidade no campo Opacidade é porcentagem
+- **Origem:** auditoria de 2026-10-21 (STYLE-11): o campo mostra porcentagem, mas "1" dava 100% e "2" dava 2%.
+- **Decidido (2026-10-21):** um número sem unidade digitado em Opacidade é porcentagem ("1" = 1%). A mudança atravessa o codec de alfa, o controle deslizante, as predefinições do manifesto, os passos do campo numérico e as checagens por modelo; está em implementação na rodada 2.
+
+## DCS-040 — Shift+Alt no passo de um campo numérico é um passo simples
+- **Origem:** auditoria de 2026-10-21 (INPUT-8, DEF-0663): Shift+Alt dava 110px na roda, 101px no botão e nada na seta.
+- **Decidido:** com Shift e Alt segurados, o passo é ×1 em todas as portas (roda, botão, arraste do rótulo e teclas), o comportamento que os botões já tinham.
+
+## DCS-041 — Esc no campo de posição da guia cancela o que foi digitado
+- **Origem:** auditoria de 2026-10-21 (INPUT-6 e INPUT-7, DEF-0661 e DEF-0662).
+- **Decidido:** em Guias e grades, Esc no campo de posição descarta o texto digitado, fecha o campo e devolve o foco ao abridor, como o Esc de um campo numérico (`field.cancel`); não adiciona a guia e não fecha o diálogo. Sair do campo por outro caminho grava a guia.
+
+## DCS-042 — DCS-035 aprovada pelo dono
+- **Origem:** DCS-035 (canvas como prancheta: página inteira, pan livre, zoom e rolagem no canvas).
+- **Decidido (2026-10-21):** aprovada pelo dono ("faça todo o trabalho pendente"). A implementação vem depois da rodada 2 da auditoria.
+
+## DCS-043 — o saas3 juntado a este repositório
+- **Decidido (2026-10-21):** a linha `webconstructor-saas3` (SaaS, extensão, lógica de apps, modelos de site, DEF-0615 a DEF-0631) foi juntada a este repositório (commits 453c78ed e 8e8357fe). O `origin` passa a ser `github.com/designathan1988/pagebuilder`.
+
+## DCS-044 — Abas e Modal antigos não são migrados
+- **Origem:** a exportação deixou de inventar painéis e botão de abrir (DEF-0669/0670); os modelos antigos não gravavam marca nenhuma na árvore salva.
+- **Decidido (2026-10-21):** sem marca confiável, nada é reconhecido pela forma (uma estrutura igual feita à mão viraria abas). Um projeto antigo mostra no site o mesmo que o canvas mostra (G7): Abas com um painel, Modal sem botão de abrir. Inserir o bloco de novo dá a versão nova.
+
+## DCS-045 — opacidade digitada é porcentagem (implementa a DCS-039)
+- **Decidido (2026-10-21):** no campo Opacidade, no comando "definir propriedade" e no `style_set` do assistente, um número sem unidade é porcentagem ("1" = 1 %, "50" = 50 %); o CSS gravado continua um número de 0 a 1. Predefinições em `manifest/properties.json` passaram a `25%`…`100%`; o guia do assistente diz "50%, nunca 0.5".

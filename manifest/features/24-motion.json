@@ -18183,13 +18183,13 @@
               "door": "style.set#inspector-opacity",
               "args": {
                 "property": "opacity",
-                "value": "0.25"
+                "value": "25"
               },
               "target": null,
               "drop": null,
               "action": true,
               "hold": false,
-              "type": "0.25\n"
+              "type": "25\n"
             }
           ],
           "doors": [

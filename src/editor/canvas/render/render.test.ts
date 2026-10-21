@@ -357,6 +357,19 @@ describe('the renderer (src/editor/canvas/render/render.ts)', () => {
     expect(renderer.editedContent()).toBeNull();
   });
 
+  it("previews a state with the classes' values of that state under the node's own (STYLE-3)", () => {
+    const withClass = {
+      ...applyPatches(doc, [{ op: 'replace', path: at('children', 0, 'children', 0, 'styles'), value: styles({ desktop: { hover: { 'background-color': 'green' } } }) }]).document,
+      classes: [{ name: 'hero__title', styles: styles({ desktop: { hover: { color: 'red', 'background-color': 'blue' } } }) }],
+    } as DocumentJson;
+    const { target, renderer } = mounted(withClass);
+    renderer.previewState(withClass, ['title' as NodeId], 'hover');
+    const sheet = target.querySelector('style[data-preview-style]')?.textContent ?? '';
+    expect(sheet).toContain('color: red');
+    expect(sheet).toContain('background-color: green');
+    expect(sheet).not.toContain('blue');
+  });
+
   it('never writes an event attribute, even one a model would name', () => {
     const withEvent: RenderModel = { ...model, attributes: new Map([...model.attributes, ['clickHandler', 'onclick']]) };
     const d = applyPatches(doc, [{ op: 'add', path: at('children', 2, 'attributes', 'clickHandler'), value: 'alert(1)' }]).document;

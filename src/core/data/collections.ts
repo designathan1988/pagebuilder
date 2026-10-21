@@ -388,12 +388,17 @@ export function addField(collection: Collection, label: string, type: FieldType)
 
 // A field relabelled or given another type: every value it holds is read again as the new type, and the change is
 // refused at the first item whose value the new type cannot hold (nothing is converted silently or dropped).
-export function setField(collection: Collection, key: string, change: { readonly label?: string; readonly type?: FieldType }): Collection {
+// A field changed: its label, its type, its decimal places (the field menu, DATA-1: how many decimals a number shows on
+// the page; 0 stores none, as a new field holds). The decimal places stay with a number field and go when it becomes
+// another type; asked of another type, or outside 0 to MAX_DECIMALS, they are refused with their own reason.
+export function setField(collection: Collection, key: string, change: { readonly label?: string; readonly type?: FieldType; readonly decimals?: number }): Collection {
   const field = collection.fields.find((f) => f.key === key);
   if (field === undefined) refuse('status.stale');
   const type = change.type ?? field.type;
-  // the decimal places stay with a number field and go when it becomes another type
-  const next: Field = { key, label: change.label === undefined ? field.label : change.label.trim(), type, ...(type === 'number' && field.decimals !== undefined ? { decimals: field.decimals } : {}) };
+  if (change.decimals !== undefined && type !== 'number') refuse('status.data.decimalsNumberOnly', { collection: collection.name, label: field.label });
+  if (change.decimals !== undefined && (!Number.isInteger(change.decimals) || change.decimals < 0 || change.decimals > MAX_DECIMALS)) refuse('status.data.decimalsRange', { collection: collection.name, max: MAX_DECIMALS });
+  const decimals = change.decimals ?? (type === 'number' ? field.decimals : undefined);
+  const next: Field = { key, label: change.label === undefined ? field.label : change.label.trim(), type, ...(decimals !== undefined && decimals > 0 ? { decimals } : {}) };
   const fields = collection.fields.map((f) => (f.key === key ? next : f));
   const refused = schemaRefusal(collection.name, fields);
   if (refused !== null) throw new DataRefusal(refused);

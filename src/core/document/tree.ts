@@ -74,6 +74,27 @@ export function releaseReferencesPatch(document: DocumentJson, leaving: Readonly
       if (at !== null) patches.push(kept.length === 0 ? { op: 'remove', path: [...at.path, 'interactions'] } : { op: 'replace', path: [...at.path, 'interactions'], value: kept });
     }
   }
+  // a component's definition lets go too (the audit's STRUCT-6): its elements may point at an element of a page (a
+  // button that shows a panel outside the card), and every instance placed later copies what the definition holds, so
+  // a definition left pointing at a deleted element made every Insert, Repeat and Fill of its component refused
+  // (an HTML id the definition's own elements carry still names one of them: what points at it stays)
+  (document.components ?? []).forEach((component, c) => {
+    const own = new Set([...walk(component.tree)].map((node) => node.attributes.id).filter((id): id is string => typeof id === 'string' && id !== ''));
+    const gone = own.size === 0 ? names : new Set([...names].filter((name) => !own.has(name)));
+    const visit = (node: DocNode, path: Path): void => {
+      if (!leaving.has(node.id)) {
+        for (const [attribute, value] of Object.entries(node.attributes)) {
+          if (referenceNamesLeaving(attribute, value, gone)) patches.push({ op: 'remove', path: [...path, 'attributes', attribute] });
+        }
+        if (node.interactions !== undefined) {
+          const kept = node.interactions.filter((one) => one.target === undefined || !leaving.has(one.target));
+          if (kept.length !== node.interactions.length) patches.push(kept.length === 0 ? { op: 'remove', path: [...path, 'interactions'] } : { op: 'replace', path: [...path, 'interactions'], value: kept });
+        }
+      }
+      node.children.forEach((child, i) => visit(child, childPath(path, i)));
+    };
+    visit(component.tree, ['components', c, 'tree']);
+  });
   // a motion action that acts on a picked element that is leaving goes with it (core/motion/document.ts)
   patches.push(...releaseMotionTargets(document, leaving));
   return patches;

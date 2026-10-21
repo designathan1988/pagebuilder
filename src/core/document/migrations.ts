@@ -5,13 +5,15 @@
 // autosave both read through src/core/project/archive.ts readProject): a document of the current version is taken as it
 // is, an older one is carried forward step by step by the chain, and one of a version newer than this app is refused —
 // never guessed at. A version the chain has no step for is refused too, so a hole in the chain is a refusal with a
-// reason instead of a document half-read.
+// reason instead of a document half-read. One repair runs on every version after the chain: the references a
+// component's definition kept to elements a delete took away (STRUCT-6, withDefinitionReferencesReleased below).
 //
 // Version 2 gives captured pages an HTML-root class setting. Version 3 gives captured pages a distinct ordered
 // source DOM; old authored pages keep their existing tree and gain no capture data in either migration step.
 // Version 4 holds a captured page as one tree for every observed width (DEC-61): a version-3 page kept one snapshot per
 // width with no node identity between them, so it keeps its widest snapshot.
 import { DOCUMENT_VERSION, type DocumentJson } from './model.ts';
+import { referenceHtmlOf } from '../elements/references.ts';
 
 export interface Migration {
   // the version the document is at, and the one this step brings it to
@@ -59,5 +61,74 @@ export function migrateDocument(parsed: unknown, chain: readonly Migration[] = M
     document = step.migrate(document);
     at = step.to;
   }
-  return { ok: true, document: document as unknown as DocumentJson };
+  return { ok: true, document: withDefinitionReferencesReleased(document) as unknown as DocumentJson };
+}
+
+// A component's definition that points at an element no longer there, released (the audit's STRUCT-6): before the
+// fix, a delete let go of every reference on the pages but kept the ones a definition held, and a project saved then
+// holds them still. The validator now refuses such a definition (validate.ts definitionReferenceProblems), so without
+// this repair that project would no longer open; what the delete should have released is released here, the same
+// way (tree.ts releaseReferencesPatch): an interaction whose target is gone, a `for` or "#…" reference that names
+// no node id and no HTML id of the definition or of the pages. The format did not change, so this runs on every
+// version, and a document that holds no such reference is returned as it is (the same object).
+function withDefinitionReferencesReleased(document: Record<string, unknown>): Record<string, unknown> {
+  const { components, pages } = document;
+  if (!Array.isArray(components) || !Array.isArray(pages)) return document;
+  const record = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === 'object' && !Array.isArray(value);
+  const nodesOf = (root: unknown): Record<string, unknown>[] => {
+    const found: Record<string, unknown>[] = [];
+    const visit = (node: unknown): void => {
+      if (!record(node)) return;
+      found.push(node);
+      if (Array.isArray(node.children)) node.children.forEach(visit);
+    };
+    visit(root);
+    return found;
+  };
+  const nodeIdsOf = (nodes: readonly Record<string, unknown>[]): Set<string> => new Set(nodes.map((node) => node.id).filter((id): id is string => typeof id === 'string'));
+  const htmlIdsOf = (nodes: readonly Record<string, unknown>[]): Set<string> =>
+    new Set(nodes.map((node) => (record(node.attributes) ? node.attributes.id : undefined)).filter((id): id is string => typeof id === 'string' && id !== ''));
+  // the validator's own reading: an interaction names a node id (a page's, its captured tree's, or the definition's),
+  // a reference a node id or an HTML id of the pages or of the definition
+  const pageNodes = pages.flatMap((page) => (record(page) ? nodesOf(page.tree) : []));
+  const capturedNodes = pages.flatMap((page) => (record(page) && record(page.capture) ? nodesOf(page.capture.root) : []));
+  const pageNodeIds = nodeIdsOf([...pageNodes, ...capturedNodes]);
+  const pageHtmlIds = htmlIdsOf(pageNodes);
+  let changed = false;
+  const next = components.map((component) => {
+    if (!record(component) || !record(component.tree)) return component;
+    const ownNodes = nodesOf(component.tree);
+    const ownNodeIds = nodeIdsOf(ownNodes);
+    const ownHtmlIds = htmlIdsOf(ownNodes);
+    const isNode = (name: string): boolean => ownNodeIds.has(name) || pageNodeIds.has(name);
+    const known = (name: string): boolean => isNode(name) || ownHtmlIds.has(name) || pageHtmlIds.has(name);
+    const repair = (node: Record<string, unknown>): Record<string, unknown> => {
+      let out = node;
+      if (record(node.attributes)) {
+        const attributes = Object.fromEntries(Object.entries(node.attributes).filter(([name, value]) => {
+          const html = referenceHtmlOf(name);
+          if (html === undefined || typeof value !== 'string' || value === '' || (html === 'href' && !value.startsWith('#'))) return true;
+          return known(value.startsWith('#') ? value.slice(1) : value);
+        }));
+        if (Object.keys(attributes).length !== Object.keys(node.attributes).length) out = { ...out, attributes };
+      }
+      if (Array.isArray(node.interactions)) {
+        const interactions = node.interactions.filter((one) => !record(one) || typeof one.target !== 'string' || isNode(one.target));
+        if (interactions.length !== node.interactions.length) {
+          const { interactions: _gone, ...rest } = out;
+          void _gone;
+          out = interactions.length === 0 ? rest : { ...rest, interactions };
+        }
+      }
+      if (Array.isArray(node.children)) {
+        const children = node.children.map((child) => (record(child) ? repair(child) : child));
+        if (children.some((child, i) => child !== (node.children as unknown[])[i])) out = { ...out, children };
+      }
+      if (out !== node) changed = true;
+      return out;
+    };
+    const tree = repair(component.tree);
+    return tree === component.tree ? component : { ...component, tree };
+  });
+  return changed ? { ...document, components: next } : document;
 }

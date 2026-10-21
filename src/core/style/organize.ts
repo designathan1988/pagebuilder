@@ -15,8 +15,7 @@ import { locate, type Location, type StoredValue } from '../document/model.ts';
 import type { ModelRules } from '../document/validate.ts';
 import type { Patch } from '../history/transaction.ts';
 import { commandOf } from '../../manifest/runtime.ts';
-import { firstLockRefusal } from '../nodes/flags.ts';
-import { styleHolders, writeDeclarations } from './set.ts';
+import { styleHolders, styleLockRefusal, writeDeclarations } from './set.ts';
 
 // the arguments a command's own doors carry, as text (the manifest's data)
 const doorArgs = (command: CommandId): Readonly<Record<string, string>> => {
@@ -77,7 +76,7 @@ export const organizeCommand = registerHandler('element.organize', (context): Ou
   const at = containerOf(state, rules);
   // the availability predicate (organizableSelection) keeps anything else from reaching here
   if (at === null) throw new Error('element.organize: the selection is not one container holding two children');
-  const locked = firstLockRefusal(state.document, [at.node.id as NodeId], 'status.locked.edit');
+  const locked = styleLockRefusal(context, [at]);
   if (locked !== null) return { kind: 'refused', message: locked };
   // the children measured are the selected container's own, the ones the canvas draws (an instance's part writes into
   // its component's definition, which is drawn nowhere: the audit's STYLE-8 measured the definition's and was refused)

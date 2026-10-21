@@ -322,6 +322,17 @@ describe('shared regions', () => {
     expect(named(store, 'About link').text).toBe('About');
   });
 
+  it("points an interaction carried to the other pages at each page's own element (STRUCT-5)", () => {
+    const store = storeOf('content-site-shared');
+    run(store, 'selection.select', { target: named(store, 'Brand 2').id });
+    expect(run(store, 'interactions.add', { trigger: 'click', action: 'show', target: named(store, 'Nav 2').id }).status).toBe('done');
+    const targets = store.getState().document.pages.map((page) => [page.tree.children[0]?.children[0]?.interactions?.[0]?.target, page.tree.children[0]?.children[1]?.id]);
+    for (const [target, nav] of targets) expect(target).toBe(nav);
+    const definition = store.getState().document.components?.[0]?.tree;
+    expect(definition?.children[0]?.interactions?.[0]?.target).toBe(definition?.children[1]?.id);
+    expect(store.getState().history.past).toHaveLength(1);
+  });
+
   it('carries an element added to one copy to the others', () => {
     const store = storeOf('content-site-shared');
     run(store, 'element.insert', { entry: 'paragraph', parent: named(store, 'Header 2').id, index: 2 });

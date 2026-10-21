@@ -9,8 +9,8 @@
 import { message, registerHandler, type Outcome } from '../commands/registry.ts';
 import { locate, type NodeId } from '../document/model.ts';
 import type { Patch } from '../history/transaction.ts';
-import { firstLockRefusal, stateRefusal } from '../nodes/flags.ts';
-import { propertyName, readValue, styleHolders, withTargets, writeDeclarations } from './set.ts';
+import { stateRefusal } from '../nodes/flags.ts';
+import { propertyName, readValue, styleHolders, styleLockRefusal, withTargets, writeDeclarations } from './set.ts';
 
 // the box whose negative values the browser never takes, refused with their own word
 const NO_NEGATIVE = 'padding';
@@ -33,7 +33,7 @@ export const setSpacingCommand = registerHandler('style.setSpacing', (given, { b
   const nodes = state.selection.map((id) => locate(state.document, id)).filter((found) => found !== null);
   const primary = nodes[0];
   if (primary === undefined) return { kind: 'change' };
-  const locked = firstLockRefusal(state.document, nodes.map((found) => found.node.id as NodeId), 'status.locked.edit');
+  const locked = styleLockRefusal(context, nodes);
   if (locked !== null) return { kind: 'refused', message: locked };
   // a state the element does not take (Disabled on the page) is refused here, as style.set refuses it: the door's
   // predicate alone let a direct run write it, and the document became invalid (the invariant probe, seed 20261002)

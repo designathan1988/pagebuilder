@@ -7,6 +7,8 @@ import type { DocumentJson } from '../../core/document/model.ts';
 import type { MessageId } from '../../generated/ids.ts';
 import { systemClock, type Clock } from '../../core/ports/clock.ts';
 import { packageArchive } from '../../core/export/export.ts';
+import { message } from '../../core/commands/registry.ts';
+import { projectDocumentBytes, projectOverLimit } from '../../core/project/archive.ts';
 import { siteScripts } from '../forms/script.ts';
 import { MODEL_RULES, type EditorStore } from '../store.ts';
 
@@ -19,7 +21,10 @@ export function cloudConfig(): CloudConfig | null {
   return { url, key, sitesDomain: (import.meta.env.VITE_SITES_DOMAIN as string | undefined) ?? '' };
 }
 
-export const cloudProjectId = (): string | null => new URLSearchParams(window.location.search).get('project');
+// The cloud project's id: ?project= in a build with the Supabase settings. A build without them is the local editor,
+// whose tabs share one lock and one saved project (src/editor/persistence/tab-guard.ts) whatever ?project= says; an
+// empty ?project= names no project.
+export const cloudProjectId = (): string | null => (cloudConfig() === null ? null : new URLSearchParams(window.location.search).get('project') || null);
 
 export interface CloudProject {
   readonly id: string;
@@ -31,12 +36,13 @@ export interface CloudProject {
 }
 
 // the bar's state: what the save is doing, and the last publication
-export type CloudSave = 'saved' | 'saving' | 'failed' | 'conflict';
+export type CloudSave = 'saved' | 'saving' | 'failed' | 'conflict' | 'tooLarge';
 export const CLOUD_SAVE_TEXT: Readonly<Record<CloudSave, MessageId>> = {
   saved: 'cloud.save.saved',
   saving: 'cloud.save.saving',
   failed: 'cloud.save.failed',
   conflict: 'cloud.save.conflict',
+  tooLarge: 'cloud.save.tooLarge',
 };
 export interface CloudState {
   readonly project: CloudProject | null;
@@ -110,9 +116,16 @@ async function accessToken(): Promise<string | null> {
 const SAVE_WAIT = 1500;
 const VERSION_EVERY = 10 * 60 * 1000;
 
+// Keep this version, on a conflict: this tab's document written over the one another device saved (startCloudSave)
+let overwrite: (() => void) | null = null;
+export const keepCloudVersion = (): void => overwrite?.();
+
 // Writes the store's document to the project after each change, once the person pauses (SAVE_WAIT). Each write names
-// the updated_at it last read: a project changed elsewhere since (another device) is not overwritten, the bar asks to
-// reload instead. A version is kept every VERSION_EVERY while the project changes.
+// the updated_at it last read: a project changed elsewhere since (another device) is not overwritten; the bar offers
+// to reload that version or keep this one, and leaving asks first while this tab's changes are not in the cloud. A
+// project above the project file's bound (core/project/archive.ts, the one bound Save and Open share) is not sent: the
+// person is told, the work stays open and guarded, and the next change tries again. A failed write is tried again,
+// with the changes made meanwhile. A version is kept every VERSION_EVERY while the project changes.
 export function startCloudSave(store: EditorStore, canWrite: () => boolean = () => true, clock: Clock = systemClock): () => void {
   const project = state.project;
   if (client === null || project === null) return () => { };
@@ -123,36 +136,51 @@ export function startCloudSave(store: EditorStore, canWrite: () => boolean = () 
   let writing: Promise<void> | null = null;
   let dirty = false;
   let versioned = clock.now();
-  const write = async (): Promise<void> => {
-    if (state.save === 'conflict' || !canWrite()) return;
+  // the project was refused for its size at the last write: the person is told once, not at every pause
+  let refusedSize = false;
+  const failed = (reason: string) => {
+    dirty = true;
+    set({ save: 'failed', error: reason });
+    window.clearTimeout(timer);
+    timer = window.setTimeout(() => flush(), SAVE_WAIT * 4);
+  };
+  const write = async (force: boolean): Promise<void> => {
+    if ((state.save === 'conflict' && !force) || !canWrite()) return;
     const document = store.getState().document;
     dirty = false;
-    set({ save: 'saving' });
-    const { data, error } = await db
-      .from('projects')
-      .update({ document })
-      .eq('id', project.id)
-      .eq('updated_at', known)
-      .select('updated_at');
-    if (error !== null) {
+    const over = projectOverLimit(projectDocumentBytes(document).length);
+    if (over !== null) {
+      // nothing sent: the cloud keeps the last version within the bound, this tab keeps the work (and guards leaving)
       dirty = true;
-      set({ save: 'failed', error: error.message });
-      timer = window.setTimeout(flush, SAVE_WAIT * 4);
+      if (!refusedSize) store.notice(message('cloud.save.tooLargeDetail', over));
+      refusedSize = true;
+      set({ save: force ? 'conflict' : 'tooLarge' });
+      return;
+    }
+    refusedSize = false;
+    set({ save: 'saving' });
+    const update = db.from('projects').update({ document }).eq('id', project.id);
+    const { data, error } = await (force ? update : update.eq('updated_at', known)).select('updated_at');
+    if (error !== null) {
+      failed(error.message);
       return;
     }
     const row = data[0];
     if (row === undefined) {
+      // this tab's changes are not in the cloud: leaving asks first, and Keep this version still writes them
+      dirty = true;
       set({ save: 'conflict' });
       return;
     }
     known = row.updated_at as string;
     if (clock.now() - versioned >= VERSION_EVERY) {
-      versioned = clock.now();
-      await db.from('project_versions').insert({ project_id: project.id, workspace_id: project.workspaceId, document });
+      // a version the database refused is asked for again at the next write
+      const kept = await db.from('project_versions').insert({ project_id: project.id, workspace_id: project.workspaceId, document });
+      if (kept.error === null) versioned = clock.now();
     }
     set({ save: dirty ? 'saving' : 'saved', error: null });
   };
-  const flush = () => {
+  const flush = (force = false) => {
     window.clearTimeout(timer);
     timer = 0;
     if (writing !== null) {
@@ -160,19 +188,26 @@ export function startCloudSave(store: EditorStore, canWrite: () => boolean = () 
       dirty = true;
       return;
     }
-    writing = write().finally(() => {
-      writing = null;
-      if (dirty && state.save !== 'conflict' && state.save !== 'failed') flush();
-    });
+    // a write that throws (the network, the client) is a failed one: tried again, the change kept
+    writing = write(force)
+      .catch((error: unknown) => failed(error instanceof Error ? error.message : String(error)))
+      .finally(() => {
+        writing = null;
+        if (dirty && state.save !== 'conflict' && state.save !== 'failed' && state.save !== 'tooLarge') flush();
+      });
+  };
+  overwrite = () => {
+    if (state.save === 'conflict') flush(true);
   };
   const unsubscribe = store.subscribe(() => {
     const now = store.getState().document;
     if (now === last) return;
     last = now;
     dirty = true;
-    if (state.save !== 'conflict') set({ save: 'saving' });
+    // a refusal stays said until the write after the pause decides again
+    if (state.save !== 'conflict' && state.save !== 'tooLarge') set({ save: 'saving' });
     window.clearTimeout(timer);
-    timer = window.setTimeout(flush, SAVE_WAIT);
+    timer = window.setTimeout(() => flush(), SAVE_WAIT);
   });
   // leaving with a change not yet written asks first
   const guard = (event: BeforeUnloadEvent) => {
@@ -185,6 +220,7 @@ export function startCloudSave(store: EditorStore, canWrite: () => boolean = () 
   document.addEventListener('visibilitychange', hidden);
   return () => {
     unsubscribe();
+    overwrite = null;
     window.clearTimeout(timer);
     window.removeEventListener('beforeunload', guard);
     document.removeEventListener('visibilitychange', hidden);
@@ -205,7 +241,8 @@ export async function publishCloud(document: DocumentJson, slug: string): Promis
   if (client === null || config === null || project === null) throw new Error('not_cloud');
   const token = await accessToken();
   if (token === null) throw new Error('signed_out');
-  set({ publishing: true, error: null });
+  // `error` is the save's reason (the save badge's title): a publication's refusal is the publish form's to say
+  set({ publishing: true });
   try {
     // the published site is an installable web app (core/export/packages.ts): offline, and PWABuilder packs it
     const zip = packageArchive('pwa', document, MODEL_RULES, siteScripts);
@@ -223,9 +260,6 @@ export async function publishCloud(document: DocumentJson, slug: string): Promis
     if (!response.ok || !body.url) throw new Error(body.error ?? `http_${response.status}`);
     set({ published: body.url, project: { ...project, site: { slug, url: body.url } } });
     return body.url;
-  } catch (error) {
-    set({ error: error instanceof Error ? error.message : String(error) });
-    throw error;
   } finally {
     set({ publishing: false });
   }

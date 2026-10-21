@@ -71,7 +71,7 @@ describe('the command group against the rules of every command', () => {
   it('a press outside the field during the group does not lose the typing: it is kept when the group ends (G2)', () => {
     const { store, node, shown } = ready();
     const group = store.commandGroup(busy);
-    const field = typed(store, '0.6');
+    const field = typed(store, '60');
     keepTypingBefore(document.body);
     expect(heldTyping(), 'the typing stays in the registry while the group holds the editor').not.toBeNull();
     expect(styleAt(store, node, shown, 'opacity'), 'nothing is written during the group').toBeUndefined();
@@ -84,7 +84,7 @@ describe('the command group against the rules of every command', () => {
   it('a breakpoint change by the group keeps the typing in the context it began in, when the group ends (G1)', () => {
     const { store, node, shown, other } = ready();
     const group = store.commandGroup(busy);
-    const field = typed(store, '0.4');
+    const field = typed(store, '40');
     group.dispatch('view.setBreakpoint' as CommandId, { breakpoint: other } as never);
     group.dispatch('style.set' as CommandId, { property: 'width', value: '33px' } as never);
     group.commit();
@@ -97,8 +97,8 @@ describe('the command group against the rules of every command', () => {
   it('a field that starts typing during the group does not discard the typing of the previous one (G2)', () => {
     const { store, node, shown } = ready();
     const group = store.commandGroup(busy);
-    const first = typed(store, '0.3');
-    typed(store, '0.9');
+    const first = typed(store, '30');
+    typed(store, '90');
     group.cancel();
     expect(first.kept(), 'the typing of the first field was kept at the end of the group').toBe(1);
     expect(styleAt(store, node, shown, 'opacity'), 'the value of the first field is in the document').toBe('0.3');

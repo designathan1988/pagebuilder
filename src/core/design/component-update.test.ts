@@ -97,4 +97,18 @@ describe('Update component keeps each instance its own (STRUCT-2 to STRUCT-5)', 
     const definition = ran.document.components?.[0]?.tree;
     expect(definition?.children[0]?.interactions?.[0]?.target).toBe(definition?.children[1]?.id);
   });
+  it('points an ARIA reference by HTML id at the HTML id each instance\'s element keeps', () => {
+    const panel = (id: string, htmlId: string) => node(`${id}-p`, 'div', 'div', { componentPart: [1], attributes: { id: htmlId } });
+    const a = card('A', {}, { customAttributes: { 'aria-controls': 'panel', 'aria-describedby': 'panel other' } }, [panel('A', 'panel')]);
+    const b = card('B', {}, {}, [panel('B', 'panel-b')]);
+    const document = documentOf({
+      pages: [{ id: 'home', name: 'Home', file: 'index.html', tree: node('Page', 'page', 'body', { children: [a, b] }) }],
+      components: [{ name: 'Card', tree: node('Def', 'div', 'div', { children: [node('Def-t', 'paragraph', 'p', { text: 'Hello' }), node('Def-p', 'div', 'div')] }) }],
+    });
+    const ran = runHandler(updateFromInstanceCommand, document, {}, { selection: ['A'] });
+    expect(ran.problems).toEqual([]);
+    const other = ran.document.pages[0]?.tree.children[1];
+    expect(other?.children[1]?.attributes.id).toBe('panel-b');
+    expect(other?.children[0]?.customAttributes).toEqual({ 'aria-controls': 'panel-b', 'aria-describedby': 'panel-b other' });
+  });
 });

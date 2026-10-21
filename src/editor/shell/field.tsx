@@ -25,6 +25,7 @@ import { DEFAULT_UNIT, codecOf } from '../../core/style/codecs.ts';
 import { borderArgs } from '../../core/style/border.ts';
 import { composedText, composesNot, lineStyles, propertyName, shownText } from '../../core/style/set.ts';
 import { storedLayers, storedValue } from '../../core/style/stored.ts';
+import { swatchColour } from '../../core/style/swatch.ts';
 import type { AttributeId, CommandId, FeatureId, KeyContextId, MessageId, StyleTargetId } from '../../generated/ids.ts';
 import type { CommandArgs } from '../../generated/commands.ts';
 import { isFeatureBuilt } from '../../core/commands/registry.ts';
@@ -74,20 +75,6 @@ export const keptByFieldEnter = (entry: DoorEntry): boolean => entry.command.id 
 // a colour field, which opens the colour picker (color.tsx)
 export const COLOR_SWATCH = doorSlots('field').find((p) => p.door.kind === 'panel-control' && p.door.control === 'color-swatch');
 
-// The colour a swatch of the editor wears for a value that names variables (var(--brand)): each var() is the
-// variable's value in the project, its aliases followed, else its fallback, else transparent (the checkerboard). The
-// swatch lives in the editor's document, where the project's variables are not defined (only the canvas's :root has
-// them): var(--brand) there made the swatch's whole background invalid, and it drew neither the colour nor its
-// checkerboard (the shell audit's UI-4). A value that names none is itself.
-const VARIABLE_REFERENCE = /var\(\s*--([^\s,()]+)\s*(?:,\s*((?:[^()]|\([^()]*\))*))?\)/g;
-const ALIAS_DEPTH = 8;
-export function swatchColour(text: string, tokens: readonly { readonly name: string; readonly value: string }[]): string {
-  let out = text;
-  for (let depth = 0; depth < ALIAS_DEPTH && out.includes('var('); depth += 1) {
-    out = out.replace(VARIABLE_REFERENCE, (_whole, name: string, fallback: string | undefined) => tokens.find((token) => token.name === name)?.value ?? fallback?.trim() ?? 'transparent');
-  }
-  return out.includes('var(') ? 'transparent' : out;
-}
 // the part that takes the field's value away (style.reset)
 const RESET = doorSlots('field').find((p) => p.door.kind === 'panel-control' && p.door.control === 'property-reset');
 // The parts a number field draws, in their order (the `field` row is 1 unit menu
@@ -947,7 +934,9 @@ function FieldSlider({ range, value, available, label, said, keep }: {
     // nothing is written when the value holds no number to slide (the thumb sits at the range's start without a value
     // behind it) or when the thumb never left the value the field shows
     if (element === null || !available || slid === null || element.value === String(slid.value)) return;
-    keep(`${element.value}${slidUnit.current}`);
+    // a slider of a 0 to 1 range (opacity) holds the fraction its face reads as a percentage, and hands that percentage
+    // (percentText): a bare number typed in the field is a percentage (the audit's STYLE-11), and the slider's is too
+    keep(percentText(`${element.value}${slidUnit.current}`, range));
   };
   useEffect(() => {
     const element = sliderInput.current;
@@ -1161,7 +1150,8 @@ export function TextStyleField({
   // name typed opens (variable-suggestions.tsx), never twice
   const listed = useMemo(() => suggestions.filter((value) => !tokenSuggestions.includes(value)), [suggestions, tokenSuggestions]);
   // the item checked: the value the element holds, else the one the page computes (the audit's S-027: no mark at all)
-  const checkedValue = shown !== '' ? shown : mixed ? '' : effective.trim();
+  // (a 0 to 1 range read as its face reads it: the opacity's presets are percentages)
+  const checkedValue = percentText(shown !== '' ? shown : mixed ? '' : effective.trim(), readRange);
   const editedFor = useEditorState(editedKey);
   useEffect(() => {
     const element = input.current;
@@ -1274,7 +1264,7 @@ export function TextStyleField({
   const state = `${available ? '' : ' is-unavailable'}${set ? ' is-set' : ''}${refused.text !== null ? ' is-invalid' : ''}`;
   const visible = mixed ? t('inspector.mixedValue') : shown || placeholder || '';
   const percent = readRange?.min === 0 && readRange.max === 1 && visible.trim() !== '' && Number.isFinite(Number(visible));
-  const face = percent ? { value: String(Math.round(Number(visible) * 100)), unit: '%' } : compactFieldValue(visible, sliderRange !== undefined, colour);
+  const face = percent ? { value: percentText(visible, readRange).slice(0, -1), unit: '%' } : compactFieldValue(visible, sliderRange !== undefined, colour);
   const cell = (
     <span ref={valueScope} className="input-wrap" data-face="" data-origin={appearance.kind}>
         {prefix !== null ? <span className="field__prefix">{prefix}</span> : null}

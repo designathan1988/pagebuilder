@@ -158,7 +158,8 @@
 }
 
 .cloud-bar__save--failed,
-.cloud-bar__save--conflict {
+.cloud-bar__save--conflict,
+.cloud-bar__save--tooLarge {
   color: var(--color-danger);
 }
 

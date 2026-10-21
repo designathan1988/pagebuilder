@@ -1512,3 +1512,483 @@
 - Sintoma: com o estado Disabled ativo, digitar o padding da página (campo de outro elemento selecionado, `targets` = página) gravava `styles.desktop.disabled` na página; o validador recusava e o comando terminava em erro em vez de dizer "não se aplica".
 - Causa: `src/core/nodes/flags.ts` `edited` lia só `args.target` e caía na seleção; os escritores de estilo editam `args.targets` (`set.ts` `withTargets`), então a recusa por estado conferia outros elementos.
 - Prova: `tools/runner/invariants.test.ts` (sonda de sequências aleatórias, semente 20261002) falhava com `view.setStyleState disabled` + `style.setSpacing` na página e passa nas 200 execuções depois.
+
+## DEF-0633 — Abrir recusava um projeto válido quando o projeto aberto tinha tabela própria de breakpoints
+- Status: corrigido (ec8b5361)
+- Sintoma: com o Tablet excluído no projeto aberto, Arquivo › Abrir um project.zip com estilo no Tablet era recusado ("documento inválido … /styles/tablet"); um arquivo com id de breakpoint próprio sem tabela passava no tratador e caía na store ("change invalid").
+- Causa: `src/core/document/validate.ts:343` validava o arquivo de fora com as regras de breakpoint do projeto aberto, que o tratador recebe (`store.ts` `layeredNow`).
+- Prova: `validateDocument` parte sempre das regras do manifesto (`ModelRules.manifest`, `validate.ts:128-131,343-348`; `breakpoint-rules.ts:110-111`); Abrir, restaurar versão, autosave, área de transferência e commit passam por ele. Caso: `archive.test.ts` "opens a file styled at a default breakpoint the open project removed…". Uso real no próximo lote.
+
+## DEF-0634 — Salvar gravava um projeto que Abrir recusa (cerca de 96 MB de imagens)
+- Status: corrigido (ec8b5361)
+- Sintoma: com cerca de 96 MB de imagens, Arquivo › Salvar gravava o project.zip sem aviso e Abrir o recusava ("project.json is larger than 128 MB"): a cópia de segurança não abria.
+- Causa: `src/core/project/archive.ts:55` gravava sem limite, enquanto a leitura (`archive.ts:68`) aplicava `ARCHIVE_LIMITS`.
+- Prova: escrita e leitura usam o mesmo `PROJECT_FILE_LIMITS` (`archive.ts:45-57,68`); acima dele `project.save` recusa com `status.project.tooLarge` (tamanho e limite) e nada é baixado. Caso: `archive.test.ts` "refuses, in words, to save a project larger than a project file holds". Uso real no próximo lote.
+
+## DEF-0635 — Abrir e Nova página em branco substituíam sem perguntar um projeto com trabalho
+- Status: corrigido (ec8b5361)
+- Sintoma: num projeto sem elementos mas com imagens, classes, variáveis, cores, componentes, coleções, breakpoints ou guias, Nova página em branco ou Abrir trocava o projeto sem confirmação, esvaziava o histórico e o autosave gravava por cima.
+- Causa: `src/core/document/model.ts:262-267` `isEmptyProject` olhava só a raiz da única página.
+- Prova: `isEmptyProject` (`model.ts:267-287`) olha o documento inteiro, ignorando só os campos estruturais; todo chamador (project.open, newBlankPage, importação, tela inicial) passa a pedir a confirmação do manifesto; texto `dialog.newBlankPage.message` acertado. Caso: `archive.test.ts` "asks before replacing a project whose page is empty but which holds…". Uso real no próximo lote.
+
+## DEF-0636 — página nova ou copiada tomava o caminho de um arquivo do projeto
+- Status: corrigido (ec8b5361)
+- Sintoma: com um arquivo `page.html` no Explorador, adicionar a página "Page" gerava outra `page.html`; o Explorador mostrava as duas e a exportação gravava duas entradas com o mesmo caminho.
+- Causa: `src/core/project/pages.ts:40` `fresh` escolhia o arquivo olhando só as páginas.
+- Prova: `fresh(document, base)` usa `pathTaken`/`pathGenerated`, a mesma regra de files.createFile e pages.rename (`pages.ts:40-49,97,138`); o validador recusa página sobre, sob ou no caminho de um arquivo (`validate.ts:438,456-468`). Caso: `pages.test.ts` "a new page's file skips a path a project file holds…". Uso real no próximo lote.
+
+## DEF-0637 — diário de queda recusado pelo leitor era gravado sobre o registro salvo
+- Status: corrigido (ec8b5361)
+- Sintoma: com "Recuperação necessária" na abertura, um diário de queda que o leitor recusa era promovido e gravado sobre o registro do IndexedDB, que a mensagem prometia manter intacto.
+- Causa: `src/editor/persistence/autosave.ts:358` promovia o diário sem olhar `blocked`.
+- Prova: a promoção só roda com `!blocked` (`autosave.ts:358-360`), como toda outra escrita; o estado fica `recoveryRequired`. Caso: `autosave-recovery.test.ts` "a crash journal the reader refused is not written over the saved record". Uso real no próximo lote.
+
+## DEF-0638 — imagem renomeada, movida ou excluída mantinha o blob na memória
+- Status: corrigido (ec8b5361)
+- Sintoma: renomear, mover ou excluir uma imagem grande decodificava de novo os bytes a cada caminho novo, e o blob antigo nunca era liberado: a memória da aba crescia até recarregar.
+- Causa: `src/core/files/files.ts:92` guardava a URL de objeto pelo caminho e só a revogava quando o mesmo caminho ganhava bytes novos.
+- Prova: `objectUrl` guarda pelo conteúdo e `releaseObjectUrls(kept)` revoga o conteúdo que nenhum arquivo guarda (`files.ts:92-126`), chamado a cada mudança de `document.files` (`src/editor/store.ts:175-191`). Caso: `files.test.ts` "objectUrl keys the URL by content, and releaseObjectUrls revokes…". Uso real no próximo lote.
+
+## DEF-0639 — atualizar o componente falhava ou apagava negrito, itálico e links das outras instâncias
+- Status: corrigido (ec8b5361)
+- Sintoma: com uma palavra em negrito numa instância e texto diferente noutra, "Atualizar o componente a partir desta instância" era recusado; sem marcas na editada, o itálico ou o link de outra instância sumia.
+- Causa: `src/core/design/components.ts:377` `inherited` escolhia `text` e `inline` separadamente, de lados diferentes.
+- Prova: texto e marcas vêm juntos de um só lado (`inheritedKeys`, `contentOf`, `components.ts:377-411`) e `rebuilt` descarta o `inline` antigo, então `plainText(inline) === text` vale nos dois lados. Caso: `component-update.test.ts` "takes a text and its marks together". Uso real no próximo lote.
+
+## DEF-0640 — atualizar o componente tirava a variante das outras instâncias
+- Status: corrigido (ec8b5361)
+- Sintoma: uma instância de Plano com a variante "gold" perdia a variante quando outra instância atualizava o componente; com variante na editada, todas e a definição passavam a tê-la.
+- Causa: `src/core/design/components.ts:414` `rebuilt` copiava as classes da raiz editada, variante inclusive, e a definição guardava a variante.
+- Prova: a definição nunca guarda variante (`definitionOf`, `components.ts:414-420`) e a raiz reconstruída junta as classes sem variante da editada com a variante da própria instância; inserir, repetir e preencher partem da definição limpa. Caso: `component-update.test.ts` "keeps another instance its variant...". Uso real no próximo lote.
+
+## DEF-0641 — atualizar o componente impunha ocultar e travar da instância editada e tirava travas das outras
+- Status: corrigido (ec8b5361)
+- Sintoma: um elemento oculto num Cartão ficava oculto em todos os Cartões e nos inseridos depois; um elemento travado noutro Cartão era reescrito sem recusa e perdia a trava.
+- Causa: `src/core/design/components.ts:523` `rebuilt` copiava `hidden`/`locked` do elemento editado e a checagem de trava olhava só a linhagem da raiz.
+- Prova: `rebuilt` mantém as marcas da própria instância, `definitionOf` as tira da definição, e um laço após a checagem da raiz recusa com `status.locked.edit` quando um nó travado mudaria. Casos: `component-update.test.ts` (marcas mantidas; recusa com trava). Uso real no próximo lote.
+
+## DEF-0642 — depois de atualizar o componente, interações, @keyframes e ids HTML apontavam para a instância editada
+- Status: corrigido (ec8b5361)
+- Sintoma: o botão "clique → mostrar Painel" de cada Cartão passava a mostrar o painel do Cartão A; animações repetiam o nome de @keyframes; um id HTML aparecia igual em todas as instâncias.
+- Causa: `src/core/design/components.ts` `updateFromInstanceCommand` copiava a árvore editada sem refazer as identidades por instância.
+- Prova: `repaired` roda `refreshCopiedIdentities` na definição e em cada instância (alvos, `for`/`#`, links), `withFreshAnimationNames` e ids HTML próprios ou `-copy`. O mesmo remapeamento em `src/core/data/regions.ts` `conform` fica para a rodada 2. Caso: `component-update.test.ts`. Uso real no próximo lote.
+
+## DEF-0643 — colar um elemento copiado de dentro de uma instância era recusado fora dela e corrompia outro componente
+- Status: corrigido (ec8b5361)
+- Sintoma: copiar o título de um Cartão e colar num parágrafo comum era recusado ("status.paste.invalid"; após recortar, o título sumia); colado num Hero, a cor nele mudava a definição do Hero e todas as instâncias.
+- Causa: `src/core/clipboard/clipboard.ts:164` `settled` mantinha `componentPart` no elemento colado fora da sua instância.
+- Prova: `repair` (`clipboard.ts:164-202`) mantém `component` só na raiz de um componente do projeto e `componentPart` só sob essa raiz colada; o resto vira elemento comum ou "só desta instância". É o único escritor de colar. Casos: `foreign-clipboard.test.ts`. Uso real no próximo lote.
+
+## DEF-0644 — clicar no ladrilho de um componente com uma instância selecionada era recusado
+- Status: corrigido (ec8b5361)
+- Sintoma: Inserir › Componentes › Cartão, e clicar de novo no ladrilho: "Card is part of an instance: detach it before making a component of it.", com palavras de "criar componente".
+- Causa: `src/core/design/components.ts:136` `insertInstanceCommand` recusava todo destino dentro de uma instância, com a mensagem de outro comando.
+- Prova: sem `parent`, o destino dentro de instância vai para logo depois da raiz dela (`components.ts:136-159`); com `parent` explícito dentro de instância a recusa é `status.instance.nested` (manifesto `design-system.json` acertado). Caso: `components.test.ts` (a asserção antiga, que esperava a recusa, era o defeito). Uso real no próximo lote.
+
+## DEF-0645 — renomear ou excluir uma classe deixava interações e movimento no nome antigo
+- Status: corrigido (ec8b5361)
+- Sintoma: renomear `menu-button` para `nav-toggle` (ou `is-open` para `open`) deixava a interação com o nome antigo e o botão do site parava; excluir a classe também não avisava (auditoria STRUCT-11 e STYLE-6).
+- Causa: `src/core/design/classes.ts:134` a renomeação reescrevia só as classes dos elementos, não os vínculos por nome.
+- Prova: `classBindings` (`classes.ts:134-175`) lista `scope`/`className` de interações, `scope` de movimento e alvos/efeitos de classe da linha do tempo; `renameClassPatches` reescreve todos e `classes.delete` recusa com `status.classes.inUseByInteractions`. Casos: `classes.test.ts`. Uso real no próximo lote.
+
+## DEF-0646 — renomear uma variável não seguia a ação "Definir variável" do movimento
+- Status: corrigido (ec8b5361)
+- Sintoma: renomear `brand` para `primary` trocava todo `var(--brand)`, mas a ação de movimento continuava definindo `--brand`, que nada lia; excluir a variável não era recusado por esse uso.
+- Causa: `src/core/design/tokens.ts:143` `usesOf` não contava o `name` da ação de variável.
+- Prova: `usesOf` (única travessia de renomear e excluir) conta a ação como uso declarante (`tokens.ts:50,143-149`) e `renameTokenPatches` escreve `--${to}` nela (`:241`); `deleteToken` recusa com `status.tokens.inUseShared`. Caso: `token-timelines.test.ts`. Uso real no próximo lote.
+
+## DEF-0647 — o painel CSS e o campo de declarações mostravam uma regra e substituíam outra
+- Status: corrigido (ec8b5361)
+- Sintoma: com o chip `.card` como alvo, o painel CSS mostrava o `color: red` do elemento e Aplicar apagava padding e raio da classe; no Tablet, o campo mostrava a base e substituía outra camada.
+- Causa: `src/core/style/set.ts:88` `replaceLayer` escrevia no portador do alvo, enquanto `src/editor/code-panel/code-panel.ts` `ruleText` lia o elemento.
+- Prova: leitura e escrita passam por `holdersOf` → primeiro portador → camada ativa (`set.ts:56-64,101-127`; `ruleDeclarations` em `code-panel.ts`, usado por `code-pane.tsx:84` e `inspector.tsx`); um texto sem mudança não grava nada. Caso: `style-audit.test.ts`. Uso real no próximo lote.
+
+## DEF-0648 — o painel CSS mostrava a sombra como `[object Object]` e recusava a regra
+- Status: corrigido (ec8b5361)
+- Sintoma: com uma sombra no elemento, o painel CSS lia `box-shadow: [object Object];` e qualquer Aplicar era recusado com "change invalid"; `box-shadow: 0 2px 4px red;` digitado também.
+- Causa: `src/core/style/custom.ts` `parseDeclarations` guardava propriedades estruturadas como texto e o escritor as imprimia como objeto.
+- Prova: `parseDeclarations` lê as estruturadas em camadas (`shadowLayersFromCss`), `declarationTexts` (`set.ts:127`) as escreve com `structuredCss` e `keptStructures` mantém as camadas não mudadas, ocultas inclusive. Caso: `style-audit.test.ts` (regra sem mudança dá `[]`). Uso real no próximo lote.
+
+## DEF-0649 — a curva de um quadro-chave não chegava ao CSS
+- Status: corrigido (ec8b5361)
+- Sintoma: na Linha do tempo, Curva `ease-in` no quadro-chave 0% era confirmada e mostrada no campo, mas a animação tocava igual no canvas e no site.
+- Causa: `src/core/animation/animation.ts` `keyframesCss` não escrevia a curva e `writtenKeyframes` descartava quadro só com curva.
+- Prova: `keyframesCss`, único escritor de `@keyframes` (canvas e exportação), escreve `animation-timing-function` no bloco; a importação já lê essa propriedade de volta (`import.ts:1288-1313`). Caso: `style-audit.test.ts`. Uso real no próximo lote.
+
+## DEF-0650 — redefinir ou esvaziar um campo com a agulha sobre um quadro-chave mexia no elemento
+- Status: corrigido (ec8b5361)
+- Sintoma: com a agulha em 0% (opacity 0) e o elemento com opacity 0.5, Redefinir tirava a opacidade do elemento e o quadro-chave continuava com 0.
+- Causa: `src/core/style/reset.ts` `removeStyle` ignorava `context.keyframe`.
+- Prova: com quadro-chave do elemento primário, `removeStyle` remove a propriedade (e as longhands) do quadro por `writeKeyframeDeclarations` (`status.keyframe.reset`); `nothingHeld` em `set.ts` confere o quadro; filtro e gradiente passam pelo mesmo caminho. Caso: `style-audit.test.ts`. Uso real no próximo lote.
+
+## DEF-0651 — renomear uma animação quebrava as ações de movimento que a tocam
+- Status: corrigido (ec8b5361)
+- Sintoma: renomear `fade` para `reveal` na Linha do tempo deixava a ação "Animação CSS: tocar `fade`", que no site não tocava nada.
+- Causa: `src/core/animation/animation.ts` `renameAnimationCommand`/`deleteAnimationCommand` não seguiam as ações `css-animation`.
+- Prova: os dois comandos somam `cssAnimationFollowPatches` (`src/core/motion/document.ts`): renomear renomeia cada ação, excluir as remove; os nomes de animação são únicos no documento. Caso: `animation-names.test.ts`. Uso real no próximo lote.
+
+## DEF-0652 — Organizar era sempre recusado num contêiner dentro de instância
+- Status: corrigido (ec8b5361)
+- Sintoma: dentro de uma instância, Organizar num contêiner com dois filhos era recusado com "não pode ser medido", nomeando o elemento da definição.
+- Causa: `src/core/style/organize.ts` media os filhos e escrevia no nó da definição, não no desenhado.
+- Prova: mede `at.node.children` (os desenhados), nomeia `at.node.name`, escreve o contêiner em todo portador de `styleHolders` e as margens de cada filho pelo próprio portador. Caso: `style-audit.test.ts` (`display: flex` na cópia e na definição, validador `[]`). Uso real no próximo lote.
+
+## DEF-0653 — num estado como Hover, o inspetor mostrava o valor base do elemento em vez do da classe
+- Status: corrigido (ec8b5361)
+- Sintoma: com `color: red` próprio na base e `.card:hover { color: blue }`, em Hover o campo Cor e a origem diziam vermelho, mas a página mostrava azul.
+- Causa: `src/editor/inspector/style-target.ts` `cascadeSource` olhava primeiro a base do elemento.
+- Prova: `cascadeSource` vai por estado: próprio e classes no estado editado, depois próprio e classes na base; `declaredBorderValues` (`sections.ts`) passou a ler por ele. Caso: `origin.test.ts`. Uso real no próximo lote.
+
+## DEF-0654 — Tocar não fazia nada depois que a animação chegava ao fim
+- Status: corrigido (ec8b5361)
+- Sintoma: na Linha do tempo, tocar até o fim sem repetir e apertar Tocar de novo: o botão piscava e nada se mexia até apertar Parar.
+- Causa: `src/editor/timeline/preview.ts:90-95` o tique pausava logo, porque a agulha já estava na duração.
+- Prova: `playCommand` volta a agulha a 0 quando `time >= durationMs`, antes do primeiro tique; o tique só pausa ao passar a duração. O módulo não tem arquivo de teste; a leitura cobre o único caminho. Uso real no próximo lote.
+
+## DEF-0655 — uma variável de outro tipo era aceita em qualquer campo
+- Status: corrigido (ec8b5361)
+- Sintoma: a variável de cor `--brand` digitada em Largura, Padding, Tamanho da fonte ou Opacidade era aceita; no site a declaração ficava inválida e o elemento voltava ao inicial, sem aviso.
+- Causa: `src/core/style/set.ts:325` `readValue` aceitava qualquer variável existente.
+- Prova: no ramo de variável, o valor que ela guarda tem de passar no `readValue` da propriedade, seguindo cadeias de variáveis uma vez cada (`tokenTaken`); variável de comprimento continua valendo em Largura. Caso: `style-audit.test.ts`. Uso real no próximo lote.
+
+## DEF-0656 — o painel CSS, o campo de declarações e os quadros de movimento aceitavam CSS inválido
+- Status: corrigido (ec8b5361)
+- Sintoma: `width: banana;` ou `opacity: 2px;` no painel CSS era gravado e exportado; um quadro de movimento de opacidade `banana` também.
+- Causa: `src/core/style/custom.ts` `parseDeclarations` e `src/core/motion/commands.ts` não conferiam o valor.
+- Prova: propriedade conhecida tem de passar em `css.supports` (exceto com `var()`), com recusa `status.css.badValue`; `keyframeValueTaken` recusa em setKeyframe/editKeyframe com `status.motion.invalid`. Casos: `style-audit.test.ts`, `motion/commands.test.ts`. Uso real no próximo lote.
+
+## DEF-0657 — o "rolar até" exportado ignorava o movimento reduzido
+- Status: corrigido (ec8b5361)
+- Sintoma: no site exportado, "Clique → Rolar até o elemento" animava a rolagem mesmo com o sistema pedindo menos movimento.
+- Causa: `src/core/events/script.ts:48` `actionJs` escrevia `behavior: 'smooth'` fixo.
+- Prova: `actionJs`, único escritor do script legado, escreve `matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'`. Caso: `events/script.test.ts`. Uso real no próximo lote.
+
+## DEF-0658 — renomear uma classe ou trocar uma cor do site remontava a linha e o foco caía no corpo
+- Status: corrigido (ec8b5361)
+- Sintoma: na vista Estilos, renomear uma classe (ou trocar uma cor em uso pelo próprio campo) remontava a linha; o foco ia para o corpo e as teclas seguintes viravam atalhos do canvas (a parte das Variáveis já estava na DEF-0618).
+- Causa: `src/editor/shell/sidebar/styles.tsx:46` e `src/editor/shell/variables.tsx:213` usavam o nome ou a cor como `key` da linha.
+- Prova: as linhas usam a posição como chave (`key={at}`, `colour-${at}`), que a renomeação mantém (`renameClassPatches` reescreve no lugar); o React atualiza a mesma linha e o campo guarda o foco. Uso real no próximo lote.
+
+## DEF-0659 — com o foco no corpo, Backspace, Ctrl+A, Ctrl+D e setas agiam no canvas
+- Status: corrigido (ec8b5361)
+- Sintoma: com o foco perdido para o corpo da página, Backspace para corrigir uma letra excluía o elemento selecionado; Ctrl+A, Ctrl+D, Ctrl+X, Enter e setas também agiam (só as letras esperavam).
+- Causa: `src/editor/input/keymap.ts:525` `onKeyDown` só segurava as letras quando o canvas não fora escolhido.
+- Prova: `waitsForChoice`/`onBody` (`keymap.ts:252-266`) e o portão em `onKeyDown` (`:525-539`) seguram toda tecla do canvas ou das Camadas e todo comando desfazível, com `status.keys.notChosenKey`; Esc, Ctrl+Z, Ctrl+K e F6 seguem. Caso: `keymap.test.ts` "makes every key of the canvas ... wait". Uso real no próximo lote.
+
+## DEF-0660 — campos fora do registro de digitação perdiam o texto a cada mensagem de status
+- Status: corrigido (ec8b5361)
+- Sintoma: "24" digitado na margem do modelo de caixa (sem Enter) sumia quando chegava qualquer mensagem (assistente, importação, autosave); sair do campo não gravava nada. O mesmo nas variáveis, cores do site e nome de classe.
+- Causa: `src/editor/shell/inspector-controls.tsx:441` (e os campos de `variables.tsx` e `sidebar/styles.tsx`) reescreviam o campo num `useEffect` sobre `state.message`.
+- Prova: os quatro campos passam pelo novo `useKeptField` (`field.tsx:208-285`) sobre `heldDraft`, que aceita os comandos próprios do campo (`held-draft.ts:27-44`); gravam no contexto da primeira tecla (G1) e em toda saída (G2). Uso real no próximo lote.
+
+## DEF-0661 — Esc num menu ou campo dentro de um diálogo fechava o diálogo inteiro
+- Status: corrigido (ec8b5361)
+- Sintoma: no diálogo Breakpoints, Esc no menu da lixeira fechava o diálogo; em Guias e grades, Esc no campo de posição da guia também.
+- Causa: `src/editor/input/keymap.ts:419` o atalho de Esc do diálogo chamava `ui.dismiss` sem conhecer as camadas internas.
+- Prova: Esc pede primeiro o fechamento da camada interna marcada `data-inner-layer` (`src/editor/input/inner-layer.ts`, `keymap.ts:419-425`); o Popover sobre diálogo (`popover.tsx:87-101`) e o campo da guia a usam e devolvem o foco ao abridor (DCS-041). Fora de diálogo nada muda. Uso real no próximo lote.
+
+## DEF-0662 — a posição de guia digitada sem Enter se perdia ao sair do campo
+- Status: corrigido (ec8b5361)
+- Sintoma: Guias e grades › Adicionar guia horizontal, digitar "120" e clicar noutro lugar ou Tab: o campo fechava sem guia e sem aviso.
+- Causa: `src/editor/shell/guides-grids.tsx:72` `onBlur={() => setOpen(false)}` fechava o campo descartando o texto.
+- Prova: o campo passa pelo `heldDraft` (`guides-grids.tsx:72-168`): sair, tocar fora ou fechar o diálogo grava `guides.add` no contexto da digitação; vazio fecha calado; Enter grava e devolve o foco ao abridor. Uso real no próximo lote.
+
+## DEF-0663 — Shift+Alt dava três passos diferentes nas três portas do campo numérico
+- Status: corrigido (ec8b5361)
+- Sintoma: Largura 100px: Shift+Alt+roda dava 110px, Shift+Alt+botão de passo 101px e Shift+Alt+seta não fazia nada.
+- Causa: `src/editor/shell/field.tsx:146` a roda deixava o Shift vencer e `keymap.ts` não aceitava duas teclas seguradas (G3).
+- Prova: `modifiersHeld`/`stepModifier` (`src/editor/input/pointer/press.ts:96-114`) são usados pela roda, botão, arraste do rótulo e teclas: com duas teclas, passo ×1 (DCS-040). Caso: `keymap.test.ts` (Shift+Alt+ArrowUp liga `field.step` sem modificador). Uso real no próximo lote.
+
+## DEF-0664 — vírgula decimal recusada em Guias e grades, e ",5" recusado em todo campo
+- Status: corrigido (ec8b5361)
+- Sintoma: em pt-BR, a guia em "12,5" ou a grade em "1,5" era recusada como não-número; nos campos de estilo, ",5rem" era recusado.
+- Causa: `src/editor/input/held-draft.ts:57` `typedNumber` não lia a vírgula e `src/core/style/set.ts:283` exigia dígito antes dela.
+- Prova: `typedNumber` lê a vírgula como ponto (listas como "1,2,3" seguem NaN) e o leitor de estilo usa `decimalPoint` do novo `src/core/style/decimal.ts`. Casos: `held-draft.test.ts`, `style-audit.test.ts` (",5rem" → ".5rem"). Uso real no próximo lote.
+
+## DEF-0665 — o Tab saía da barra de comandos, marcada como modal
+- Status: corrigido (ec8b5361)
+- Sintoma: Ctrl+K e Tab além das pílulas de escopo levava o foco aos controles do editor sob o fundo, com a barra aberta.
+- Causa: `src/editor/shell/command-bar.tsx:172` não tinha a armadilha de foco que `dialog.tsx` usa.
+- Prova: a armadilha virou `FocusEdge` (`dialog.tsx:48-63`) e a barra a põe antes e depois do painel (`command-bar.tsx:172-175,261`): Tab após a última pílula volta ao campo e Shift+Tab antes do campo vai à última pílula. Uso real no próximo lote.
+
+## DEF-0666 — a amostra de um campo de cor com variável ficava em branco
+- Status: corrigido (ec8b5361)
+- Sintoma: Fundo `var(--brand)`: a amostra do campo, a do painel rápido e o "Anterior" do seletor ficavam vazios, sem cor e sem xadrez.
+- Causa: `src/editor/shell/field.tsx:1102` punha `var(--brand)` em `--swatch-colour`, que o documento do editor não resolve.
+- Prova: `swatchColour(text, tokens)` (`field.tsx:76-90`) troca cada `var()` pelo valor da variável (apelidos seguidos), senão o reserva, senão `transparent`; usado no campo, no painel rápido, no "Anterior" (`color.tsx`) e nas variáveis (`variables.tsx:170`). Uso real no próximo lote.
+
+## DEF-0667 — elemento oculto com `display` próprio aparecia no site exportado
+- Status: corrigido (ec8b5361)
+- Sintoma: uma Linha (com `display: flex`) oculta sumia do canvas, mas aparecia no `index.html` exportado; o mesmo em Barra de navegação, Galeria, Coluna e Grade.
+- Causa: `src/core/render/base.ts:25` não tinha regra que vencesse o `display` do autor sobre `[hidden]`.
+- Prova: `baseCss()`, base única do canvas e da exportação, ganhou `[hidden] { display: none !important; }`, como `[data-hidden]` no canvas (G7). Caso: `export.test.ts:144` "keeps a hidden element…". Uso real no próximo lote.
+
+## DEF-0668 — caixas inline-block ganhavam um espaço na exportação e quebravam a linha
+- Status: corrigido (ec8b5361)
+- Sintoma: duas Divs `inline-block` de 50% lado a lado no canvas: no site e na Prévia um espaço entre elas jogava a segunda para a linha de baixo.
+- Causa: `src/core/export/export.ts:249` `runsOn` só considerava inline as tags de fraseado.
+- Prova: `runsOn` conta como inline o filho cujo `display` próprio ou de classe, em qualquer breakpoint ou estado, começa com `inline` (`displaysOf`, `export.ts:249-257,298`), e os escreve sem espaço, como o canvas. Caso: `export.test.ts` "writes inline-block children on one line". Uso real no próximo lote.
+
+## DEF-0669 — Abas exportadas com painéis inventados que a pessoa não edita
+- Status: corrigido (ec8b5361)
+- Sintoma: Abas inseridas mostravam um painel; no site, a segunda aba mostrava só o próprio rótulo, sem edição possível, e painéis acrescentados ficavam visíveis; um nav+div qualquer também virava abas.
+- Causa: `src/core/events/script.ts:16-22` reconhecia abas pela forma e criava painéis no script.
+- Prova: o modelo `template-tabs` (`manifest/elements.json:12534`) tem três painéis reais com `data-wc-*`, ligados pelo `widgets.js`; saiu o reconhecimento por forma e `pageUsesWidgets` liga o script por `data-wc*`. Casos: `export.test.ts` (inclui "leaves a person's own nav of buttons above a box alone"). Uso real no próximo lote.
+
+## DEF-0670 — Modal exportado com um botão "Open dialog" que o canvas não mostra
+- Status: corrigido (ec8b5361)
+- Sintoma: num site pt-BR, o Modal ganhava na exportação um botão "Open dialog", em inglês, que não se seleciona nem traduz; um segundo Modal abria o diálogo do primeiro.
+- Causa: `src/core/events/script.ts:16-22` criava o abridor do modal no site.
+- Prova: o modelo `template-modal` (`elements.json:12676`) traz um Botão abridor real (`template.modal.open`, `data-wc-open`) e `withFreeHtmlIds` (`src/core/structure/insert.ts:211-222`) faz `data-wc-open` seguir o id renomeado. Casos: `export.test.ts` "inserts its opener before the dialog…" e "a second Modal opens its own dialog". Uso real no próximo lote.
+
+## DEF-0671 — a Prévia de uma página numa pasta não rodava os scripts do site
+- Status: corrigido (ec8b5361)
+- Sintoma: em `blog/post.html`, a Prévia não trocava abas, não abria modal nem tocava movimento; em `index.html` funcionava.
+- Causa: `src/core/export/export.ts:565` `previewPage` procurava a tag do script com o caminho da raiz, diferente do escrito na página da pasta.
+- Prova: escritor e Prévia montam a tag pela mesma função e o mesmo `from` (`PREVIEW_BASE`, `deferredScriptTag`, `moduleScriptTag`, `export.ts:270-278`), incluindo widgets e o módulo do app. Caso: `export.test.ts` "runs the scripts of a page in a folder". Uso real no próximo lote.
+
+## DEF-0672 — a Prévia corrompia a página com `$'` ou `</style` no CSS
+- Status: corrigido (ec8b5361)
+- Sintoma: a fonte `"Cost $' Sans"` (válida e exportada certo) cortava a folha de estilo na Prévia e colava o resto do HTML dentro do `<style>`.
+- Causa: `src/core/export/export.ts:587` `replace` com texto expandia os padrões `$` e não escapava `</style`.
+- Prova: o `replace` final recebe uma função e o CSS tem `</style` escapado (`export.ts:587-589`), como o caminho capturado. Caso: `export.test.ts` "writes the stylesheet as it is, with $ patterns and </style". Uso real no próximo lote.
+
+## DEF-0673 — o canvas continuava desenhando uma imagem excluída
+- Status: corrigido (ec8b5361)
+- Sintoma: excluir `img/logo.png` no Explorador deixava o logo no canvas, enquanto Prévia, exportação e recarga mostravam imagem quebrada; o inverso com imagem enviada depois do caminho digitado.
+- Causa: `src/editor/canvas/render/render.ts:622` `apply` só remontava quando os bytes de um caminho existente mudavam.
+- Prova: `apply` remonta quando o conjunto de caminhos muda ou os bytes de um caminho mudam (`render.ts:622-630`); `mount` é o render do zero (G7). Caso: `file-bytes.test.ts` "stops drawing a deleted file and draws one uploaded at a path already named". Uso real no próximo lote.
+
+## DEF-0674 — o Quadro incorporado nascia com 420 px, mais largo que o Celular
+- Status: corrigido (ec8b5361)
+- Sintoma: um Quadro incorporado no Celular (390 px) vazava da tela e o site rolava de lado; pior dentro de uma Seção com padding.
+- Causa: `src/core/render/base.ts:46` não limitava a largura de iframes.
+- Prova: a base única do canvas e da exportação ganhou `:where(iframe) { max-width: 100%; }`, que vale também para iframes importados; os 420 px valem em telas largas. Uso real no próximo lote.
+
+## DEF-0675 — a pílula "Editando {estado}" cobria o canto superior direito da página
+- Status: corrigido (ec8b5361)
+- Sintoma: com "Entrar" (topo direito) selecionado e o estado Hover, a pílula rosa cobria metade de "Entrar" (G4).
+- Causa: `src/editor/shell/window-overlays.css:508` `.canvas-state-badge` era `position: absolute` sobre `.frame__view`.
+- Prova: a pílula virou faixa no fluxo da coluna `.frame`, como a faixa do breakpoint (`window-overlays.css:508-523`, `canvas.tsx:268-269,357-360`); `.frame__view` começa abaixo dela e as abas seguem primeiro (D-1). Uso real no próximo lote.
+
+## DEF-0676 — rótulo e chip da seleção sobre as palavras da faixa do breakpoint
+- Status: corrigido (ec8b5361), em parte; o caso restante fica com o dono (DCS-036)
+- Sintoma: no Tablet, selecionar o cabeçalho ou o hero punha rótulo e chip sobre "Tablet · 834 px — as edições valem para esta tela…".
+- Causa: `src/editor/shell/window-overlays.css:529` as palavras da faixa começavam à esquerda, onde DEC-70 põe o rótulo.
+- Prova: `justify-content: safe flex-end` nas duas faixas (`window-overlays.css:529-548`) leva as palavras ao fim e, mais largas que a faixa, de volta ao início sem cortar. Uso real no próximo lote.
+
+## DEF-0677 — a barra superior andava 14 px a cada "Salvando…"
+- Status: corrigido (ec8b5361)
+- Sintoma: a cada "Salvo" → "Salvando…" → "Salvo", a busca de comandos, Desfazer, Refazer e o separador andavam de lado (em inglês também).
+- Causa: `src/editor/shell/status-bar.tsx:312` `TopBarSaveState` tinha a largura do texto do estado atual.
+- Prova: as palavras dos quatro estados ficam numa célula `inline-grid` (`status-bar.tsx:282,312-325`, `top-bar.css:108-122`), só a atual visível; a célula tem a largura da maior no idioma. Uso real no próximo lote.
+
+## DEF-0678 — no painel Dados, o nome de um campo aparecia cortado ("descrica")
+- Status: corrigido (ec8b5361)
+- Sintoma: um campo `descricao` do tipo "Sim ou não" ou "Texto rico" mostrava "descrica"; com a barra de 224 px sobravam cerca de 40 px para o nome.
+- Causa: `src/editor/data/panel.css:79` a caixa do nome dividia a linha com o menu do tipo e Excluir.
+- Prova: o nome tem `flex: 1 1 100%` e ocupa a primeira linha; o `flex-wrap` da linha leva tipo e Excluir para a seguinte (`panel.css:79-84`); DEF-0612 e DEF-0614 continuam valendo. Uso real no próximo lote.
+
+## DEF-0679 — pt-BR dizia "inspector" em dois textos da gravação
+- Status: corrigido (ec8b5361)
+- Sintoma: em pt-BR, Gravar na Linha do tempo mostrava "alterações no inspector viram quadros-chave"; quinze outros textos dizem "inspetor".
+- Causa: `src/i18n/locales/pt-BR.json` `motion.timeline.recording` e `status.motion.recordOn` tinham a palavra em inglês.
+- Prova: os dois textos dizem "inspetor"; gerador rodado. Uso real no próximo lote.
+
+## DEF-0680 — Camadas: o botão de escolher alvo cobria a etiqueta da linha ("butto◎n")
+- Status: corrigido (ec8b5361)
+- Sintoma: ao escolher um alvo em Interações ou na Linha do tempo, o ícone de alvo ficava sobre a etiqueta de cada linha de Camadas.
+- Causa: `src/editor/shell/sidebar.css:656` a etiqueta não cedia ao botão de escolha e `layers.tsx` não o contava em `--row-actions`.
+- Prova: a etiqueta some com `.row__button` na faixa (`sidebar.css:656-660`), como diante de uma ação rotulada, e `picks` entra em `--row-actions` nas mesmas condições em que o botão é desenhado (`layers.tsx:237-239,291`). Uso real no próximo lote.
+
+## DEF-0681 — mensagem de exclusão com "as 1 referências" e "3 saiu da página"
+- Status: corrigido (ec8b5361)
+- Sintoma: excluir uma seção citada por um link dizia "as 1 referências que apontavam para lá saíram junto"; três elementos excluídos davam "3 saiu da página".
+- Causa: `src/core/structure/remove.ts:66` passava o número como texto em `{name}`, sem plural.
+- Prova: a contagem vai como `count` numérico, e `translate` escolhe `.one`; vários elementos usam `status.deletedMany.cited` (`remove.ts:66-77,94`, catálogos en e pt-BR). Uso real no próximo lote.
+
+## DEF-0682 — "Este gatilho não se aplica a …" nomeava o que não é elemento
+- Status: corrigido (ec8b5361)
+- Sintoma: uma animação inexistente ("fadeIn") numa ação dava "Este gatilho não se aplica a fadeIn."; o mesmo texto vinha com o rótulo de uma ação ou o id cru de um alvo excluído.
+- Causa: `src/core/events/interactions.ts:143` usava a recusa genérica para toda falha das opções.
+- Prova: cada recusa nomeia o que falhou: `noAnimation`, `noValue`, `noField`, `targetMissing`, e `notApplicable` fica só para gatilho/ação, sempre com `{element}` (`interactions.ts:10-12,143-338`). Uso real no próximo lote.
+
+## DEF-0683 — pílulas do canvas com texto branco sobre cores claras (2,5 a 3:1)
+- Status: corrigido (ec8b5361)
+- Sintoma: no tema escuro, a pílula "Pôr lado a lado em linha", a pílula recusada e o valor do espaço igual eram brancos sobre azul e vermelho claros; no claro, o valor do espaço dava 4,25:1.
+- Causa: `src/editor/shell/canvas.css:994` (e vizinhos em `window-overlays.css`, `canvas-editing.css`) usavam branco fixo como tinta.
+- Prova: tintas por tema `--color-on-canvas-drop`, `--color-on-danger`, `--color-on-canvas-measure` (`src/ui/tokens.css:201-206,274-277,345-348`), de 4,95:1 a 7,56:1, conferidas por `tokens.test.ts` em cada tema. Uso real no próximo lote.
+
+## DEF-0684 — pt-BR "Editando Ao passar o mouse", com maiúscula no meio da frase
+- Status: corrigido (ec8b5361)
+- Sintoma: em pt-BR, o estado Hover mostrava "Editando Ao passar o mouse" ("Editando Foco visível").
+- Causa: `src/i18n/locales/pt-BR.json` `canvas.badge.editingState` punha o rótulo de menu do estado no meio da frase.
+- Prova: o texto é "Editando: {state}" / "Editing: {state}". Uso real no próximo lote.
+
+## DEF-0685 — pt-BR usava "Excluir" e "Apagar" para o mesmo comando
+- Status: corrigido (ec8b5361)
+- Sintoma: elementos, variáveis, páginas e coleções diziam "Excluir"; classes e arquivos do Explorador diziam "Apagar" (10 textos).
+- Causa: `src/i18n/locales/pt-BR.json` `command.classes.delete`, `dialog.classes.delete`, `dialog.deleteFiles.message`, `explorer.deleteRow` e vizinhos usavam "Apagar".
+- Prova: os dez textos dizem "Excluir"/"excluída"; `i18n.test.ts:92-100` acompanha. "serão apagados" do histórico em `dialog.newBlankPage.message` fica, por não ser o comando Excluir. Uso real no próximo lote.
+
+## DEF-0686 — a recusa de `element.setDivider` sem `{property}` quebrava a barra de status
+- Status: corrigido (ec8b5361)
+- Sintoma: `element.setDivider` com valor não numérico (pela paleta de comandos ou o assistente) mostrava o texto de falha da região em vez da recusa, e gerava incidente.
+- Causa: `src/core/style/divider.ts:64` a recusa `status.value.invalid` não passava `property`.
+- Prova: passa `property: propertyName(ARGS.basis, rules)` (`divider.ts:16,64-65`), como os outros chamadores; `formatMessage` não lança mais. Uso real no próximo lote.
+
+## DEF-0687 — números de dados: prévia, filtro e nomes de página fora do formato do site
+- Status: corrigido (ec8b5361)
+- Sintoma: depois da DEF-0620, a prévia da importação ainda mostrava outro texto que o gravado, o filtro "contém 6,5" não achava 6.5 e os nomes das páginas de item usavam "6.5".
+- Causa: `src/editor/data/preview.tsx:30` e `src/core/data/collections.ts:448` não usavam o formato do site.
+- Prova: a prévia mostra o que será gravado (`preview.tsx:30-38,78`), o filtro casa os dígitos com qualquer marca decimal (`collections.ts:448-449`) e os nomes usam `cellText` (`commands.ts:448-449`, `pages.tsx:28-41`). Uso real no próximo lote.
+
+## DEF-0688 — Sim/Não na página seguia o idioma do editor, não o do site
+- Status: corrigido (ec8b5361)
+- Sintoma: num site pt-BR com o editor em inglês, os booleanos ligados mostravam "Yes"/"No"; trocar o editor para português e mexer em algo virava "Sim"/"Não": o texto publicado dependia de quem editou por último.
+- Causa: `src/core/data/bindings.ts:83` `valueFor` lia as palavras de `context.words`, do idioma da interface.
+- Prova: `siteYesNo(document.language)` lê dos catálogos do idioma do site (`bindings.ts:7-8,65-71,83`), como `export/names.ts`; o parâmetro `DataContext` saiu de `valueFor`, `fillNode`, `fillTree`, `writeBack`. Uso real no próximo lote.
+
+## DEF-0689 — "1.500" de um CSV pt-BR era gravado como 1.5
+- Status: corrigido (ec8b5361)
+- Sintoma: preços "1.500" e "2.300" viravam 1.5 e 2.3 e o site mostrava "1.5", com a prévia dizendo "1.500"; "1.234,56" fazia a coluna toda virar Texto.
+- Causa: `src/core/data/collections.ts:44` `readNumber` lia o ponto sempre como decimal.
+- Prova: uma marca de grupo antes de três dígitos é milhar quando o idioma agrupa com ela; formas inequívocas valem em qualquer idioma, marcas misturadas são recusadas (`collections.ts:44-88`); os chamadores passam `document.language`. Casos: `collections.test.ts:65-66,293-307`. Uso real no próximo lote.
+
+## DEF-0690 — CSV com ";" (Excel pt-BR) recusado ou lido como uma coluna
+- Status: corrigido (ec8b5361)
+- Sintoma: `produto;preco` / `Café;6,50` dava "A linha 2 … tem mais células que as suas 1 colunas"; sem vírgula decimal virava uma coluna de texto "produto;preco".
+- Causa: `src/core/data/readers.ts:107` `readDelimited` usava sempre a vírgula.
+- Prova: `delimiterOf` conta `,` `;` e tab fora de aspas no cabeçalho (`;` vence empate) e `semicolonsAsTabs` entrega o arquivo como TSV equivalente (`readers.ts:107-150,317`). O "Preencher com dados" (`src/core/design/data.ts:22`) fica para a rodada 2. Caso: `readers.test.ts:58-66`. Uso real no próximo lote.
+
+## DEF-0691 — CSV do Excel em Windows-1252 recusado
+- Status: corrigido (ec8b5361)
+- Sintoma: um CSV salvo pelo Excel no Windows pt-BR ("Pão" com 0xE3) era recusado com `status.data.fileEncoding`.
+- Causa: `src/core/data/readers.ts:101` `textOf` só aceitava UTF-8.
+- Prova: quando o UTF-8 estrito falha, os bytes são lidos como windows-1252; a recusa fica para texto com controle C0 (fora tab, LF, CR) ou DEL (`readers.ts:47-49,101-118`). Caso: `readers.test.ts:56,64-65`. Uso real no próximo lote.
+
+## DEF-0692 — CEP e códigos com zero à esquerda eram tomados como Número
+- Status: corrigido (ec8b5361)
+- Sintoma: CEP "01310100" virava 1310100 e um código de 17 dígitos perdia precisão.
+- Causa: `src/core/data/collections.ts:212` `guessType` adivinhava Número para qualquer coluna de dígitos.
+- Prova: `digitCode` (`collections.ts:196-206`) impede Número quando uma célula tem zero antes de outro dígito ou mais de 15 dígitos significativos; "0" e "0,5" seguem números. Caso: `collections.test.ts:302-304`. Uso real no próximo lote.
+
+## DEF-0693 — importar com "Substituir" soltava as páginas de item
+- Status: corrigido (ec8b5361)
+- Sintoma: reimportar com "Substituir" numa coleção com "Uma página por item" soltava cada página do seu item e esvaziava os links dos cartões.
+- Causa: `src/core/data/collections.ts:308` `importRows` dava ids novos a todos os itens.
+- Prova: em `replace`, a linha n fica com o id do item n, ou do item com a mesma chave quando há chave; cada id uma vez (`replacedId`, `collections.ts:293-326`); `materialize` acha o `dataItem` e `fillNode` mantém o `href`. Caso: `collections.test.ts:170-179`. Uso real no próximo lote.
+
+## DEF-0694 — link `javascript:` passava precedido de um caractere de controle
+- Status: corrigido (ec8b5361)
+- Sintoma: o href `\u0001javascript:alert(document.cookie)` (digitado, importado num CSV, colado ou escrito pelo assistente) era gravado e exportado; o navegador tira o controle e o clique rodava o script.
+- Causa: `src/core/elements/address.ts:55` `readAddress` lia o esquema sem olhar controles C0.
+- Prova: `readAddress` recusa todo valor com C0 ou DEL antes do esquema (`holdsControl`, `address.ts:37-44,55-59`), com `status.url.unsafe` quando o esquema limpo é perigoso; todo escritor de endereço e o validador passam por ele, e as células de imagem também (`collections.ts:139-140`). Casos: `link.test.ts:94-96`, `collections.test.ts:92-94`. Uso real no próximo lote.
+
+## DEF-0695 — "sobre.html" digitado como endereço virava "https://sobre.html"
+- Status: corrigido (ec8b5361)
+- Sintoma: um link `sobre.html`, uma imagem `foto.jpg` ou `contato.html#form` virava domínio `https://…`, quebrado no site.
+- Causa: `src/core/elements/address.ts:76` tomava todo `nome.ext` por domínio.
+- Prova: quando o primeiro segmento termina numa extensão de arquivo do site, o valor fica caminho relativo (`fileName`, `address.ts:37-39,76`); "example.com/manual.pdf" segue https. Casos: `link.test.ts:97-100`. Uso real no próximo lote.
+
+## DEF-0696 — máscara numérica numa página em inglês transformava "2.5" em 25
+- Status: corrigido (ec8b5361)
+- Sintoma: num site em inglês, a máscara Número (ou Moeda, Percentual) sem Locale mostrava "25" para "2.5" e enviava 25.
+- Causa: `src/core/forms/engine.ts:162` `numeric` caía em pt-BR por padrão.
+- Prova: o locale é `config.locale ?? pageLocale ?? 'en'` (`engine.ts:162-185,234-265`); o runtime passa `locale()` e a prévia das configurações recebe o idioma da página pela porta `language` (`settings.tsx`, `inspector.tsx:111-112`). Uso real no próximo lote.
+
+## DEF-0697 — máscaras em "es" e "pt-PT" apagavam a vírgula decimal
+- Status: corrigido (ec8b5361)
+- Sintoma: Locale `es` e Moeda EUR: digitar `12,50` mostrava "1250 €".
+- Causa: `src/core/forms/engine.ts:162` `marksOf` lia a marca de grupo de um número de 4 dígitos, que esses locales não agrupam.
+- Prova: a marca de grupo vem de 1234567 com `useGrouping: true` e nunca é igual à decimal (`engine.ts:162-167`). Caso: `engine.test.ts:54`. Uso real no próximo lote.
+
+## DEF-0698 — unidade com dígito ("m2") era lida dentro do número
+- Status: corrigido (ec8b5361)
+- Sintoma: Medida com sufixo `m2`: a cada tecla o "2" entrava no número ("12,52 m2", "12,522 m2").
+- Causa: `src/core/forms/engine.ts:177` os dígitos eram lidos com o sufixo.
+- Prova: o sufixo final (e `%` no percentual) é cortado antes da leitura (`engine.ts:177-181`); "12,5 m2" fica estável. Caso: `engine.test.ts:56`. Uso real no próximo lote.
+
+## DEF-0699 — as regras número, mínimo e máximo recusavam "6,50" numa página pt-BR
+- Status: corrigido (ec8b5361)
+- Sintoma: um campo de texto sem máscara com Tipo número ou Mínimo 1 dava erro para `6,50` num site pt-BR.
+- Causa: `src/core/forms/engine.ts:282` comparava `Number(raw)`, que não lê a vírgula (e `Number('')` dava 0).
+- Prova: sem máscara, o texto é lido com as marcas da página (`plainNumber`); com máscara ou input numérico, o valor cru; texto sem número é NaN (`engine.ts:282-287`, `types.ts:63-64`, `runtime.ts:86`). Casos: `engine.test.ts:58-59`. Uso real no próximo lote.
+
+## DEF-0700 — os textos do site para o visitante saíam sempre em português
+- Status: corrigido (ec8b5361)
+- Sintoma: num site em inglês, erros e dica do runtime de app, rótulos do lightbox, carrinho ("Carrinho", "Menos", "Mais", "Remover"), saudação do pedido, "Total:", assunto "Pedido" e o LEIA-ME.md dos pacotes saíam em português.
+- Causa: `src/editor/app-runtime/runtime.js:173` (e `src/editor/widgets/widgets.js`, `src/core/export/packages.ts:334`) tinham os textos fixos no código.
+- Prova: `withSiteWords` (`src/editor/app-runtime/words.ts`) grava uma tabela por idioma dos catálogos e os runtimes escolhem por `<html lang>`; `readme` usa `export.readme.*` do idioma do projeto; todos os caminhos passam por `siteScripts` (G7). Caso: `src/editor/widgets/words.test.ts`. Uso real no próximo lote.
+
+## DEF-0701 — componente inutilizável depois de excluir um elemento que a definição citava
+- Status: corrigido (rodada 2 da auditoria, 2026-10-21)
+- Sintoma: um botão do componente que abria um painel da página; excluído o painel, todo Inserir, Repetir ou Preencher do componente era recusado.
+- Causa: `src/core/document/tree.ts` `releaseReferencesPatch` só percorria as páginas, nunca as definições de componente.
+- Prova: a limpeza inclui as definições, o validador recusa referência morta e a migração solta as antigas; sonda `probe-components.ts` caso c sem problemas; casos em `references-follow.test.ts` e `migrations.test.ts`.
+
+## DEF-0702 — estilo numa instância chegava a uma instância travada
+- Status: corrigido (rodada 2 da auditoria, 2026-10-21)
+- Sintoma: com duas instâncias de um componente e uma travada, mudar a cor de uma parte na outra mudava também a travada (o mesmo ao colar estilo ou redimensionar).
+- Causa: `src/core/style/set.ts`: a trava só era conferida no elemento selecionado, não nos elementos de página que a escrita alcança.
+- Prova: `styleLockRefusal` em todos os escritores de estilo (inclusive `pasteStyle` e `geometry.resize`); `styleHolders` deixa de fora o que está travado; sonda recusa com `status.locked.byAncestor`; caso em `set.test.ts`.
+
+## DEF-0703 — Hover e Focus de uma classe nunca apareciam no canvas
+- Status: corrigido (rodada 2 da auditoria, 2026-10-21)
+- Sintoma: estado Hover com a classe `.card` como alvo: a cor nova não aparecia no canvas, só no site exportado.
+- Causa: `src/editor/canvas/render/render.ts` `previewState` juntava os valores da classe no nível errado.
+- Prova: os valores da classe entram na chave do estado antes dos do elemento; caso em `render.test.ts` que falha antes e passa depois.
+
+## DEF-0704 — região compartilhada apontava para os elementos da primeira página
+- Status: corrigido (rodada 2 da auditoria, 2026-10-21)
+- Sintoma: cabeçalho compartilhado com um botão que abre um menu: nas outras páginas o botão procurava o menu da página de origem e não abria nada.
+- Causa: `src/core/data/regions.ts` `conform` copiava alvos de interação e referências sem remapear por página.
+- Prova: alvos, referências, links e cores de camada passam a apontar para os elementos de cada página; casos em `content.test.ts`.
+
+## DEF-0705 — referências ARIA de uma cópia apontavam para o original
+- Status: corrigido (rodada 2 da auditoria, 2026-10-21)
+- Sintoma: atualizar um componente cujo rótulo usa `for` ou `aria-labelledby`: nas outras instâncias o rótulo nomeava o campo da instância editada.
+- Causa: `src/core/document/clone.ts` `refreshCopiedIdentities` renomeava ids HTML sem seguir quem os citava.
+- Prova: mapa explícito de ids (`htmlIdMapOf`) seguido por `for`, `href="#…"`, `aria-*`, `headers` e `list`; caso em `component-update.test.ts`.
+
+## DEF-0706 — "Preencher com dados" lia mal o CSV com ponto e vírgula
+- Status: corrigido (rodada 2 da auditoria, 2026-10-21)
+- Sintoma: o CSV que o Excel salva em pt-BR (separado por ";") virava uma coluna só em Preencher com dados, embora o painel Dados o lesse certo.
+- Causa: `src/core/design/data.ts` `csvLines` só aceitava vírgula.
+- Prova: `delimiterOf` único para os dois caminhos (vírgula, ponto e vírgula, tabulação); caso em `design/data.test.ts`.
+
+## DEF-0707 — não havia como escolher as casas decimais de um campo de número
+- Status: corrigido (rodada 2 da auditoria, 2026-10-21)
+- Sintoma: um preço importado como "6" não podia passar a mostrar "6,00", só trocando a coluna para Texto.
+- Causa: `Field.decimals` existia no modelo, mas nenhuma porta o editava (`src/editor/data`).
+- Prova: `data.setField` com `decimals` (0 a 10, só em campo de número, recusas próprias) e menu ao lado do tipo; cenários em `25-content.json` e casos em `collections.test.ts`.
+
+## DEF-0708 — projeto grande demais enviado à nuvem sem aviso
+- Status: corrigido (rodada 2 da auditoria, 2026-10-21)
+- Sintoma: um projeto acima do limite do arquivo era enviado à nuvem e depois não abria; um salvamento que dava exceção deixava "Salvando…" para sempre.
+- Causa: `src/editor/cloud/cloud.ts` não conferia `PROJECT_FILE_LIMITS` e tratava só a resposta de erro, não a exceção.
+- Prova: `projectOverLimit` compartilhado com Salvar; a barra diz "Não salvo — projeto grande demais"; a exceção vira falha com nova tentativa; caso em `archive.test.ts`.
+
+## DEF-0709 — edições perdidas depois de "Alterado em outro dispositivo"
+- Status: corrigido (rodada 2 da auditoria, 2026-10-21)
+- Sintoma: com o aviso de conflito, as edições desta aba eram marcadas como salvas; Recarregar ou fechar a aba as descartava sem perguntar.
+- Causa: `src/editor/cloud/cloud.ts`: o conflito marcava a revisão local como salva.
+- Prova: sair pergunta antes; "Manter esta versão" grava a versão da aba sobre a outra (`cloud-bar.tsx`, `keepCloudVersion`); Recarregar avisa que descarta.
+
+## DEF-0710 — rascunho de um projeto da nuvem restaurado em outro projeto
+- Status: corrigido (rodada 2 da auditoria, 2026-10-21)
+- Sintoma: digitação pendente no projeto A e a mesma aba aberta no projeto B pela nuvem: o texto de A aparecia em B; e `?project=` vazio ou sem configuração da nuvem mexia na trava de edição.
+- Causa: `src/editor/persistence/drafts.ts` guardava o rascunho numa chave única; `cloudProjectId()` aceitava id vazio e modo sem nuvem.
+- Prova: rascunho por projeto (`lockedProject()` em `tab-guard.ts`); `cloudProjectId()` devolve nulo nos dois casos.
+
+## DEF-0711 — falha ao abrir projeto da nuvem com texto técnico em inglês
+- Status: corrigido (rodada 2 da auditoria, 2026-10-21)
+- Sintoma: abrir pelo painel um projeto excluído mostrava "Não foi possível abrir este projeto" e, embaixo, "project not found" ou o erro cru do Supabase.
+- Causa: `src/main.tsx` `stopWith` mostrava a mensagem técnica; título e link eram texto fixo no código.
+- Prova: título, motivo e link vêm dos catálogos no idioma do navegador (`cloud.open.*`); o detalhe técnico fica no erro lançado (console e feed).
+
+## DEF-0712 — README dos apps exportados em português num site sem idioma
+- Status: corrigido (rodada 2 da auditoria, 2026-10-21)
+- Sintoma: exportar como Android ou desktop um projeto sem idioma definido gerava LEIA-ME em português, embora o site saísse com `lang="en"`.
+- Causa: `src/core/export/packages.ts` `appIdentity` caía em `'pt-BR'`.
+- Prova: usa `pageLanguage`, como o `<html lang>`; caso em `packages.test.ts`; os cenários de `28-export-packages.json` esperam README.md para o Aurora (site em inglês).

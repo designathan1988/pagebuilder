@@ -226,7 +226,7 @@ async function typeAndClose(close: Close): Promise<{ readonly closed: boolean; r
   expect(field, 'the panel drew the opacity field').toBeDefined();
   if (field === undefined) throw new Error('no opacity field');
   const before = JSON.stringify(store.getState().document);
-  type(field, '0.37');
+  type(field, '37');
   expect(heldTyping()?.field, 'the field holds the typing').toBe(field);
   if (close === 'Esc') await act(async () => void field.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', bubbles: true, cancelable: true })));
   if (close === 'Ctrl+Shift+Q') await act(async () => void field.dispatchEvent(new KeyboardEvent('keydown', { key: 'Q', code: 'KeyQ', ctrlKey: true, shiftKey: true, bubbles: true, cancelable: true })));
@@ -634,7 +634,7 @@ describe('the context of the first key (G1)', () => {
     const store = storeOf();
     const first = leaves(store)[0]?.id;
     dispatch(store, 'selection.select', { target: first });
-    dispatch(store, 'style.set', { property: 'opacity', value: '0.5' });
+    dispatch(store, 'style.set', { property: 'opacity', value: '50' });
     const drawn = mount(store, createElement(Field, { entry: door('style.set#inspector-opacity') }));
     await frames(2);
     const held = drawn.host.querySelector<HTMLInputElement>('input.input')?.value ?? null;

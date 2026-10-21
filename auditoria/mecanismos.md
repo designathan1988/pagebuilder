@@ -281,3 +281,9 @@ Os mecanismos de verificação construídos a partir de `auditoria/investigacao/
 
 ## MEC-28 — rótulo de várias linhas no ui-fit
 - O medidor (`tools/ui-fit/measure.spec.ts`) grava `lines` quando o rótulo tem `-webkit-line-clamp` maior que 1; a conferência (`tools/ui-fit/check.ts`, `linesNeed`) quebra as palavras nas linhas como o navegador e cobra a linha mais larga (mais linhas que o limite: o texto inteiro). Motivo: o bloco "Landing page completa", desenhado em duas linhas por desenho (`sidebar.css`), era acusado como se tivesse uma.
+
+## MEC-29 — referência morta numa definição de componente
+- O validador (`definitionReferenceProblems` em `src/core/document/validate.ts`) recusa uma definição que aponta para um elemento que não existe; chega ao feed como incidente `invariant` no commit, em qualquer build. A migração (`withDefinitionReferencesReleased`) solta essas referências em projetos antigos ao abrir.
+
+## MEC-30 — id HTML repetido numa página
+- `documentFindings` (`src/core/document/self-checks.ts`) roda em DEV a cada publicação e manda ao feed um incidente `self-check` quando dois elementos da mesma página têm o mesmo id HTML.

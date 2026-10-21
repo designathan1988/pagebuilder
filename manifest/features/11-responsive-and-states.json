@@ -2156,13 +2156,13 @@
               "door": "style.set#inspector-opacity",
               "args": {
                 "property": "opacity",
-                "value": "0.5"
+                "value": "50"
               },
               "target": null,
               "drop": null,
               "action": false,
               "hold": false,
-              "type": "0.5\n"
+              "type": "50\n"
             }
           ],
           "doors": [
@@ -2240,13 +2240,13 @@
               "door": "style.set#inspector-opacity",
               "args": {
                 "property": "opacity",
-                "value": "0.5"
+                "value": "50"
               },
               "target": null,
               "drop": null,
               "action": false,
               "hold": false,
-              "type": "0.5\n"
+              "type": "50\n"
             }
           ],
           "doors": [
@@ -2324,13 +2324,13 @@
               "door": "style.set#inspector-opacity",
               "args": {
                 "property": "opacity",
-                "value": "0.5"
+                "value": "50"
               },
               "target": null,
               "drop": null,
               "action": false,
               "hold": false,
-              "type": "0.5\n"
+              "type": "50\n"
             }
           ],
           "doors": [
@@ -2408,13 +2408,13 @@
               "door": "style.set#inspector-opacity",
               "args": {
                 "property": "opacity",
-                "value": "0.5"
+                "value": "50"
               },
               "target": null,
               "drop": null,
               "action": false,
               "hold": false,
-              "type": "0.5\n"
+              "type": "50\n"
             }
           ],
           "doors": [
@@ -2492,13 +2492,13 @@
               "door": "style.set#inspector-opacity",
               "args": {
                 "property": "opacity",
-                "value": "0.5"
+                "value": "50"
               },
               "target": null,
               "drop": null,
               "action": false,
               "hold": false,
-              "type": "0.5\n"
+              "type": "50\n"
             }
           ],
           "doors": [
@@ -2596,13 +2596,13 @@
               "door": "style.set#inspector-opacity",
               "args": {
                 "property": "opacity",
-                "value": "0.5"
+                "value": "50"
               },
               "target": null,
               "drop": null,
               "action": false,
               "hold": false,
-              "type": "0.5\n"
+              "type": "50\n"
             }
           ],
           "doors": [

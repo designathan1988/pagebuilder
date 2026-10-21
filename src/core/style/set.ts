@@ -20,14 +20,14 @@
 import { IDENTIFIER_SOURCE } from '../text/identifier.ts';
 import type { StyleTargetId } from '../../generated/ids.ts';
 import { GENERATED_VALUES } from '../../generated/value-lists.ts';
-import { message, registerHandler, type HandlerContext, type MessageParam, type Outcome } from '../commands/registry.ts';
+import { message, registerHandler, type HandlerContext, type Message, type MessageParam, type Outcome } from '../commands/registry.ts';
 import { locate, type DocNode, type DocumentJson, type Location, type NodeId, type Selection, type StoredValue } from '../document/model.ts';
 import { classTarget } from '../design/classes.ts';
 import { structuredCss } from '../render/output.ts';
 import { componentHolders, instanceRootOf } from '../design/instances.ts';
 import type { ModelRules } from '../document/validate.ts';
 import type { Patch } from '../history/transaction.ts';
-import { firstLockRefusal, stateRefusal } from '../nodes/flags.ts';
+import { firstLockRefusal, lockOver, stateRefusal } from '../nodes/flags.ts';
 import { coupledScene } from './couplings.ts';
 import { recordStyleWrite } from '../motion/record.ts';
 import { deepEqual } from '../history/transaction.ts';
@@ -55,8 +55,28 @@ export interface StyleHolder {
 }
 
 // The holders of the selected elements' styles (found in the document), or the one class that is the style target.
+// An element the write reaches beyond the ones it names (the same part of another instance) is never written while it
+// is locked or inside a locked element (spec lock-element; the audit's STRUCT-9: a locked instance was restyled
+// through another): the writers refuse first with styleLockRefusal, and a writer that does not ask still cannot
+// reach it.
 export function styleHolders<Ui>(context: HandlerContext<Ui>, nodes: readonly Location[]): StyleHolder[] {
-  return holdersOf(context.state.document, context.state.selection, context.styleClass ?? null, nodes);
+  const { document, selection } = context.state;
+  const named = new Set<string>(nodes.map((found) => found.node.id));
+  return holdersOf(document, selection, context.styleClass ?? null, nodes).filter(
+    (held) => held.path[0] !== PAGES || named.has(held.node.id) || lockOver(document, held.node.id as NodeId) === null,
+  );
+}
+
+// Why a style write of these elements may not go ahead (spec lock-element): one of them is locked or inside a locked
+// element, or one of the page elements the write reaches through them is (an instance's part writes the same part of
+// every instance: the audit's STRUCT-9). The one lock answer of the style writers, null when nothing is locked.
+export function styleLockRefusal<Ui>(context: HandlerContext<Ui>, nodes: readonly Location[]): Message | null {
+  const { document, selection } = context.state;
+  const named = nodes.map((found) => found.node.id as NodeId);
+  const reached = holdersOf(document, selection, context.styleClass ?? null, nodes)
+    .filter((held) => held.path[0] === PAGES)
+    .map((held) => held.node.id as NodeId);
+  return firstLockRefusal(document, [...named, ...reached], 'status.locked.edit');
 }
 
 // The same, for a document, its selection and the class the editor names as the style target: what the editor's
@@ -364,7 +384,7 @@ export function writeStyle<Ui>(context: HandlerContext<Ui>, property: string, cs
   const nodes = state.selection.map((id) => locate(state.document, id)).filter((found) => found !== null);
   const primary = nodes[0];
   if (primary === undefined) return { kind: 'change' };
-  const locked = firstLockRefusal(state.document, nodes.map((found) => found.node.id as NodeId), 'status.locked.edit');
+  const locked = styleLockRefusal(context, nodes);
   if (locked !== null) return { kind: 'refused', message: locked };
   // While the motion Timeline records (spec motion-keyframes), the value becomes a keyframe of the timeline it shows,
   // at its playhead, for the primary selected element: the same read, the same one undo step, another holder.

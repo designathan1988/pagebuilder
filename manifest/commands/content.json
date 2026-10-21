@@ -604,6 +604,11 @@
             "boolean"
           ],
           "optional": true
+        },
+        "decimals": {
+          "type": "integer",
+          "values": [],
+          "optional": true
         }
       },
       "availability": {
@@ -613,6 +618,8 @@
       "refusals": [
         "status.data.fieldLabelEmpty",
         "status.data.fieldLabelTaken",
+        "status.data.decimalsNumberOnly",
+        "status.data.decimalsRange",
         "status.data.badValue",
         "status.data.imageNotFound",
         "status.data.badLink",
@@ -674,6 +681,32 @@
           "placement": {
             "region": "data-collection",
             "order": 4
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "data-field-decimals",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "data-collections",
+          "panel": "data",
+          "control": "field-decimals",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "data.fieldDecimals",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "data-collection",
+            "order": 7
           },
           "adapter": {
             "selection": "none",

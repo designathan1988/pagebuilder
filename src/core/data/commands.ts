@@ -209,10 +209,10 @@ export function addFieldCommand<Ui extends WithCollection>() {
   );
 }
 
-export const setFieldCommand = registerHandler('data.setField', (context, { collection, field, label, type }) =>
+export const setFieldCommand = registerHandler('data.setField', (context, { collection, field, label, type, decimals }) =>
   contentChange(context, (document) => {
     const held = named(document, collection);
-    const next = setField(held, field, { ...(typeof label === 'string' ? { label } : {}), ...(type === undefined ? {} : { type: fieldType(type) }) });
+    const next = setField(held, field, { ...(typeof label === 'string' ? { label } : {}), ...(type === undefined ? {} : { type: fieldType(type) }), ...(decimals === undefined ? {} : { decimals }) });
     const shown = next.fields.find((f) => f.key === field)?.label ?? field;
     return { document: withCollection(document, held.name, next), message: message('status.data.fieldChanged', { collection: held.name, label: shown }) };
   }),

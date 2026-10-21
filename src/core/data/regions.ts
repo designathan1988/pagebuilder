@@ -6,7 +6,7 @@
 // (syncRegions, run by the derivation after any change), and a page made later receives the region when the person
 // asked for it. Detaching a page's instance leaves that page an ordinary copy that no longer follows.
 import type { NodeId } from '../../generated/commands.ts';
-import { refreshCopiedIdentities } from '../document/clone.ts';
+import { refreshCopiedIdentities, withPlaceReferences } from '../document/clone.ts';
 import { locate, walk, type ComponentDefinition, type DocNode, type DocumentJson } from '../document/model.ts';
 import { componentName, copied, createRefusal, marked, unmarked } from '../design/components.ts';
 import { placementRefusal } from '../elements/content-model.ts';
@@ -24,8 +24,14 @@ export const NEW_PAGES = 'new';
 
 // What an instance holds that its region's copies must hold too: everything but its identities (ids and names, which
 // each copy keeps its own), the component marks (which say where the copy comes from) and the editor's flags (hidden
-// and locked are the person's choice on each page, spec hide-element and lock-element).
+// and locked are the person's choice on each page, spec hide-element and lock-element). What its elements point at
+// among themselves (an interaction's target, a label's control, an anchor link) is read by place, since each copy
+// points at its own elements (conform).
 function content(node: DocNode): unknown {
+  return stripped(withPlaceReferences(node));
+}
+
+function stripped(node: DocNode): unknown {
   const { id: _id, name: _name, component: _component, componentPart: _part, hidden: _hidden, locked: _locked, children, ...own } = node;
   void _id;
   void _name;
@@ -33,12 +39,23 @@ function content(node: DocNode): unknown {
   void _part;
   void _hidden;
   void _locked;
-  return { ...own, children: children.map(content) };
+  return { ...own, children: children.map(stripped) };
+}
+
+// `truth`'s content in a copy keeping `old`'s identities (conformed), with what truth's elements point at among
+// themselves pointing at the copy's own elements of the same place (the audit's STRUCT-5 for shared regions: page B's
+// menu button toggled page A's nav, which page B does not hold). The region's HTML ids stay the same on every page:
+// each page is a document of its own, and an anchor link to the region works alike on all of them.
+function conform(document: DocumentJson, truth: DocNode, old: DocNode | undefined, make: NodeMaker): DocNode {
+  const copy = conformed(truth, old, make);
+  const [tree] = refreshCopiedIdentities(document, [{ source: truth, copy }], false);
+  if (tree === undefined) throw new Error('regions: the conformed copy is missing');
+  return tree;
 }
 
 // A tree holding `truth`'s content, keeping the identities and the flags of `old` place by place (its ids, its names,
 // hidden and locked); a place `old` does not have gets a new id and a name no element has.
-function conform(truth: DocNode, old: DocNode | undefined, make: NodeMaker): DocNode {
+function conformed(truth: DocNode, old: DocNode | undefined, make: NodeMaker): DocNode {
   const { id: _id, name, component: _component, componentPart: _part, hidden: _hidden, locked: _locked, children, ...own } = truth;
   void _id;
   void _component;
@@ -51,7 +68,7 @@ function conform(truth: DocNode, old: DocNode | undefined, make: NodeMaker): Doc
     name: old?.name ?? freshName(make, name),
     ...(old?.hidden === true ? { hidden: true as const } : {}),
     ...(old?.locked === true ? { locked: true as const } : {}),
-    children: children.map((child, i) => conform(child, old?.children[i], make)),
+    children: children.map((child, i) => conformed(child, old?.children[i], make)),
   } as DocNode;
 }
 
@@ -193,14 +210,14 @@ export function syncRegions(before: DocumentJson, after: DocumentJson, context: 
     const wanted = content(truth);
     // the definition follows the edited instance (its own ids kept)
     if (!deepEqual(content(definition.tree), wanted)) {
-      const tree = unmarked(conform(truth, definition.tree, make));
+      const tree = unmarked(conform(working, truth, definition.tree, make));
       working = { ...working, components: (working.components ?? []).map((c) => (c.name === definition.name ? { ...c, tree } : c)) };
     }
     for (const { node, page } of instances) {
       if (deepEqual(content(node), wanted)) continue;
       const locked = lockRefusal(working, node.id as NodeId, 'status.locked.edit');
       if (locked !== null) refuse('status.regions.locked', { name: definition.name, page: working.pages[page]?.name ?? '' });
-      const next = marked(conform(truth, node, make), [], definition.name);
+      const next = marked(conform(working, truth, node, make), [], definition.name);
       working = { ...working, pages: working.pages.map((one, i) => (i === page ? { ...one, tree: replaced(one.tree, node.id, next) } : one)) };
     }
     // a page the change made receives the region when it was shared with new pages

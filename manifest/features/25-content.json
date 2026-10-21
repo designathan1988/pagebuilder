@@ -1228,6 +1228,206 @@
           }
         },
         {
+          "id": "a-number-field-takes-its-decimal-places-from-the-field-menu",
+          "setup": {
+            "fixture": "content-menu-list",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-data",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "data.addField#data-field-add",
+              "args": {
+                "label": "Peso",
+                "type": "number"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "data.setField#data-field-decimals",
+              "args": {
+                "collection": "Cardapio",
+                "field": "peso",
+                "decimals": 2
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "data.setField#data-field-decimals"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@collections",
+                "value": [
+                  {
+                    "name": "Cardapio",
+                    "fields": [
+                      {
+                        "key": "nome",
+                        "label": "nome",
+                        "type": "text"
+                      },
+                      {
+                        "key": "preco",
+                        "label": "preco",
+                        "type": "text"
+                      },
+                      {
+                        "key": "foto",
+                        "label": "foto",
+                        "type": "image"
+                      },
+                      {
+                        "key": "peso",
+                        "label": "Peso",
+                        "type": "number",
+                        "decimals": 2
+                      }
+                    ],
+                    "items": [
+                      {
+                        "values": {
+                          "nome": "Espresso Grão Norte",
+                          "preco": "R$ 42",
+                          "foto": "graos.png"
+                        }
+                      },
+                      {
+                        "values": {
+                          "nome": "Filtrado Sul de Minas",
+                          "preco": "R$ 46",
+                          "foto": "xicara.png"
+                        }
+                      },
+                      {
+                        "values": {
+                          "nome": "Descafeinado",
+                          "preco": "R$ 44",
+                          "foto": "loja.png"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 2,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.data.fieldChanged",
+                  "params": {
+                    "collection": "Cardapio",
+                    "label": "Peso"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "decimal-places-on-a-field-that-is-no-number-are-refused",
+          "setup": {
+            "fixture": "content-menu-list",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-data",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "data.setField#data-field-decimals",
+              "args": {
+                "collection": "Cardapio",
+                "field": "preco",
+                "decimals": 2
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "data.setField#data-field-decimals"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [],
+            "selection": [],
+            "history": {
+              "undoSteps": 0,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.data.decimalsNumberOnly",
+                  "params": {
+                    "collection": "Cardapio",
+                    "label": "preco"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
           "id": "a-field-takes-a-type-every-value-reads-as",
           "setup": {
             "fixture": "content-menu-list",

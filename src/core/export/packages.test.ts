@@ -47,6 +47,13 @@ describe('the app packages', () => {
     expect(identity.id).toMatch(/^com\.webconstructor\.[a-z][a-z0-9_]*$/u);
   });
 
+  it('speaks the language the start page\'s <html lang> says, English when the project names none', () => {
+    const unnamed = Object.fromEntries(Object.entries(todo).filter(([key]) => key !== 'language')) as DocumentJson;
+    expect(appIdentity(unnamed).language).toBe('en');
+    const index = files('pwa').get('index.html') ?? '';
+    expect(index).toContain(`<html lang="${appIdentity(todo).language}"`);
+  });
+
   it('makes the site an installable web app', () => {
     const pwa = files('pwa');
     const webManifest = JSON.parse(pwa.get('manifest.webmanifest') ?? '{}') as { icons: { sizes: string }[]; start_url: string; display: string; name: string };

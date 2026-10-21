@@ -5,6 +5,8 @@
 //    incident is recorded here, and in development and tests the commit throws so the defect is loud. Predictable
 //    invalid operations are refused by the operation itself, with a message; they never reach this feed.
 //  - 'empty-change': a command answered with structural patches that left the document as it was (reportEmptyChange).
+//  - 'self-check': a published document breaks a rule of the app the validator does not refuse a file over
+//    (reportSelfChecks; core/document/self-checks.ts), in development and tests.
 //  - 'error': an error the page threw (a render error, an unhandled rejection): recorded by the editor side, so the
 //    person and the browser checks see it instead of a console nobody reads.
 //
@@ -12,9 +14,11 @@
 // It holds no document state and changes nothing; whoever draws it (the status bar's badge, the checks pane, the test
 // port, the dev server's terminal) only reads.
 import type { Invalid } from './document/validate.ts';
+import type { DocumentJson } from './document/model.ts';
+import { documentFindings } from './document/self-checks.ts';
 
 export interface Incident {
-  readonly kind: 'invariant' | 'empty-change' | 'error';
+  readonly kind: 'invariant' | 'empty-change' | 'self-check' | 'error';
   // one line naming what happened: the command and its source, or where the error came from
   readonly what: string;
   // what the validator or the thrower said, in full
@@ -42,6 +46,17 @@ export function reportInvariantBreach(source: string, problems: readonly Invalid
 // only structural patches count.
 export function reportEmptyChange(command: string, said: string | null): void {
   record({ kind: 'empty-change', what: `command "${command}" claimed a structural change and the document is unchanged`, detail: said ?? '(no message)' });
+}
+
+// The document's self-checks after a publication (core/document/self-checks.ts), in development and tests: each
+// finding new to this publication is recorded once, naming the change that made it; a finding the document already
+// held is not recorded again at every later change.
+let heldFindings: ReadonlySet<string> = new Set();
+export function reportSelfChecks(source: string, document: DocumentJson): void {
+  const now = new Set(documentFindings(document));
+  const fresh = [...now].filter((finding) => !heldFindings.has(finding));
+  heldFindings = now;
+  if (fresh.length > 0) record({ kind: 'self-check', what: `"${source}" left a document that breaks a rule of the app`, detail: fresh.join('\n') });
 }
 
 // An error the page threw, recorded by the editor side.

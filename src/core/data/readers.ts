@@ -9,7 +9,7 @@
 // sheet of a workbook that cannot be read keeps its problem, so the other sheets stay importable.
 import type { Message } from '../commands/registry.ts';
 import { message } from '../commands/registry.ts';
-import { csvLines, jsonRowList } from '../design/data.ts';
+import { csvLines, delimiterOf, jsonRowList, type Delimiter } from '../design/data.ts';
 import { ARCHIVE_LIMITS, ArchiveError, unzip, type ArchiveLimits } from '../project/zip.ts';
 import { DataRefusal, refuse } from './collections.ts';
 
@@ -117,47 +117,12 @@ function textOf(file: string, bytes: Uint8Array): string {
   return text;
 }
 
-// The marks a delimited file may put between its cells: a comma, a semicolon (Excel's "CSV" where the comma is the
-// decimal mark: pt-BR, DATA-4), a tab.
-type Delimiter = ',' | ';' | '\t';
-// The mark a file's header line puts between its cells, outside quotes: the most frequent one; a semicolon against as
-// many commas wins; a comma when none is there.
-export function delimiterOf(source: string): Delimiter {
-  let comma = 0;
-  let semicolon = 0;
-  let tab = 0;
-  let quoted = false;
-  for (const char of source) {
-    if (char === '"') quoted = !quoted;
-    else if (quoted) continue;
-    else if (char === '\n' || char === '\r') break;
-    else if (char === ',') comma += 1;
-    else if (char === ';') semicolon += 1;
-    else if (char === '\t') tab += 1;
-  }
-  if (tab > comma && tab > semicolon) return '\t';
-  return semicolon > 0 && semicolon >= comma ? ';' : ',';
-}
-
-// A file whose cells a semicolon separates, as the same file with tabs (the CSV reader's other delimiter, core/design
-// /data.ts csvLines): outside quotes each semicolon becomes a tab and a tab of a cell is quoted, so every cell reads as
-// it was written.
-function semicolonsAsTabs(source: string): string {
-  let quoted = false;
-  let out = '';
-  for (const char of source) {
-    if (char === '"') quoted = !quoted;
-    out += quoted ? char : char === ';' ? '\t' : char === '\t' ? '"\t"' : char;
-  }
-  return out;
-}
-
 // A delimited file's sheet: its delimiter the one its name says (a .tsv is tab separated), else the one its header
-// uses.
+// uses (delimiterOf, the rule Fill from data reads the same file by: core/design/data.ts).
 export function readDelimited(file: string, source: string, delimiter: Delimiter = delimiterOf(source)): Sheet {
   // a quote opened and never closed swallows the rest of the file into one cell: an odd count of quotes says so
   if (((source.match(/"/g) ?? []).length & 1) === 1) refuse('status.data.fileQuote', { name: file });
-  return sheetOf(file, file, delimiter === ';' ? csvLines(semicolonsAsTabs(source), '\t') : csvLines(source, delimiter));
+  return sheetOf(file, file, csvLines(source, delimiter));
 }
 
 // A JSON list of objects (or an object holding one, as Fill from data reads it): its keys are the columns, in the

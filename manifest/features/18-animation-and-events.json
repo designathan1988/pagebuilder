@@ -1969,13 +1969,13 @@
               "door": "style.set#inspector-opacity",
               "args": {
                 "property": "opacity",
-                "value": "1"
+                "value": "100"
               },
               "target": null,
               "drop": null,
               "action": false,
               "hold": false,
-              "type": "1\n"
+              "type": "100\n"
             },
             {
               "door": "timeline.setPlayhead#panel-drag-playhead-ruler",
@@ -2165,13 +2165,13 @@
               "door": "style.set#inspector-opacity",
               "args": {
                 "property": "opacity",
-                "value": "1"
+                "value": "100"
               },
               "target": null,
               "drop": null,
               "action": false,
               "hold": false,
-              "type": "1\n"
+              "type": "100\n"
             },
             {
               "door": "project.export#menu-file",
@@ -3633,13 +3633,13 @@
               "door": "style.set#inspector-opacity",
               "args": {
                 "property": "opacity",
-                "value": "1"
+                "value": "100"
               },
               "target": null,
               "drop": null,
               "action": false,
               "hold": false,
-              "type": "1\n"
+              "type": "100\n"
             },
             {
               "door": "workspace.setActiveTab#inspector-tab-interactions",

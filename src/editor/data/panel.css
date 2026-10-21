@@ -72,14 +72,20 @@
    menus that list the fields (a filter, a sort) keep the row's room: their widest choice is a field's name; and the
    new field's form keeps it too, where the name and Add field share the row (pressed to nothing beside the menu). The
    type's box follows its menu, or the menu ran under the field's Delete; the name's box gives the room */
-.data-field--type {
+.data-field--type,
+.data-field--decimals {
   flex: none;
+}
+
+/* a number field's decimal places sit beside its type, as wide as its widest choice */
+.data-field--decimals select.input {
+  min-width: max-content;
 }
 
 /* the name's box takes the whole line, and the type and Delete go together on the line under it: started from nothing
    beside them, the name kept only what the widest type and Delete left ("descricao" read "descrica" in a 224 px
    sidebar), and a 76 px basis sent Delete alone under the other two */
-.data-fields__row:has(> .data-field--type) > .data-field:not(.data-field--type) {
+.data-fields__row:has(> .data-field--type) > .data-field:not(.data-field--type, .data-field--decimals) {
   flex: 1 1 100%;
 }
 

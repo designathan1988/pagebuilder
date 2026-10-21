@@ -7,12 +7,12 @@
 // that loses nothing, and stays inside it (Tab past the last button comes back to the first); Escape, in its dialog key
 // context, is a dismissal, which answers Cancel; and once answered the focus goes back to what had it when it was
 // asked.
-import { useEffect, useRef, useState, type FocusEvent } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useEditorState, useStore } from '../store.ts';
 import { MESSAGE_IDS, type MessageId } from '../../generated/ids.ts';
 import { pluralForm } from '../../i18n/index.ts';
 import { useLocale, useT } from '../text.ts';
-import { DIALOG_KEYS } from './dialog.tsx';
+import { DIALOG_KEYS, FocusEdge } from './dialog.tsx';
 
 export function Confirmation() {
   const waiting = useEditorState((s) => s.confirmation ?? null);
@@ -46,16 +46,11 @@ function Asked() {
   const count = params.count;
   const plural = typeof count === 'number' ? (`${waiting.message}.${pluralForm(locale, count)}` as MessageId) : null;
   const question = plural !== null && (MESSAGE_IDS as readonly string[]).includes(plural) ? plural : waiting.message;
-  // the focus stays in the dialog: an edge after the last button sends it to the first, one before the first to the
-  // last
-  const wrap = (event: FocusEvent<HTMLSpanElement>) => {
-    const buttons = [...(box.current?.querySelectorAll<HTMLElement>('button') ?? [])];
-    (event.currentTarget.dataset.edge === 'first' ? buttons[0] : buttons[buttons.length - 1])?.focus();
-  };
   return (
     <div className="confirmation" data-confirmation-dialog>
       <div className="confirmation__scrim" />
-      <span tabIndex={0} data-edge="last" onFocus={wrap} />
+      {/* the focus stays in the dialog: the shared edges of every modal layer (dialog.tsx) */}
+      <FocusEdge layer={box} sends="last" />
       <div ref={box} className="confirmation__box" role="alertdialog" aria-modal="true" aria-labelledby="confirmation-message" data-key-context={DIALOG_KEYS}>
         <p id="confirmation-message" className="confirmation__message">
           {t(question, params)}
@@ -69,7 +64,7 @@ function Asked() {
           </button>
         </div>
       </div>
-      <span tabIndex={0} data-edge="first" onFocus={wrap} />
+      <FocusEdge layer={box} sends="first" />
     </div>
   );
 }

@@ -15,11 +15,34 @@ const cell = (value: unknown): string => (value === null || value === undefined 
 // a file is data when it is JSON or CSV, by its type or its name
 export const isDataFile = (file: Pick<ProjectFile, 'path' | 'type'>): boolean => /\.(json|csv|tsv)$/i.test(file.path) || file.type === 'application/json' || file.type === 'text/csv' || file.type === 'text/tab-separated-values';
 
-// The lines of a CSV, each its cells: commas between cells, a cell in double quotes may hold commas, line breaks and
-// doubled quotes; a blank line is no row.
-// A TSV is the same with tabs between its cells (the delimiter); the Data panel's reader takes both
-// (core/data/readers.ts).
-export function csvLines(source: string, delimiter: ',' | '\t' = ','): string[][] {
+// The marks a delimited file may put between its cells: a comma, a semicolon (Excel's "CSV" where the comma is the
+// decimal mark: pt-BR, DATA-4), a tab.
+export type Delimiter = ',' | ';' | '\t';
+
+// The mark a file's header line puts between its cells, outside quotes: the most frequent one; a semicolon against as
+// many commas wins; a comma when none is there. One rule for the Data panel (core/data/readers.ts) and Fill from data
+// (dataRows below), so both read one file alike.
+export function delimiterOf(source: string): Delimiter {
+  let comma = 0;
+  let semicolon = 0;
+  let tab = 0;
+  let quoted = false;
+  for (const char of source) {
+    if (char === '"') quoted = !quoted;
+    else if (quoted) continue;
+    else if (char === '\n' || char === '\r') break;
+    else if (char === ',') comma += 1;
+    else if (char === ';') semicolon += 1;
+    else if (char === '\t') tab += 1;
+  }
+  if (tab > comma && tab > semicolon) return '\t';
+  return semicolon > 0 && semicolon >= comma ? ';' : ',';
+}
+
+// The lines of a CSV, each its cells: the delimiter between cells (a comma, a semicolon or a tab), a cell in double
+// quotes may hold delimiters, line breaks and doubled quotes; a blank line is no row. The Data panel's reader takes the
+// same lines (core/data/readers.ts).
+export function csvLines(source: string, delimiter: Delimiter = ','): string[][] {
   const lines: string[][] = [];
   let line: string[] = [];
   let cellText = '';
@@ -64,7 +87,8 @@ export function dataRows(file: ProjectFile): readonly DataRow[] | null {
   }
   const tabs = /\.tsv$/i.test(file.path) || file.type === 'text/tab-separated-values';
   if (tabs || /\.csv$/i.test(file.path) || file.type === 'text/csv') {
-    const [head, ...body] = csvLines(source, tabs ? '\t' : ',');
+    // a .tsv is tab separated; a .csv says its delimiter in its header (a pt-BR Excel file uses semicolons, DATA-4)
+    const [head, ...body] = csvLines(source, tabs ? '\t' : delimiterOf(source));
     if (head === undefined || body.length === 0) return null;
     return body.map((values) => ({ names: head.map((name) => name.trim()), values: head.map((_, i) => values[i] ?? '') }));
   }

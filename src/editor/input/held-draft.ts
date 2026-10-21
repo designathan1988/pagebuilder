@@ -11,6 +11,7 @@ import type { RefObject } from 'react';
 import type { EditContext } from '../../core/store/store.ts';
 import type { CommandId } from '../../generated/ids.ts';
 import { editContextOf, type EditorStore } from '../store.ts';
+import { readDecimal } from '../../core/style/decimal.ts';
 import { heldTyping, holdTyping, keepTyping, releaseTyping } from './pending.ts';
 
 export interface HeldDraft {
@@ -56,6 +57,5 @@ export function heldDraft(
 // The text of a field whose command takes a number, as that number: converted, never judged. An empty text or one that
 // is no number becomes NaN, which the command refuses with its own words (rule G3; DEF-0515). A decimal comma is a
 // decimal point ("12,5", ",5": the pt-BR keyboard that inputMode="decimal" opens offers only the comma; the input
-// audit's INPUT-9).
-const DECIMAL_COMMA = /^\s*[+-]?\d*,\d+\s*$/;
-export const typedNumber = (text: string): number => (text.trim() === '' ? Number.NaN : Number(DECIMAL_COMMA.test(text) ? text.replace(',', '.') : text));
+// audit's INPUT-9), read by the one decimal reader the style values read through (core/style/decimal.ts).
+export const typedNumber = (text: string): number => readDecimal(text);

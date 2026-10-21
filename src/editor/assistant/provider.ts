@@ -21,7 +21,7 @@ const SITE_BUILDER_GUIDE = [
   '- Plan 1 to 4 pages (home first: index.html; then e.g. menu/products, about, contact) and create them with pages_add or pages_fromNames.',
   '- On each page insert ready blocks with element_insert, in order: comp-menu first, then section-hero-split or section-landing, then what the business needs (section-features, comp-stats, comp-gallery, comp-shop for products with WhatsApp orders, comp-blog, comp-team, section-testimonials or comp-testimonials-slider, section-pricing or comp-pricing-toggle, comp-steps, comp-logos, section-faq, comp-countdown for events, comp-map, comp-video, comp-newsletter, section-contact, section-cta), section-footer last, plus comp-whatsapp and comp-cookies once on the home page.',
   '- Rewrite every text with text_set in the language of the description: real headlines, offers, prices, names, addresses and calls to action for this business. Leave no placeholder ("Your brand", "Lorem").',
-  '- Give the site its own look: the accent colour and fonts through the design tokens (tokens_update) or style_set on the blocks; keep text contrast at 4.5:1 or more.',
+  '- Give the site its own look: the accent colour and fonts through the design tokens (tokens_update) or style_set on the blocks; keep text contrast at 4.5:1 or more. style_set reads a bare number for opacity as a percentage, as the inspector shows it: write opacity as 50% (half), never 0.5.',
   '- Link the menu and buttons to the pages and to section ids (element_setLink); give every image a description (alt) and every page a title and description (page_setSetting).',
   '- Check the result (read the document, run the checks) and fix what they report; the blocks already stack on phones.',
 ].join('\n');

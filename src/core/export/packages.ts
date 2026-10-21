@@ -17,6 +17,7 @@ import { formatMessage } from '../../i18n/index.ts';
 import type { DocumentJson } from '../document/model.ts';
 import { relativePath } from '../files/files.ts';
 import { crc32, type ZipEntry } from '../project/zip.ts';
+import { pageLanguage } from './names.ts';
 
 export type PackageFormat = 'site' | 'pwa' | 'android' | 'desktop';
 
@@ -69,7 +70,11 @@ export function appIdentity(document: DocumentJson): AppIdentity {
   const part = slug.replace(/-/gu, '_').replace(/^[^a-z]+/u, '') || 'app';
   const color = (document.tokens ?? []).find((token) => HEX.test(token.value.trim()))?.value.trim() ?? '#2563eb';
   const start = document.pages.some((page) => page.file === 'index.html') ? 'index.html' : (first?.file ?? 'index.html');
-  return { name, shortName, id: `com.webconstructor.${part}`, slug, color, background: '#ffffff', start, language: document.language ?? 'pt-BR' };
+  // the language the start page's <html lang> says (core/render/output.ts): its own setting, else the project's, else
+  // English, so the README and the package metadata speak the site's language
+  const startPage = document.pages.find((page) => page.file === start);
+  const language = pageLanguage((startPage?.tree.attributes as Record<string, unknown> | undefined)?.pageLanguage, document.language);
+  return { name, shortName, id: `com.webconstructor.${part}`, slug, color, background: '#ffffff', start, language };
 }
 
 // ---- icons: a PNG drawn here (no canvas in the core), the app's initial on its colour ----

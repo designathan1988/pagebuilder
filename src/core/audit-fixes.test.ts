@@ -192,9 +192,10 @@ describe('a grid item’s start and span (S-012)', () => {
 });
 
 describe('the opacity field (S-020)', () => {
-  it('takes the percentage it shows, and still a fraction', () => {
+  // STYLE-11: a bare number is a percentage on every scale, as the field's face reads it ("1" is 1%, never 100%)
+  it('takes the percentage it shows, a bare number included', () => {
     const document = documentOf({ pages: [page('p', 'Home', 'index.html', [node('Box', 'section', 'section')])] });
-    for (const [typed, stored] of [['40', '0.4'], ['40%', '0.4'], ['0.4', '0.4'], ['100', '1']] as const) {
+    for (const [typed, stored] of [['40', '0.4'], ['40%', '0.4'], ['1', '0.01'], ['2', '0.02'], ['0.5', '0.005'], ['100', '1']] as const) {
       const ran = runHandler(setStyleCommand, document, { property: 'opacity', value: typed }, { selection: ['Box'] });
       expect(ran.document.pages[0]?.tree.children[0]?.styles.desktop?.base?.opacity, typed).toBe(stored);
     }

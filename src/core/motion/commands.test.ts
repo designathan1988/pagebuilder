@@ -281,13 +281,13 @@ describe('keyframes', () => {
   it('records a style write at the playhead into the open timeline instead of the element\'s styles', () => {
     const played = chain(page(), [[addMotionCommand, {}]]).document;
     const recording = { timeline: 'Hero click', time: 300, action: null };
-    const ran = runHandler(atPlayhead(setStyleCommand, 300, recording), played, { property: 'opacity', value: '0.5' }, { selection: ['hero'] });
+    const ran = runHandler(atPlayhead(setStyleCommand, 300, recording), played, { property: 'opacity', value: '50' }, { selection: ['hero'] });
     expect(ran.problems).toEqual([]);
     expect(said(ran)).toBe('status.motion.recorded');
     expect(hero(ran.document).styles).toEqual(hero(played).styles);
     expect(firstTimeline(ran.document)?.actions[0]?.effect).toMatchObject({ tracks: [{ property: 'opacity', keyframes: [{ time: 300, value: '0.5' }] }] });
     // an element nothing plays the timeline on gets an animation of its own, picked
-    const other = runHandler(atPlayhead(setStyleCommand, 900, { ...recording, time: 900 }), played, { property: 'opacity', value: '0.5' }, { selection: ['intro'] });
+    const other = runHandler(atPlayhead(setStyleCommand, 900, { ...recording, time: 900 }), played, { property: 'opacity', value: '50' }, { selection: ['intro'] });
     expect(firstTimeline(other.document)?.actions[1]).toMatchObject({ target: { kind: 'element', node: 'intro' }, start: 0, duration: 900, effect: { tracks: [{ keyframes: [{ time: 900, value: '0.5' }] }] } });
     // not recording: the element's styles, as usual
     expect(hero(runHandler(setStyleCommand, played, { property: 'opacity', value: '0.5' }, { selection: ['hero'] }).document).styles).not.toEqual(hero(played).styles);

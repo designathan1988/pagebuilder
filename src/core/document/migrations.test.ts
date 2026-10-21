@@ -61,4 +61,14 @@ describe('the document format versions', () => {
     expect(result.document.version).toBe(4);
     expect(result.document.pages).toEqual(old.pages);
   });
+
+  it("opens a project whose component's definition kept pointing at a deleted element, released (STRUCT-6)", () => {
+    const empty = createEmptyDocument(sequentialIds('s'), { page: 'Home', root: 'Page' }, RULES.root);
+    const box = (id: string, extra: Record<string, unknown> = {}) => ({ id, type: 'div', name: id, tag: 'div', attributes: {}, classes: [], styles: {}, text: null, children: [], ...extra });
+    const definition = box('Def', { children: [box('Def-b', { interactions: [{ trigger: 'click', action: 'show', target: 'Panel' }, { trigger: 'click', action: 'show', target: 'Def' }] })] });
+    const saved = { ...empty, components: [{ name: 'Card', tree: definition }] };
+    const read = readProject(saved, RULES);
+    if (!('document' in read)) throw new Error(JSON.stringify(read));
+    expect(read.document.components?.[0]?.tree.children[0]?.interactions).toEqual([{ trigger: 'click', action: 'show', target: 'Def' }]);
+  });
 });

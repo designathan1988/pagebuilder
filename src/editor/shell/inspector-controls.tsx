@@ -1,5 +1,5 @@
 import { styleSections, type StyleDoor } from '../../manifest/style-places.ts';
-import { useEffect, useRef, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import type { CommandId, FeatureId, KeyContextId, MessageId, StyleTargetId } from '../../generated/ids.ts';
 import { GENERATED_VALUES, INITIAL_VALUES } from '../../generated/value-lists.ts';
 import { isFeatureBuilt } from '../../core/commands/registry.ts';
@@ -264,36 +264,25 @@ export function GridItemField({ entry, half }: { readonly entry: DoorEntry; read
   const span = useEditorState((s) => place(s)?.span ?? 1);
   const shown = half === 'start' ? (start === null ? '' : String(start)) : String(span);
   const door = useDoor(entry, {}, t(fieldLabelKey(entry)), isFeatureBuilt(entry.door.feature as FeatureId));
-  const input = useRef<HTMLInputElement>(null);
-  const draft = useRef(false);
-  useEffect(() => {
-    const element = input.current;
-    if (element !== null && !draft.current) element.value = shown;
-  }, [shown]);
-  const keep = () => {
-    const element = input.current;
-    if (element === null || !draft.current) return;
-    draft.current = false;
-    const typed = element.value.trim();
+  // the typing is held in the one registry of typing and kept for the elements and in the context of its first key
+  // (useKeptField, rules G1 and G2), as every field of its own command's (the input audit's INPUT-5: kept on blur
+  // alone, a press elsewhere wrote it to the element that press selected, in the context it switched to)
+  const { input, region, onInput, onBlur, onSubmit } = useKeptField(shown, entry.command.id, null, (value, context, targets) => {
+    const typed = value.trim();
     const number = /^-?\d+$/.test(typed) ? Number.parseInt(typed, 10) : Number.NaN;
-    // what is no whole number is not kept: the field shows the element's value again
-    if (!Number.isInteger(number)) {
-      element.value = shown;
-      return;
-    }
-    (store.dispatch as (id: CommandId, args: unknown) => DispatchResult)(entry.command.id, { property, [half]: number });
-  };
+    // what is no whole number is not kept: the field shows the element's value again (useKeptField, once kept)
+    if (!Number.isInteger(number)) return;
+    keptFor(store, entry.command.id, { property, [half]: number }, context, targets);
+  });
   return (
     <form
+      ref={region}
       className="field-row"
       data-origin={appearance.kind}
       data-door={entry.ref}
       data-args={JSON.stringify({ property })}
       title={door.title}
-      onSubmit={(event) => {
-        event.preventDefault();
-        keep();
-      }}
+      onSubmit={onSubmit}
     >
       <span className="field-row__label" title={t(entry.door.labelKey as MessageId)}>{t(entry.door.labelKey as MessageId)}</span>
       <input
@@ -306,11 +295,21 @@ export function GridItemField({ entry, half }: { readonly entry: DoorEntry; read
         disabled={!door.available}
         aria-label={t(entry.door.labelKey as MessageId)}
         placeholder={half === 'start' ? (INITIAL_VALUES[`${property}-start`] ?? undefined) : undefined}
-        onInput={() => { draft.current = true; }}
-        onBlur={keep}
+        onInput={onInput}
+        onBlur={onBlur}
       />
     </form>
   );
+}
+
+// A kept field's value written by its command for the elements its typing began on, in the context of its first key:
+// on those elements when they are still the selection, else named as the command's `targets` (set.ts withTargets).
+// Nothing for a typing that began with nothing selected.
+function keptFor(store: ReturnType<typeof useStore>, command: CommandId, args: Readonly<Record<string, unknown>>, context: EditContext, targets: readonly string[]): void {
+  if (targets.length === 0) return;
+  const now = store.getState().selection;
+  const same = now.length === targets.length && now.every((id, i) => id === targets[i]);
+  (store.dispatch as (id: CommandId, args: unknown, context?: EditContext) => DispatchResult)(command, same ? args : { ...args, targets: [...targets] }, context);
 }
 
 // The grid's track editor (spec props-grid-container, Problems in Pager 3; the user's real-use audit, item A1.2): for
@@ -365,30 +364,22 @@ function GridTrackField({ entry, property, index, track, available }: { readonly
   // 2026-10-05: three rows all read "Track")
   const name = t('inspector.grid.trackNumber', { n: index + 1 });
   const door = useDoor(entry ?? (manifest.doors[0] as DoorEntry), {}, name, entry !== undefined && available);
-  const input = useRef<HTMLInputElement>(null);
-  const draft = useRef(false);
-  useEffect(() => {
-    const element = input.current;
-    if (element !== null && !draft.current) element.value = track;
-  }, [track]);
-  const keep = () => {
-    const element = input.current;
-    if (element === null || !draft.current || entry === undefined) return;
-    draft.current = false;
-    (store.dispatch as (id: CommandId, args: unknown) => DispatchResult)(entry.command.id, { property, track: index, value: element.value });
-  };
+  // held in the one registry of typing and kept for the elements and in the context of its first key (useKeptField,
+  // rules G1 and G2; the input audit's INPUT-5)
+  const command = (entry ?? (manifest.doors[0] as DoorEntry)).command.id;
+  const { input, region, onInput, onBlur, onSubmit } = useKeptField(track, command, null, (value, context, targets) => {
+    if (entry !== undefined) keptFor(store, entry.command.id, { property, track: index, value }, context, targets);
+  });
   if (entry === undefined) return null;
   return (
     <form
+      ref={region}
       className="field-row"
       data-origin={appearance.kind}
       data-door={entry.ref}
       data-args={JSON.stringify({ property, track: index })}
       title={door.title}
-      onSubmit={(event) => {
-        event.preventDefault();
-        keep();
-      }}
+      onSubmit={onSubmit}
     >
       <span className="field-row__label">{name}</span>
       <input
@@ -399,8 +390,8 @@ function GridTrackField({ entry, property, index, track, available }: { readonly
         aria-label={name}
         spellCheck={false}
         disabled={!door.available}
-        onInput={() => { draft.current = true; }}
-        onBlur={keep}
+        onInput={onInput}
+        onBlur={onBlur}
       />
     </form>
   );
@@ -444,12 +435,7 @@ function SpacingField({ entry, box, sides, properties, where, label }: { readonl
   // the typing is held in the one registry of typing and kept for the elements and in the context of its first key
   // (useKeptField, rules G1 and G2); a status message that is not the side's own leaves it alone (DEF-0565, INPUT-5)
   const command = entry.command.id;
-  const { input, region, onInput, onBlur, onSubmit } = useKeptField(shown, command, SPACING_KEYS, (value, context, targets) => {
-    if (targets.length === 0) return;
-    const now = store.getState().selection;
-    const same = now.length === targets.length && now.every((id, i) => id === targets[i]);
-    (store.dispatch as (id: CommandId, args: unknown, context?: EditContext) => DispatchResult)(command, same ? { box, sides, value } : { box, sides, value, targets: [...targets] }, context);
-  });
+  const { input, region, onInput, onBlur, onSubmit } = useKeptField(shown, command, SPACING_KEYS, (value, context, targets) => keptFor(store, command, { box, sides, value }, context, targets));
   return (
     <form
       ref={region}

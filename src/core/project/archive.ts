@@ -50,11 +50,19 @@ export const PROJECT_FILE_LIMITS: ArchiveLimits = ARCHIVE_LIMITS;
 const PROJECT_FILE_BYTES = Math.min(PROJECT_FILE_LIMITS.entryBytes, PROJECT_FILE_LIMITS.totalBytes);
 const MEGABYTE = 1024 * 1024;
 
+// project.json's bytes, as File › Save project writes them
+export const projectDocumentBytes = (document: DocumentJson): Uint8Array => new TextEncoder().encode(`${JSON.stringify(document, null, 2)}\n`);
+
+// A project above the one bound: its size and the bound, in whole megabytes, for the words that refuse it; null for a
+// project within it. File › Save project and the cloud save (src/editor/cloud/cloud.ts) both ask here.
+export function projectOverLimit(bytes: number): { readonly megabytes: number; readonly limit: number } | null {
+  return bytes > PROJECT_FILE_BYTES ? { megabytes: Math.ceil(bytes / MEGABYTE), limit: Math.floor(PROJECT_FILE_BYTES / MEGABYTE) } : null;
+}
+
 export const saveProject = registerHandler('project.save', ({ state, clock }) => {
-  const document = new TextEncoder().encode(`${JSON.stringify(state.document, null, 2)}\n`);
-  if (document.length > PROJECT_FILE_BYTES) {
-    return { kind: 'refused' as const, message: message('status.project.tooLarge', { megabytes: Math.ceil(document.length / MEGABYTE), limit: Math.floor(PROJECT_FILE_BYTES / MEGABYTE) }) };
-  }
+  const document = projectDocumentBytes(state.document);
+  const over = projectOverLimit(document.length);
+  if (over !== null) return { kind: 'refused' as const, message: message('status.project.tooLarge', over) };
   const bytes = zip([{ path: PROJECT_DOCUMENT, bytes: document }], clock.now());
   return { kind: 'change' as const, message: message('status.project.saved', { file: PROJECT_ARCHIVE }), download: { name: PROJECT_ARCHIVE, type: 'application/zip', bytes } };
 });

@@ -29,6 +29,12 @@ describe('dataRows', () => {
     expect(isDataFile({ path: 'x/plans.CSV', type: '' })).toBe(true);
     expect(isDataFile({ path: 'logo.png', type: 'image/png' })).toBe(false);
   });
+  it('reads a semicolon CSV as the Data panel does, a decimal comma kept in its cell (DATA-4)', () => {
+    expect(dataRows(file('d.csv', 'produto;preço\n"Café; forte";6,50\nChá;3,25\n'))).toEqual([
+      { names: ['produto', 'preço'], values: ['Café; forte', '6,50'] },
+      { names: ['produto', 'preço'], values: ['Chá', '3,25'] },
+    ]);
+  });
   it('splits CRLF lines and skips blank ones', () => {
     expect(csvLines('a,b\r\n\r\n1,2')).toEqual([['a', 'b'], ['1', '2']]);
   });

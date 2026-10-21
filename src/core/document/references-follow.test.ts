@@ -140,4 +140,19 @@ describe('references follow what moves or leaves (RF1)', () => {
     expect(ran.problems).toEqual([]);
     expect([...walk(ran.document.pages[0]?.tree as DocNode)].some((one) => one.id === 'B-t')).toBe(false);
   });
+
+  it("a page element a component's definition points at is deleted, and the definition lets go of it (STRUCT-6)", () => {
+    const definition = node('Def', 'div', 'div', {
+      children: [
+        node('Def-b', 'button', 'button', { text: 'Open', interactions: [{ trigger: 'click', action: 'show', target: 'Panel' }] as never }),
+        node('Def-l', 'link', 'a', { text: 'Go', attributes: { href: '#Panel' } }),
+      ],
+    });
+    const document = documentOf({ pages: [page('home', 'index.html', [node('Panel', 'div', 'div')])], components: [{ name: 'Card', tree: definition }] });
+    const ran = runHandler(deleteCommand, document, {}, { selection: ['Panel'] });
+    expect(ran.problems).toEqual([]);
+    const tree = ran.document.components?.[0]?.tree;
+    expect(tree?.children[0]?.interactions).toBeUndefined();
+    expect(tree?.children[1]?.attributes.href).toBeUndefined();
+  });
 });

@@ -3503,22 +3503,22 @@
         {
           "id": "faint",
           "labelKey": "preset.opacity.faint",
-          "value": "0.25"
+          "value": "25%"
         },
         {
           "id": "half",
           "labelKey": "preset.opacity.half",
-          "value": "0.5"
+          "value": "50%"
         },
         {
           "id": "most",
           "labelKey": "preset.opacity.most",
-          "value": "0.75"
+          "value": "75%"
         },
         {
           "id": "full",
           "labelKey": "preset.opacity.full",
-          "value": "1"
+          "value": "100%"
         }
       ]
     },

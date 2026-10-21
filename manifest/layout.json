@@ -834,6 +834,10 @@
       "reason": "The cloud bar's reload after the project changed on another device: it reloads the page, writing nothing."
     },
     {
+      "id": "cloud-keep-mine",
+      "reason": "The cloud bar's Keep this version after the project changed on another device: it writes this tab's document to the cloud as it is, the document unchanged."
+    },
+    {
       "id": "cloud-publish",
       "reason": "The cloud bar's Publish: it opens the publish form; the site is published from the saved project, the document is not written."
     },

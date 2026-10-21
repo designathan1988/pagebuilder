@@ -8,7 +8,7 @@ import { Icon } from '../doors/door.tsx';
 import { Popover, usePopover } from '../shell/popover.tsx';
 import { useStore } from '../store.ts';
 import { useT } from '../text.ts';
-import { CLOUD_SAVE_TEXT, cloudState, dashboardUrl, publishCloud, slugFrom, validSlug } from './cloud.ts';
+import { CLOUD_SAVE_TEXT, cloudState, dashboardUrl, keepCloudVersion, publishCloud, slugFrom, validSlug } from './cloud.ts';
 
 // the publish function's refusals the person can act on, in their words; any other is the generic failure
 const REFUSALS: Readonly<Record<string, MessageId>> = {
@@ -48,9 +48,14 @@ export function CloudBar() {
         {t(CLOUD_SAVE_TEXT[cloud.save])}
       </span>
       {cloud.save === 'conflict' ? (
-        <button type="button" className="door door--button" data-local="cloud-reload" onClick={() => window.location.reload()}>
-          {t('cloud.save.reload')}
-        </button>
+        <>
+          <button type="button" className="door door--button" data-local="cloud-reload" title={t('cloud.save.reloadHint')} onClick={() => window.location.reload()}>
+            {t('cloud.save.reload')}
+          </button>
+          <button type="button" className="door door--button" data-local="cloud-keep-mine" title={t('cloud.save.keepMineHint')} onClick={keepCloudVersion}>
+            {t('cloud.save.keepMine')}
+          </button>
+        </>
       ) : null}
       <button
         ref={trigger}

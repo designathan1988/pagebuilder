@@ -14,8 +14,14 @@ import { setPanelOpen } from '../workspace/panels.ts';
 import { revealField } from '../inspector/sections.ts';
 import { manifest } from '../../manifest/runtime.ts';
 import type { EditorStore } from '../store.ts';
+import { lockedProject } from './tab-guard.ts';
 
-const KEY = 'editing-draft';
+// one draft a project: a tab that opens another cloud project (the dashboard, then ?project= of another) never
+// restores the typing of the one it left, whose revision (0 in cloud mode) and empty selection would match
+const draftKey = (): string => {
+  const project = lockedProject();
+  return project === null ? 'editing-draft' : `editing-draft:${project}`;
+};
 const runsSchema = z.unknown().transform((value, context) => {
   const runs = parseInline(value);
   if (runs !== null && runs !== 'unsafe') return runs;
@@ -69,8 +75,8 @@ export const hasPendingDraft = (): boolean => held !== null && mayWrite();
 function persist(next: Draft | null): void {
   held = next;
   try {
-    if (next === null) window.sessionStorage.removeItem(KEY);
-    else window.sessionStorage.setItem(KEY, JSON.stringify(next));
+    if (next === null) window.sessionStorage.removeItem(draftKey());
+    else window.sessionStorage.setItem(draftKey(), JSON.stringify(next));
   } catch { /* The in-memory draft still enables the leave-page warning if storage is unavailable. */ }
   if (next !== null) for (const listener of [...draftListeners]) listener();
 }
@@ -164,7 +170,7 @@ export function startDrafts(owner: EditorStore, currentRevision: () => number, c
   held = null;
   pending = false;
   try {
-    const parsed = schema.safeParse(JSON.parse(window.sessionStorage.getItem(KEY) ?? 'null'));
+    const parsed = schema.safeParse(JSON.parse(window.sessionStorage.getItem(draftKey()) ?? 'null'));
     if (parsed.success && canWrite() && parsed.data.revision === revision() && JSON.stringify(parsed.data.selection) === JSON.stringify(owner.getState().selection)) held = parsed.data;
   } catch { /* Invalid or unavailable session storage never prevents opening confirmed work. */ }
   if (held !== null) {

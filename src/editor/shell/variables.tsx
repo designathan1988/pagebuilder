@@ -17,7 +17,8 @@ import { DoorControl, Icon, useDoor } from '../doors/door.tsx';
 import { doorSlots } from '../doors/placement.ts';
 import { useEditorState, useStore } from '../store.ts';
 import { useLocale, useT } from '../text.ts';
-import { swatchColour, useKeptField, type KeptField } from './field.tsx';
+import { swatchColour } from '../../core/style/swatch.ts';
+import { useKeptField, type KeptField } from './field.tsx';
 import { Popover, usePopover } from './popover.tsx';
 
 const DOORS = doorSlots('styles');

@@ -117,6 +117,17 @@ describe('style.set', () => {
     expect(run(doc({}, { locked: true }), ['Actions'], '240')).toEqual({ kind: 'refused', message: { key: 'status.locked.byAncestor', params: { name: 'Actions', ancestor: 'Hero' } } });
   });
 
+  it('refuses a write on an instance part that would reach a locked instance (STRUCT-9)', () => {
+    const card = (id: string, locked: boolean) =>
+      node(id, 'div', 'div', { component: 'Card', componentPart: [], ...(locked ? { locked: true as const } : {}), children: [node(`${id}-t`, 'paragraph', 'p', { text: 't', componentPart: [0] })] });
+    const document: DocumentJson = {
+      version: 4,
+      pages: [{ id: 'p', name: 'Home', file: 'index.html', tree: node('Page', 'page', 'body', { children: [card('A', false), card('B', true)] }) }],
+      components: [{ name: 'Card', tree: node('D', 'div', 'div', { children: [node('D-t', 'paragraph', 'p', { text: 't' })] }) }],
+    };
+    expect(run(document, ['A-t'], '240')).toEqual({ kind: 'refused', message: { key: 'status.locked.byAncestor', params: { name: 'B-t', ancestor: 'B' } } });
+  });
+
   it('changes nothing with nothing selected', () => {
     expect(run(doc(), [], '240')).toEqual({ kind: 'change' });
   });

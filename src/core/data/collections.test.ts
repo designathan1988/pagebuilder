@@ -318,4 +318,14 @@ describe('a number as the site shows it (DEF-0620)', () => {
     expect(() => createCollection([], 'Cardápio', [{ key: 'nome', label: 'Nome', type: 'text', decimals: 2 }])).toThrow(DataRefusal);
     expect(() => createCollection([], 'Cardápio', [{ key: 'preco', label: 'Preço', type: 'number', decimals: 11 }])).toThrow(DataRefusal);
   });
+  it("sets a number field's decimal places from the field menu, 0 holding none, and refuses them elsewhere (DATA-1)", () => {
+    const menu: Collection = { name: 'Menu', fields: [{ key: 'preco', label: 'Preço', type: 'number' }, { key: 'nome', label: 'Nome', type: 'text' }], items: [{ id: 'a', values: { preco: 6.5, nome: 'Café' } }] };
+    const two = setField(menu, 'preco', { decimals: 2 });
+    expect(two.fields[0]).toEqual({ key: 'preco', label: 'Preço', type: 'number', decimals: 2 });
+    expect(cellText(two.items[0]?.values.preco, words, { language: 'pt-BR', decimals: two.fields[0]?.decimals })).toBe('6,50');
+    expect(setField(two, 'preco', { decimals: 0 }).fields[0]).toEqual({ key: 'preco', label: 'Preço', type: 'number' });
+    expect(setField(two, 'preco', { label: 'Valor' }).fields[0]?.decimals).toBe(2);
+    expect(() => setField(menu, 'nome', { decimals: 2 })).toThrow(DataRefusal);
+    expect(() => setField(menu, 'preco', { decimals: 11 })).toThrow(DataRefusal);
+  });
 });

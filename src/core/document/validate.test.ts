@@ -91,3 +91,17 @@ describe('validateDocument', () => {
     expect(paths({ ...doc, pages: [{ ...page, file: 'Index.HTML' }] })).toEqual(['/pages/0/file']);
   });
 });
+
+describe("a component's definition points at elements that are there (STRUCT-6)", () => {
+  const withDefinition = (pageChildren: DocNode[], target: string): DocumentJson => ({
+    ...project(pageChildren),
+    components: [{ name: 'Card', tree: div('Def', { children: [div('Def-b', { interactions: [{ trigger: 'click', action: 'show', target }] as never })] }) }],
+  });
+  it('refuses a definition whose interaction targets no element', () => {
+    expect(paths(withDefinition([], 'Gone'))).toEqual(['/components/0/tree/children/0/interactions/0/target']);
+  });
+  it('takes a target inside the definition or on a page', () => {
+    expect(paths(withDefinition([], 'Def'))).toEqual([]);
+    expect(paths(withDefinition([div('Panel')], 'Panel'))).toEqual([]);
+  });
+});

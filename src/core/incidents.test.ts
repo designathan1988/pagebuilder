@@ -1,7 +1,8 @@
 // The incident feed (the plan's T2): bounded, readable, and it tells whoever listens. It is what the status bar's
 // badge, the test port and the browser checks read — an error nobody watched for still shows up somewhere.
 import { describe, expect, it } from 'vitest';
-import { clearIncidents, incidents, onIncident, reportError, reportInvariantBreach } from './incidents.ts';
+import { clearIncidents, incidents, onIncident, reportError, reportInvariantBreach, reportSelfChecks } from './incidents.ts';
+import type { DocNode, DocumentJson } from './document/model.ts';
 
 describe('the incident feed', () => {
   it('records what it is told, and tells its listeners', () => {
@@ -28,5 +29,18 @@ describe('the incident feed', () => {
     expect(incidents()[0]?.what).toBe('error 10');
     clearIncidents();
     expect(incidents()).toEqual([]);
+  });
+
+  it('records a page whose two elements share an HTML id once, when a change makes it', () => {
+    clearIncidents();
+    const box = (id: string, htmlId: string): DocNode => ({ id, type: 'div', name: id, tag: 'div', attributes: { id: htmlId }, classes: [], styles: {}, text: null, children: [] });
+    const project = (children: DocNode[]): DocumentJson => ({ version: 1, language: 'en', pages: [{ id: 'home', name: 'Home', file: 'index.html', tree: { ...box('Page', ''), type: 'page', tag: 'body', attributes: {}, children } }] }) as unknown as DocumentJson;
+    reportSelfChecks('element.insert', project([box('A', 'promo'), box('B', 'other')]));
+    expect(incidents()).toEqual([]);
+    reportSelfChecks('element.duplicate', project([box('A', 'promo'), box('B', 'promo')]));
+    expect(incidents()).toEqual([{ kind: 'self-check', what: '"element.duplicate" left a document that breaks a rule of the app', detail: 'page index.html: A and B carry the same HTML id "promo"' }]);
+    reportSelfChecks('text.set', project([box('A', 'promo'), box('B', 'promo')]));
+    expect(incidents().length).toBe(1);
+    reportSelfChecks('element.delete', project([box('A', 'promo')]));
   });
 });

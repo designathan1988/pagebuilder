@@ -7,7 +7,7 @@ import type { PreferenceStorage } from '../../editor/preferences/preferences.ts'
 import type { DocumentChange } from '../store/store.ts';
 import { createEmptyDocument, isEmptyProject, type DocumentJson } from '../document/model.ts';
 import { RULES, runHandler } from '../testing/handlers.ts';
-import { PROJECT_FILE_LIMITS, saveProject } from './archive.ts';
+import { PROJECT_FILE_LIMITS, projectDocumentBytes, projectOverLimit, saveProject } from './archive.ts';
 
 // the fixture as File › Open reads it: the file's text
 const aurora = JSON.stringify(fixture);
@@ -72,6 +72,10 @@ describe('File › Open (src/core/project/archive.ts)', () => {
     // a project within the bound is written
     const small = runHandler(saveProject, empty).outcome;
     expect(small.kind === 'change' ? small.download?.name : null).toBe('project.zip');
+    // the cloud save asks the same bound of the same bytes (src/editor/cloud/cloud.ts)
+    const big = { ...empty, files: [{ path: 'img/big.png', type: 'image/png', bytes }] };
+    expect(projectOverLimit(projectDocumentBytes(big).length)).not.toBeNull();
+    expect(projectOverLimit(projectDocumentBytes(empty).length)).toBeNull();
   });
 
   // CORE-3: replacing a project that holds work asks first, whatever the work is

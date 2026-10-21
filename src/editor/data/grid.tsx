@@ -3,7 +3,7 @@
 // field that keeps what is typed in the field's type. The columns a person drags onto an element are Connect fields'
 // (mapping.tsx), drawn once, so a drag always starts from one handle per column.
 import type { ReactNode } from 'react';
-import { cellText, queryItems } from '../../core/data/collections.ts';
+import { cellText, MAX_DECIMALS, queryItems } from '../../core/data/collections.ts';
 import { FIELD_TYPES, FILTER_OPERATORS, type Collection, type Field, type Query } from '../../core/data/model.ts';
 import type { MessageId } from '../../generated/ids.ts';
 import { DoorControl } from '../doors/door.tsx';
@@ -18,6 +18,9 @@ const REMOVE_COLLECTION = doorOf(COLLECTION, 'collection-delete');
 const FIELD_LABEL = doorOf(COLLECTION, 'field-label');
 const FIELD_TYPE = doorOf(COLLECTION, 'field-type');
 const FIELD_REMOVE = doorOf(COLLECTION, 'field-remove');
+// a number field's decimal places (DATA-1): the fewest it shows on the page, 0 to MAX_DECIMALS, digits in any language
+const FIELD_DECIMALS = doorOf(COLLECTION, 'field-decimals');
+const DECIMAL_PLACES: readonly Option[] = Array.from({ length: MAX_DECIMALS + 1 }, (_, n) => ({ value: String(n), label: String(n) }));
 const FIELD_ADD = doorOf(COLLECTION, 'field-add');
 const FILTER_FIELD = doorOf(COLLECTION, 'filter-field');
 const FILTER_OPERATOR = doorOf(COLLECTION, 'filter-operator');
@@ -46,6 +49,7 @@ function Fields({ collection }: { readonly collection: Collection }): ReactNode 
         <div key={field.key} className="data-fields__row">
           <DoorField entry={FIELD_LABEL} args={{ collection: collection.name, field: field.key }} name="label" value={field.label} />
           <DoorField entry={FIELD_TYPE} args={{ collection: collection.name, field: field.key }} name="type" value={field.type} options={types} className="data-field--type" />
+          {field.type === 'number' ? <DoorField entry={FIELD_DECIMALS} args={{ collection: collection.name, field: field.key }} name="decimals" value={String(field.decimals ?? 0)} options={DECIMAL_PLACES} transform={Number} className="data-field--decimals" /> : null}
           <DoorControl entry={FIELD_REMOVE} args={{ collection: collection.name, field: field.key }} label={t('data.removeFieldNamed', { label: field.label })} />
         </div>
       ))}

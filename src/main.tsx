@@ -43,8 +43,9 @@ function cloudWork(project: CloudProject): SavedWork | null {
   return { revision: 0, format: typeof document.version === 'number' ? document.version : 0, document, selection: [] };
 }
 
-// the page in place of the editor when a cloud project cannot be opened, with the way back to the dashboard
-function stopWith(reason: string): never {
+// the page in place of the editor when a cloud project cannot be opened, with the way back to the dashboard: the
+// person reads why in their language; the technical detail goes to the thrown error (console and incident feed)
+function stopWith(why: 'cloud.open.unavailable' | 'cloud.open.unreadable', detail: string): never {
   const root = document.getElementById('root');
   if (root) {
     root.innerHTML = '';
@@ -54,15 +55,15 @@ function stopWith(reason: string): never {
     // the editor's preferences are not read yet: the browser's language chooses the words
     const locale = browserLocale(navigator.languages);
     title.textContent = translate(locale, 'cloud.open.failed');
-    const detail = document.createElement('p');
-    detail.textContent = reason;
+    const reason = document.createElement('p');
+    reason.textContent = translate(locale, why);
     const back = document.createElement('a');
     back.href = '/painel/';
     back.textContent = translate(locale, 'cloud.open.back');
-    box.append(title, detail, back);
+    box.append(title, reason, back);
     root.append(box);
   }
-  throw new Error(`cloud: ${reason}`);
+  throw new Error(`cloud: ${detail}`);
 }
 
 // in the test builds, what the page's storage held before the editor's first statement (src/editor/test-boot.ts)
@@ -96,12 +97,12 @@ let cloud: CloudProject | null = null;
 try {
   cloud = await openCloud();
 } catch (error) {
-  stopWith(error instanceof Error ? error.message : String(error));
+  stopWith('cloud.open.unavailable', error instanceof Error ? error.message : String(error));
 }
 await claimEditing();
 const saved = cloud === null ? await readSavedWork() : cloudWork(cloud);
 const restored = restoredWork(saved, MODEL_RULES);
-if (cloud !== null && saved !== null && restored === null) stopWith('the saved document could not be read');
+if (cloud !== null && saved !== null && restored === null) stopWith('cloud.open.unreadable', 'the saved document could not be read');
 // saved work the reader refused: the recovery dialog offers the versions IndexedDB keeps (autosave-corruption-recovery)
 const recovery = cloud === null && saved !== null && restored === null ? await readVersions() : null;
 const store = createEditorStore({ restored, recovery, narrow: windowIsNarrow() });

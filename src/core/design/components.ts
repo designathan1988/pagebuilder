@@ -26,7 +26,7 @@ import type { NodeId } from '../../generated/commands.ts';
 import { message, registerHandler, registerPredicate, type Message, type Outcome } from '../commands/registry.ts';
 import { locate, walk, type ComponentDefinition, type DocNode, type DocumentJson } from '../document/model.ts';
 import type { ModelRules } from '../document/validate.ts';
-import { refreshCopiedIdentities, withFreshAnimationNames } from '../document/clone.ts';
+import { htmlIdMapOf, refreshCopiedIdentities, withFreshAnimationNames } from '../document/clone.ts';
 import { placementRefusal } from '../elements/content-model.ts';
 import type { Patch } from '../history/transaction.ts';
 import { deepEqual } from '../history/transaction.ts';
@@ -439,7 +439,7 @@ export const updateFromInstanceCommand = registerHandler('components.updateFromI
   // instance's ids, and every instance placed later acted on that instance's elements), with no per-instance choice
   const definitionCopy = copied(source, next, null, true);
   const repaired = (copy: DocNode): DocNode => {
-    const [tree] = refreshCopiedIdentities(state.document, [{ source, copy }], false);
+    const [tree] = refreshCopiedIdentities(state.document, [{ source, copy }], false, htmlIdMapOf(source, copy));
     if (tree === undefined) throw new Error('components.updateFromInstance: the repaired copy is missing');
     return tree;
   };
@@ -508,7 +508,9 @@ export const updateFromInstanceCommand = registerHandler('components.updateFromI
   };
   // what the edited instance's elements point at among themselves (an interaction's target, a label's control, an
   // anchor link) points, in each other instance, at that instance's own element of the same place, and its animations
-  // take names of their own (the audit's STRUCT-5: every instance acted on the edited one's elements)
+  // take names of their own (the audit's STRUCT-5: every instance acted on the edited one's elements); a reference by
+  // HTML id (aria-controls, aria-labelledby, `for`, "#…") follows the HTML id each instance's element keeps
+  // (htmlIdMapOf in `repaired`)
   const ownIdentities = (tree: DocNode): DocNode => withFreshAnimationNames(repaired(tree), animationNames);
   const written = instances.map((one) => {
     const tree = one.node.id === source.id ? source : ownIdentities(rebuilt(source, one.node));

@@ -20,7 +20,7 @@
         ],
         "expected": [
           "Every page links the manifest and registers the service worker; the manifest names a 192px and a 512px icon, a start_url and a display.",
-          "Each project holds a LEIA-ME.md with the commands that build it."
+          "Each project holds a README in the site's language (README.md, or LEIA-ME.md for a Portuguese site) with the commands that build it."
         ]
       },
       "scenarios": [
@@ -183,7 +183,7 @@
                   "absent": []
                 },
                 {
-                  "path": "LEIA-ME.md",
+                  "path": "README.md",
                   "present": [
                     "npx cap add android"
                   ],
@@ -271,7 +271,7 @@
                   "absent": []
                 },
                 {
-                  "path": "LEIA-ME.md",
+                  "path": "README.md",
                   "present": [
                     "npm run make"
                   ],

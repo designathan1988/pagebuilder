@@ -324,16 +324,17 @@ export class PageRenderer {
             .map((id) => findNode(tree, id))
             .flatMap((node) => {
               if (!node) return [];
-              const held: Record<string, Record<string, unknown>> = {};
+              // each breakpoint's values of that state, written as the base state's (nodeCss reads breakpoint → state →
+              // property): the classes' first, in the order the node lists them, then the node's own, which win as the
+              // node's rule wins over a class rule (the audit's STYLE-3: the classes' values were spread at the state
+              // level, where nodeCss never reads them, so a class's Hover never previewed)
+              const held: Record<string, Record<string, Record<string, unknown>>> = {};
               const merge = (breakpoint: string, values: unknown) => {
-                held[breakpoint] = { ...(held[breakpoint] ?? {}), ...(values as Record<string, unknown>) };
+                const base = this.model.base.state;
+                held[breakpoint] = { [base]: { ...(held[breakpoint]?.[base] ?? {}), ...(values as Record<string, unknown>) } };
               };
-              for (const [breakpoint, byState] of Object.entries(node.styles as Record<string, Record<string, unknown>>)) {
-                const values = byState[state];
-                if (values !== undefined) held[breakpoint] = { [this.model.base.state]: values };
-              }
               // the classes the node wears hold values of that state too: with the target on a class, the canvas shows
-              // them (A3.36); they follow the node's own, as the class rules do
+              // them (A3.36)
               for (const name of (node as { classes?: readonly string[] }).classes ?? []) {
                 const defined = (doc as { classes?: readonly { readonly name: string; readonly styles: Record<string, Record<string, unknown>> }[] }).classes?.find((c) => c.name === name);
                 if (defined === undefined) continue;
@@ -341,6 +342,10 @@ export class PageRenderer {
                   const values = byState[state];
                   if (values !== undefined) merge(breakpoint, values);
                 }
+              }
+              for (const [breakpoint, byState] of Object.entries(node.styles as Record<string, Record<string, unknown>>)) {
+                const values = byState[state];
+                if (values !== undefined) merge(breakpoint, values);
               }
               return [nodeCss({ styles: held as DocNode['styles'], type: node.type }, nodeSelector(node.id), this.model)];
             })

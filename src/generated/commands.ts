@@ -84,7 +84,7 @@ export interface CommandArgs {
   "data.renameCollection": { readonly collection: string; readonly name: string };
   "data.deleteCollection": { readonly collection: string };
   "data.addField": { readonly label: string; readonly type: "text" | "richtext" | "image" | "number" | "date" | "link" | "boolean" };
-  "data.setField": { readonly collection: string; readonly field: string; readonly label?: string; readonly type?: "text" | "richtext" | "image" | "number" | "date" | "link" | "boolean" };
+  "data.setField": { readonly collection: string; readonly field: string; readonly label?: string; readonly type?: "text" | "richtext" | "image" | "number" | "date" | "link" | "boolean"; readonly decimals?: number };
   "data.removeField": { readonly collection: string; readonly field: string };
   "data.addItem": { readonly collection: string };
   "data.setCell": { readonly collection: string; readonly item: string; readonly field: string; readonly value: string };

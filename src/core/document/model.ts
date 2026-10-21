@@ -48,9 +48,12 @@ export interface DocNode {
   // hidden on the canvas with its whole subtree, still in the document and in Layers (element.toggleHidden, spec
   // hide-element): true, absent while the element shows. A page's root is never hidden.
   readonly hidden?: true;
-  // locked with its whole subtree (element.toggleLock, spec lock-element): no command moves, deletes or edits it or
-  // anything inside it, adds to it, or toggles a flag inside it; it can still be selected. True, absent while it is
-  // unlocked. A page's root is never locked.
+  // locked with its whole subtree (element.toggleLock, spec lock-element): no command aimed at it or at anything inside
+  // it moves, deletes or edits it, adds to it, or toggles a flag inside it (core/nodes/flags.ts lockRefusal reads the
+  // node and its ancestors); it can still be selected. A command aimed at an unlocked ancestor acts on the whole
+  // subtree, as in Figma (owner's decision, STRUCT-10): deleting that ancestor deletes the locked element with it, and
+  // removing that ancestor's wrapper moves the locked element up with its siblings. True, absent while it is unlocked.
+  // A page's root is never locked.
   readonly locked?: true;
   // the person's own attributes (feature element-attributes-aria: aria-*, data-*, role…), name → value, written as
   // they are; absent while there are none. Never an event handler (on…) nor an attribute of the editor's own.

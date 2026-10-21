@@ -114,8 +114,9 @@ const steps: Step[] = [
   },
 ];
 
-// the static steps are light and run at once; the test steps each use the machine's cores and run one after another
-const AT_ONCE = new Set(['manifest', 'generated', 'types', 'lint']);
+// the light static steps run at once; the generated files' check (8 s alone, most of it the CSS compatibility
+// table) and the test steps each use the machine's cores and run one after another
+const AT_ONCE = new Set(['manifest', 'types', 'lint']);
 const timed = async (step: Step): Promise<boolean> => {
   const at = Date.now();
   const ok = await step.run();

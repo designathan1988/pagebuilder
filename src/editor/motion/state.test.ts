@@ -84,7 +84,7 @@ describe('the Timeline\'s editor state', () => {
     run(made, 'motion.select', { timeline: 'Intro', at: 0 });
     run(made, 'motion.toggleRecord');
     run(made, 'motion.setPlayhead', { time: 300 });
-    run(made, 'style.set', { property: 'opacity', value: '0.5' });
+    run(made, 'style.set', { property: 'opacity', value: '50%' });
     const effect = made.getState().document.motionTimelines?.[0]?.actions[0]?.effect;
     expect(effect?.kind === 'animate' ? effect.tracks[0]?.keyframes.map((keyframe) => [keyframe.time, keyframe.value]) : null).toEqual([[0, '0'], [300, '0.5'], [600, '1']]);
     expect(made.getState().history.past).toHaveLength(1);

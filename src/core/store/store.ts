@@ -19,7 +19,7 @@ import type { Clock } from '../ports/clock.ts';
 import type { ClipboardWriter } from '../ports/clipboard.ts';
 import { anyCss, type CssSupport } from '../ports/css.ts';
 import type { Downloads } from '../ports/download.ts';
-import { reportEmptyChange, reportError, reportInvariantBreach } from '../incidents.ts';
+import { reportEmptyChange, reportError, reportInvariantBreach, reportSelfChecks } from '../incidents.ts';
 import type { IdGenerator } from '../ports/ids.ts';
 import { noLayout, type Layout } from '../ports/layout.ts';
 import { rulesForDocument } from '../document/breakpoint-rules.ts';
@@ -274,7 +274,10 @@ export function createStore<Ui>(options: StoreOptions<Ui>): Store<Ui> {
   // the refusal the last commit made of a command's own result, read by run() to answer the dispatch
   let breach: Message | null = null;
   const breachNow = (): Message | null => breach;
+  // what made the last state committed, for the self-checks a publication runs (publish above)
+  let committedBy = 'the initial state';
   const commit = (next: StoreState<Ui>, source: string): StoreState<Ui> => {
+    committedBy = source;
     const problems = validateDocument(next.document, next.selection, rules);
     if (problems.length > 0) {
       reportInvariantBreach(source, problems);
@@ -327,6 +330,9 @@ export function createStore<Ui>(options: StoreOptions<Ui>): Store<Ui> {
       throw new Error(breaches.join('; '));
     }
     state = next;
+    // the app's own rules over the document, under the same development-and-tests gate as the history's (the build a
+    // person uses passes no invariants): what a publication breaks reaches the incident feed (core/incidents.ts)
+    if (options.invariants !== undefined && next.document !== before.document) reportSelfChecks(committedBy, next.document);
     if (next.document !== before.document) {
       const change: DocumentChange = { before: before.document, after: next.document, patches };
       for (const listener of [...documentListeners]) listener(change);

@@ -1803,7 +1803,8 @@ export const importHtmlCommand = registerHandler('project.importHtml', (context,
   if (refused !== null) return { kind: 'refused' as const, message: refused };
   // Only explicit replacement asks to remove work; new-page import may reuse a pristine blank placeholder.
   if (destination === 'replace' && confirmed !== true) return { kind: 'confirm' as const };
-  const pristine = isEmptyProject(state.document) && [state.document.classes, state.document.files, state.document.components, state.document.tokens, state.document.swatches, state.document.folders].every(values => !values?.length);
+  // the empty project holds no class, file, component, token, swatch or folder either (model.ts isEmptyProject)
+  const pristine = isEmptyProject(state.document);
   const replacing = destination === 'replace' || (destination === 'page' && pristine);
   const { document: parsed, report, elements } = importedSite(context, picked, replacing);
   const composed = importDestination(context, parsed, replacing ? 'replace' : destination, (target ?? (state.selection.length === 1 ? state.selection[0] : undefined)) as NodeId | undefined);

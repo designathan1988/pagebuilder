@@ -17,7 +17,7 @@ import { boxSizeOf, outputModelFromManifest, type OutputModel } from '../render/
 import type { Attribute, Coupling, ElementsFile, GeneratedHtml, PropertiesFile, TemplateNode } from '../../manifest/schema.ts';
 import { contentModelFrom, nestingProblems, type ContentModel } from '../elements/content-model.ts';
 import { treeShapeProblem } from './shape.ts';
-import { orphanReferences, setReferenceAttributes } from '../elements/references.ts';
+import { orphanReferences, referenceHtmlOf, setReferenceAttributes } from '../elements/references.ts';
 import { addressAllowed } from '../elements/address.ts';
 import { projectPathProblem } from '../files/path-rule.ts';
 import { motionProblems } from '../motion/document.ts';
@@ -525,7 +525,45 @@ export function validateDocument(doc: DocumentJson, selection: Selection, given:
     const at = pathOf.get(orphan.node.id);
     bad(at === undefined ? '/pages' : `${at}/attributes/${orphan.attribute}`, `${orphan.node.name} holds ${orphan.attribute} "${orphan.value}", which names no element of the document`);
   }
+  for (const problem of definitionReferenceProblems(doc, nodeIds)) bad(problem.path, problem.message);
   return problems;
+}
+
+// What a component's definition points at that is not there (the audit's STRUCT-6): an interaction's target or a
+// reference attribute (a label's `for`, a link's "#…") inside a definition names an element of that definition or of
+// the pages, by node id or by HTML id. Every instance placed later copies it, so a definition pointing at a deleted
+// element made every Insert, Repeat and Fill of its component refused; the writer that leaves one behind is caught
+// here, at its own write. Also read by the incident feed (core/incidents.ts).
+export function definitionReferenceProblems(doc: DocumentJson, pageNodeIds: ReadonlySet<string>): { readonly path: string; readonly message: string }[] {
+  const found: { path: string; message: string }[] = [];
+  if (!Array.isArray(doc.components)) return found;
+  const pageHtmlIds = new Set<string>();
+  for (const page of doc.pages ?? []) {
+    if (!isRecord(page) || !isRecord(page.tree)) continue;
+    for (const node of walk(page.tree)) if (typeof node.attributes.id === 'string' && node.attributes.id !== '') pageHtmlIds.add(node.attributes.id);
+  }
+  doc.components.forEach((component, c) => {
+    if (!isRecord(component) || !isRecord(component.tree)) return;
+    const root = component.tree as unknown as DocNode;
+    const own = [...walk(root)];
+    const ids = new Set(own.map((node) => node.id));
+    const htmlIds = new Set(own.map((node) => node.attributes.id).filter((id): id is string => typeof id === 'string' && id !== ''));
+    const known = (name: string): boolean => ids.has(name) || pageNodeIds.has(name) || htmlIds.has(name) || pageHtmlIds.has(name);
+    const visit = (node: DocNode, at: string): void => {
+      for (const [attribute, value] of Object.entries(node.attributes)) {
+        const html = referenceHtmlOf(attribute);
+        if (html === undefined || typeof value !== 'string' || value === '' || (html === 'href' && !value.startsWith('#'))) continue;
+        const named = value.startsWith('#') ? value.slice(1) : value;
+        if (!known(named)) found.push({ path: `${at}/attributes/${attribute}`, message: `${node.name} holds ${attribute} "${value}", which names no element of the document` });
+      }
+      (Array.isArray(node.interactions) ? node.interactions : []).forEach((one, i) => {
+        if (isRecord(one) && typeof one.target === 'string' && !ids.has(one.target) && !pageNodeIds.has(one.target)) found.push({ path: `${at}/interactions/${i}/target`, message: `"${one.target}" names no element of the document` });
+      });
+      if (Array.isArray(node.children)) node.children.forEach((child, i) => visit(child, `${at}/children/${i}`));
+    };
+    visit(root, `/components/${c}/tree`);
+  });
+  return found;
 }
 
 // The marks of the instances of components (model.ts, spec reusable-components): an instance's root names a component
