@@ -97,7 +97,10 @@ export function placeMovable(places: readonly Point[], size: number, keep: reado
 // The four zones of the one selected element, in ROTATION_SIDES order: each placed in turn, the zones placed before it
 // among the controls it leaves pressable.
 type Area = { readonly width: number; readonly height: number };
+// An element wholly outside the canvas has none: its places, held inside the canvas, stood at the canvas's edge far
+// from it, a rotate glyph alone over the page's top (DEF-0623: the heading selected, the page scrolled to the gallery).
 export function placeRotationZones(element: Box, area: Area, size: number, gap: number, rotation: number, keep: readonly Box[], rather: readonly Box[], avoid: readonly Box[] = [], outward = gap): readonly (Point | null)[] {
+  if (!meets(element, { x: 0, y: 0, width: area.width, height: area.height })) return ROTATION_SIDES.map(() => null);
   const placed: Box[] = [];
   return ROTATION_SIDES.map((side) => {
     const spot = placeMovable(rotationPlaces(element, area, size, gap, side, rotation, outward), size, [...keep, ...placed], rather, avoid);

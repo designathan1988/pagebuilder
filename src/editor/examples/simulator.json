@@ -1,0 +1,597 @@
+{
+ "version": 4,
+ "language": "pt-BR",
+ "codeLanguage": "en",
+ "pages": [
+  {
+   "id": "simpage",
+   "name": "Simulador de partículas",
+   "file": "index.html",
+   "tree": {
+    "id": "sim141",
+    "type": "page",
+    "name": "Body",
+    "tag": "body",
+    "attributes": {},
+    "classes": [],
+    "styles": {
+     "desktop": {
+      "base": {
+       "margin-top": "0",
+       "margin-right": "0",
+       "margin-bottom": "0",
+       "margin-left": "0",
+       "background-color": "#f4f5f9",
+       "color": "#14161f",
+       "font-family": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+       "min-height": "100vh"
+      }
+     }
+    },
+    "text": null,
+    "children": [
+     {
+      "id": "sim140",
+      "type": "main",
+      "name": "App",
+      "tag": "main",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "max-width": "1080px",
+         "margin-left": "auto",
+         "margin-right": "auto",
+         "padding-top": "24px",
+         "padding-bottom": "40px",
+         "padding-left": "20px",
+         "padding-right": "20px",
+         "display": "flex",
+         "flex-direction": "column",
+         "row-gap": "16px"
+        }
+       },
+       "phone": {
+        "base": {
+         "padding-left": "12px",
+         "padding-right": "12px",
+         "padding-top": "12px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "sim127",
+        "type": "header",
+        "name": "Topo",
+        "tag": "header",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "column-gap": "8px",
+           "row-gap": "8px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "sim126",
+          "type": "div",
+          "name": "Titulos",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-right": "auto",
+             "min-width": "0"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "sim124",
+            "type": "heading",
+            "name": "Titulo",
+            "tag": "h1",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "font-size": "24px",
+               "line-height": "1.2",
+               "margin-right": "auto"
+              }
+             }
+            },
+            "text": "Simulador de partículas",
+            "children": []
+           },
+           {
+            "id": "sim125",
+            "type": "paragraph",
+            "name": "Descricao",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "color": "#5b6170",
+               "font-size": "14px"
+              }
+             }
+            },
+            "text": "Gravidade, colisões e quicadas calculadas a cada quadro. Clique na área para lançar mais bolas.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "sim122",
+          "type": "button",
+          "name": "Pausar",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#4f46e5",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#4f46e5",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#4f46e5",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#4f46e5",
+             "background-color": "#4f46e5",
+             "color": "#ffffff",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Pausar",
+          "children": [],
+          "logic": {
+           "text": "state.running ? 'Pausar' : 'Continuar'",
+           "on": [
+            {
+             "event": "click",
+             "code": "state.running = !state.running"
+            }
+           ]
+          }
+         },
+         {
+          "id": "sim123",
+          "type": "button",
+          "name": "Reiniciar",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Reiniciar",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "const n = state.count\nstate.count = 0\nawait app.sleep(50)\nstate.count = n"
+            }
+           ]
+          }
+         }
+        ]
+       },
+       {
+        "id": "sim128",
+        "type": "div",
+        "name": "Mundo",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "background-color": "#0b1020",
+           "border-top-width": "1px",
+           "border-right-width": "1px",
+           "border-bottom-width": "1px",
+           "border-left-width": "1px",
+           "border-top-style": "solid",
+           "border-right-style": "solid",
+           "border-bottom-style": "solid",
+           "border-left-style": "solid",
+           "border-top-color": "#dfe3ea",
+           "border-right-color": "#dfe3ea",
+           "border-bottom-color": "#dfe3ea",
+           "border-left-color": "#dfe3ea",
+           "border-top-left-radius": "12px",
+           "border-top-right-radius": "12px",
+           "border-bottom-left-radius": "12px",
+           "border-bottom-right-radius": "12px",
+           "padding-top": "8px",
+           "padding-right": "8px",
+           "padding-bottom": "8px",
+           "padding-left": "8px"
+          }
+         }
+        },
+        "text": null,
+        "children": [],
+        "logic": {
+         "component": "Particulas"
+        }
+       },
+       {
+        "id": "sim139",
+        "type": "section",
+        "name": "Controles",
+        "tag": "section",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "column-gap": "24px",
+           "row-gap": "8px",
+           "background-color": "#ffffff",
+           "border-top-width": "1px",
+           "border-right-width": "1px",
+           "border-bottom-width": "1px",
+           "border-left-width": "1px",
+           "border-top-style": "solid",
+           "border-right-style": "solid",
+           "border-bottom-style": "solid",
+           "border-left-style": "solid",
+           "border-top-color": "#dfe3ea",
+           "border-right-color": "#dfe3ea",
+           "border-bottom-color": "#dfe3ea",
+           "border-left-color": "#dfe3ea",
+           "border-top-left-radius": "12px",
+           "border-top-right-radius": "12px",
+           "border-bottom-left-radius": "12px",
+           "border-bottom-right-radius": "12px",
+           "padding-top": "16px",
+           "padding-right": "16px",
+           "padding-bottom": "16px",
+           "padding-left": "16px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "sim131",
+          "type": "div",
+          "name": "Gravidade",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "4px",
+             "flex-grow": "1",
+             "min-width": "180px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "sim129",
+            "type": "paragraph",
+            "name": "Rotulo gravidade",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "color": "#5b6170",
+               "font-size": "14px"
+              }
+             }
+            },
+            "text": "Gravidade: 900 px/s²",
+            "children": [],
+            "logic": {
+             "text": "'Gravidade: ' + state.gravity + ' px/s²'"
+            }
+           },
+           {
+            "id": "sim130",
+            "type": "input",
+            "name": "Controle gravidade",
+            "tag": "input",
+            "attributes": {
+             "inputType": "range",
+             "min": "0",
+             "max": "2000",
+             "step": "50"
+            },
+            "classes": [],
+            "styles": {},
+            "text": null,
+            "children": [],
+            "logic": {
+             "model": "state.gravity"
+            }
+           }
+          ]
+         },
+         {
+          "id": "sim134",
+          "type": "div",
+          "name": "Elasticidade",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "4px",
+             "flex-grow": "1",
+             "min-width": "180px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "sim132",
+            "type": "paragraph",
+            "name": "Rotulo elasticidade",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "color": "#5b6170",
+               "font-size": "14px"
+              }
+             }
+            },
+            "text": "Elasticidade: 80%",
+            "children": [],
+            "logic": {
+             "text": "'Elasticidade: ' + Math.round(state.bounce * 100) + '%'"
+            }
+           },
+           {
+            "id": "sim133",
+            "type": "input",
+            "name": "Controle elasticidade",
+            "tag": "input",
+            "attributes": {
+             "inputType": "range",
+             "min": "0",
+             "max": "1",
+             "step": "0.05"
+            },
+            "classes": [],
+            "styles": {},
+            "text": null,
+            "children": [],
+            "logic": {
+             "model": "state.bounce"
+            }
+           }
+          ]
+         },
+         {
+          "id": "sim137",
+          "type": "div",
+          "name": "Quantidade",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "4px",
+             "flex-grow": "1",
+             "min-width": "180px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "sim135",
+            "type": "paragraph",
+            "name": "Rotulo quantidade",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "color": "#5b6170",
+               "font-size": "14px"
+              }
+             }
+            },
+            "text": "Bolas: 120",
+            "children": [],
+            "logic": {
+             "text": "'Bolas: ' + state.count"
+            }
+           },
+           {
+            "id": "sim136",
+            "type": "input",
+            "name": "Controle quantidade",
+            "tag": "input",
+            "attributes": {
+             "inputType": "range",
+             "min": "0",
+             "max": "400",
+             "step": "10"
+            },
+            "classes": [],
+            "styles": {},
+            "text": null,
+            "children": [],
+            "logic": {
+             "model": "state.count"
+            }
+           }
+          ]
+         },
+         {
+          "id": "sim138",
+          "type": "paragraph",
+          "name": "Medidas",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-top": "0",
+             "margin-bottom": "0",
+             "color": "#5b6170",
+             "font-size": "14px",
+             "width": "100%"
+            }
+           }
+          },
+          "text": "60 quadros/s · energia 0 kJ",
+          "children": [],
+          "logic": {
+           "text": "state.fps + ' quadros/s · energia ' + state.energy + ' kJ'"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "app": {
+  "variables": [
+   {
+    "name": "gravity",
+    "type": "number",
+    "initial": 900
+   },
+   {
+    "name": "bounce",
+    "type": "number",
+    "initial": 0.8
+   },
+   {
+    "name": "count",
+    "type": "number",
+    "initial": 120
+   },
+   {
+    "name": "running",
+    "type": "boolean",
+    "initial": true
+   },
+   {
+    "name": "fps",
+    "type": "number",
+    "initial": 0
+   },
+   {
+    "name": "energy",
+    "type": "number",
+    "initial": 0
+   }
+  ],
+  "components": [
+   {
+    "name": "Particulas",
+    "code": "// the world: balls under gravity that bounce on the walls and on each other, integrated every frame from the\n// controls in the state (gravity, restitution, how many); a press throws new balls from the pointer\nexport default {\n  mount(el, props, ctx) {\n    const { state } = ctx\n    const canvas = document.createElement('canvas')\n    canvas.width = 960\n    canvas.height = 560\n    canvas.style.cssText = 'width:100%;height:auto;display:block;background:#0b1020;border-radius:12px;touch-action:none'\n    el.appendChild(canvas)\n    const g = canvas.getContext('2d')\n    const balls = []\n    const add = (x, y, vx, vy) => balls.push({ x, y, vx, vy, r: 6 + Math.random() * 10, hue: Math.floor(Math.random() * 360) })\n    const fill = () => {\n      while (balls.length < state.count) add(Math.random() * canvas.width, Math.random() * canvas.height * 0.5, (Math.random() - 0.5) * 400, 0)\n      if (balls.length > state.count) balls.length = state.count\n    }\n    canvas.addEventListener('pointerdown', (event) => {\n      const box = canvas.getBoundingClientRect()\n      const x = (event.clientX - box.left) * canvas.width / box.width\n      const y = (event.clientY - box.top) * canvas.height / box.height\n      for (let i = 0; i < 12; i++) add(x, y, (Math.random() - 0.5) * 900, -Math.random() * 700)\n      state.count = balls.length\n    })\n    let last = performance.now(), frames = 0, clock = last, frame = 0\n    const loop = (now) => {\n      frame = requestAnimationFrame(loop)\n      const dt = Math.min(0.033, (now - last) / 1000)\n      last = now\n      fill()\n      if (state.running) {\n        for (const b of balls) {\n          b.vy += state.gravity * dt\n          b.x += b.vx * dt\n          b.y += b.vy * dt\n          if (b.x < b.r) { b.x = b.r; b.vx = -b.vx * state.bounce }\n          if (b.x > canvas.width - b.r) { b.x = canvas.width - b.r; b.vx = -b.vx * state.bounce }\n          if (b.y > canvas.height - b.r) { b.y = canvas.height - b.r; b.vy = -b.vy * state.bounce; b.vx *= 0.995 }\n          if (b.y < b.r) { b.y = b.r; b.vy = -b.vy * state.bounce }\n        }\n        for (let i = 0; i < balls.length; i++) for (let j = i + 1; j < balls.length; j++) {\n          const a = balls[i], c = balls[j]\n          const dx = c.x - a.x, dy = c.y - a.y, d = Math.hypot(dx, dy), min = a.r + c.r\n          if (d === 0 || d >= min) continue\n          const nx = dx / d, ny = dy / d, overlap = (min - d) / 2\n          a.x -= nx * overlap; a.y -= ny * overlap; c.x += nx * overlap; c.y += ny * overlap\n          const along = (c.vx - a.vx) * nx + (c.vy - a.vy) * ny\n          if (along > 0) continue\n          const push = -(1 + state.bounce) * along / 2\n          a.vx -= push * nx; a.vy -= push * ny; c.vx += push * nx; c.vy += push * ny\n        }\n      }\n      g.fillStyle = 'rgba(11, 16, 32, 0.35)'\n      g.fillRect(0, 0, canvas.width, canvas.height)\n      for (const b of balls) { g.fillStyle = `hsl(${b.hue} 85% 62%)`; g.beginPath(); g.arc(b.x, b.y, b.r, 0, Math.PI * 2); g.fill() }\n      frames++\n      if (now - clock >= 1000) {\n        state.fps = Math.round(frames * 1000 / (now - clock))\n        state.energy = Math.round(balls.reduce((sum, b) => sum + 0.5 * (b.vx * b.vx + b.vy * b.vy) / 1000, 0))\n        frames = 0\n        clock = now\n      }\n    }\n    frame = requestAnimationFrame(loop)\n    return { destroy() { cancelAnimationFrame(frame); canvas.remove() } }\n  },\n}\n"
+   }
+  ]
+ }
+}

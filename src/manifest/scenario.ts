@@ -21,10 +21,13 @@ export interface DocumentPath {
 
 // the fields of a node a path may name; id is generated, so never named. locked, hidden (true, absent when off) and
 // inline (the runs of inline marks) arrive with the lock, hide and inline formatting features of group 02.
-const NODE_FIELDS = ['type', 'name', 'tag', 'attributes', 'classes', 'styles', 'text', 'children', 'locked', 'hidden', 'inline', 'customAttributes', 'component', 'componentPart', 'guides', 'grid', 'layerColors', 'animations', 'interactions', 'motions', 'behaviours', 'authoring', 'bind', 'dataList', 'dataItem'] as const;
+const NODE_FIELDS = ['type', 'name', 'tag', 'attributes', 'classes', 'styles', 'text', 'children', 'locked', 'hidden', 'inline', 'customAttributes', 'component', 'componentPart', 'guides', 'grid', 'layerColors', 'animations', 'interactions', 'motions', 'behaviours', 'authoring', 'bind', 'dataList', 'dataItem', 'logic'] as const;
+// the node fields the model holds only while they have a key (an element's logic): removing the last key removes
+// the field
+const KEYED_NODE_FIELDS = ['logic'] as const;
 // the fields of the project itself a diff names with no node path ("/@swatches"): the saved colours and the design
 // tokens, and the project's document and code languages (model.ts)
-const DOCUMENT_FIELDS = ['pages', 'swatches', 'tokens', 'classes', 'components', 'files', 'folders', 'motionTimelines', 'language', 'codeLanguage', 'collections', 'breakpoints'] as const;
+const DOCUMENT_FIELDS = ['pages', 'swatches', 'tokens', 'classes', 'components', 'files', 'folders', 'motionTimelines', 'language', 'codeLanguage', 'collections', 'breakpoints', 'app'] as const;
 
 // The id a fixture file names: manifest/features/fixtures/<id>.json. "empty" has no file.
 export const EMPTY_FIXTURE = 'empty';
@@ -150,6 +153,8 @@ function applyOne(doc: JsonObject, op: DiffOp): string | null {
     const last = keys[keys.length - 1] as string;
     if (!isObject(container) || !(last in container)) return `${op.path}: there is nothing at this path to remove`;
     Reflect.deleteProperty(container, last);
+    // a field the model holds only while it has keys (an element's logic) goes with its last one
+    if (keys.length === 1 && (KEYED_NODE_FIELDS as readonly string[]).includes(field as string) && isObject(container) && Object.keys(container).length === 0) Reflect.deleteProperty(node, field as string);
     return null;
   }
   if (keys.length === 0) {

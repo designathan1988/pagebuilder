@@ -273,8 +273,9 @@ describe('manifest:check', () => {
 
   it('reads the generated files once: every fixture shares them, frozen, and a plant copies only what it changes', () => {
     const generated = Object.keys(loaded.input.files).filter((file) => file.startsWith('generated/'));
-    // every generated table on the disk, each read once
-    expect(generated.sort()).toEqual(fs.readdirSync('manifest/generated').filter((name) => name.endsWith('.json')).map((name) => `generated/${name}`).sort());
+    // every JSON table of the generated folder, as tools/gen and tools/inventory write them (the list grew with
+    // behavior.json, inventory.json and ui-widths.json after this case was written)
+    expect(generated).toEqual(fs.readdirSync('manifest/generated').filter((file) => file.endsWith('.json')).sort().map((file) => `generated/${file}`));
     for (const file of generated) expect(Object.isFrozen(loaded.input.files[file])).toBe(true);
     const plant = PLANTS.find((p) => p.id === 'door-unplaced');
     if (!plant) throw new Error('no plant door-unplaced');

@@ -1,0 +1,1859 @@
+{
+ "new-variable": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "variable",
+     "type": "text",
+     "initial": ""
+    }
+   ]
+  },
+  "nodes": [],
+  "message": {
+   "key": "status.app.variableAdded",
+   "params": {
+    "name": "variable"
+   },
+   "en": "Variable variable added."
+  }
+ },
+ "rename": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "clicks",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.clicks++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.variableChanged",
+   "params": {
+    "name": "clicks"
+   },
+   "en": "Variable clicks changed."
+  }
+ },
+ "retype": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "text",
+     "initial": ""
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.variableChanged",
+   "params": {
+    "name": "count"
+   },
+   "en": "Variable count changed."
+  }
+ },
+ "initial": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hi there"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.variableChanged",
+   "params": {
+    "name": "title"
+   },
+   "en": "Variable title changed."
+  }
+ },
+ "persist": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0,
+     "persist": true
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.variableChanged",
+   "params": {
+    "name": "count"
+   },
+   "en": "Variable count changed."
+  }
+ },
+ "remove-var": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.variableRemoved",
+   "params": {
+    "name": "title"
+   },
+   "en": "Variable title removed."
+  }
+ },
+ "new-script": {
+  "status": "done",
+  "app": {
+   "scripts": [
+    {
+     "name": "script",
+     "code": "// What a script exports, every expression calls as fn.name(): fn.greet(state.user)\nexport function greet(name) {\n  return 'Hello, ' + name + '!'\n}\n"
+    }
+   ]
+  },
+  "nodes": [],
+  "message": {
+   "key": "status.app.moduleAdded",
+   "params": {
+    "name": "script"
+   },
+   "en": "script added."
+  }
+ },
+ "new-component": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    },
+    {
+     "name": "Component",
+     "code": "// A code component draws anything into its element; props are the bindings prop: of the Logic tab, ctx.emit(event, data) fires the element’s events\nexport default {\n  mount(el, props, ctx) {\n    const box = document.createElement('div');\n    box.textContent = props.text ?? 'Component';\n    el.replaceChildren(box);\n    return {\n      update(next) { box.textContent = next.text ?? 'Component'; },\n      destroy() {},\n    };\n  },\n};\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.moduleAdded",
+   "params": {
+    "name": "Component"
+   },
+   "en": "Component added."
+  }
+ },
+ "module-name": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "helpers",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.moduleChanged",
+   "params": {
+    "name": "helpers"
+   },
+   "en": "helpers saved."
+  }
+ },
+ "module-code": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 7;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.moduleChanged",
+   "params": {
+    "name": "util"
+   },
+   "en": "util saved."
+  }
+ },
+ "module-remove": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.moduleRemoved",
+   "params": {
+    "name": "util"
+   },
+   "en": "util removed."
+  }
+ },
+ "library-add": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    },
+    {
+     "name": "dayjs",
+     "url": "https://cdn.jsdelivr.net/npm/dayjs@1.11.13/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.libraryChanged",
+   "params": {
+    "name": "dayjs"
+   },
+   "en": "Library dayjs saved."
+  }
+ },
+ "library-remove": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.libraryRemoved",
+   "params": {
+    "name": "confetti"
+   },
+   "en": "Library confetti removed."
+  }
+ },
+ "new-table": {
+  "status": "done",
+  "app": {
+   "tables": [
+    {
+     "name": "table",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [],
+  "message": {
+   "key": "status.app.tableAdded",
+   "params": {
+    "name": "table"
+   },
+   "en": "Table table added."
+  }
+ },
+ "table-name": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "articles",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.tableChanged",
+   "params": {
+    "name": "articles"
+   },
+   "en": "Table articles changed."
+  }
+ },
+ "table-read": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "owner",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.tableChanged",
+   "params": {
+    "name": "posts"
+   },
+   "en": "Table posts changed."
+  }
+ },
+ "table-write": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "admin"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.tableChanged",
+   "params": {
+    "name": "posts"
+   },
+   "en": "Table posts changed."
+  }
+ },
+ "table-bad-name": {
+  "status": "refused",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.invalid",
+   "params": {
+    "reason": "a table is named in lower-case letters, digits and _, starting with a letter"
+   },
+   "en": "Not applied: a table is named in lower-case letters, digits and _, starting with a letter."
+  }
+ },
+ "table-remove": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.tableRemoved",
+   "params": {
+    "name": "posts"
+   },
+   "en": "Table posts removed."
+  }
+ },
+ "logic-field": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": {
+     "show": "state.count"
+    }
+   }
+  ],
+  "message": {
+   "key": "status.app.logicSet",
+   "params": {
+    "element": "Box"
+   },
+   "en": "Logic of Box changed."
+  }
+ },
+ "use-component": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": {
+     "component": "Badge"
+    }
+   }
+  ],
+  "message": {
+   "key": "status.app.logicSet",
+   "params": {
+    "element": "Box"
+   },
+   "en": "Logic of Box changed."
+  }
+ },
+ "binding": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ],
+     "binds": {
+      "class:active": "state.count"
+     }
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.logicSet",
+   "params": {
+    "element": "Title"
+   },
+   "en": "Logic of Title changed."
+  }
+ },
+ "add-binding": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ],
+     "binds": {
+      "attr:title": "state.title"
+     }
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.logicSet",
+   "params": {
+    "element": "Title"
+   },
+   "en": "Logic of Title changed."
+  }
+ },
+ "add-handler": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": {
+     "on": [
+      {
+       "event": "mouseenter",
+       "code": ""
+      }
+     ]
+    }
+   }
+  ],
+  "message": {
+   "key": "status.app.handlerAdded",
+   "params": {
+    "event": "mouseenter",
+    "element": "Box"
+   },
+   "en": "mouseenter event added to Box."
+  }
+ },
+ "handler-event": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "dblclick",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.logicSet",
+   "params": {
+    "element": "Title"
+   },
+   "en": "Logic of Title changed."
+  }
+ },
+ "handler-code": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count += 2"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.logicSet",
+   "params": {
+    "element": "Title"
+   },
+   "en": "Logic of Title changed."
+  }
+ },
+ "handler-remove": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title"
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.handlerRemoved",
+   "params": {
+    "element": "Title"
+   },
+   "en": "Event of Title removed."
+  }
+ },
+ "clear": {
+  "status": "done",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": null
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.logicCleared",
+   "params": {
+    "element": "Title"
+   },
+   "en": "Logic of Title cleared."
+  }
+ },
+ "reserved": {
+  "status": "refused",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.reserved",
+   "params": {
+    "name": "state"
+   },
+   "en": "state is a word every expression already has; choose another name."
+  }
+ },
+ "bad-binding": {
+  "status": "refused",
+  "app": {
+   "variables": [
+    {
+     "name": "count",
+     "type": "number",
+     "initial": 0
+    },
+    {
+     "name": "title",
+     "type": "text",
+     "initial": "Hello"
+    }
+   ],
+   "scripts": [
+    {
+     "name": "util",
+     "code": "export const answer = 42;\n"
+    }
+   ],
+   "components": [
+    {
+     "name": "Badge",
+     "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+    }
+   ],
+   "libraries": [
+    {
+     "name": "confetti",
+     "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+    }
+   ],
+   "tables": [
+    {
+     "name": "posts",
+     "read": "public",
+     "write": "members"
+    }
+   ]
+  },
+  "nodes": [
+   {
+    "name": "Title",
+    "logic": {
+     "text": "state.title",
+     "on": [
+      {
+       "event": "click",
+       "code": "state.count++"
+      }
+     ]
+    }
+   },
+   {
+    "name": "Box",
+    "logic": null
+   }
+  ],
+  "message": {
+   "key": "status.app.badBinding",
+   "params": {
+    "binding": "onclick"
+   },
+   "en": "“onclick” is not a binding: write attr:, class:, style: or prop: and a name."
+  }
+ }
+}

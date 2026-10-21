@@ -8,7 +8,8 @@
 // the page lays out at its breakpoint's width and the stage shows it at the canvas zoom.
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useCanvasMotion } from '../motion/use-canvas-motion.ts';
-import { PageRenderer, renderModelFromManifest } from './render/render.ts';
+import { PageRenderer, nodeSelector, renderModelFromManifest } from './render/render.ts';
+import { travelWhole } from './reveal.ts';
 import { applyInlineChange, plainText, type TextRange } from '../../core/text/inline.ts';
 import { canvasValue } from '../../core/files/values.ts';
 import { openedPage } from '../../core/project/pages.ts';
@@ -30,6 +31,20 @@ import { wiring } from '../wiring.ts';
 const MODEL = renderModelFromManifest(manifest.elements, manifest.properties, manifest.interactions);
 // an empty page the renderer fills: no script, no style of the editor
 const PAGE = '<!doctype html><html><head><meta charset="utf-8"></head><body></body></html>';
+
+// Where the page's view begins under its bars held at the top (a sticky or fixed header at least half the page wide):
+// an element brought there would stand under the bar, its first line and its label hidden (DEF-0622, back to Desktop).
+// A bar holding the element itself takes no part.
+function stuckTop(view: Window, element: Element): number {
+  let top = 0;
+  for (const bar of view.document.body.querySelectorAll('*')) {
+    const position = view.getComputedStyle(bar).position;
+    if ((position !== 'sticky' && position !== 'fixed') || bar.contains(element)) continue;
+    const box = bar.getBoundingClientRect();
+    if (box.top <= 0.5 && box.bottom > 0 && box.width >= view.innerWidth / 2) top = Math.max(top, box.bottom);
+  }
+  return top;
+}
 
 // screen is the breakpoint's screen (its height, from properties.json): the page inside the frame takes it as its
 // viewport, so vh, svh and dvh measure it whatever the zoom, and the page scrolls inside the frame as it does on the
@@ -218,8 +233,55 @@ export function CanvasFrame({ width, screen, zoom }: { readonly width: number; r
   const shown = useRef(zoom);
   const held = useRef<{ readonly pageY: number; readonly at: number; readonly zoom: number } | null>(null);
   const pivot = useEditorState((s) => s.ui.camera.pivot);
+  // A new width (another breakpoint) lays the page out anew, so a page point kept in px stands on other content: with
+  // a selection, the selected element is what the view keeps, brought whole into it under the page's bars held at the
+  // top by the least travel, its top when it is taller than the view (DEF-0622: Desktop to Tablet left the selected
+  // heading's top and its label away). The page and the view settle over the next frames (the breakpoint's band takes
+  // its height from the view a frame later): the view's height is read from the page each frame, and a new height
+  // never cancels the travel.
+  const shownWidth = useRef(width);
+  const anchored = useRef(false);
   useLayoutEffect(() => {
     const frame = iframe.current;
+    if (shownWidth.current === width) return;
+    shownWidth.current = width;
+    const primary = store.getState().selection[0];
+    if (!frame || primary === undefined) return;
+    // the zoom that comes with the width, in this same commit, keeps no page point
+    anchored.current = true;
+    queueMicrotask(() => {
+      anchored.current = false;
+    });
+    const inset = parseFloat(getComputedStyle(frame).getPropertyValue('--space-8')) || 0;
+    // it ends once the element stood still two frames, or when another hand scrolled the page (a wheel right after the
+    // switch is the person's, never pulled back)
+    let left = 12;
+    let still = 0;
+    let wrote: number | null = null;
+    let request = requestAnimationFrame(function again() {
+      const inside = frame.contentWindow;
+      const scale = frame.currentCSSZoom;
+      if (inside === null || left <= 0 || scale <= 0 || still >= 2 || (wrote !== null && Math.abs(inside.scrollY - wrote) > 0.5)) return;
+      left -= 1;
+      const element = frame.contentDocument?.querySelector(nodeSelector(primary));
+      if (element != null) {
+        const box = element.getBoundingClientRect();
+        const travel = travelWhole(box.top, box.bottom, stuckTop(inside, element), inside.document.documentElement.clientHeight, inset / scale);
+        still = Math.abs(travel) > 0.5 ? 0 : still + 1;
+        if (still === 0) inside.scrollBy(0, -travel);
+        wrote = inside.scrollY;
+      }
+      request = requestAnimationFrame(again);
+    });
+    return () => cancelAnimationFrame(request);
+  }, [width, store]);
+  useLayoutEffect(() => {
+    const frame = iframe.current;
+    if (frame && shown.current !== zoom && anchored.current) {
+      shown.current = zoom;
+      held.current = null;
+      return;
+    }
     if (!frame || shown.current === zoom) return;
     const at = pivot !== null ? pivot.y - frame.getBoundingClientRect().top : height / 2;
     const view = frame.contentWindow;

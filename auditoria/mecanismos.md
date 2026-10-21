@@ -278,3 +278,6 @@ Os mecanismos de verificação construídos a partir de `auditoria/investigacao/
 
 ## MEC-27 — uma só gramática de nome de classe
 - Caso no grupo `structure`: uma classe com acento aplicada pelo registro serve na interação que alterna classe, no escopo e no leitor do movimento, e o documento continua válido. Acusa DEF-0609 (mutantes M150 a M152).
+
+## MEC-28 — rótulo de várias linhas no ui-fit
+- O medidor (`tools/ui-fit/measure.spec.ts`) grava `lines` quando o rótulo tem `-webkit-line-clamp` maior que 1; a conferência (`tools/ui-fit/check.ts`, `linesNeed`) quebra as palavras nas linhas como o navegador e cobra a linha mais larga (mais linhas que o limite: o texto inteiro). Motivo: o bloco "Landing page completa", desenhado em duas linhas por desenho (`sidebar.css`), era acusado como se tivesse uma.

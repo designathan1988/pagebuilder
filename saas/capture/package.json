@@ -1,0 +1,13 @@
+{
+  "name": "webconstructor-capture",
+  "private": true,
+  "type": "module",
+  "description": "A captura de sites na nuvem: o código do Companion (tools/companion/capture.ts) como serviço",
+  "scripts": {
+    "start": "node --experimental-strip-types saas/capture/server.ts"
+  },
+  "dependencies": {
+    "@playwright/test": "1.63.0",
+    "css-tree": "^3.2.1"
+  }
+}

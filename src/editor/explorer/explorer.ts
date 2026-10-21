@@ -1,14 +1,17 @@
 // The Explorer's files (the manifest's explorer-file-system and code-panel-view):
 // the rows the Files section lists — what the document generates (one .html per page, the stylesheet
 // css/styles.css, and each script the export writes for what the project holds: js/interactions.js once it has
-// interactions, js/forms.js, js/motion.js, js/lottie.min.js) and the files the project holds
+// interactions, js/forms.js, js/motion.js,
+// js/lottie.min.js, js/widgets.js, and the application's files under js/app-layer/) and the files the project holds
 // (document.files) — and the door that opens one in the code pane. One owner: the row list, the row's kind, and
 // files.open. Folders, renaming, moving and deleting are explorer-file-system's own work (not built yet).
 import { message, registerHandler } from '../../core/commands/registry.ts';
 import type { DocumentJson, Page, ProjectFile } from '../../core/document/model.ts';
 import { byteCount, fileAt, folderOf, folderPaths } from '../../core/files/files.ts';
 import { filesOf } from '../../core/document/model.ts';
-import { FORMS_SCRIPT, INTERACTIONS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, STYLESHEET, siteFiles, siteScriptsWritten } from '../../core/export/export.ts';
+import { FORMS_SCRIPT, INTERACTIONS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, STYLESHEET, WIDGETS_SCRIPT, siteFiles, siteScriptsWritten } from '../../core/export/export.ts';
+import { APP_MAIN_SCRIPT, APP_RUNTIME_SCRIPT } from '../../core/export/paths.ts';
+import { appPaths } from '../../core/logic/compile.ts';
 import { siteScripts } from '../forms/script.ts';
 import type { ModelRules } from '../../core/document/validate.ts';
 import type { EditorUi } from '../state.ts';
@@ -49,6 +52,7 @@ const SCRIPTS = [
   [FORMS_SCRIPT, 'forms'],
   [MOTION_SCRIPT, 'motion'],
   [LOTTIE_SCRIPT, 'lottie'],
+  [WIDGETS_SCRIPT, 'widgets'],
 ] as const;
 // the paths the export may write a script at
 const SCRIPT_PATHS: readonly string[] = SCRIPTS.map(([path]) => path);
@@ -56,20 +60,23 @@ const SCRIPT_PATHS: readonly string[] = SCRIPTS.map(([path]) => path);
 // Whether the path is one the document generates (a page's file, the stylesheet, a script the export writes and no
 // stored file holds): its text is rendered now, and its path is fixed — the export writes it there.
 export function isGenerated(path: string, document: DocumentJson): boolean {
-  return document.pages.some((page) => page.file === path) || path === STYLESHEET || (SCRIPT_PATHS.includes(path) && fileAt(document, path) === null);
+  return document.pages.some((page) => page.file === path) || path === STYLESHEET || (SCRIPT_PATHS.includes(path) && fileAt(document, path) === null) || appPaths(document).includes(path);
 }
 // the paths of the scripts the export writes now, read without writing the site (export.ts siteScriptsWritten): what
 // the rows list at every change of the document, the text being written only when the code pane shows one
 function generatedScriptPaths(document: DocumentJson, rules: ModelRules): readonly string[] {
   const written = siteScriptsWritten(document, rules);
-  return SCRIPTS.flatMap(([path, part]) => (written.has(part) ? [path] : []));
+  return [...SCRIPTS.flatMap(([path, part]) => (written.has(part) ? [path] : [])), ...appPaths(document)];
 }
 export function generatedScripts(document: DocumentJson, rules: ModelRules): readonly { readonly path: string; readonly text: string }[] {
   const site = siteFiles(document, rules, true, siteScripts);
-  return SCRIPTS.flatMap(([path, part]) => {
+  const scripts = SCRIPTS.flatMap(([path, part]) => {
     const text = site[part];
     return text === null ? [] : [{ path, text }];
   });
+  // the application: its main script, the runtime and each module, as the archive holds them
+  const app = site.app === null ? [] : [{ path: APP_MAIN_SCRIPT, text: site.app.main }, { path: APP_RUNTIME_SCRIPT, text: site.app.runtime }, ...site.app.modules.map((one) => ({ path: one.path, text: one.code }))];
+  return [...scripts, ...app];
 }
 
 // The Files section's rows, in the order it lists them: what the document generates (each page's file in the pages'

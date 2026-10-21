@@ -24,6 +24,9 @@ export interface Field {
   readonly key: string;
   readonly label: string;
   readonly type: FieldType;
+  // a number field: the decimal places its values are shown with (a price "6,50" keeps two), read from the file it
+  // came from; absent: as many as the value has
+  readonly decimals?: number;
 }
 
 // One value of an item, in its canonical form: a text, a number, a boolean, a calendar date (YYYY-MM-DD), an address

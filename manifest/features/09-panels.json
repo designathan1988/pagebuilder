@@ -50,6 +50,17 @@
             {
               "door": "palette.toggleGroup#elements-group-header",
               "args": {
+                "group": "sections"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "palette.toggleGroup#elements-group-header",
+              "args": {
                 "group": "structure"
               },
               "target": null,

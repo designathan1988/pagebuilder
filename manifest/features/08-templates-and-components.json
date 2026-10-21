@@ -2261,7 +2261,9 @@
                           "padding-left": "40px",
                           "display": "flex",
                           "justify-content": "space-between",
-                          "align-items": "center"
+                          "align-items": "center",
+                          "flex-wrap": "wrap",
+                          "row-gap": "12px"
                         }
                       }
                     },
@@ -2286,12 +2288,13 @@
                         "styles": {
                           "desktop": {
                             "base": {
-                              "padding-top": "20px",
-                              "padding-right": "40px",
-                              "padding-bottom": "20px",
-                              "padding-left": "40px",
+                              "padding-top": "0px",
+                              "padding-right": "0px",
+                              "padding-bottom": "0px",
+                              "padding-left": "0px",
                               "display": "flex",
-                              "column-gap": "24px"
+                              "column-gap": "24px",
+                              "flex-wrap": "wrap"
                             }
                           }
                         },

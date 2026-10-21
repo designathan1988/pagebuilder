@@ -807,6 +807,32 @@
             "fields": []
           },
           "args": {}
+        },
+        {
+          "id": "start-ai-brief",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "site-templates",
+          "panel": "assistant",
+          "control": "start-ai-brief",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "start.ai.brief",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "start-ai",
+            "order": 1
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
         }
       ]
     }

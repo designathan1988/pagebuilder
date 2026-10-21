@@ -109,6 +109,10 @@
       "area": "right"
     },
     {
+      "id": "inspector-logic",
+      "area": "right"
+    },
+    {
       "id": "dock-strip",
       "area": "dock"
     },
@@ -356,6 +360,14 @@
       "area": "left"
     },
     {
+      "id": "app-panel",
+      "area": "left"
+    },
+    {
+      "id": "app-panel-examples",
+      "area": "left"
+    },
+    {
       "id": "data-preview",
       "area": "left"
     },
@@ -378,6 +390,18 @@
     {
       "id": "data-shared",
       "area": "left"
+    },
+    {
+      "id": "start-templates",
+      "area": "centre"
+    },
+    {
+      "id": "start-ai",
+      "area": "centre"
+    },
+    {
+      "id": "start-examples",
+      "area": "centre"
     }
   ],
   "menus": [
@@ -393,8 +417,8 @@
         }
       ],
       "breaks": [
-        6,
-        8
+        9,
+        11
       ]
     },
     {
@@ -612,7 +636,9 @@
     "grip": "grip-vertical",
     "rotate": "rotate-ccw",
     "warning": "triangle-alert",
-    "search": "search"
+    "search": "search",
+    "expand": "maximize-2",
+    "collapse": "minimize-2"
   },
   "panels": {
     "explorer": {
@@ -719,6 +745,13 @@
       "place": "sidebar",
       "in": null,
       "open": false
+    },
+    "app": {
+      "icon": "braces",
+      "labelKey": "panel.app",
+      "place": "sidebar",
+      "in": null,
+      "open": false
     }
   },
   "splitters": {
@@ -795,6 +828,42 @@
     {
       "id": "incident-count",
       "reason": "The status bar's count of incidents: a readout, pressed for nothing."
+    },
+    {
+      "id": "cloud-reload",
+      "reason": "The cloud bar's reload after the project changed on another device: it reloads the page, writing nothing."
+    },
+    {
+      "id": "cloud-publish",
+      "reason": "The cloud bar's Publish: it opens the publish form; the site is published from the saved project, the document is not written."
+    },
+    {
+      "id": "cloud-dashboard",
+      "reason": "The cloud bar's link back to the dashboard: a navigation."
+    },
+    {
+      "id": "cloud-publish-slug",
+      "reason": "The publish form's site address: it names the address the site is published at and writes nothing to the document."
+    },
+    {
+      "id": "cloud-published-link",
+      "reason": "The publish form's link to the published site: a navigation."
+    },
+    {
+      "id": "cloud-publish-confirm",
+      "reason": "The publish form's submit: it sends the exported site to the publish function and writes nothing to the document."
+    },
+    {
+      "id": "code-editor",
+      "reason": "The code editor inside a code door of the application layer (CodeMirror): what is typed is kept through the door around it, one command each time it is kept."
+    },
+    {
+      "id": "code-expand",
+      "reason": "Opens a module of the App panel in a large window over the editor: a view of the panel, nothing written."
+    },
+    {
+      "id": "code-collapse",
+      "reason": "Puts the large code window back in the App panel: a view of the panel, nothing written."
     }
   ]
 }

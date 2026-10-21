@@ -72,10 +72,12 @@ export function Popover({ anchor, className, children, role = 'dialog', label, k
     const { width, height } = panel.getBoundingClientRect();
     setAt(floatBelow(from, { width, height }, { width: window.innerWidth, height: window.innerHeight }, edge, space));
   }, [anchor, gap]);
-  // the focus goes into the layer once it is placed (hidden while it is measured, it could take none)
+  // the focus goes into the layer once it is placed (hidden while it is measured, it could take none): to the control
+  // the layer marks data-autofocus, else its first; the first alone put "+ Class" on the list of classes above its
+  // field, and the name typed was lost (DEF-0616)
   const placed = at !== null;
   useLayoutEffect(() => {
-    if (placed && takesFocus) own.current?.querySelector<HTMLElement>(FOCUSABLE)?.focus();
+    if (placed && takesFocus) (own.current?.querySelector<HTMLElement>('[data-autofocus]') ?? own.current?.querySelector<HTMLElement>(FOCUSABLE))?.focus();
   }, [placed, takesFocus]);
   const style: CSSProperties = at === null ? { visibility: 'hidden', left: 0, top: 0 } : { left: at.left, top: at.top };
   // a layer opened from a modal dialog floats over it (the Breakpoints dialog's trash menu), else under every dialog

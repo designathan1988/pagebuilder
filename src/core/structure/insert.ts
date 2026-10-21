@@ -48,7 +48,7 @@ function templateElement(make: NodeMaker, spec: TemplateNode, rootNameKey?: Mess
   const wrapper = spec.wrapper === undefined ? undefined : rules.wrappers.get(spec.wrapper as WrapperId);
   const perChild = wrapper?.perChildTracks === true ? tracksForChildren(base.children.length, rules) : null;
   const styles = { ...(rules.elements.get(spec.element as ElementType)?.defaultStyles ?? {}), ...(wrapper?.styles ?? {}), ...(spec.styles ?? {}), ...(perChild === null ? {} : { [perChild.property]: perChild.columns }) };
-  const layer = (held: Readonly<Record<string, string>>): Record<string, Readonly<Record<string, string>>> => ({ [rules.baseLayer.state]: held });
+  const layer = (held: Readonly<Record<string, unknown>>): Record<string, Readonly<Record<string, unknown>>> => ({ [rules.baseLayer.state]: held });
   const all = {
     ...(Object.keys(styles).length > 0 ? { [rules.baseLayer.breakpoint]: layer(styles) } : {}),
     ...Object.fromEntries(Object.entries(perChild?.layers ?? {}).map(([breakpoint, columns]) => [breakpoint, layer({ [perChild?.property ?? '']: columns })])),
@@ -59,6 +59,7 @@ function templateElement(make: NodeMaker, spec: TemplateNode, rootNameKey?: Mess
     text: spec.textKey === undefined ? base.text : make.words(spec.textKey as MessageId),
     styles: all,
     attributes: { ...base.attributes, ...(spec.attributes ?? {}) } as DocNode['attributes'],
+    ...(spec.customAttributes === undefined ? {} : { customAttributes: { ...spec.customAttributes } }),
   };
 }
 
@@ -188,8 +189,35 @@ export function paletteNode(make: NodeMaker, entry: string): DocNode {
   const item = make.rules.palette.get(entry);
   // every door offers an entry of the palette, so an unknown one is a defect of the door
   if (item === undefined || make.rules.elements.get(item.element) === undefined) throw new Error(`the palette has no entry ${entry}`);
-  const made = item.template === null ? newElement(make, item.element, startingParts(item.element)) : templateElement(make, item.template, item.labelKey);
+  const made = item.template === null ? newElement(make, item.element, startingParts(item.element)) : withFreeHtmlIds(templateElement(make, item.template, item.labelKey), make.htmlIds);
   return item.inputType === null ? made : { ...made, attributes: { ...made.attributes, inputType: item.inputType } };
+}
+
+// A template's HTML ids, each renamed off the ids the document already holds ("features" → "features-2"), and its
+// links to them ("#features") following: a template placed twice (the Full landing page) never makes two elements
+// of one id, and its menu still goes to its own sections.
+function withFreeHtmlIds(tree: DocNode, occupied: ReadonlySet<string>): DocNode {
+  const renamed = new Map<string, string>();
+  const taken = new Set(occupied);
+  for (const node of walk(tree)) {
+    const id = node.attributes.id;
+    if (typeof id !== 'string' || !taken.has(id)) continue;
+    let free = `${id}-2`;
+    for (let n = 3; taken.has(free); n += 1) free = `${id}-${n}`;
+    taken.add(free);
+    renamed.set(id, free);
+  }
+  if (renamed.size === 0) return tree;
+  const repair = (node: DocNode): DocNode => {
+    const { id, href } = node.attributes;
+    const attributes = {
+      ...node.attributes,
+      ...(typeof id === 'string' && renamed.has(id) ? { id: renamed.get(id) as string } : {}),
+      ...(typeof href === 'string' && href.startsWith('#') && renamed.has(href.slice(1)) ? { href: `#${renamed.get(href.slice(1)) as string}` } : {}),
+    };
+    return { ...node, attributes, children: node.children.map(repair) };
+  };
+  return repair(tree);
 }
 
 // A new element takes the classes every sibling of its kind already shares (the plan's stage 7, "a new element inherits

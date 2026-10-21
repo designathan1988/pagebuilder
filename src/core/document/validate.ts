@@ -5,6 +5,7 @@
 // src/core/elements/content-model.ts; the rules carry it for the commands that place an element, and validation
 // checks every tree against it (nestingProblems, DEF-0540), so no write and no file opened reaches a nesting the
 // commands refuse.
+import { appProblems } from '../logic/validate.ts';
 import { formAttributeIssue } from '../forms/config.ts';
 import { dataProblems } from '../data/validate.ts';
 import { hasIncompatibleMask } from '../elements/inputs.ts';
@@ -379,6 +380,8 @@ export function validateDocument(doc: DocumentJson, selection: Selection, manife
   if (doc.version !== DOCUMENT_VERSION) bad('/version', `the document version is ${DOCUMENT_VERSION}`);
   // the collections, bindings, bound lists, item pages and shared regions (core/data/validate.ts)
   for (const problem of dataProblems(doc, rules)) bad(problem.path, problem.message);
+  // the application layer: variables, scripts, components, libraries, the elements' logic (core/logic/validate.ts)
+  for (const problem of appProblems(doc)) bad(problem.path, problem.message);
   if (!Array.isArray(doc.pages) || doc.pages.length === 0) bad('/pages', 'a project has at least one page');
   // the saved colours: CSS colour texts, at least one when the list is there
   // the design tokens: a name (a letter, then letters, digits and -), once each, a kind and a value

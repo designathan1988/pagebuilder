@@ -30,8 +30,9 @@ export const RUN_INPUTS: readonly string[] = [
 ];
 
 // the root paths no test executes: documentation and the work records, the editor's and the agents' local
-// configuration, the lint's own configuration (lint runs as its own step), and what the tools write (OUTPUTS)
-export const NOT_INPUTS: readonly string[] = ['.claude', '.vscode', 'docs', 'auditoria', 'reports', 'research_notes', 'README.md', 'CLAUDE.md', 'AGENTS.md', '.mcp.json', '.gitignore', '.gitattributes', '.git', 'eslint.config.js', '.dependency-cruiser.cjs'];
+// configuration, the lint's own configuration (lint runs as its own step), the SaaS backend (saas/: its own tests and
+// type checks, saas/README.md), the browser extension's packages (ext/), and what the tools write (OUTPUTS)
+export const NOT_INPUTS: readonly string[] = ['.claude', '.vscode', 'docs', 'auditoria', 'reports', 'research_notes', 'saas', 'ext', 'README.md', 'CLAUDE.md', 'AGENTS.md', '.mcp.json', '.gitignore', '.gitattributes', '.git', 'eslint.config.js', '.dependency-cruiser.cjs'];
 
 // a root path no test executes: one of NOT_INPUTS, or a note or a local script of the owner at the root (a Markdown
 // file, a PowerShell script), which the repository does not carry

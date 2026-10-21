@@ -121,8 +121,12 @@ export interface TemplateNode {
   readonly nameKey?: string | undefined;
   readonly textKey?: string | undefined;
   readonly wrapper?: string | undefined;
-  readonly styles?: Readonly<Record<string, string>> | undefined;
+  // a property's CSS text, or the layers of a structured one (a shadow: properties.json structures)
+  readonly styles?: Readonly<Record<string, string | readonly Readonly<Record<string, string | boolean>>[]>> | undefined;
   readonly attributes?: Readonly<Record<string, string | number | boolean>> | undefined;
+  // the element's own data-* attributes: what a web component's script reads (data-wc…); aria-* and role have their
+  // own fields (attributes)
+  readonly customAttributes?: Readonly<Record<string, string>> | undefined;
   readonly children?: readonly TemplateNode[] | undefined;
 }
 const templateNodeSchema: z.ZodType<TemplateNode> = z.lazy(() =>
@@ -132,8 +136,9 @@ const templateNodeSchema: z.ZodType<TemplateNode> = z.lazy(() =>
     nameKey: i18nKey.optional(),
     textKey: i18nKey.optional(),
     wrapper: kebabId.optional(),
-    styles: z.record(cssName, z.string().min(1)).optional(),
+    styles: z.record(cssName, z.union([z.string().min(1), z.array(z.record(camelId, z.union([z.string(), z.boolean()])))])).optional(),
     attributes: z.record(camelId, z.union([z.string(), z.number(), z.boolean()])).optional(),
+    customAttributes: z.record(z.string().regex(/^data-[a-z0-9-]+$/), z.string()).optional(),
     children: z.array(templateNodeSchema).optional(),
   }),
 );
@@ -879,7 +884,10 @@ export const layoutFileSchema = z.strictObject({
     grip: iconName,
     rotate: iconName,
     warning: iconName,
-    search: iconName
+    search: iconName,
+    // a code field opened large and put back (the App panel's modules, spec app-logic)
+    expand: iconName,
+    collapse: iconName
   }),
   // Each panel (the panel values of workspace.setPanelOpen): its icon (on its dock tab and its palette entry), its
   // name, where it lives, the sidebar view a section belongs to ("in", a section only; null: the stack under every
@@ -1408,7 +1416,7 @@ export const generatedUiWidthsSchema = z.strictObject({
     z.string(),
     z.record(
       z.string(),
-      z.strictObject({ width: z.number(), fontSize: z.number(), fontWeight: z.number(), letterSpacing: z.number(), textTransform: z.string(), text: z.string() }),
+      z.strictObject({ width: z.number(), fontSize: z.number(), fontWeight: z.number(), letterSpacing: z.number(), textTransform: z.string(), text: z.string(), lines: z.number().int().min(2).optional() }),
     ),
   ),
   textless: z.record(z.string(), z.array(z.string())),

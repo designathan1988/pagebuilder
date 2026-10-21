@@ -52,9 +52,28 @@ test('an Explorer file’s name is never cut: its details leave first, and come 
   await expect(names.first()).toBeVisible();
   const cut = await names.evaluateAll((all) => all.filter((one) => one.scrollWidth > one.clientWidth + 1).map((one) => one.textContent));
   expect(cut).toEqual([]);
-  // a row whose name and details fit shows its details: "index.html" keeps its "generated" mark
-  const index = page.locator('.row__main', { hasText: 'index.html' }).filter({ has: page.locator('.row__gen') });
-  await expect(index.locator('.row__gen')).toBeVisible();
+  // a row whose name and details fit shows its details: "index.html" keeps its "generated" mark where the row has its
+  // room, and only where it has not do the details leave (with a Windows scrollbar the row is 10 px narrower and the
+  // mark 3 px short, DEF-0625: the premise held without a scrollbar only)
+  const index = page.locator('.row__main', { hasText: 'index.html' }).filter({ has: page.locator('.row__gen') }).first();
+  const fits = await index.evaluate((row) => {
+    const style = getComputedStyle(row);
+    const gap = parseFloat(style.columnGap) || 0;
+    const shown = [...row.children].filter((one): one is HTMLElement => one instanceof HTMLElement && one.offsetWidth > 0 && !one.classList.contains('row__gen'));
+    const used = shown.reduce((sum, one) => sum + one.offsetWidth, 0) + gap * Math.max(0, shown.length - 1);
+    const free = row.clientWidth - (parseFloat(style.paddingLeft) || 0) - (parseFloat(style.paddingRight) || 0) - used;
+    const mark = row.querySelector<HTMLElement>('.row__gen');
+    if (mark === null) return null;
+    // the mark's own width, read with it drawn for a moment
+    const hidden = getComputedStyle(mark).display === 'none';
+    if (hidden) mark.style.display = 'block';
+    const need = mark.offsetWidth + gap;
+    if (hidden) mark.style.display = '';
+    return need <= free + 0.5;
+  });
+  if (fits) await expect(index.locator('.row__gen')).toBeVisible();
+  else await expect(index.locator('.row__gen')).toBeHidden();
+  // and the name, its details away, is whole (above): never cut for a detail
 });
 
 test('the Motion dock never scrolls sideways: only its track does (DEF-0591)', async ({ page }) => {

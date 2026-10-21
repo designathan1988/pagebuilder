@@ -14,6 +14,7 @@ import { companionFetch } from './proxy-client.ts';
 import { createAssistantSession } from './session.ts';
 import { assistantOf, DEFAULT_ASSISTANT_MODEL, reportAssistant, type AssistantState } from './state.ts';
 import { wiring } from '../wiring.ts';
+import { cloudAssistant } from '../cloud/cloud.ts';
 
 interface Pairing { url: string; token: string }
 export interface AssistantController {
@@ -71,7 +72,13 @@ export function installAssistant(store: EditorStore): () => void {
   };
   let replyId: string | null = null;
   let failure: MessageId | null = null;
-  const ready = openCredentialVault(indexedDB, crypto, credentialNonce).then(value => {
+  // in cloud mode Claude answers through the platform's proxy (src/editor/cloud/cloud.ts), which holds the API key and
+  // counts the workspace's credits: the person's session stands for the key, and no companion is paired
+  const cloud = cloudAssistant();
+  const ready = cloud !== null ? Promise.resolve().then(() => {
+    vault = { read: cloud.token, save: async () => { }, clear: async () => { }, close: () => { } };
+    report({ hasKey: true, connection: 'connected' });
+  }) : openCredentialVault(indexedDB, crypto, credentialNonce).then(value => {
     if (!alive) {
       value.close();
       return;
@@ -83,8 +90,12 @@ export function installAssistant(store: EditorStore): () => void {
     if (!vault) throw new Error('assistant.storageFailed');
     session = createAssistantSession({
       tools: [...toolCatalogue(commands, words), ...readTools], begin: tools.begin, reserve: tools.reserve, vault,
-      settings: () => ({ model: store.getState().ui.preferences.assistantModel ?? DEFAULT_ASSISTANT_MODEL, maxTokens: 8192 }),
+      settings: () => ({
+        model: store.getState().ui.preferences.assistantModel ?? DEFAULT_ASSISTANT_MODEL, maxTokens: 8192,
+        ...(cloud !== null ? { endpoint: cloud.endpoint, allowedHosts: [cloud.host] } : {}),
+      }),
       fetch: (input, init) => {
+        if (cloud !== null) return fetch(input, init);
         if (!pairing) throw new Error('assistant.connectionRequired');
         return companionFetch(httpBase(), pairing.token)(input, init);
       },

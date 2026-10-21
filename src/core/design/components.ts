@@ -357,6 +357,31 @@ export const detachInstanceCommand = registerHandler('components.detach', ({ sta
   return { kind: 'change', patches: [{ op: 'replace', path: found.path, value: unmarked(found.node) }], message: message('status.components.detached', { name: found.node.name }) };
 });
 
+// The element of a definition at a part (child indexes from its root), or undefined when it has none there.
+function partOf(tree: DocNode, part: readonly number[]): DocNode | undefined {
+  let at: DocNode | undefined = tree;
+  for (const index of part) at = at?.children.at(index);
+  return at;
+}
+
+// What an element of another instance shows after an update: a text or an attribute it never changed (it still holds
+// the definition's own) follows the edited instance; one it changed (an override) stays its own. Without this every
+// instance kept its old texts and links, and a shared header changed only its styles (DEF-0615).
+function inherited(from: DocNode, mine: DocNode, base: DocNode | undefined): Pick<DocNode, 'text' | 'attributes'> {
+  if (base === undefined) return { text: mine.text, attributes: mine.attributes };
+  const text = deepEqual(mine.text, base.text) ? from.text : mine.text;
+  const own = mine.attributes as Readonly<Record<string, unknown>>;
+  const was = base.attributes as Readonly<Record<string, unknown>>;
+  const now = from.attributes as Readonly<Record<string, unknown>>;
+  const attributes: Record<string, unknown> = {};
+  for (const key of new Set([...Object.keys(own), ...Object.keys(was), ...Object.keys(now)])) {
+    const untouched = Object.hasOwn(own, key) === Object.hasOwn(was, key) && deepEqual(own[key], was[key]);
+    const value = untouched ? now[key] : own[key];
+    if (value !== undefined && (untouched ? Object.hasOwn(now, key) : Object.hasOwn(own, key))) attributes[key] = value;
+  }
+  return { text, attributes: attributes as DocNode['attributes'] };
+}
+
 // components.updateFromInstance (the plan's stage 7, "master edit mode"; journey D2): an instance edited in
 // place — elements added, removed or moved, styles of its own — becomes its component's definition, and every other
 // instance of the component takes the new structure and styles, keeping its own texts, attributes and names wherever an
@@ -368,7 +393,8 @@ export const updateFromInstanceCommand = registerHandler('components.updateFromI
   if (source === null || source.component === undefined) return { kind: 'refused', message: message('status.components.notInstance') };
   const name = source.component;
   const index = componentsOf(state.document).findIndex((c) => c.name === name);
-  if (index < 0) return { kind: 'refused', message: message('status.components.notInstance') };
+  const before = componentsOf(state.document)[index];
+  if (index < 0 || before === undefined) return { kind: 'refused', message: message('status.components.notInstance') };
   const next = () => ids.next() as NodeId;
   // the new definition: the edited instance, plain, with ids of its own
   const definitionTree = copied(source, next, null, true);
@@ -391,7 +417,7 @@ export const updateFromInstanceCommand = registerHandler('components.updateFromI
         ? instance === null
           ? plain
           : { ...plain, id: next(), name: copyName(plain.name, taken) }
-        : { ...plain, id: mine.id, name: mine.name, text: mine.text, attributes: mine.attributes };
+        : { ...plain, id: mine.id, name: mine.name, ...inherited(from, mine, ownPart === undefined ? undefined : partOf(before.tree, ownPart)) };
     if (mine === undefined && instance !== null) taken.add(element.name);
     return { ...element, children: from.children.map((child) => rebuilt(child, instance)) };
   };

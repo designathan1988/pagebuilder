@@ -72,6 +72,14 @@ describe('the rotation zones', () => {
     expect(zones.filter((zone) => zone !== null).length).toBeGreaterThan(0);
   });
 
+  it('are not drawn for an element wholly outside the canvas: none stands alone at its edge (DEF-0623)', () => {
+    // the heading selected at the page's top, the page scrolled down to the gallery
+    expect(placeRotationZones({ x: 85, y: -1700, width: 532, height: 422 }, area, 24, 16, 0, [], [])).toEqual([null, null, null, null]);
+    expect(placeRotationZones({ x: 85, y: area.height + 40, width: 532, height: 422 }, area, 24, 16, 0, [], [])).toEqual([null, null, null, null]);
+    // one partly in view keeps its zones
+    expect(placeRotationZones({ x: 85, y: -300, width: 532, height: 422 }, area, 24, 16, 0, [], []).some((zone) => zone !== null)).toBe(true);
+  });
+
   it('never leave a control without a press, and take a place whenever one leaves every control its press', () => {
     const next = random(20261006);
     const size = 24;

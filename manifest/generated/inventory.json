@@ -1,14 +1,14 @@
 {
   "totals": {
-    "features": 214,
-    "built": 214,
-    "commands": 373,
-    "doors": 1362,
-    "scenarios": 1831,
-    "modules": 493,
-    "lines": 86128,
+    "features": 217,
+    "built": 217,
+    "commands": 387,
+    "doors": 1399,
+    "scenarios": 1869,
+    "modules": 510,
+    "lines": 89754,
     "fields": 207,
-    "interactive": 257
+    "interactive": 270
   },
   "features": [
     {
@@ -17,7 +17,7 @@
       "commands": [
         "workspace.setPanelOpen"
       ],
-      "doors": 25,
+      "doors": 27,
       "scenarios": 3
     },
     {
@@ -34,7 +34,7 @@
         "element.insert",
         "workspace.setPanelOpen"
       ],
-      "doors": 30,
+      "doors": 32,
       "scenarios": 7
     },
     {
@@ -56,7 +56,7 @@
         "layers.setExpanded",
         "workspace.setPanelOpen"
       ],
-      "doors": 34,
+      "doors": 36,
       "scenarios": 5
     },
     {
@@ -392,7 +392,7 @@
         "focus.nextMenu",
         "focus.previousMenu"
       ],
-      "doors": 110,
+      "doors": 112,
       "scenarios": 21
     },
     {
@@ -467,7 +467,7 @@
       "commands": [
         "project.open"
       ],
-      "doors": 2,
+      "doors": 5,
       "scenarios": 5
     },
     {
@@ -482,7 +482,7 @@
         "inspector.toggleRow",
         "workspace.setActiveTab"
       ],
-      "doors": 22,
+      "doors": 23,
       "scenarios": 16
     },
     {
@@ -867,7 +867,7 @@
         "page.setSetting",
         "project.export"
       ],
-      "doors": 14,
+      "doors": 17,
       "scenarios": 5
     },
     {
@@ -884,7 +884,7 @@
         "focus.activate",
         "ui.dismiss"
       ],
-      "doors": 62,
+      "doors": 64,
       "scenarios": 16
     },
     {
@@ -894,7 +894,7 @@
         "element.setClasses",
         "project.export"
       ],
-      "doors": 5,
+      "doors": 8,
       "scenarios": 3
     },
     {
@@ -906,7 +906,7 @@
         "workspace.setActiveTab",
         "project.export"
       ],
-      "doors": 11,
+      "doors": 15,
       "scenarios": 4
     },
     {
@@ -1382,7 +1382,7 @@
         "view.toggleZones",
         "workspace.setPanelOpen"
       ],
-      "doors": 27,
+      "doors": 29,
       "scenarios": 3
     },
     {
@@ -1539,7 +1539,7 @@
         "view.exitPreview",
         "project.export"
       ],
-      "doors": 22,
+      "doors": 25,
       "scenarios": 11
     },
     {
@@ -1569,7 +1569,7 @@
         "workspace.toggleInspector",
         "workspace.collapseDocks"
       ],
-      "doors": 34,
+      "doors": 36,
       "scenarios": 15
     },
     {
@@ -1627,7 +1627,7 @@
         "components.startCreate",
         "selection.range"
       ],
-      "doors": 234,
+      "doors": 242,
       "scenarios": 56
     },
     {
@@ -1654,7 +1654,7 @@
       "commands": [
         "workspace.setPanelOpen"
       ],
-      "doors": 25,
+      "doors": 27,
       "scenarios": 2
     },
     {
@@ -1666,7 +1666,7 @@
         "workspace.setWorkbenchState",
         "workspace.setActiveTab"
       ],
-      "doors": 33,
+      "doors": 36,
       "scenarios": 10
     },
     {
@@ -1694,7 +1694,7 @@
         "workspace.movePanel",
         "workspace.setActiveTab"
       ],
-      "doors": 12,
+      "doors": 13,
       "scenarios": 3
     },
     {
@@ -1729,7 +1729,7 @@
         "workspace.setPanelOpen",
         "checks.applyFix"
       ],
-      "doors": 38,
+      "doors": 40,
       "scenarios": 8
     },
     {
@@ -1840,7 +1840,7 @@
         "project.importHtml",
         "project.export"
       ],
-      "doors": 10,
+      "doors": 13,
       "scenarios": 2
     },
     {
@@ -1872,7 +1872,7 @@
         "view.setEditorView",
         "codePanel.setPane"
       ],
-      "doors": 32,
+      "doors": 34,
       "scenarios": 5
     },
     {
@@ -1922,7 +1922,7 @@
         "animation.delete",
         "timeline.show"
       ],
-      "doors": 29,
+      "doors": 31,
       "scenarios": 3
     },
     {
@@ -1965,7 +1965,7 @@
       "commands": [
         "project.export"
       ],
-      "doors": 4,
+      "doors": 7,
       "scenarios": 2
     },
     {
@@ -1977,7 +1977,7 @@
         "interactions.remove",
         "workspace.setActiveTab"
       ],
-      "doors": 16,
+      "doors": 17,
       "scenarios": 10
     },
     {
@@ -1987,7 +1987,7 @@
         "view.enterPreview",
         "project.export"
       ],
-      "doors": 8,
+      "doors": 11,
       "scenarios": 3
     },
     {
@@ -2001,7 +2001,7 @@
         "pages.switch",
         "workspace.setPanelOpen"
       ],
-      "doors": 33,
+      "doors": 35,
       "scenarios": 11
     },
     {
@@ -2041,7 +2041,7 @@
         "pages.add",
         "files.move"
       ],
-      "doors": 14,
+      "doors": 17,
       "scenarios": 2
     },
     {
@@ -2072,7 +2072,7 @@
         "project.export",
         "files.createFolder"
       ],
-      "doors": 5,
+      "doors": 8,
       "scenarios": 2
     },
     {
@@ -2082,7 +2082,7 @@
         "project.export",
         "files.upload"
       ],
-      "doors": 6,
+      "doors": 9,
       "scenarios": 2
     },
     {
@@ -2092,7 +2092,7 @@
         "page.setSetting",
         "project.export"
       ],
-      "doors": 14,
+      "doors": 17,
       "scenarios": 7
     },
     {
@@ -2103,7 +2103,7 @@
         "project.export",
         "files.upload"
       ],
-      "doors": 178,
+      "doors": 181,
       "scenarios": 2
     },
     {
@@ -2113,7 +2113,7 @@
         "project.openFolder",
         "project.export"
       ],
-      "doors": 6,
+      "doors": 9,
       "scenarios": 4
     },
     {
@@ -2126,7 +2126,7 @@
         "files.createFile",
         "files.saveContent"
       ],
-      "doors": 22,
+      "doors": 25,
       "scenarios": 3
     },
     {
@@ -2208,7 +2208,7 @@
         "assistant.update",
         "workspace.setPanelOpen"
       ],
-      "doors": 41,
+      "doors": 44,
       "scenarios": 15
     },
     {
@@ -2232,7 +2232,7 @@
         "layout.trace",
         "workspace.setPanelOpen"
       ],
-      "doors": 69,
+      "doors": 71,
       "scenarios": 40
     },
     {
@@ -2270,7 +2270,7 @@
         "motion.removeMarker",
         "workspace.setPanelOpen"
       ],
-      "doors": 62,
+      "doors": 64,
       "scenarios": 57
     },
     {
@@ -2316,7 +2316,7 @@
         "view.enterPreview",
         "project.export"
       ],
-      "doors": 8,
+      "doors": 11,
       "scenarios": 2
     },
     {
@@ -2337,7 +2337,7 @@
         "data.moveItem",
         "workspace.setPanelOpen"
       ],
-      "doors": 46,
+      "doors": 48,
       "scenarios": 25
     },
     {
@@ -2353,7 +2353,7 @@
         "data.select",
         "workspace.setPanelOpen"
       ],
-      "doors": 34,
+      "doors": 36,
       "scenarios": 10
     },
     {
@@ -2367,7 +2367,7 @@
         "data.select",
         "workspace.setPanelOpen"
       ],
-      "doors": 31,
+      "doors": 33,
       "scenarios": 6
     },
     {
@@ -2379,7 +2379,7 @@
         "pages.duplicate",
         "workspace.setPanelOpen"
       ],
-      "doors": 28,
+      "doors": 30,
       "scenarios": 3
     },
     {
@@ -2393,7 +2393,7 @@
         "pages.add",
         "workspace.setPanelOpen"
       ],
-      "doors": 35,
+      "doors": 37,
       "scenarios": 5
     },
     {
@@ -2410,7 +2410,7 @@
         "style.set",
         "project.export"
       ],
-      "doors": 198,
+      "doors": 201,
       "scenarios": 15
     },
     {
@@ -2422,6 +2422,51 @@
       ],
       "doors": 12,
       "scenarios": 2
+    },
+    {
+      "id": "app-logic",
+      "built": true,
+      "commands": [
+        "app.setVariable",
+        "app.removeVariable",
+        "app.setModule",
+        "app.removeModule",
+        "app.setLibrary",
+        "app.removeLibrary",
+        "app.setTable",
+        "app.removeTable",
+        "logic.set",
+        "logic.setBinding",
+        "logic.addHandler",
+        "logic.updateHandler",
+        "logic.removeHandler",
+        "logic.clear",
+        "workspace.setPanelOpen",
+        "workspace.setActiveTab",
+        "project.open"
+      ],
+      "doors": 65,
+      "scenarios": 32
+    },
+    {
+      "id": "export-packages",
+      "built": true,
+      "commands": [
+        "project.export"
+      ],
+      "doors": 7,
+      "scenarios": 3
+    },
+    {
+      "id": "site-templates",
+      "built": true,
+      "commands": [
+        "project.open",
+        "assistant.update",
+        "workspace.setPanelOpen"
+      ],
+      "doors": 34,
+      "scenarios": 3
     }
   ],
   "fields": [
@@ -4094,14 +4139,60 @@
   ],
   "interactive": {
     "owners": {
-      "door": 91,
+      "door": 92,
       "inside-door": 41,
-      "local": 10,
-      "none": 86,
+      "local": 18,
+      "none": 90,
       "spread": 6,
       "wraps-door": 23
     },
     "elements": [
+      {
+        "key": "src/editor/app-panel/logic-tab.tsx|input|aria-label,autoComplete,className,name,placeholder,spellCheck|1",
+        "tag": "input",
+        "role": null,
+        "handlers": [],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-tab.tsx|input|aria-label,autoComplete,className,name,placeholder,spellCheck|2",
+        "tag": "input",
+        "role": null,
+        "handlers": [],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/panel.tsx|button|aria-label,className,data-local,onClick,title,type|1",
+        "tag": "button",
+        "role": null,
+        "handlers": [
+          "onClick"
+        ],
+        "owner": "local"
+      },
+      {
+        "key": "src/editor/app-panel/panel.tsx|button|aria-label,className,data-local,onClick,title,type|2",
+        "tag": "button",
+        "role": null,
+        "handlers": [
+          "onClick"
+        ],
+        "owner": "local"
+      },
+      {
+        "key": "src/editor/app-panel/panel.tsx|input|aria-label,autoComplete,className,name,placeholder,spellCheck|1",
+        "tag": "input",
+        "role": null,
+        "handlers": [],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/panel.tsx|input|aria-label,autoComplete,className,name,placeholder,spellCheck|2",
+        "tag": "input",
+        "role": null,
+        "handlers": [],
+        "owner": "none"
+      },
       {
         "key": "src/editor/assistant/panel.tsx|form|className,data-door,onSubmit|1",
         "tag": "form",
@@ -4280,6 +4371,54 @@
           "onChange",
           "onFocus"
         ],
+        "owner": "local"
+      },
+      {
+        "key": "src/editor/cloud/cloud-bar.tsx|button|className,data-local,onClick,type|1",
+        "tag": "button",
+        "role": null,
+        "handlers": [
+          "onClick"
+        ],
+        "owner": "local"
+      },
+      {
+        "key": "src/editor/cloud/cloud-bar.tsx|button|aria-expanded,className,data-local,disabled,onClick,ref,type|1",
+        "tag": "button",
+        "role": null,
+        "handlers": [
+          "onClick"
+        ],
+        "owner": "local"
+      },
+      {
+        "key": "src/editor/cloud/cloud-bar.tsx|a|className,data-local,href,title|1",
+        "tag": "a",
+        "role": null,
+        "handlers": [],
+        "owner": "local"
+      },
+      {
+        "key": "src/editor/cloud/cloud-bar.tsx|input|aria-invalid,autoComplete,className,data-local,id,onChange,spellCheck,value|1",
+        "tag": "input",
+        "role": null,
+        "handlers": [
+          "onChange"
+        ],
+        "owner": "local"
+      },
+      {
+        "key": "src/editor/cloud/cloud-bar.tsx|a|className,data-local,href,rel,target|1",
+        "tag": "a",
+        "role": null,
+        "handlers": [],
+        "owner": "local"
+      },
+      {
+        "key": "src/editor/cloud/cloud-bar.tsx|button|className,data-local,disabled,type|1",
+        "tag": "button",
+        "role": null,
+        "handlers": [],
         "owner": "local"
       },
       {
@@ -6043,6 +6182,16 @@
         "tag": "div",
         "role": "separator",
         "handlers": [],
+        "owner": "door"
+      },
+      {
+        "key": "src/editor/shell/start-screen.tsx|textarea|aria-label,className,data-door,defaultValue,disabled,onBlur,onInput,placeholder,ref,rows|1",
+        "tag": "textarea",
+        "role": null,
+        "handlers": [
+          "onInput",
+          "onBlur"
+        ],
         "owner": "door"
       },
       {

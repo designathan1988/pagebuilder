@@ -21,7 +21,7 @@ import { familyOf, fontFiles } from './fonts.ts';
 import { addressAttributes, followCssUrls, followPaths, movedPath } from './references.ts';
 import { capturedPageStylePath } from '../import/capture-styles.ts';
 import { argumentRefused } from '../store/args.ts';
-import { GENERATED_PATHS } from '../export/paths.ts';
+import { GENERATED_FOLDERS, GENERATED_PATHS } from '../export/paths.ts';
 import { browserPorts } from '../ports/browser.ts';
 import { projectPathProblem } from './path-rule.ts';
 
@@ -228,7 +228,7 @@ export const uploadCommand = registerHandler('files.upload', ({ state }, { files
 
 // whether a path IS one of the generated files: its path is taken, and no file may be made there
 export function pathGenerated(path: string): boolean {
-  return GENERATED_PATHS.includes(path);
+  return GENERATED_PATHS.includes(path) || GENERATED_FOLDERS.some((folder) => path.startsWith(`${folder}/`));
 }
 
 // whether a path is a folder that HOLDS (or stands over) a generated file: it cannot be renamed, moved or deleted,

@@ -1,0 +1,3696 @@
+{
+ "version": 4,
+ "language": "pt-BR",
+ "codeLanguage": "en",
+ "pages": [
+  {
+   "id": "saas148",
+   "name": "Produto",
+   "file": "index.html",
+   "tree": {
+    "id": "saas147",
+    "type": "page",
+    "name": "Body",
+    "tag": "body",
+    "attributes": {
+     "pageTitle": "Fluxo — Gestão financeira para pequenas empresas",
+     "pageDescription": "Contas a pagar e receber, fluxo de caixa e notas fiscais num só lugar. Teste grátis por 14 dias.",
+     "pageLanguage": "pt-BR"
+    },
+    "classes": [],
+    "styles": {
+     "desktop": {
+      "base": {
+       "margin-top": "0",
+       "margin-right": "0",
+       "margin-bottom": "0",
+       "margin-left": "0",
+       "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+       "color": "#0f172a",
+       "background-color": "#ffffff"
+      }
+     }
+    },
+    "text": null,
+    "children": [
+     {
+      "id": "saas1",
+      "type": "header",
+      "name": "Menu que recolhe no celular",
+      "tag": "header",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "14px",
+         "padding-right": "24px",
+         "padding-bottom": "14px",
+         "padding-left": "24px",
+         "background-color": "#ffffff",
+         "border-bottom-width": "1px",
+         "border-bottom-style": "solid",
+         "border-bottom-color": "#e2e8f0",
+         "position": "sticky",
+         "top": "0px",
+         "z-index": "50"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "saas2",
+        "type": "div",
+        "name": "Contêiner",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "justify-content": "space-between",
+           "column-gap": "24px",
+           "row-gap": "12px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "saas3",
+          "type": "link",
+          "name": "Link",
+          "tag": "a",
+          "attributes": {
+           "href": "/"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "20px",
+             "font-weight": "700",
+             "color": "#0f172a",
+             "text-decoration-line": "none"
+            }
+           }
+          },
+          "text": "Fluxo",
+          "children": []
+         },
+         {
+          "id": "saas4",
+          "type": "button",
+          "name": "Botão",
+          "tag": "button",
+          "attributes": {
+           "ariaLabel": "Menu"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "width": "44px",
+             "height": "44px",
+             "border-top-left-radius": "999px",
+             "border-top-right-radius": "999px",
+             "border-bottom-right-radius": "999px",
+             "border-bottom-left-radius": "999px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#e2e8f0",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#e2e8f0",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#e2e8f0",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#e2e8f0",
+             "background-color": "#ffffff",
+             "color": "#0f172a",
+             "font-size": "20px",
+             "cursor": "pointer",
+             "display": "none",
+             "align-items": "center",
+             "justify-content": "center",
+             "padding-top": "0px",
+             "padding-bottom": "0px",
+             "padding-left": "0px",
+             "padding-right": "0px"
+            }
+           }
+          },
+          "text": "☰",
+          "children": [],
+          "customAttributes": {
+           "data-wc-toggle": ""
+          }
+         },
+         {
+          "id": "saas5",
+          "type": "nav",
+          "name": "Navegação",
+          "tag": "nav",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "0px",
+             "padding-right": "0px",
+             "padding-bottom": "0px",
+             "padding-left": "0px",
+             "display": "flex",
+             "flex-wrap": "wrap",
+             "align-items": "center",
+             "column-gap": "20px",
+             "row-gap": "8px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "saas6",
+            "type": "link",
+            "name": "Link 2",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#0f172a",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Início",
+            "children": []
+           },
+           {
+            "id": "saas7",
+            "type": "link",
+            "name": "Link 3",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#precos"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#0f172a",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Preços",
+            "children": []
+           },
+           {
+            "id": "saas8",
+            "type": "link",
+            "name": "Link 4",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#recursos"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#0f172a",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Recursos",
+            "children": []
+           },
+           {
+            "id": "saas9",
+            "type": "link",
+            "name": "Link 5",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#contato"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#0f172a",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Contato",
+            "children": []
+           },
+           {
+            "id": "saas10",
+            "type": "link",
+            "name": "Link 6",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#precos"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "12px",
+               "padding-bottom": "12px",
+               "padding-left": "22px",
+               "padding-right": "22px",
+               "background-color": "#4f46e5",
+               "color": "#ffffff",
+               "font-weight": "600",
+               "font-size": "15px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#4f46e5",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#4f46e5",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#4f46e5",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#4f46e5",
+               "border-top-left-radius": "10px",
+               "border-top-right-radius": "10px",
+               "border-bottom-right-radius": "10px",
+               "border-bottom-left-radius": "10px",
+               "cursor": "pointer",
+               "text-decoration-line": "none"
+              }
+             }
+            },
+            "text": "Testar grátis",
+            "children": []
+           }
+          ],
+          "customAttributes": {
+           "data-wc-menu": ""
+          }
+         }
+        ]
+       }
+      ],
+      "customAttributes": {
+       "data-wc": "menu"
+      }
+     },
+     {
+      "id": "saas11",
+      "type": "section",
+      "name": "Destaque com imagem",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px",
+         "background-color": "#f8fafc"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "saas12",
+        "type": "div",
+        "name": "Contêiner 2",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(300px, 1fr))",
+           "column-gap": "56px",
+           "row-gap": "40px",
+           "align-items": "center"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "saas13",
+          "type": "div",
+          "name": "Texto",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "saas14",
+            "type": "paragraph",
+            "name": "Parágrafo",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#4f46e5",
+               "font-size": "14px",
+               "font-weight": "600",
+               "letter-spacing": "0.08em",
+               "text-transform": "uppercase",
+               "margin-bottom": "12px"
+              }
+             }
+            },
+            "text": "Gestão financeira simples",
+            "children": []
+           },
+           {
+            "id": "saas15",
+            "type": "heading",
+            "name": "Título",
+            "tag": "h1",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(2.25rem, 5vw, 3.5rem)",
+               "line-height": "1.1",
+               "color": "#0f172a",
+               "letter-spacing": "-0.02em",
+               "margin-bottom": "20px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "Saiba quanto sua empresa tem, deve e vai receber, em tempo real",
+            "children": []
+           },
+           {
+            "id": "saas16",
+            "type": "paragraph",
+            "name": "Parágrafo 2",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-bottom": "32px"
+              }
+             }
+            },
+            "text": "Conecte o banco, emita notas e veja o fluxo de caixa dos próximos 90 dias. Sem planilha.",
+            "children": []
+           },
+           {
+            "id": "saas17",
+            "type": "div",
+            "name": "Ações",
+            "tag": "div",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-wrap": "wrap",
+               "column-gap": "12px",
+               "row-gap": "12px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "saas18",
+              "type": "button",
+              "name": "Botão 2",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "14px",
+                 "padding-bottom": "14px",
+                 "padding-left": "24px",
+                 "padding-right": "24px",
+                 "background-color": "#4f46e5",
+                 "color": "#ffffff",
+                 "font-weight": "600",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#4f46e5",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#4f46e5",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#4f46e5",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#4f46e5",
+                 "border-top-left-radius": "10px",
+                 "border-top-right-radius": "10px",
+                 "border-bottom-right-radius": "10px",
+                 "border-bottom-left-radius": "10px"
+                }
+               }
+              },
+              "text": "Testar grátis por 14 dias",
+              "children": []
+             },
+             {
+              "id": "saas19",
+              "type": "button",
+              "name": "Botão 3",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "14px",
+                 "padding-bottom": "14px",
+                 "padding-left": "24px",
+                 "padding-right": "24px",
+                 "background-color": "#ffffff",
+                 "color": "#0f172a",
+                 "font-weight": "600",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#e2e8f0",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#e2e8f0",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#e2e8f0",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#e2e8f0",
+                 "border-top-left-radius": "10px",
+                 "border-top-right-radius": "10px",
+                 "border-bottom-right-radius": "10px",
+                 "border-bottom-left-radius": "10px"
+                }
+               }
+              },
+              "text": "Ver o vídeo",
+              "children": []
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "id": "saas20",
+          "type": "image",
+          "name": "Imagem",
+          "tag": "img",
+          "attributes": {
+           "src": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&h=900&q=80",
+           "alt": "Saiba quanto sua empresa tem, deve e vai receber, em tempo real"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "max-width": "100%",
+             "width": "100%",
+             "aspect-ratio": "4 / 3",
+             "object-fit": "cover",
+             "border-top-left-radius": "20px",
+             "border-top-right-radius": "20px",
+             "border-bottom-right-radius": "20px",
+             "border-bottom-left-radius": "20px",
+             "background-color": "#e2e8f0"
+            }
+           }
+          },
+          "text": null,
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "saas21",
+      "type": "section",
+      "name": "Logos de clientes",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "48px",
+         "padding-right": "24px",
+         "padding-bottom": "48px",
+         "padding-left": "24px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "saas22",
+        "type": "div",
+        "name": "Contêiner 3",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "text-align": "center"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "saas23",
+          "type": "paragraph",
+          "name": "Parágrafo 3",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "14px",
+             "line-height": "1.5",
+             "color": "#475569",
+             "margin-top": "0px",
+             "margin-bottom": "24px",
+             "text-transform": "uppercase",
+             "letter-spacing": "0.08em"
+            }
+           }
+          },
+          "text": "Mais de 4 mil empresas usam o Fluxo",
+          "children": []
+         },
+         {
+          "id": "saas24",
+          "type": "div",
+          "name": "Logos",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-wrap": "wrap",
+             "justify-content": "center",
+             "align-items": "center",
+             "column-gap": "48px",
+             "row-gap": "24px",
+             "opacity": "0.7"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "saas25",
+            "type": "paragraph",
+            "name": "Parágrafo 4",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "22px",
+               "font-weight": "800",
+               "color": "#0f172a",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Aroma",
+            "children": []
+           },
+           {
+            "id": "saas26",
+            "type": "paragraph",
+            "name": "Parágrafo 5",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "22px",
+               "font-weight": "800",
+               "color": "#0f172a",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Lima Móveis",
+            "children": []
+           },
+           {
+            "id": "saas27",
+            "type": "paragraph",
+            "name": "Parágrafo 6",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "22px",
+               "font-weight": "800",
+               "color": "#0f172a",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Cantina Reis",
+            "children": []
+           },
+           {
+            "id": "saas28",
+            "type": "paragraph",
+            "name": "Parágrafo 7",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "22px",
+               "font-weight": "800",
+               "color": "#0f172a",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Nordeste Tech",
+            "children": []
+           },
+           {
+            "id": "saas29",
+            "type": "paragraph",
+            "name": "Parágrafo 8",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "22px",
+               "font-weight": "800",
+               "color": "#0f172a",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Verde Vivo",
+            "children": []
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "saas30",
+      "type": "section",
+      "name": "Recursos",
+      "tag": "section",
+      "attributes": {
+       "id": "recursos"
+      },
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "saas31",
+        "type": "div",
+        "name": "Contêiner 4",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "saas32",
+          "type": "div",
+          "name": "Introdução",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center",
+             "max-width": "720px",
+             "margin-left": "auto",
+             "margin-right": "auto",
+             "margin-bottom": "48px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "saas33",
+            "type": "paragraph",
+            "name": "Parágrafo 9",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#4f46e5",
+               "font-size": "14px",
+               "font-weight": "600",
+               "letter-spacing": "0.08em",
+               "text-transform": "uppercase",
+               "margin-bottom": "12px"
+              }
+             }
+            },
+            "text": "Recursos",
+            "children": []
+           },
+           {
+            "id": "saas34",
+            "type": "heading",
+            "name": "Título 2",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#0f172a",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "16px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "O financeiro inteiro numa tela",
+            "children": []
+           },
+           {
+            "id": "saas35",
+            "type": "paragraph",
+            "name": "Parágrafo 10",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Feito para quem não é do financeiro.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "saas36",
+          "type": "div",
+          "name": "Grade",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "grid",
+             "grid-template-columns": "repeat(auto-fit, minmax(260px, 1fr))",
+             "column-gap": "24px",
+             "row-gap": "24px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "saas37",
+            "type": "article",
+            "name": "Artigo",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "saas38",
+              "type": "heading",
+              "name": "Título 3",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "color": "#0f172a",
+                 "margin-bottom": "8px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Conciliação automática",
+              "children": []
+             },
+             {
+              "id": "saas39",
+              "type": "paragraph",
+              "name": "Parágrafo 11",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Os lançamentos do banco entram sozinhos e se casam com suas contas.",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "saas40",
+            "type": "article",
+            "name": "Artigo 2",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "saas41",
+              "type": "heading",
+              "name": "Título 4",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "color": "#0f172a",
+                 "margin-bottom": "8px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Notas fiscais em 1 clique",
+              "children": []
+             },
+             {
+              "id": "saas42",
+              "type": "paragraph",
+              "name": "Parágrafo 12",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "NFS-e e NF-e emitidas e enviadas ao cliente por e-mail.",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "saas43",
+            "type": "article",
+            "name": "Artigo 3",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "saas44",
+              "type": "heading",
+              "name": "Título 5",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "color": "#0f172a",
+                 "margin-bottom": "8px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Previsão de caixa",
+              "children": []
+             },
+             {
+              "id": "saas45",
+              "type": "paragraph",
+              "name": "Parágrafo 13",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Veja hoje se vai faltar dinheiro daqui a dois meses.",
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "saas46",
+      "type": "section",
+      "name": "Vídeo do YouTube",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "80px",
+         "padding-right": "24px",
+         "padding-bottom": "80px",
+         "padding-left": "24px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "saas47",
+        "type": "div",
+        "name": "Contêiner 5",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "960px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "saas48",
+          "type": "div",
+          "name": "Introdução 2",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center",
+             "max-width": "720px",
+             "margin-left": "auto",
+             "margin-right": "auto",
+             "margin-bottom": "40px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "saas49",
+            "type": "heading",
+            "name": "Título 6",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#0f172a",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "12px",
+               "margin-top": "0px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "Veja o Fluxo funcionando",
+            "children": []
+           },
+           {
+            "id": "saas50",
+            "type": "paragraph",
+            "name": "Parágrafo 14",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Dois minutos do cadastro ao primeiro relatório.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "saas51",
+          "type": "iframe",
+          "name": "Quadro incorporado",
+          "tag": "iframe",
+          "attributes": {
+           "src": "https://www.youtube-nocookie.com/embed/ScMzIvxBSi4",
+           "title": "Vídeo",
+           "loading": "lazy",
+           "allow": "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "width": "100%",
+             "height": "auto",
+             "aspect-ratio": "16 / 9",
+             "border-top-width": "0px",
+             "border-top-style": "solid",
+             "border-top-color": "#e2e8f0",
+             "border-right-width": "0px",
+             "border-right-style": "solid",
+             "border-right-color": "#e2e8f0",
+             "border-bottom-width": "0px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#e2e8f0",
+             "border-left-width": "0px",
+             "border-left-style": "solid",
+             "border-left-color": "#e2e8f0",
+             "border-top-left-radius": "16px",
+             "border-top-right-radius": "16px",
+             "border-bottom-right-radius": "16px",
+             "border-bottom-left-radius": "16px",
+             "background-color": "#0f172a"
+            }
+           }
+          },
+          "text": null,
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "saas52",
+      "type": "section",
+      "name": "Preços mensal ou anual",
+      "tag": "section",
+      "attributes": {
+       "id": "precos"
+      },
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "80px",
+         "padding-right": "24px",
+         "padding-bottom": "80px",
+         "padding-left": "24px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "saas53",
+        "type": "div",
+        "name": "Contêiner 6",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "saas54",
+          "type": "div",
+          "name": "Introdução 3",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center",
+             "max-width": "720px",
+             "margin-left": "auto",
+             "margin-right": "auto",
+             "margin-bottom": "40px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "saas55",
+            "type": "heading",
+            "name": "Título 7",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#0f172a",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "12px",
+               "margin-top": "0px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "Planos e preços",
+            "children": []
+           },
+           {
+            "id": "saas56",
+            "type": "paragraph",
+            "name": "Parágrafo 15",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Economize dois meses no plano anual.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "saas57",
+          "type": "div",
+          "name": "Período",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "justify-content": "center",
+             "column-gap": "8px",
+             "margin-bottom": "32px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "saas58",
+            "type": "button",
+            "name": "Botão 4",
+            "tag": "button",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "16px",
+               "padding-right": "16px",
+               "background-color": "#ffffff",
+               "color": "#0f172a",
+               "font-weight": "500",
+               "font-size": "14px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "999px",
+               "border-top-right-radius": "999px",
+               "border-bottom-right-radius": "999px",
+               "border-bottom-left-radius": "999px",
+               "cursor": "pointer"
+              }
+             }
+            },
+            "text": "Mensal",
+            "children": [],
+            "customAttributes": {
+             "data-wc-period": "monthly"
+            }
+           },
+           {
+            "id": "saas59",
+            "type": "button",
+            "name": "Botão 5",
+            "tag": "button",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "16px",
+               "padding-right": "16px",
+               "background-color": "#ffffff",
+               "color": "#0f172a",
+               "font-weight": "500",
+               "font-size": "14px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "999px",
+               "border-top-right-radius": "999px",
+               "border-bottom-right-radius": "999px",
+               "border-bottom-left-radius": "999px",
+               "cursor": "pointer"
+              }
+             }
+            },
+            "text": "Anual",
+            "children": [],
+            "customAttributes": {
+             "data-wc-period": "yearly"
+            }
+           }
+          ]
+         },
+         {
+          "id": "saas60",
+          "type": "div",
+          "name": "Cartões de preço",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "grid",
+             "grid-template-columns": "repeat(auto-fit, minmax(240px, 1fr))",
+             "column-gap": "24px",
+             "row-gap": "24px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "saas61",
+            "type": "article",
+            "name": "Artigo 4",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "24px",
+               "padding-right": "24px",
+               "padding-bottom": "24px",
+               "padding-left": "24px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px",
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "12px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "saas62",
+              "type": "heading",
+              "name": "Título 8",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "line-height": "1.3",
+                 "color": "#0f172a",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Básico",
+              "children": []
+             },
+             {
+              "id": "saas63",
+              "type": "paragraph",
+              "name": "Parágrafo 16",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "36px",
+                 "font-weight": "700",
+                 "color": "#0f172a",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "R$ 29/mês",
+              "children": [],
+              "customAttributes": {
+               "data-wc-monthly": "R$ 29/mês",
+               "data-wc-yearly": "R$ 290/ano"
+              }
+             },
+             {
+              "id": "saas64",
+              "type": "paragraph",
+              "name": "Parágrafo 17",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "line-height": "1.5",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Cancele quando quiser.",
+              "children": []
+             },
+             {
+              "id": "saas65",
+              "type": "button",
+              "name": "Botão 6",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "12px",
+                 "padding-bottom": "12px",
+                 "padding-left": "22px",
+                 "padding-right": "22px",
+                 "background-color": "#ffffff",
+                 "color": "#0f172a",
+                 "font-weight": "600",
+                 "font-size": "16px",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#e2e8f0",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#e2e8f0",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#e2e8f0",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#e2e8f0",
+                 "border-top-left-radius": "10px",
+                 "border-top-right-radius": "10px",
+                 "border-bottom-right-radius": "10px",
+                 "border-bottom-left-radius": "10px",
+                 "cursor": "pointer"
+                }
+               }
+              },
+              "text": "Escolher",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "saas66",
+            "type": "article",
+            "name": "Artigo 5",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "24px",
+               "padding-right": "24px",
+               "padding-bottom": "24px",
+               "padding-left": "24px",
+               "background-color": "#ffffff",
+               "border-top-width": "2px",
+               "border-top-style": "solid",
+               "border-top-color": "#4f46e5",
+               "border-right-width": "2px",
+               "border-right-style": "solid",
+               "border-right-color": "#4f46e5",
+               "border-bottom-width": "2px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#4f46e5",
+               "border-left-width": "2px",
+               "border-left-style": "solid",
+               "border-left-color": "#4f46e5",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px",
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "12px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "saas67",
+              "type": "heading",
+              "name": "Título 9",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "line-height": "1.3",
+                 "color": "#0f172a",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Pro",
+              "children": []
+             },
+             {
+              "id": "saas68",
+              "type": "paragraph",
+              "name": "Parágrafo 18",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "36px",
+                 "font-weight": "700",
+                 "color": "#0f172a",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "R$ 59/mês",
+              "children": [],
+              "customAttributes": {
+               "data-wc-monthly": "R$ 59/mês",
+               "data-wc-yearly": "R$ 590/ano"
+              }
+             },
+             {
+              "id": "saas69",
+              "type": "paragraph",
+              "name": "Parágrafo 19",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "line-height": "1.5",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Cancele quando quiser.",
+              "children": []
+             },
+             {
+              "id": "saas70",
+              "type": "button",
+              "name": "Botão 7",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "12px",
+                 "padding-bottom": "12px",
+                 "padding-left": "22px",
+                 "padding-right": "22px",
+                 "background-color": "#4f46e5",
+                 "color": "#ffffff",
+                 "font-weight": "600",
+                 "font-size": "16px",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#4f46e5",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#4f46e5",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#4f46e5",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#4f46e5",
+                 "border-top-left-radius": "10px",
+                 "border-top-right-radius": "10px",
+                 "border-bottom-right-radius": "10px",
+                 "border-bottom-left-radius": "10px",
+                 "cursor": "pointer"
+                }
+               }
+              },
+              "text": "Escolher",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "saas71",
+            "type": "article",
+            "name": "Artigo 6",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "24px",
+               "padding-right": "24px",
+               "padding-bottom": "24px",
+               "padding-left": "24px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px",
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "12px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "saas72",
+              "type": "heading",
+              "name": "Título 10",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "line-height": "1.3",
+                 "color": "#0f172a",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Empresa",
+              "children": []
+             },
+             {
+              "id": "saas73",
+              "type": "paragraph",
+              "name": "Parágrafo 20",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "36px",
+                 "font-weight": "700",
+                 "color": "#0f172a",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "R$ 129/mês",
+              "children": [],
+              "customAttributes": {
+               "data-wc-monthly": "R$ 129/mês",
+               "data-wc-yearly": "R$ 1.290/ano"
+              }
+             },
+             {
+              "id": "saas74",
+              "type": "paragraph",
+              "name": "Parágrafo 21",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "line-height": "1.5",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Cancele quando quiser.",
+              "children": []
+             },
+             {
+              "id": "saas75",
+              "type": "button",
+              "name": "Botão 8",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "12px",
+                 "padding-bottom": "12px",
+                 "padding-left": "22px",
+                 "padding-right": "22px",
+                 "background-color": "#ffffff",
+                 "color": "#0f172a",
+                 "font-weight": "600",
+                 "font-size": "16px",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#e2e8f0",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#e2e8f0",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#e2e8f0",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#e2e8f0",
+                 "border-top-left-radius": "10px",
+                 "border-top-right-radius": "10px",
+                 "border-bottom-right-radius": "10px",
+                 "border-bottom-left-radius": "10px",
+                 "cursor": "pointer"
+                }
+               }
+              },
+              "text": "Escolher",
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ],
+      "customAttributes": {
+       "data-wc": "billing-toggle"
+      }
+     },
+     {
+      "id": "saas76",
+      "type": "section",
+      "name": "Depoimentos",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "saas77",
+        "type": "div",
+        "name": "Contêiner 7",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "saas78",
+          "type": "div",
+          "name": "Introdução 4",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center",
+             "max-width": "720px",
+             "margin-left": "auto",
+             "margin-right": "auto",
+             "margin-bottom": "48px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "saas79",
+            "type": "paragraph",
+            "name": "Parágrafo 22",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#4f46e5",
+               "font-size": "14px",
+               "font-weight": "600",
+               "letter-spacing": "0.08em",
+               "text-transform": "uppercase",
+               "margin-bottom": "12px"
+              }
+             }
+            },
+            "text": "Clientes",
+            "children": []
+           },
+           {
+            "id": "saas80",
+            "type": "heading",
+            "name": "Título 11",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#0f172a",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "16px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "Quem usa recomenda",
+            "children": []
+           },
+           {
+            "id": "saas81",
+            "type": "paragraph",
+            "name": "Parágrafo 23",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Nota 4,8 na App Store e no Google Play.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "saas82",
+          "type": "div",
+          "name": "Grade 2",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "grid",
+             "grid-template-columns": "repeat(auto-fit, minmax(260px, 1fr))",
+             "column-gap": "24px",
+             "row-gap": "24px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "saas83",
+            "type": "article",
+            "name": "Artigo 7",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "saas84",
+              "type": "paragraph",
+              "name": "Parágrafo 24",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "18px",
+                 "line-height": "1.6",
+                 "color": "#0f172a",
+                 "margin-bottom": "20px"
+                }
+               }
+              },
+              "text": "\"Fechávamos o mês em 3 dias. Agora é uma tarde.\"",
+              "children": []
+             },
+             {
+              "id": "saas85",
+              "type": "paragraph",
+              "name": "Parágrafo 25",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Rita Campos",
+              "children": []
+             },
+             {
+              "id": "saas86",
+              "type": "paragraph",
+              "name": "Parágrafo 26",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Sócia, Campos Arquitetura",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "saas87",
+            "type": "article",
+            "name": "Artigo 8",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "saas88",
+              "type": "paragraph",
+              "name": "Parágrafo 27",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "18px",
+                 "line-height": "1.6",
+                 "color": "#0f172a",
+                 "margin-bottom": "20px"
+                }
+               }
+              },
+              "text": "\"A previsão de caixa evitou um empréstimo caro.\"",
+              "children": []
+             },
+             {
+              "id": "saas89",
+              "type": "paragraph",
+              "name": "Parágrafo 28",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Jorge Lins",
+              "children": []
+             },
+             {
+              "id": "saas90",
+              "type": "paragraph",
+              "name": "Parágrafo 29",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Dono, Lins Alimentos",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "saas91",
+            "type": "article",
+            "name": "Artigo 9",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "saas92",
+              "type": "paragraph",
+              "name": "Parágrafo 30",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "18px",
+                 "line-height": "1.6",
+                 "color": "#0f172a",
+                 "margin-bottom": "20px"
+                }
+               }
+              },
+              "text": "\"Meu contador acessa tudo direto, sem me pedir nada.\"",
+              "children": []
+             },
+             {
+              "id": "saas93",
+              "type": "paragraph",
+              "name": "Parágrafo 31",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Tatiane Melo",
+              "children": []
+             },
+             {
+              "id": "saas94",
+              "type": "paragraph",
+              "name": "Parágrafo 32",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "MEI, Ateliê Melo",
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "saas95",
+      "type": "section",
+      "name": "Perguntas frequentes",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px",
+         "background-color": "#f8fafc"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "saas96",
+        "type": "div",
+        "name": "Contêiner 8",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "760px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "saas97",
+          "type": "div",
+          "name": "Introdução 5",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center",
+             "max-width": "720px",
+             "margin-left": "auto",
+             "margin-right": "auto",
+             "margin-bottom": "48px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "saas98",
+            "type": "paragraph",
+            "name": "Parágrafo 33",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#4f46e5",
+               "font-size": "14px",
+               "font-weight": "600",
+               "letter-spacing": "0.08em",
+               "text-transform": "uppercase",
+               "margin-bottom": "12px"
+              }
+             }
+            },
+            "text": "Dúvidas",
+            "children": []
+           },
+           {
+            "id": "saas99",
+            "type": "heading",
+            "name": "Título 12",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#0f172a",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "16px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "Perguntas frequentes",
+            "children": []
+           },
+           {
+            "id": "saas100",
+            "type": "paragraph",
+            "name": "Parágrafo 34",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "saas101",
+          "type": "div",
+          "name": "Perguntas",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "12px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "saas102",
+            "type": "details",
+            "name": "Detalhes",
+            "tag": "details",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "20px",
+               "padding-bottom": "20px",
+               "padding-left": "24px",
+               "padding-right": "24px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "12px",
+               "border-top-right-radius": "12px",
+               "border-bottom-right-radius": "12px",
+               "border-bottom-left-radius": "12px",
+               "background-color": "#ffffff"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "saas103",
+              "type": "summary",
+              "name": "Resumo",
+              "tag": "summary",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a",
+                 "cursor": "pointer"
+                }
+               }
+              },
+              "text": null,
+              "children": [
+               {
+                "id": "saas104",
+                "type": "paragraph",
+                "name": "Parágrafo 35",
+                "tag": "span",
+                "attributes": {},
+                "classes": [],
+                "styles": {},
+                "text": "Preciso de cartão para testar?",
+                "children": []
+               }
+              ]
+             },
+             {
+              "id": "saas105",
+              "type": "paragraph",
+              "name": "Parágrafo 36",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "12px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Não. Os 14 dias são grátis e sem compromisso.",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "saas106",
+            "type": "details",
+            "name": "Detalhes 2",
+            "tag": "details",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "20px",
+               "padding-bottom": "20px",
+               "padding-left": "24px",
+               "padding-right": "24px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "12px",
+               "border-top-right-radius": "12px",
+               "border-bottom-right-radius": "12px",
+               "border-bottom-left-radius": "12px",
+               "background-color": "#ffffff"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "saas107",
+              "type": "summary",
+              "name": "Resumo 2",
+              "tag": "summary",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a",
+                 "cursor": "pointer"
+                }
+               }
+              },
+              "text": null,
+              "children": [
+               {
+                "id": "saas108",
+                "type": "paragraph",
+                "name": "Parágrafo 37",
+                "tag": "span",
+                "attributes": {},
+                "classes": [],
+                "styles": {},
+                "text": "Meus dados ficam seguros?",
+                "children": []
+               }
+              ]
+             },
+             {
+              "id": "saas109",
+              "type": "paragraph",
+              "name": "Parágrafo 38",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "12px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Sim: criptografia, backups diários e servidores no Brasil (LGPD).",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "saas110",
+            "type": "details",
+            "name": "Detalhes 3",
+            "tag": "details",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "20px",
+               "padding-bottom": "20px",
+               "padding-left": "24px",
+               "padding-right": "24px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "12px",
+               "border-top-right-radius": "12px",
+               "border-bottom-right-radius": "12px",
+               "border-bottom-left-radius": "12px",
+               "background-color": "#ffffff"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "saas111",
+              "type": "summary",
+              "name": "Resumo 3",
+              "tag": "summary",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a",
+                 "cursor": "pointer"
+                }
+               }
+              },
+              "text": null,
+              "children": [
+               {
+                "id": "saas112",
+                "type": "paragraph",
+                "name": "Parágrafo 39",
+                "tag": "span",
+                "attributes": {},
+                "classes": [],
+                "styles": {},
+                "text": "Funciona para MEI?",
+                "children": []
+               }
+              ]
+             },
+             {
+              "id": "saas113",
+              "type": "paragraph",
+              "name": "Parágrafo 40",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "12px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Sim, há um plano pensado para MEI, com emissão de NFS-e.",
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "saas114",
+      "type": "section",
+      "name": "Chamada para ação",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "80px",
+         "padding-right": "40px",
+         "padding-bottom": "80px",
+         "padding-left": "40px",
+         "background-color": "#4f46e5",
+         "text-align": "center"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "saas115",
+        "type": "div",
+        "name": "Contêiner 9",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "720px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "saas116",
+          "type": "heading",
+          "name": "Título 13",
+          "tag": "h2",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+             "line-height": "1.2",
+             "color": "#ffffff",
+             "letter-spacing": "-0.01em",
+             "margin-bottom": "16px",
+             "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+            }
+           }
+          },
+          "text": "Comece hoje, sem cartão",
+          "children": []
+         },
+         {
+          "id": "saas117",
+          "type": "paragraph",
+          "name": "Parágrafo 41",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "18px",
+             "line-height": "1.6",
+             "color": "#ffffff",
+             "margin-bottom": "32px"
+            }
+           }
+          },
+          "text": "Em 5 minutos sua conta está pronta.",
+          "children": []
+         },
+         {
+          "id": "saas118",
+          "type": "button",
+          "name": "Botão 9",
+          "tag": "button",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "16px",
+             "padding-bottom": "16px",
+             "padding-left": "28px",
+             "padding-right": "28px",
+             "background-color": "#ffffff",
+             "color": "#4f46e5",
+             "font-weight": "700",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#ffffff",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#ffffff",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#ffffff",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#ffffff",
+             "border-top-left-radius": "10px",
+             "border-top-right-radius": "10px",
+             "border-bottom-right-radius": "10px",
+             "border-bottom-left-radius": "10px"
+            }
+           }
+          },
+          "text": "Testar grátis",
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "saas119",
+      "type": "section",
+      "name": "Contato",
+      "tag": "section",
+      "attributes": {
+       "id": "contato"
+      },
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "saas120",
+        "type": "div",
+        "name": "Contêiner 10",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(300px, 1fr))",
+           "column-gap": "56px",
+           "row-gap": "32px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "saas121",
+          "type": "div",
+          "name": "Texto 2",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "saas122",
+            "type": "heading",
+            "name": "Título 14",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#0f172a",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "16px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "Fale com um especialista",
+            "children": []
+           },
+           {
+            "id": "saas123",
+            "type": "paragraph",
+            "name": "Parágrafo 42",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569"
+              }
+             }
+            },
+            "text": "Para empresas com mais de 20 funcionários, montamos uma demonstração.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "saas124",
+          "type": "form",
+          "name": "Formulário",
+          "tag": "form",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "16px",
+             "padding-top": "28px",
+             "padding-bottom": "28px",
+             "padding-left": "28px",
+             "padding-right": "28px",
+             "background-color": "#ffffff",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#e2e8f0",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#e2e8f0",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#e2e8f0",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#e2e8f0",
+             "border-top-left-radius": "16px",
+             "border-top-right-radius": "16px",
+             "border-bottom-right-radius": "16px",
+             "border-bottom-left-radius": "16px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "saas125",
+            "type": "label",
+            "name": "Rótulo",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "saas126",
+              "type": "paragraph",
+              "name": "Parágrafo 43",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a"
+                }
+               }
+              },
+              "text": "Nome",
+              "children": []
+             },
+             {
+              "id": "saas127",
+              "type": "input",
+              "name": "Campo",
+              "tag": "input",
+              "attributes": {
+               "inputType": "text",
+               "name": "name"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "saas128",
+            "type": "label",
+            "name": "Rótulo 2",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "saas129",
+              "type": "paragraph",
+              "name": "Parágrafo 44",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a"
+                }
+               }
+              },
+              "text": "E-mail",
+              "children": []
+             },
+             {
+              "id": "saas130",
+              "type": "input",
+              "name": "Campo 2",
+              "tag": "input",
+              "attributes": {
+               "inputType": "email",
+               "name": "email"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "saas131",
+            "type": "button",
+            "name": "Botão 10",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "submit"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "14px",
+               "padding-bottom": "14px",
+               "padding-left": "24px",
+               "padding-right": "24px",
+               "background-color": "#4f46e5",
+               "color": "#ffffff",
+               "font-weight": "600",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#4f46e5",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#4f46e5",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#4f46e5",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#4f46e5",
+               "border-top-left-radius": "10px",
+               "border-top-right-radius": "10px",
+               "border-bottom-right-radius": "10px",
+               "border-bottom-left-radius": "10px",
+               "align-self": "flex-start"
+              }
+             }
+            },
+            "text": "Enviar",
+            "children": []
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "saas132",
+      "type": "footer",
+      "name": "Rodapé com colunas",
+      "tag": "footer",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "56px",
+         "padding-right": "40px",
+         "padding-bottom": "56px",
+         "padding-left": "40px",
+         "background-color": "#0f172a",
+         "color": "#cbd5e1"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "saas133",
+        "type": "div",
+        "name": "Contêiner 11",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(200px, 1fr))",
+           "column-gap": "32px",
+           "row-gap": "24px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "saas134",
+          "type": "div",
+          "name": "Marca",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "saas135",
+            "type": "paragraph",
+            "name": "Parágrafo 45",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "20px",
+               "font-weight": "700",
+               "color": "#ffffff",
+               "margin-bottom": "8px"
+              }
+             }
+            },
+            "text": "Fluxo",
+            "children": []
+           },
+           {
+            "id": "saas136",
+            "type": "paragraph",
+            "name": "Parágrafo 46",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "14px",
+               "line-height": "1.6",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Fluxo Tecnologia Ltda. — São Paulo, SP.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "saas137",
+          "type": "nav",
+          "name": "Navegação 2",
+          "tag": "nav",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "0px",
+             "padding-right": "0px",
+             "padding-bottom": "0px",
+             "padding-left": "0px",
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "8px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "saas138",
+            "type": "link",
+            "name": "Link 7",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "Início",
+            "children": []
+           },
+           {
+            "id": "saas139",
+            "type": "link",
+            "name": "Link 8",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#precos"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "Preços",
+            "children": []
+           },
+           {
+            "id": "saas140",
+            "type": "link",
+            "name": "Link 9",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#contato"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "Contato",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "saas141",
+          "type": "paragraph",
+          "name": "Parágrafo 47",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "14px",
+             "margin-top": "0px",
+             "margin-bottom": "0px"
+            }
+           }
+          },
+          "text": "© 2026 Fluxo. Todos os direitos reservados.",
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "saas142",
+      "type": "div",
+      "name": "Aviso de cookies",
+      "tag": "div",
+      "attributes": {
+       "ariaLabel": "Cookies",
+       "role": "region"
+      },
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "position": "fixed",
+         "left": "16px",
+         "right": "16px",
+         "bottom": "16px",
+         "z-index": "900",
+         "max-width": "720px",
+         "margin-left": "auto",
+         "margin-right": "auto",
+         "padding-top": "24px",
+         "padding-bottom": "24px",
+         "padding-left": "24px",
+         "padding-right": "24px",
+         "background-color": "#ffffff",
+         "border-top-width": "1px",
+         "border-top-style": "solid",
+         "border-top-color": "#e2e8f0",
+         "border-right-width": "1px",
+         "border-right-style": "solid",
+         "border-right-color": "#e2e8f0",
+         "border-bottom-width": "1px",
+         "border-bottom-style": "solid",
+         "border-bottom-color": "#e2e8f0",
+         "border-left-width": "1px",
+         "border-left-style": "solid",
+         "border-left-color": "#e2e8f0",
+         "border-top-left-radius": "16px",
+         "border-top-right-radius": "16px",
+         "border-bottom-right-radius": "16px",
+         "border-bottom-left-radius": "16px",
+         "box-shadow": [
+          {
+           "color": "rgba(15, 23, 42, 0.18)",
+           "offsetX": "0px",
+           "offsetY": "10px",
+           "blur": "40px",
+           "spread": "0px",
+           "inset": false,
+           "hidden": false
+          }
+         ],
+         "display": "flex",
+         "flex-wrap": "wrap",
+         "align-items": "center",
+         "column-gap": "16px",
+         "row-gap": "12px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "saas143",
+        "type": "paragraph",
+        "name": "Parágrafo 48",
+        "tag": "p",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "font-size": "14px",
+           "line-height": "1.5",
+           "color": "#475569",
+           "margin-top": "0px",
+           "margin-bottom": "0px",
+           "flex-grow": "1",
+           "flex-basis": "320px"
+          }
+         }
+        },
+        "text": "Usamos cookies para melhorar sua experiência. Você escolhe: só os essenciais ou todos.",
+        "children": []
+       },
+       {
+        "id": "saas144",
+        "type": "div",
+        "name": "Escolhas",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "display": "flex",
+           "column-gap": "8px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "saas145",
+          "type": "button",
+          "name": "Botão 11",
+          "tag": "button",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "12px",
+             "padding-bottom": "12px",
+             "padding-left": "22px",
+             "padding-right": "22px",
+             "background-color": "#ffffff",
+             "color": "#0f172a",
+             "font-weight": "600",
+             "font-size": "16px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#e2e8f0",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#e2e8f0",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#e2e8f0",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#e2e8f0",
+             "border-top-left-radius": "10px",
+             "border-top-right-radius": "10px",
+             "border-bottom-right-radius": "10px",
+             "border-bottom-left-radius": "10px",
+             "cursor": "pointer"
+            }
+           }
+          },
+          "text": "Só essenciais",
+          "children": [],
+          "customAttributes": {
+           "data-wc-reject": ""
+          }
+         },
+         {
+          "id": "saas146",
+          "type": "button",
+          "name": "Botão 12",
+          "tag": "button",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "12px",
+             "padding-bottom": "12px",
+             "padding-left": "22px",
+             "padding-right": "22px",
+             "background-color": "#4f46e5",
+             "color": "#ffffff",
+             "font-weight": "600",
+             "font-size": "16px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#4f46e5",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#4f46e5",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#4f46e5",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#4f46e5",
+             "border-top-left-radius": "10px",
+             "border-top-right-radius": "10px",
+             "border-bottom-right-radius": "10px",
+             "border-bottom-left-radius": "10px",
+             "cursor": "pointer"
+            }
+           }
+          },
+          "text": "Aceitar todos",
+          "children": [],
+          "customAttributes": {
+           "data-wc-accept": ""
+          }
+         }
+        ]
+       }
+      ],
+      "customAttributes": {
+       "data-wc": "cookies"
+      }
+     }
+    ]
+   }
+  }
+ ]
+}

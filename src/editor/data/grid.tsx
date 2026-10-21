@@ -7,6 +7,7 @@ import { cellText, queryItems } from '../../core/data/collections.ts';
 import { FIELD_TYPES, FILTER_OPERATORS, type Collection, type Field, type Query } from '../../core/data/model.ts';
 import type { MessageId } from '../../generated/ids.ts';
 import { DoorControl } from '../doors/door.tsx';
+import { useEditorState } from '../store.ts';
 import { useT } from '../text.ts';
 import { DoorField, DoorForm, doorOf, type Option } from './controls.tsx';
 
@@ -98,6 +99,8 @@ function QueryBar({ collection, query }: { readonly collection: Collection; read
 function Grid({ collection, query }: { readonly collection: Collection; readonly query: Query }): ReactNode {
   const t = useT();
   const words = { yes: t('data.yes'), no: t('data.no') };
+  // a number reads as the site shows it: in the site's language, with its field's decimal places
+  const language = useEditorState((state) => state.document.language);
   const rows = queryItems(collection, query);
   const cell = (field: Field, value: string, item: string) => <DoorField entry={CELL} args={{ collection: collection.name, item, field: field.key }} name="value" value={value} label={t('data.cellLabel', { column: field.label, row: collection.items.findIndex((one) => one.id === item) + 1 })} />;
   return (
@@ -130,7 +133,7 @@ function Grid({ collection, query }: { readonly collection: Collection; readonly
                   {at + 1}
                 </th>
                 {collection.fields.map((field) => (
-                  <td key={field.key}>{cell(field, cellText(item.values[field.key], words), item.id)}</td>
+                  <td key={field.key}>{cell(field, cellText(item.values[field.key], words, { language, decimals: field.decimals }), item.id)}</td>
                 ))}
                 <td className="data-grid__actions">
                   <DoorControl entry={ITEM_UP} args={{ collection: collection.name, item: item.id, to: at - 1 }} ready={at > 0} label={t('data.moveUp', { row: at + 1 })} />

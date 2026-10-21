@@ -1,0 +1,87 @@
+// The application layer (spec app-logic): its fixtures are valid documents, a broken name or field is refused with its
+// reason, and the export writes js/app-layer/main.js, the runtime, the modules and the import map of every page.
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { describe, expect, it } from 'vitest';
+import { manifest } from '../../manifest/runtime.ts';
+import type { DocumentJson } from '../document/model.ts';
+import { rulesFromManifest, validateDocument } from '../document/validate.ts';
+import { previewPage, siteArchive, siteFiles } from '../export/export.ts';
+import type { SiteScripts } from '../ports/site-scripts.ts';
+import { compileApp } from './compile.ts';
+
+const RULES = rulesFromManifest(manifest.elements, manifest.properties, manifest.html);
+// the test application (every part of the layer, one broken expression among them) and the start screen's examples
+const fixture = (name: string) =>
+  JSON.parse(readFileSync(name === 'test-app' ? 'src/core/logic/fixtures/test-app.json' : `src/editor/examples/${name}.json`, 'utf8')) as DocumentJson;
+const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor as FunctionConstructor;
+const scripts: SiteScripts = {
+  forms: () => '',
+  app: () => readFileSync('src/editor/app-runtime/runtime.js', 'utf8'),
+  checkSyntax: (kind, code) => {
+    if (kind === 'module') return null;
+    try {
+      if (kind === 'expression') new Function(`return (\n${code}\n);`);
+      else new AsyncFunction(code);
+      return null;
+    } catch (error) {
+      return (error as Error).message;
+    }
+  },
+};
+const EXAMPLES = readdirSync('src/editor/examples').filter((file) => file.endsWith('.json')).map((file) => file.slice(0, -'.json'.length));
+const APPS = ['test-app', ...EXAMPLES];
+
+describe('the application layer', () => {
+  it.each(APPS)('%s is a valid document', (name) => {
+    expect(validateDocument(fixture(name), [], RULES)).toEqual([]);
+  });
+
+  it.each(EXAMPLES)('%s parses every expression and handler (no function that reports a syntax error)', (name) => {
+    expect(compileApp(fixture(name), scripts.checkSyntax).main).not.toContain('throw new SyntaxError(');
+  });
+
+  it('refuses a variable whose first value is not of its type, a reserved name and an unknown component', () => {
+    const doc = fixture('test-app');
+    const broken = { ...doc, app: { ...doc.app, variables: [{ name: 'state', type: 'number', initial: 'x' }] } } as DocumentJson;
+    const messages = validateDocument(broken, [], RULES).map((one) => one.message);
+    expect(messages.some((m) => m.includes('every expression already has'))).toBe(true);
+    const noComponent = { ...doc, app: { ...doc.app, components: undefined } } as unknown as DocumentJson;
+    expect(validateDocument(JSON.parse(JSON.stringify(noComponent)) as DocumentJson, [], RULES).some((one) => one.message.includes('no code component'))).toBe(true);
+  });
+
+  it('writes each expression as a function, the item names declared, and a broken one as a function that reports it', () => {
+    const { main, modules } = compileApp(fixture('test-app'), scripts.checkSyntax);
+    expect(main).toContain("const todo = $l.todo, index = $l.index;");
+    expect(main).toContain('throw new SyntaxError(');
+    expect(main).not.toContain('eval(');
+    expect(modules.map((m) => m.path)).toEqual(['js/app-layer/scripts/util.js', 'js/app-layer/components/Etiqueta.js']);
+    expect(modules[0]?.code.startsWith("import { state, app, fn } from '@app/runtime';")).toBe(true);
+  });
+
+  it('links the import map and the module from every page, and archives the application files', () => {
+    const site = siteFiles(fixture('test-app'), RULES, true, scripts);
+    const html = site.pages[0]?.html ?? '';
+    expect(html).toContain('<script type="importmap">{"imports":{"@app/runtime":"./js/app-layer/runtime.js","@app/script/util":"./js/app-layer/scripts/util.js","@app/component/Etiqueta":"./js/app-layer/components/Etiqueta.js"}}</script>');
+    expect(html).toContain('<script type="module" src="js/app-layer/main.js"></script>');
+    expect(html.indexOf('importmap')).toBeLessThan(html.indexOf('type="module"'));
+    expect(html).toMatch(/data-app="a\d+"/u);
+    const archive = new TextDecoder('latin1').decode(siteArchive(fixture('test-app'), RULES, scripts));
+    for (const path of ['js/app-layer/main.js', 'js/app-layer/runtime.js', 'js/app-layer/scripts/util.js', 'js/app-layer/components/Etiqueta.js']) expect(archive).toContain(path);
+  });
+
+  it('runs the preview from data: modules', () => {
+    const html = previewPage(fixture('test-app'), RULES, 0, scripts);
+    expect(html).toContain('"@app/runtime":"data:text/javascript;charset=utf-8,');
+    expect(html).toContain('<html data-app-debug');
+    expect(html).not.toContain('src="js/app-layer/main.js"');
+    // the browser tests read the preview of every example application (APP_OUT=<folder>)
+    const out = process.env.APP_OUT;
+    if (out !== undefined) {
+      mkdirSync(out, { recursive: true });
+      for (const name of APPS) {
+        writeFileSync(`${out}/${name}.html`, previewPage(fixture(name), RULES, 0, scripts));
+        writeFileSync(`${out}/${name}.zip`, siteArchive(fixture(name), RULES, scripts));
+      }
+    }
+  });
+});

@@ -14,7 +14,7 @@ import type { NodeId } from '../../generated/commands.ts';
 import { message, registerHandler, type Message, type MessageParam } from '../commands/registry.ts';
 import { locate, type DocNode } from '../document/model.ts';
 import type { ModelRules } from '../document/validate.ts';
-import { firstLockRefusal } from '../nodes/flags.ts';
+import { firstLockRefusal, stateRefusal } from '../nodes/flags.ts';
 import { writeDeclarations } from '../style/set.ts';
 import { storedValue } from '../style/stored.ts';
 
@@ -103,7 +103,7 @@ export const setAnchorsCommand = registerHandler(
     if (state.selection.length !== 1) return { kind: 'refused', message: message('status.needsSingleSelection') };
     const found = state.selection[0] === undefined ? null : locate(state.document, state.selection[0]);
     if (found === null) return { kind: 'change' };
-    const locked = firstLockRefusal(state.document, [found.node.id as NodeId], 'status.locked.edit');
+    const locked = firstLockRefusal(state.document, [found.node.id as NodeId], 'status.locked.edit') ?? stateRefusal(state.document, [found.node.id as NodeId], rules);
     if (locked !== null) return { kind: 'refused', message: locked };
     const target = EDGES[edge];
     if (target === undefined) throw new Error(`position.setAnchors: no edge ${edge}`);

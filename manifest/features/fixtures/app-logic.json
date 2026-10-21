@@ -1,0 +1,94 @@
+{
+  "version": 4,
+  "language": "en",
+  "codeLanguage": "en",
+  "pages": [
+    {
+      "id": "pg1",
+      "name": "Home",
+      "file": "index.html",
+      "tree": {
+        "id": "root",
+        "type": "page",
+        "name": "Page",
+        "tag": "body",
+        "attributes": {},
+        "classes": [],
+        "styles": {},
+        "text": null,
+        "children": [
+          {
+            "id": "n1",
+            "type": "heading",
+            "name": "Title",
+            "tag": "h1",
+            "attributes": {},
+            "classes": [],
+            "styles": {},
+            "text": "Counter",
+            "children": [],
+            "logic": {
+              "text": "state.title",
+              "on": [
+                {
+                  "event": "click",
+                  "code": "state.count++"
+                }
+              ]
+            }
+          },
+          {
+            "id": "n2",
+            "type": "div",
+            "name": "Box",
+            "tag": "div",
+            "attributes": {},
+            "classes": [],
+            "styles": {},
+            "text": null,
+            "children": []
+          }
+        ]
+      }
+    }
+  ],
+  "app": {
+    "variables": [
+      {
+        "name": "count",
+        "type": "number",
+        "initial": 0
+      },
+      {
+        "name": "title",
+        "type": "text",
+        "initial": "Hello"
+      }
+    ],
+    "scripts": [
+      {
+        "name": "util",
+        "code": "export const answer = 42;\n"
+      }
+    ],
+    "components": [
+      {
+        "name": "Badge",
+        "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+      }
+    ],
+    "libraries": [
+      {
+        "name": "confetti",
+        "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+      }
+    ],
+    "tables": [
+      {
+        "name": "posts",
+        "read": "public",
+        "write": "members"
+      }
+    ]
+  }
+}

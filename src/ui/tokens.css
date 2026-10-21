@@ -49,6 +49,8 @@
   --lh-title: 18px;
   --fw-title: 600;
   --ls-title: 0px;
+  --fs-headline: 20px;
+  --lh-headline: 28px;
   --fs-dialog: 14px;
   --lh-dialog: 20px;
   --fw-dialog: 400;
@@ -99,6 +101,9 @@
   --size-chip: 26px;
   --size-header: 32px;
   --size-tile: 48px;
+  --size-start-card: 520px;
+  --size-icon-md: 20px;
+  --size-icon-lg: 32px;
   --size-label-column: 116px;
   --size-label-column-card: 116px;
   --size-timeline-side: 288px;

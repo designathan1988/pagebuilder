@@ -102,6 +102,20 @@ describe('interactions', () => {
     expect(hero(scroll.document).motions?.[0]).toMatchObject({ trigger: { kind: 'page-scroll' }, control: 'scrub' });
   });
 
+  it('gives a quick effect: the element enters as it scrolls into view, once, keyed from hidden to shown', () => {
+    const ran = chain(page(), [[addMotionCommand, { preset: 'fade-up' }]]);
+    expect(hero(ran.document).motions?.[0]).toMatchObject({ trigger: { kind: 'scroll-into-view' }, control: 'play', leave: 'none', once: true });
+    const action = firstTimeline(ran.document)?.actions[0];
+    expect(action).toMatchObject({ target: { kind: 'self' }, start: 0, duration: 700 });
+    const tracks = action?.effect.kind === 'animate' ? action.effect.tracks : [];
+    expect(tracks.map((track) => [track.property, ...track.keyframes.map((key) => `${String(key.time)}:${key.value}`)])).toEqual([
+      ['opacity', '0:0', '700:1'],
+      ['translate-y', '0:32px', '700:0px'],
+    ]);
+    // another trigger asked for with the preset is kept
+    expect(hero(chain(page(), [[addMotionCommand, { preset: 'zoom-in', trigger: 'hover' }]]).document).motions?.[0]?.trigger).toEqual({ kind: 'hover' });
+  });
+
   it('refuses a trigger that cannot apply, and a locked element', () => {
     expect(said(runHandler(addMotionCommand, page(), { trigger: 'form-submit' }, { selection: ['hero'] }))).toBe('status.motion.notApplicable');
     expect(chain(page(), [[addMotionCommand, { trigger: 'form-submit' }, ['signup']]]).document.pages[0]?.tree.children[2]?.motions?.[0]?.trigger).toEqual({ kind: 'form-submit' });

@@ -11,6 +11,11 @@ export interface Allowed {
 
 export const ALLOWED: readonly Allowed[] = [
   {
+    kind: 'english',
+    selector: '.command-bar__match',
+    why: 'the highlight in a command bar entry repeats the letters the person typed ("cart", the start of "cartão"), which may spell an English message ("Cart", comp.shop.cart): it is the query, not a text of the interface',
+  },
+  {
     kind: 'covered',
     selector: '.gradient__stop',
     by: '.gradient__stop',

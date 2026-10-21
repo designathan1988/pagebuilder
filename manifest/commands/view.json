@@ -3102,7 +3102,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:file",
-            "order": 9
+            "order": 12
           },
           "adapter": {
             "selection": "none",

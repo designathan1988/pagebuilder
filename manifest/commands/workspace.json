@@ -25,7 +25,8 @@
             "canvas-tools",
             "assistant",
             "layout-composer",
-            "data"
+            "data",
+            "app"
           ],
           "optional": false
         },
@@ -687,6 +688,62 @@
             "open": "open",
             "focus": true
           }
+        },
+        {
+          "id": "toolbar-activity-bar-app",
+          "kind": "toolbar",
+          "drawnAs": "icon-button",
+          "pressed": true,
+          "feature": "app-logic",
+          "labelKey": "panel.app",
+          "faceLabelKey": null,
+          "icon": "braces",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "activity-bar",
+            "order": 20
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "panel": "app",
+            "open": "open",
+            "focus": true
+          }
+        },
+        {
+          "id": "start-ai-open",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "site-templates",
+          "labelKey": "start.ai.open",
+          "faceLabelKey": null,
+          "icon": "sparkles",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "start-ai",
+            "order": 2
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "panel": "assistant",
+            "open": "open",
+            "focus": true
+          },
+          "panel": "assistant",
+          "control": "start-ai-open",
+          "modifier": null,
+          "gesture": null
         }
       ]
     },
@@ -1276,6 +1333,35 @@
           },
           "args": {
             "group": "sidebar"
+          }
+        },
+        {
+          "id": "inspector-tab-logic",
+          "kind": "panel-control",
+          "drawnAs": "tab",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "inspector",
+          "control": "tab-logic",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "inspector.tab.logic",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-header",
+            "order": 10
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "group": "inspector",
+            "panel": "logic"
           }
         }
       ]
@@ -2133,7 +2219,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:file",
-            "order": 8
+            "order": 11
           },
           "adapter": {
             "selection": "none",

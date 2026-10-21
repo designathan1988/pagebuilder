@@ -20,7 +20,7 @@ function current(s: ReturnType<typeof store>, args: Readonly<Record<string, unkn
 
 describe('the active tab of a tab group (workspace/layout.ts)', () => {
   it("shows the inspector's tabs in the header's order, Style first", () => {
-    expect(INSPECTOR_TABS).toEqual(['style', 'settings', 'interactions']);
+    expect(INSPECTOR_TABS).toEqual(['style', 'settings', 'interactions', 'logic']);
     expect(inspectorTab(store().getState().ui)).toBe('style');
   });
 

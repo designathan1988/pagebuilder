@@ -1,0 +1,234 @@
+{
+  "group": "site-templates",
+  "titleKey": "featureGroup.siteTemplates",
+  "features": [
+    {
+      "id": "site-templates",
+      "titleKey": "feature.siteTemplates",
+      "commands": [
+        "project.open",
+        "assistant.update",
+        "workspace.setPanelOpen"
+      ],
+      "dependsOn": [
+        "app-logic"
+      ],
+      "intent": {
+        "title": "Whole ready-made sites to start from: restaurant, store, agency, portfolio, blog, event, clinic and SaaS",
+        "steps": [
+          "On the start screen, pick a ready-made site; it opens as the project, every page, text and image editable.",
+          "Or describe the business and press Create with AI: the Assistant opens with the description, and builds the pages from the ready sections and components."
+        ],
+        "expected": [
+          "Each site has its pages linked by its menu, a theme of its own and a layout that fits a phone."
+        ]
+      },
+      "scenarios": [
+        {
+          "id": "a-ready-made-site-opens-from-the-start-screen",
+          "setup": {
+            "fixture": "aurora",
+            "selection": [
+              "/Page/Hero/Intro"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": "fit"
+          },
+          "steps": [
+            {
+              "door": "project.save#menu-file",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "element.delete#key-delete-in-canvas",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "project.open#start-open-template",
+              "args": {
+                "file": "download"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null,
+              "answer": "confirm"
+            }
+          ],
+          "doors": [
+            "project.open#start-open-template"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [],
+            "selection": [
+              "/Page/Hero/Intro"
+            ],
+            "history": {
+              "undoSteps": 0,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.open.opened",
+                  "params": {}
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": {
+              "reload": "immediate",
+              "document": "same",
+              "preferences": null
+            },
+            "export": null
+          }
+        },
+        {
+          "id": "a-site-is-described-on-the-start-screen",
+          "setup": {
+            "fixture": "empty",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": "fit"
+          },
+          "steps": [
+            {
+              "door": "assistant.update#start-ai-brief",
+              "args": {
+                "value": "A bakery in Recife with an online menu and orders on WhatsApp"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "assistant.update#start-ai-brief"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [],
+            "selection": [],
+            "history": {
+              "undoSteps": 0,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": []
+            },
+            "editor": {
+              "regions": [
+                {
+                  "region": "start-ai",
+                  "measure": "height",
+                  "relation": "greater-than",
+                  "value": 0,
+                  "reference": null
+                }
+              ],
+              "computed": []
+            },
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "the-assistant-opens-with-the-description",
+          "setup": {
+            "fixture": "empty",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": "fit"
+          },
+          "steps": [
+            {
+              "door": "assistant.update#start-ai-brief",
+              "args": {
+                "value": "A bakery in Recife with an online menu and orders on WhatsApp"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "workspace.setPanelOpen#start-ai-open",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "workspace.setPanelOpen#start-ai-open"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [],
+            "selection": [],
+            "history": {
+              "undoSteps": 0,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": []
+            },
+            "editor": {
+              "regions": [
+                {
+                  "region": "assistant-panel",
+                  "measure": "height",
+                  "relation": "greater-than",
+                  "value": 0,
+                  "reference": null
+                }
+              ],
+              "computed": []
+            },
+            "persistence": null,
+            "export": null
+          }
+        }
+      ]
+    }
+  ]
+}

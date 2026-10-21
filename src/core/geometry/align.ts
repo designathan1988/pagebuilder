@@ -11,7 +11,7 @@ import type { MessageId } from '../../generated/ids.ts';
 import { message, registerHandler, registerPredicate, type HandlerContext, type Outcome } from '../commands/registry.ts';
 import type { Location } from '../document/model.ts';
 import type { Patch } from '../history/transaction.ts';
-import { firstLockRefusal } from '../nodes/flags.ts';
+import { firstLockRefusal, stateRefusal } from '../nodes/flags.ts';
 import { selectionRoots } from '../structure/remove.ts';
 import { writeDeclarations } from '../style/set.ts';
 import { measuredPlace, movedInsets, positionedSelection } from './position.ts';
@@ -35,7 +35,7 @@ const camel = (text: string) => text.replace(/-([a-z])/g, (_, c: string) => c.to
 function movable<Ui>(context: HandlerContext<Ui>): { readonly roots: readonly Location[] } | { readonly refused: Outcome<Ui> } {
   const { state } = context;
   const roots = selectionRoots(state.document, state.selection);
-  const locked = firstLockRefusal(state.document, roots.map((at) => at.node.id as NodeId), 'status.locked.move');
+  const locked = firstLockRefusal(state.document, roots.map((at) => at.node.id as NodeId), 'status.locked.move') ?? stateRefusal(state.document, roots.map((at) => at.node.id as NodeId), context.rules);
   return locked === null ? { roots } : { refused: { kind: 'refused', message: locked } };
 }
 

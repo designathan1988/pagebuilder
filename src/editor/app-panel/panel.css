@@ -1,0 +1,344 @@
+/* The App panel and the Logic tab (spec app-logic): sections of rows, each a name and its code. The code fields are
+   CodeMirror editors drawn in the editor's own tokens; every value comes from the tokens. */
+
+.app-panel {
+  overflow-x: hidden;
+}
+
+.app-panel__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-bottom: var(--space-6);
+}
+
+.app-panel__body > .app-panel__note {
+  padding: var(--space-3) var(--space-6) 0;
+}
+
+.app-panel__section-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.app-panel__section-actions > .door,
+.app-module > .door {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.app-panel__section-actions .door__label,
+.app-module > .door .door__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-panel__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-6) var(--space-3);
+}
+
+.app-panel__note,
+.logic-tab__note {
+  margin: 0;
+  color: var(--color-text-muted);
+  font: var(--fw-caption) var(--fs-caption) / var(--lh-caption) var(--font-ui);
+  overflow-wrap: anywhere;
+}
+
+.app-variables,
+.app-modules,
+.app-tables {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.app-variable,
+.app-module,
+.logic-handler,
+.logic-binding {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.app-variable,
+.app-module,
+.app-variable > *,
+.app-module > * {
+  min-width: 0;
+}
+
+.app-variable__row,
+.app-module__row,
+.logic-handler__row,
+.app-library {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.app-variable__prefix {
+  flex: none;
+  color: var(--color-text-subtle);
+  font: var(--fs-code) / var(--lh-code) var(--font-mono);
+}
+
+.app-variable__name,
+.app-module__name,
+.logic-handler__event {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.app-variable__type {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.app-variable__name .input,
+.app-module__name .input,
+.logic-handler__event .input,
+.logic-binding__name .input,
+.input--code {
+  font-family: var(--font-mono);
+}
+
+.app-library__name {
+  flex: none;
+  color: var(--color-text);
+  font: var(--fs-code) / var(--lh-code) var(--font-mono);
+}
+
+.app-library__url {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font: var(--fw-caption) var(--fs-caption) / var(--lh-caption) var(--font-ui);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-libraries,
+.app-library__add,
+.logic-binding__add {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* the Logic tab: groups of rows, the label above its field (the inspector is narrow) */
+.inspector-tab--logic {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.inspector-tab--logic > .inspector-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) 0 var(--space-6);
+}
+
+.inspector-tab--logic > .inspector-scroll > .logic-tab__note,
+.inspector-tab--logic > .logic-tab__note {
+  padding: 0 var(--space-4);
+}
+
+.logic-group__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4) var(--space-3);
+}
+
+.logic-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.logic-row__label {
+  color: var(--color-text-subtle);
+  font: var(--fw-caption) var(--fs-caption) / var(--lh-caption) var(--font-ui);
+}
+
+/* the code editor: a field's frame around CodeMirror, as tall as the lines it asks for and growing with its text up to
+   a scroll; a module's can be pulled taller */
+.code-door {
+  min-width: 0;
+}
+
+.code-editor {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.code-editor:focus-within {
+  border-color: var(--color-focus);
+  outline: 1px solid var(--color-focus);
+}
+
+.code-editor--module {
+  resize: vertical;
+}
+
+.code-editor .cm-editor {
+  height: 100%;
+  max-height: 60vh;
+  font: var(--fs-code) / var(--lh-code) var(--font-mono);
+}
+
+.code-editor--module .cm-editor {
+  max-height: none;
+}
+
+.code-editor .cm-editor.cm-focused {
+  outline: none;
+}
+
+.code-editor .cm-scroller {
+  font-family: var(--font-mono);
+  line-height: var(--lh-code);
+}
+
+.code-editor .cm-content {
+  min-height: var(--lh-code);
+  padding: var(--space-1) 0;
+  caret-color: var(--color-text);
+}
+
+.code-editor--statements .cm-content {
+  min-height: calc(var(--lh-code) * 3);
+}
+
+.code-editor--module .cm-content {
+  min-height: calc(var(--lh-code) * 8);
+}
+
+.code-editor .cm-line {
+  padding: 0 var(--space-2);
+}
+
+.code-editor .cm-content .cm-placeholder {
+  color: var(--color-text-subtle);
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.code-editor .cm-gutters {
+  color: var(--color-text-subtle);
+  background: var(--color-surface-sunken);
+  border-right: 1px solid var(--color-border);
+}
+
+.code-editor .cm-selectionBackground,
+.code-editor .cm-editor.cm-focused .cm-selectionBackground {
+  background: var(--color-accent-soft);
+}
+
+.code-editor .cm-cursor {
+  border-left-color: var(--color-text);
+}
+
+.code-editor .cm-matchingBracket {
+  background: var(--color-accent-soft);
+}
+
+.code-editor .cm-lintRange-error {
+  background-image: none;
+  text-decoration: underline wavy var(--color-danger);
+}
+
+/* the tooltips (completion, a problem's message) are drawn in the editor's surfaces */
+.cm-tooltip {
+  color: var(--color-text);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  font: var(--fs-code) / var(--lh-code) var(--font-mono);
+}
+
+.cm-tooltip.cm-tooltip-autocomplete > ul > li[aria-selected] {
+  color: var(--color-on-accent);
+  background: var(--color-accent);
+}
+
+.cm-completionDetail {
+  margin-left: var(--space-2);
+  color: var(--color-text-subtle);
+  font-style: normal;
+}
+
+.cm-diagnostic-error {
+  border-left-color: var(--color-danger);
+}
+
+/* a module's code open large: a window over the editor's middle, the module's editor filling it */
+.app-code-window {
+  position: fixed;
+  z-index: var(--z-dialog);
+  inset: var(--space-10);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-3);
+}
+
+.app-code-window__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.app-code-window__title {
+  color: var(--color-text);
+  font: var(--fw-title) var(--fs-title) / var(--lh-title) var(--font-mono);
+}
+
+.app-code-window__hint {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--color-text-muted);
+  font: var(--fw-caption) var(--fs-caption) / var(--lh-caption) var(--font-ui);
+}
+
+.app-code-window > .code-door {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.app-code-window .code-editor {
+  flex: 1 1 auto;
+  resize: none;
+}
+
+/* a table's access menus, each under its label: the field takes its own height (in a column the field's flex basis
+   would be its height) */
+.logic-row > .data-field {
+  flex: none;
+}

@@ -3,9 +3,13 @@
 Leia por inteiro antes de começar; atualize ao fim de cada lote. Regras de ritmo e formato: `CLAUDE.md`, seções 0 e 1. O histórico até 2026-10-09 está em `auditoria/historico-progresso.md` (só consulta; não descreve o estado).
 
 ## Estado atual (2026-10-21)
+- **Repositório:** `github.com/designathan1988/pagebuilder`, ramo `estrutura/edicao-e-espaco`. A pasta `webconstructor-saas3` (SaaS, extensão, lógica de apps, modelos de site, DEF-0615 a DEF-0631) foi juntada ao trabalho de verificação e tradução deste repositório em 2026-10-21.
+- **Defeitos:** DEF-0615 a DEF-0621 corrigidos na etapa 1; DEF-0622 a DEF-0625 corrigidos no lote de uso de 2026-10-21. DEF-0626 a DEF-0632 corrigidos depois.
+- **Portões do lote de 2026-10-21:** detectores 25 arquivos e 124 testes; typecheck e lint sem erro; specs do canvas (43 arquivos) nas duas condições, as falhas corrigidas e repetidas (94 de 94 em cada); `ui-widths.json` medido nas três condições (MEC-28).
+- **Pedido do dono pendente:** canvas como prancheta, com a página inteira e pan livre (DCS-035).
 - **Verificação:** um comando só, `npm run verify` (`tools/verify/run.ts`), cerca de 56 s com os sete passos: manifesto 2 s, tipos (TypeScript 7) 2 s, lint 3 s, gerados 8 s (os quatro juntos), modelo 9 s, unitários 22 s, fumaça no navegador 17 s. A suíte de navegador inteira e os mutantes saíram do trabalho diário. Base: `reports/Verificação rápida do page builder.md`.
 - **Código em inglês:** comentários, identificadores, nomes de arquivo, títulos de teste e mensagens de ferramentas traduzidos (src, tools, tests, configs e o código de `auditoria/`).
-- **Falhas antigas da suíte unitária:** 22 falhavam no commit anterior, todas resolvidas. Teste velho depois da DEF-0601 (inserir ao lado da lista) e da DCS-013 (segundo toque reinicia o gesto); listas fixas velhas em `citations`, `run-inputs`, `check.test` e `declared-refusals`; um defeito do app, DEF-0622.
+- **Falhas antigas da suíte unitária:** 22 falhavam no commit anterior, todas resolvidas. Teste velho depois da DEF-0601 (inserir ao lado da lista) e da DCS-013 (segundo toque reinicia o gesto); listas fixas velhas em `citations`, `run-inputs`, `check.test` e `declared-refusals`; um defeito do app, DEF-0632.
 
 ## Estado anterior (2026-10-10)
 - **Prontidão para uso (2026-10-10):** `auditoria/prontidao.md`. O veredito é "pronto, com ressalvas". Um site de 3 páginas foi feito do zero no build de produção, salvo, reaberto e exportado, no Chrome e no Edge. Ficaram 7 defeitos abertos (DEF-0615 a DEF-0621); dois dão resultado errado: DEF-0615 (componente) e DEF-0620 (preço do CSV).
@@ -132,7 +136,7 @@ Leia por inteiro antes de começar; atualize ao fim de cada lote. Regras de ritm
 - **Fim da etapa dos lotes 7 a 10 (2026-10-09):** catálogo inteiro de mutantes, 152, com 149 acusados e 3 equivalentes com motivo (M19, M25, M30), 100 % dos não equivalentes, em 294 s. A suíte inteira de navegador não rodou: o pedido do dono desta rodada a proíbe; cada lote rodou os specs da sua área nas duas condições.
 
 ## Próximo passo
-Lote de correção da prontidão: DEF-0615 (instâncias seguem texto e atributos não sobrepostos), DEF-0620 (número da coleção no formato do idioma), DEF-0616 e DEF-0617 (foco no `data-autofocus`), DEF-0618 (chave da linha da variável), DEF-0619 (barra pronta no celular) e DEF-0621. Os atritos e cosméticos de `prontidao.md` vão para o dono decidir. Seguem pendentes as decisões DCS-029, DCS-030, DCS-031 e DCS-033.
+Decisão do dono sobre a DCS-035 (canvas como prancheta). Aprovada, é a etapa seguinte; senão, a passada de uso com os 57 fluxos de `tools/ui/flows.ts` nas duas condições. Seguem pendentes DCS-029, DCS-030, DCS-031, DCS-033 e DCS-034.
 
 ## Para uma próxima rodada (fora dos lotes 1 a 5)
 - O quadro de `onUp` acima de 50 ms só com a CPU disputada: o caminho está em `otimizacoes.md`, "O que fica para uma próxima rodada".

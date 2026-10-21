@@ -26,6 +26,8 @@ interface LabelCell extends Cell {
   textTransform: string;
   // the text the label draws in this condition's language: what the check holds against the space
   text: string;
+  // the lines the label may take before it cuts (-webkit-line-clamp): absent for one
+  lines?: number;
 }
 interface DoorRow {
   readonly ref: string;
@@ -98,6 +100,8 @@ test(`measures the width of the regions and the labels (${CONDITION})`, async ({
         }
         if (escaped === 'fixed') right = Math.min(right, (line?.left ?? 0) + window.innerWidth);
         const width = Math.max(0, right - (line?.left ?? 0));
+        // the lines the label may take before it cuts (a tile's name: two)
+        const clamp = Number.parseInt(style.webkitLineClamp, 10);
         nodes.forEach((node, index) => {
           node.data = held[index] ?? '';
         });
@@ -108,7 +112,15 @@ test(`measures the width of the regions and the labels (${CONDITION})`, async ({
           cell:
             width < 1
               ? null
-              : { width, fontSize: Number.parseFloat(style.fontSize), fontWeight: Number.parseInt(style.fontWeight, 10) || 400, letterSpacing: Number.parseFloat(style.letterSpacing) || 0, textTransform: style.textTransform, text: drawnText },
+              : {
+                  width,
+                  fontSize: Number.parseFloat(style.fontSize),
+                  fontWeight: Number.parseInt(style.fontWeight, 10) || 400,
+                  letterSpacing: Number.parseFloat(style.letterSpacing) || 0,
+                  textTransform: style.textTransform,
+                  text: drawnText,
+                  ...(clamp > 1 ? { lines: clamp } : {}),
+                },
         };
       }),
     );

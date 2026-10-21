@@ -8,6 +8,7 @@ import { useSelectionSize } from '../view/selection-size.ts';
 import { useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react';
 import type { MessageId } from '../../generated/ids.ts';
 import { saveState, type SaveState } from '../persistence/autosave.ts';
+import { CLOUD_SAVE_TEXT, cloudState } from '../cloud/cloud.ts';
 import { incidents, onIncident } from '../../core/incidents.ts';
 import { locate, walk, type DocNode } from '../../core/document/model.ts';
 import { openedPage } from '../../core/project/pages.ts';
@@ -283,6 +284,15 @@ function SaveStateLabel() {
   const current = useSyncExternalStore(saveState.subscribe, saveState.get);
   // a write IndexedDB refused says why (spec unsaved-work-guard)
   const reason = useSyncExternalStore(saveState.subscribe, saveState.reason);
+  // in cloud mode the project is saved to the cloud, not to this browser (src/editor/cloud/cloud.ts)
+  const cloud = useSyncExternalStore(cloudState.subscribe, cloudState.get);
+  if (cloud.project !== null) {
+    return (
+      <span className={`status-bar__item status-bar__save is-cloud-${cloud.save}`} data-save-state={`cloud-${cloud.save}`}>
+        {t(CLOUD_SAVE_TEXT[cloud.save])}
+      </span>
+    );
+  }
   return (
     <span className={`status-bar__item status-bar__save is-${current}`} data-save-state={current}>
       {reason !== null && current === 'notSaved' ? t('status.save.notSavedBecause', { reason }) : t(SAVE_STATE_KEYS[current])}
@@ -295,6 +305,9 @@ function SaveStateLabel() {
 export function TopBarSaveState() {
   const t = useT();
   const current = useSyncExternalStore(saveState.subscribe, saveState.get);
+  // in cloud mode the cloud bar says it (src/editor/cloud/cloud-bar.tsx)
+  const cloud = useSyncExternalStore(cloudState.subscribe, cloudState.get);
+  if (cloud.project !== null) return null;
   return (
     <span className={`top-bar__saved is-${current}`} data-top-save-state={current}>
       {t(SAVE_STATE_KEYS[current])}

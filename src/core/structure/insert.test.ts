@@ -4,7 +4,7 @@ import type { MessageId } from '../../generated/ids.ts';
 import { translate } from '../../i18n/index.ts';
 import { manifest } from '../../manifest/runtime.ts';
 import type { HandlerContext } from '../commands/registry.ts';
-import type { DocNode, DocumentJson } from '../document/model.ts';
+import { allNodes, walk, type DocNode, type DocumentJson } from '../document/model.ts';
 import { rulesFromManifest } from '../document/validate.ts';
 import { contentModelFrom } from '../elements/content-model.ts';
 import { EMPTY_HISTORY } from '../history/history.ts';
@@ -88,13 +88,30 @@ describe('element.insert (src/core/structure/insert.ts)', () => {
     expect(childrenOf(applied(run([], { entry: 'container', parent: 'Hero', index: 0 })), 'Hero')).toEqual(['Container', 'Title', 'Actions']);
   });
 
-  it('puts what a selected container does not accept right after it, in a parent that does (DEF-0601)', () => {
-    expect(childrenOf(applied(run(['Perks'], { entry: 'section' })), 'Page')).toEqual(['Hero', 'Perks', 'Section']);
-  });
-
-  it('refuses where the given parent does not accept the element, and an element that holds no children as the parent', () => {
+  it('refuses where the parent does not accept the element, and an element that holds no children as the parent', () => {
+    // a list named as the parent refuses what it does not take; a list only selected is followed by it (DEF-0601)
     expect(run([], { entry: 'section', parent: 'Perks' })).toEqual({ kind: 'refused', message: { key: 'status.refused.onlyAccepts', params: { parent: '<ul>', children: '<li>' } } });
+    expect(run(['Perks'], { entry: 'section' })).toMatchObject({ kind: 'change', message: { key: 'status.placed' } });
     expect(run([], { entry: 'section', parent: 'Title' })).toEqual({ kind: 'refused', message: { key: 'status.refused.noChildren', params: { parent: 'Title' } } });
+  });
+});
+
+describe('element.insert of a template with HTML ids (the Full landing page)', () => {
+  it('renames an id the document already holds, and the template\u2019s links to it follow', () => {
+    const first = applied(run([], { entry: 'section-landing' }));
+    const ids = (doc: DocumentJson) => [...allNodes(doc)].map((one) => one.attributes.id).filter((id) => id !== undefined);
+    expect(ids(first)).toEqual(['home', 'features', 'contact']);
+    const context = {
+      state: { document: first, selection: [] as NodeId[], history: EMPTY_HISTORY, message: null, ui: undefined as never },
+      clock: manualClock(), ids: sequentialIds('again'), rules: RULES, words: (key: MessageId) => translate('en', key), layout: noLayout, css: anyCss,
+    } satisfies HandlerContext<never>;
+    const outcome = insertCommand.run(context, { entry: 'section-landing' } as never);
+    if (outcome.kind !== 'change') throw new Error('not a change');
+    const second = applyPatches(first, outcome.patches ?? []).document;
+    expect(ids(second)).toEqual(['home', 'features', 'contact', 'home-2', 'features-2', 'contact-2']);
+    const last = second.pages[0]?.tree.children.at(-1);
+    const hrefs = last === undefined ? [] : [...walk(last)].map((one) => one.attributes.href).filter((href) => href !== undefined);
+    expect(new Set(hrefs)).toEqual(new Set(['#home-2', '#features-2', '#contact-2']));
   });
 });
 

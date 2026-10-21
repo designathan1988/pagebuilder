@@ -5,6 +5,7 @@
 // doors they share in doors.tsx; this file draws the activity bar, the sidebar and the views' table.
 import { AssistantPanel } from '../assistant/panel.tsx';
 import { DataPanel } from '../data/panel.tsx';
+import { AppPanel } from '../app-panel/panel.tsx';
 import { onFirstUse, wiring } from '../wiring.ts';
 import type { MessageId } from '../../generated/ids.ts';
 import { DoorControl } from '../doors/door.tsx';
@@ -39,7 +40,7 @@ export function ActivityBar() {
 // The body of each sidebar view the editor draws; a view without one says "not available yet" and the doors that
 // only open it are not available yet (bodies.ts).
 // (the views of the installed modules join them: app/modules-view.ts)
-export const SIDEBAR_VIEWS = onFirstUse((): BodyTable => ({ assistant: AssistantPanel, data: DataPanel, explorer: Explorer, elements: Insert, variables: Styles, ...wiring().sidebarViews }));
+export const SIDEBAR_VIEWS = onFirstUse((): BodyTable => ({ app: AppPanel, assistant: AssistantPanel, data: DataPanel, explorer: Explorer, elements: Insert, variables: Styles, ...wiring().sidebarViews }));
 
 // The body of each section that belongs to no view, drawn in the sidebar's stack below the view (bodies.ts)
 export const SIDEBAR_SECTIONS: BodyTable = { layers: LayersSection };

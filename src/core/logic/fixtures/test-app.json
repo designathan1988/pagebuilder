@@ -1,0 +1,362 @@
+{
+ "version": 4,
+ "language": "pt-BR",
+ "codeLanguage": "en",
+ "pages": [
+  {
+   "id": "pg19",
+   "name": "Início",
+   "file": "index.html",
+   "tree": {
+    "id": "p18",
+    "type": "page",
+    "name": "Body",
+    "tag": "body",
+    "attributes": {},
+    "classes": [],
+    "styles": {},
+    "text": null,
+    "children": [
+     {
+      "id": "a7",
+      "type": "section",
+      "name": "Contador",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {},
+      "text": null,
+      "children": [
+       {
+        "id": "a1",
+        "type": "heading",
+        "name": "Titulo",
+        "tag": "h2",
+        "attributes": {},
+        "classes": [],
+        "styles": {},
+        "text": "Contador",
+        "children": [],
+        "logic": {
+         "text": "'Contador: ' + state.count + ' (dobro ' + fn.double(state.count) + ')'"
+        }
+       },
+       {
+        "id": "a2",
+        "type": "button",
+        "name": "Mais",
+        "tag": "button",
+        "attributes": {},
+        "classes": [],
+        "styles": {},
+        "text": "+1",
+        "children": [],
+        "logic": {
+         "on": [
+          {
+           "event": "click",
+           "code": "state.count++"
+          }
+         ]
+        }
+       },
+       {
+        "id": "a3",
+        "type": "button",
+        "name": "Zerar",
+        "tag": "button",
+        "attributes": {},
+        "classes": [],
+        "styles": {},
+        "text": "Zerar",
+        "children": [],
+        "logic": {
+         "on": [
+          {
+           "event": "click",
+           "code": "state.count = 0"
+          }
+         ],
+         "binds": {
+          "attr:disabled": "state.count === 0"
+         }
+        }
+       },
+       {
+        "id": "a4",
+        "type": "div",
+        "name": "Relogio",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {},
+        "text": null,
+        "children": [],
+        "logic": {
+         "component": "Etiqueta",
+         "binds": {
+          "prop:label": "'Etiqueta ' + state.count"
+         },
+         "on": [
+          {
+           "event": "pronto",
+           "code": "state.componentReady = $event.detail"
+          }
+         ]
+        }
+       },
+       {
+        "id": "a5",
+        "type": "paragraph",
+        "name": "Frames",
+        "tag": "p",
+        "attributes": {},
+        "classes": [],
+        "styles": {},
+        "text": "",
+        "children": [],
+        "logic": {
+         "on": [
+          {
+           "event": "frame",
+           "code": "state.frames++"
+          }
+         ],
+         "text": "state.frames > 10 ? 'animando' : 'parado'"
+        }
+       },
+       {
+        "id": "a6",
+        "type": "paragraph",
+        "name": "Erro",
+        "tag": "p",
+        "attributes": {},
+        "classes": [],
+        "styles": {},
+        "text": "",
+        "children": [],
+        "logic": {
+         "text": "state.count +"
+        }
+       }
+      ]
+     },
+     {
+      "id": "a17",
+      "type": "section",
+      "name": "Tarefas",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {},
+      "text": null,
+      "children": [
+       {
+        "id": "a8",
+        "type": "input",
+        "name": "Nova",
+        "tag": "input",
+        "attributes": {
+         "inputType": "text",
+         "placeholder": "Nova tarefa"
+        },
+        "classes": [],
+        "styles": {},
+        "text": null,
+        "children": [],
+        "logic": {
+         "model": "state.newTodo",
+         "on": [
+          {
+           "event": "keydown",
+           "code": "if ($event.key === 'Enter') fn.add()"
+          }
+         ]
+        }
+       },
+       {
+        "id": "a9",
+        "type": "button",
+        "name": "Adicionar",
+        "tag": "button",
+        "attributes": {},
+        "classes": [],
+        "styles": {},
+        "text": "Adicionar",
+        "children": [],
+        "logic": {
+         "on": [
+          {
+           "event": "click",
+           "code": "fn.add()"
+          }
+         ]
+        }
+       },
+       {
+        "id": "a14",
+        "type": "list",
+        "name": "Lista",
+        "tag": "ul",
+        "attributes": {},
+        "classes": [],
+        "styles": {},
+        "text": null,
+        "children": [
+         {
+          "id": "a13",
+          "type": "listItem",
+          "name": "Item",
+          "tag": "li",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "a10",
+            "type": "input",
+            "name": "Feito",
+            "tag": "input",
+            "attributes": {
+             "inputType": "checkbox"
+            },
+            "classes": [],
+            "styles": {},
+            "text": null,
+            "children": [],
+            "logic": {
+             "model": "todo.done"
+            }
+           },
+           {
+            "id": "a11",
+            "type": "paragraph",
+            "name": "Texto",
+            "tag": "span",
+            "attributes": {},
+            "classes": [],
+            "styles": {},
+            "text": "",
+            "children": [],
+            "logic": {
+             "text": "index + 1 + \". \" + todo.text",
+             "binds": {
+              "style:text-decoration": "todo.done ? 'line-through' : ''"
+             }
+            }
+           },
+           {
+            "id": "a12",
+            "type": "button",
+            "name": "Remover",
+            "tag": "button",
+            "attributes": {},
+            "classes": [],
+            "styles": {},
+            "text": "x",
+            "children": [],
+            "logic": {
+             "on": [
+              {
+               "event": "click",
+               "code": "state.todos.splice(index, 1)"
+              }
+             ]
+            }
+           }
+          ],
+          "logic": {
+           "each": "state.todos",
+           "as": "todo",
+           "key": "todo.id",
+           "binds": {
+            "class:done": "todo.done"
+           }
+          }
+         }
+        ]
+       },
+       {
+        "id": "a15",
+        "type": "paragraph",
+        "name": "Vazio",
+        "tag": "p",
+        "attributes": {},
+        "classes": [],
+        "styles": {},
+        "text": "Nenhuma tarefa",
+        "children": [],
+        "logic": {
+         "show": "state.todos.length === 0"
+        }
+       },
+       {
+        "id": "a16",
+        "type": "paragraph",
+        "name": "Resumo",
+        "tag": "p",
+        "attributes": {},
+        "classes": [],
+        "styles": {},
+        "text": "",
+        "children": [],
+        "logic": {
+         "text": "state.todos.filter(t => t.done).length + ' de ' + state.todos.length + ' feitas'"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "app": {
+  "variables": [
+   {
+    "name": "count",
+    "type": "number",
+    "initial": 0
+   },
+   {
+    "name": "frames",
+    "type": "number",
+    "initial": 0
+   },
+   {
+    "name": "componentReady",
+    "type": "text",
+    "initial": ""
+   },
+   {
+    "name": "newTodo",
+    "type": "text",
+    "initial": ""
+   },
+   {
+    "name": "todos",
+    "type": "list",
+    "initial": [
+     {
+      "id": "a",
+      "text": "Comprar pão",
+      "done": false
+     }
+    ],
+    "persist": true
+   }
+  ],
+  "scripts": [
+   {
+    "name": "util",
+    "code": "export function double(x) { return x * 2; }\nexport function add() {\n  const text = state.newTodo.trim();\n  if (!text) return;\n  state.todos.push({ id: app.uid(), text, done: false });\n  state.newTodo = '';\n}\n"
+   }
+  ],
+  "components": [
+   {
+    "name": "Etiqueta",
+    "code": "export default {\n  mount(el, props, ctx) {\n    el.textContent = props.label;\n    ctx.emit('pronto', 'sim');\n    return { update(p) { el.textContent = p.label; } };\n  }\n};\n"
+   }
+  ]
+ }
+}

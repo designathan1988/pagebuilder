@@ -108,12 +108,45 @@ export function isCanonical(type: FieldType, value: unknown): boolean {
   return JSON.stringify(read) === JSON.stringify(value);
 }
 
-// A cell as text: what a grid cell, a preview and a bound text show (a boolean in the person's words).
-export function cellText(value: Cell | undefined, words: { readonly yes: string; readonly no: string }): string {
+// How a number is written for a reader: in the site's language (its decimal separator, never a thousands one, so the
+// text reads back as the same number) with the field's decimal places.
+export interface NumberStyle {
+  readonly language?: string | undefined;
+  readonly decimals?: number | undefined;
+}
+export const MAX_DECIMALS = 10;
+
+// A cell as text: what a grid cell, a preview and a bound text show (a boolean in the person's words, a number in the
+// site's language when a style is given: "6,50", not "6.5", DEF-0620).
+export function cellText(value: Cell | undefined, words: { readonly yes: string; readonly no: string }, style?: NumberStyle): string {
   if (value === undefined) return '';
   if (typeof value === 'boolean') return value ? words.yes : words.no;
+  if (typeof value === 'number' && style !== undefined) return numberText(value, style);
   if (Array.isArray(value)) return plainText(value as readonly InlineRun[]);
   return String(value);
+}
+
+function numberText(value: number, style: NumberStyle): string {
+  const decimals = style.decimals ?? 0;
+  try {
+    return new Intl.NumberFormat(style.language ?? 'en', { useGrouping: false, minimumFractionDigits: decimals, maximumFractionDigits: Math.max(decimals, 20) }).format(value);
+  } catch (error) {
+    // a language tag Intl does not know is written as a plain number, said by the error it raised
+    if (error instanceof RangeError) return new Intl.NumberFormat('en', { useGrouping: false, minimumFractionDigits: decimals, maximumFractionDigits: Math.max(decimals, 20) }).format(value);
+    throw error;
+  }
+}
+
+// The decimal places a column of a file writes its numbers with: the most any filled value has ("6,50" → 2), 0 when
+// none has a fraction.
+export function decimalsOf(values: readonly unknown[]): number {
+  let most = 0;
+  for (const value of values) {
+    if (typeof value !== 'string') continue;
+    const match = /^[+-]?\d*[.,](\d+)$/.exec(value.trim());
+    if (match?.[1] !== undefined) most = Math.max(most, match[1].length);
+  }
+  return Math.min(most, MAX_DECIMALS);
 }
 
 // The kind of value a column of a file holds, guessed from its filled cells: every one a yes/no, a number, a date, an
@@ -158,6 +191,7 @@ export function schemaRefusal(collection: string, fields: readonly Field[]): Mes
     if (label === '') return message('status.data.fieldLabelEmpty', { collection });
     if (labels.has(label)) return message('status.data.fieldLabelTaken', { collection, label: field.label.trim() });
     if (!(FIELD_TYPES as readonly string[]).includes(field.type)) return message('status.data.badField', { collection, field: field.key });
+    if (field.decimals !== undefined && (field.type !== 'number' || !Number.isInteger(field.decimals) || field.decimals < 0 || field.decimals > MAX_DECIMALS)) return message('status.data.badField', { collection, field: field.key });
     keys.add(field.key);
     labels.add(label);
   }
@@ -194,7 +228,7 @@ export function createCollection(collections: readonly Collection[], name: strin
   if (named !== null) throw new DataRefusal(named);
   const schema = schemaRefusal(name.trim(), fields);
   if (schema !== null) throw new DataRefusal(schema);
-  return { name: name.trim(), fields: fields.map((f) => ({ key: f.key, label: f.label.trim(), type: f.type })), items: [] };
+  return { name: name.trim(), fields: fields.map((f) => ({ key: f.key, label: f.label.trim(), type: f.type, ...(f.type === 'number' && f.decimals !== undefined && f.decimals > 0 ? { decimals: f.decimals } : {}) })), items: [] };
 }
 
 export type ImportMode = 'append' | 'replace' | 'update';
@@ -284,7 +318,9 @@ export function addField(collection: Collection, label: string, type: FieldType)
 export function setField(collection: Collection, key: string, change: { readonly label?: string; readonly type?: FieldType }): Collection {
   const field = collection.fields.find((f) => f.key === key);
   if (field === undefined) refuse('status.stale');
-  const next: Field = { key, label: change.label === undefined ? field.label : change.label.trim(), type: change.type ?? field.type };
+  const type = change.type ?? field.type;
+  // the decimal places stay with a number field and go when it becomes another type
+  const next: Field = { key, label: change.label === undefined ? field.label : change.label.trim(), type, ...(type === 'number' && field.decimals !== undefined ? { decimals: field.decimals } : {}) };
   const fields = collection.fields.map((f) => (f.key === key ? next : f));
   const refused = schemaRefusal(collection.name, fields);
   if (refused !== null) throw new DataRefusal(refused);

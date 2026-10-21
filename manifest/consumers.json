@@ -2315,6 +2315,14 @@
     {
       "field": "properties:composites[].presets[].value",
       "reader": "src/editor/shell/value-presets.tsx"
+    },
+    {
+      "field": "layout:glyphs.expand",
+      "reader": "src/editor/app-panel/panel.tsx"
+    },
+    {
+      "field": "layout:glyphs.collapse",
+      "reader": "src/editor/app-panel/panel.tsx"
     }
   ]
 }

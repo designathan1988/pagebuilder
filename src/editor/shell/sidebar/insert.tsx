@@ -17,7 +17,7 @@ import { componentsOf } from '../../../core/design/instances.ts';
 import { requireDoor, drawnAs } from './doors.tsx';
 
 // an element tile: the item whose command takes a palette entry (a component tile takes a component)
-const INSERT_TILE = requireDoor('insert', (d) => drawnAs(d) === 'item' && Object.values(d.command.args).some((a) => a.type === 'palette-entry'));
+export const INSERT_TILE = requireDoor('insert', (d) => drawnAs(d) === 'item' && Object.values(d.command.args).some((a) => a.type === 'palette-entry'));
 
 const INSERT_GROUP = requireDoor('insert', (d) => drawnAs(d) === 'disclosure');
 

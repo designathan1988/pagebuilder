@@ -26,3 +26,19 @@ describe('a form without a submit button', () => {
     expect(reported(formOf([node('row', 'div', 'div', { children: [field, node('send', 'button', 'button')] })]))).toBe(false);
   });
 });
+
+// The contrast rule over a translucent background: the background is laid over the colour under it, as the browser
+// paints it, instead of being skipped for the one further out.
+describe('text over a translucent background', () => {
+  const contrastReported = (background: string): boolean => {
+    const label = node('label', 'paragraph', 'p', { text: 'Nova coleção', styles: { desktop: { base: { color: '#ffffff', 'background-color': background } } } as DocNode['styles'] });
+    const slide = node('slide', 'div', 'div', { styles: { desktop: { base: { 'background-color': '#f8fafc' } } } as DocNode['styles'], children: [label] });
+    const document = documentOf({ pages: [{ id: 'p', name: 'Home', file: 'index.html', tree: node('page', 'page', 'body', { children: [slide] }) }] });
+    return checksOf(document, manifest.interactions.checks).some((issue) => issue.node === 'label' && issue.rule === 'checks.contrast');
+  };
+
+  it('passes when the blend is dark enough, and is reported when it is too light', () => {
+    expect(contrastReported('rgba(15, 23, 42, 0.7)')).toBe(false);
+    expect(contrastReported('rgba(15, 23, 42, 0.1)')).toBe(true);
+  });
+});

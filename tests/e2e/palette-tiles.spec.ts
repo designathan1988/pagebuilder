@@ -50,7 +50,8 @@ test('every tile is usable, and the tiles of palette-click-insert insert by a cl
   expect(OWN.sort()).toEqual(['container', 'heading', 'paragraph', 'section']);
   expect(LATER).toEqual([]);
   await runDoor(page, INSERT_PANEL);
-  for (const entry of ENTRIES.map((e) => e.id)) await expect(control(page, TILE, { args: { entry } }), entry).not.toHaveAttribute('aria-disabled', 'true');
+  // the Insert panel's tiles (the start card of the empty page draws some of the same entries)
+  for (const entry of ENTRIES.map((e) => e.id)) await expect(page.locator('[data-region="insert"]').locator(control(page, TILE, { args: { entry } })), entry).not.toHaveAttribute('aria-disabled', 'true');
 
   // Enter and Space on an available tile insert its entry, once each (Tab from the panel's search field, above every
   // tile)
@@ -73,10 +74,10 @@ test('every tile is usable, and the tiles of palette-click-insert insert by a cl
 // registered as built, and each says so: no tile says "not available yet".
 test('every tile is enabled exactly when its entry\'s feature is registered as built', runs(INSERT_PANEL, TILE), async ({ page }) => {
   await runDoor(page, INSERT_PANEL);
-  const drawn = await page.locator(`[data-door="${TILE}"]`).evaluateAll((els) => els.map((el) => [JSON.parse(el.getAttribute('data-args') ?? '{}').entry as string, el.getAttribute('aria-disabled') !== 'true'] as const));
+  const drawn = await page.locator(`[data-region="insert"] [data-door="${TILE}"]`).evaluateAll((els) => els.map((el) => [JSON.parse(el.getAttribute('data-args') ?? '{}').entry as string, el.getAttribute('aria-disabled') !== 'true'] as const));
   expect(drawn.map(([entry]) => entry).sort()).toEqual(ENTRIES.map((e) => e.id).sort());
   const expected = ENTRIES.map((e) => [e.id, isFeatureBuilt(e.feature as FeatureId)] as const);
   expect(new Map(drawn)).toEqual(new Map(expected));
-  const titles = await page.locator(`[data-door="${TILE}"]`).evaluateAll((els) => els.map((el) => el.getAttribute('title') ?? ''));
+  const titles = await page.locator(`[data-region="insert"] [data-door="${TILE}"]`).evaluateAll((els) => els.map((el) => el.getAttribute('title') ?? ''));
   expect(titles.filter((title) => title.includes('not available yet'))).toEqual([]);
 });

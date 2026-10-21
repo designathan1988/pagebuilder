@@ -29,6 +29,7 @@ export const UI_WIDTHS = 'manifest/generated/ui-widths.json';
 // region below is drawn in a state none of those reaches.
 export const UNMEASURED_REASONS: Readonly<Record<string, string>> = {
   'assistant-panel': 'the assistant draws its controls once a connection is set up, which the measurer has none of',
+  'app-panel': "the App panel draws a variable's, a module's and a table's fields once the app has one (the measured projects have no app layer)",
   'asset-picker': 'the asset picker opens from a field of an image source, with project files to list',
   'batch-rename-dialog': 'a dialog opened from several elements selected',
   'breakpoints-dialog': 'a dialog opened from the breakpoints menu',
@@ -62,6 +63,7 @@ export const UNMEASURED_REASONS: Readonly<Record<string, string>> = {
   insert: 'a component tile is drawn once a component exists',
   'layers-row': 'a row\'s parts are drawn for the state of its node (a lock, a hidden node, a component)',
   'layout-composer-panel': 'the Layout Composer draws its steps once a composition starts',
+  'inspector-logic': "the Logic tab of an app's element (the measurer opens the Style, Settings and Interactions tabs of projects with no app layer)",
   'link-picker': 'the link picker opens from a field of a link',
   'menu:layers-row-details': 'the details menu of a Layers row',
   'menu:style-state': 'a state is offered for the elements that take it (a heading\'s states are measured)',
@@ -70,6 +72,9 @@ export const UNMEASURED_REASONS: Readonly<Record<string, string>> = {
   'quick-panel': 'a field of the quick panel is drawn for the kind of the element selected (a heading\'s are measured)',
   'recovery-dialog': 'a dialog shown when a previous session left unsaved work',
   'snap-settings-dialog': 'a dialog opened from the snap menu',
+  'start-ai': 'the start card is drawn only on the empty project (isEmptyProject); the measurer opens projects with content',
+  'start-examples': 'the start card is drawn only on the empty project (isEmptyProject); the measurer opens projects with content',
+  'start-templates': 'the start card is drawn only on the empty project (isEmptyProject); the measurer opens projects with content',
   styles: 'the Styles view draws a class\'s controls once classes exist',
   'tab-guard': 'the notice shown when the project is open in another tab',
   'tab-strip': 'a tab strip drawn by a panel with tabs of its own',
@@ -85,6 +90,8 @@ export interface LabelSpace {
   readonly textTransform: string;
   // the text the label draws in that condition's language
   readonly text: string;
+  // the lines the label may take before it cuts (a tile's name clamped to two: sidebar.css); one when absent
+  readonly lines?: number;
 }
 export interface Measured {
   readonly doors: { readonly [ref: string]: { readonly [condition: string]: LabelSpace } };
@@ -168,6 +175,24 @@ function setText(text: string, transform: string): string {
 const setWidth = (font: Font, text: string, space: LabelSpace): number => {
   const set = setText(text, space.textTransform);
   return textWidth(font, set, space.fontSize) + space.letterSpacing * [...set].length;
+};
+
+// The width a text needs in a label of several lines (a tile's name, clamped to two): its words broken over the lines
+// as the browser breaks them, the widest line; a text that takes more lines than the label has needs its whole width
+// (it is cut). One line: the text's width.
+const linesNeed = (font: Font, text: string, space: LabelSpace): number => {
+  const lines = space.lines ?? 1;
+  const whole = setWidth(font, text, space);
+  if (lines <= 1) return whole;
+  const words = text.split(/\s+/).filter((word) => word !== '');
+  const drawn: string[] = [];
+  for (const word of words) {
+    const last = drawn.length - 1;
+    const joined = last < 0 ? word : `${drawn[last]} ${word}`;
+    if (last >= 0 && setWidth(font, joined, space) + 1 <= space.width) drawn[last] = joined;
+    else drawn.push(word);
+  }
+  return drawn.length > lines ? whole : Math.max(...drawn.map((line) => setWidth(font, line, space)));
 };
 
 // The messages a drawn text is: the keys whose text it is, exactly; or, for a message with placeholders ({count}
@@ -261,7 +286,7 @@ export function uiFit(input: UiFitInput): UiFitReport {
     const region = regionOf.get(ref) ?? '?';
     const check = (text: string, space: LabelSpace | null, into: Finding[]): void => {
       if (space === null || text === '' || !worded(text)) return;
-      const need = setWidth(fontOf(space.fontWeight), text, space);
+      const need = linesNeed(fontOf(space.fontWeight), text, space);
       if (need + 1 > space.width) into.push({ region, ref, text, need, column: space.width, slack: space.width - need });
     };
     const fails: Finding[] = [];

@@ -35,13 +35,9 @@ describe('the gesture state machine', () => {
     expect(step(IDLE, { type: 'cancel' })).toEqual({ machine: IDLE, effect: null });
   });
 
-  it('a press while a gesture is open, of any pointer, cancels it and opens the new one (DCS-013)', () => {
+  it('restarts on another pointer pressed while a gesture is open (DEF-0556), ignores its moves and releases, and moves and releases with none open', () => {
     const pressed: Machine = step(IDLE, { type: 'down', pointer: 1, at: { x: 0, y: 0 }, press: node }).machine;
-    expect(step(pressed, { type: 'down', pointer: 2, at: { x: 9, y: 9 }, press: stage })).toEqual({ machine: { phase: 'pressed', pointer: 2, start: { x: 9, y: 9 }, press: stage }, effect: 'restart' });
-  });
-
-  it('ignores another pointer moving or released while a gesture is open, and moves and releases with none open', () => {
-    const pressed: Machine = step(IDLE, { type: 'down', pointer: 1, at: { x: 0, y: 0 }, press: node }).machine;
+    expect(step(pressed, { type: 'down', pointer: 2, at: { x: 9, y: 9 }, press: stage })).toEqual({ machine: { phase: 'pressed', pointer: 2, press: stage, start: { x: 9, y: 9 } }, effect: 'restart' });
     expect(step(pressed, { type: 'move', pointer: 2, at: { x: 90, y: 90 } })).toEqual({ machine: pressed, effect: null });
     expect(step(pressed, { type: 'up', pointer: 2 })).toEqual({ machine: pressed, effect: null });
     expect(step(IDLE, { type: 'move', pointer: 1, at: { x: 1, y: 1 } })).toEqual({ machine: IDLE, effect: null });

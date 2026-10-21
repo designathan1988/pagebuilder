@@ -9,6 +9,7 @@ import { buttonKind, pageLanguage } from '../export/names.ts';
 import { isPageSetting } from '../page/settings.ts';
 import { viewBoxOf } from '../elements/svg.ts';
 import { writtenByWord } from '../elements/word-states.ts';
+import { hasLogic } from '../logic/model.ts';
 
 // The manifest data the page's output needs, on the canvas and in the export: the elements, their attributes' HTML
 // names, the breakpoints, the states' pseudo-classes and the recipes.
@@ -218,6 +219,10 @@ export function elementAttributes(
     (root && isPageSetting(model.appliesTo.get(id), node.type) ? page : element).set(name, written);
   }
   for (const [name, value] of Object.entries(node.customAttributes ?? {})) if (!element.has(name)) element.set(name, value);
+  // an element with logic is found by the application runtime by its id (core/logic/compile.ts, spec app-logic)
+  if (hasLogic(node)) element.set('data-app', node.id);
+  // the code component it draws (spec app-logic): the canvas shows its name where the site draws it
+  if (node.logic?.component !== undefined) element.set('data-app-component', node.logic.component);
   if (root) page.set('lang', pageLanguage(page.get('lang'), context.language));
   if (tag === 'button') element.set('type', buttonKind(element.get('type'), context.inForm === true, typeof element.get('form') === 'string' && element.get('form') !== ''));
   // an input says its type, the HTML default "text" included, as a button does (html-validate no-implicit-input-type;

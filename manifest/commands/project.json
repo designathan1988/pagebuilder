@@ -33,7 +33,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:file",
-            "order": 7
+            "order": 10
           },
           "adapter": {
             "selection": "none",
@@ -286,6 +286,84 @@
           "placement": {
             "region": "command-palette",
             "order": 29
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "start-open-example",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "start-open-example",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.openExample",
+          "faceLabelKey": null,
+          "icon": "app-window",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "start-examples",
+            "order": 1
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "app-open-example",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "app-open-example",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.openExample",
+          "faceLabelKey": null,
+          "icon": "app-window",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel-examples",
+            "order": 1
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "start-open-template",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "site-templates",
+          "panel": "app",
+          "control": "start-open-template",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.openTemplate",
+          "faceLabelKey": null,
+          "icon": "layout-template",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "start-templates",
+            "order": 1
           },
           "adapter": {
             "selection": "none",
@@ -582,7 +660,18 @@
       "labelKey": "command.exportPage",
       "owner": "src/core/export/export.ts",
       "introducedBy": "export-zip",
-      "args": {},
+      "args": {
+        "format": {
+          "type": "enum",
+          "values": [
+            "site",
+            "pwa",
+            "android",
+            "desktop"
+          ],
+          "optional": true
+        }
+      },
       "availability": {
         "predicate": "always",
         "refusalKey": null
@@ -614,6 +703,78 @@
             "fields": []
           },
           "args": {}
+        },
+        {
+          "id": "menu-file-pwa",
+          "kind": "menu",
+          "feature": "export-packages",
+          "menu": "file",
+          "checked": null,
+          "labelKey": "command.exportPwa",
+          "faceLabelKey": null,
+          "icon": "app-window",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "menu:file",
+            "order": 7
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "format": "pwa"
+          }
+        },
+        {
+          "id": "menu-file-android",
+          "kind": "menu",
+          "feature": "export-packages",
+          "menu": "file",
+          "checked": null,
+          "labelKey": "command.exportAndroid",
+          "faceLabelKey": null,
+          "icon": "smartphone",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "menu:file",
+            "order": 8
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "format": "android"
+          }
+        },
+        {
+          "id": "menu-file-desktop",
+          "kind": "menu",
+          "feature": "export-packages",
+          "menu": "file",
+          "checked": null,
+          "labelKey": "command.exportDesktop",
+          "faceLabelKey": null,
+          "icon": "monitor",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "menu:file",
+            "order": 9
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "format": "desktop"
+          }
         },
         {
           "id": "toolbar-top-bar-export",

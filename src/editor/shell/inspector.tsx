@@ -47,6 +47,7 @@ import { shownForContext, shownForKinds, type ElementContext } from '../../core/
 import { ANCHOR_CONTROL, AnchorControl, BoxModel, Field, GridItemField, GridTracks, SPACING_LINK, TARGETS, TRACK_DOORS, fieldLabelKey, sectionOf, targetOf, useSelectionKinds } from './inspector-controls.tsx';
 import { Slots } from './slots.tsx';
 import { InteractionsTab } from './interactions.tsx';
+import { LogicTab } from '../app-panel/logic-tab.tsx';
 import { SettingsTab } from './inspector-settings.tsx';
 import { Hints, useSingleNode } from '../inspector/selection.tsx';
 import { Affects, TargetChips, classBarControl } from './class-bar.tsx';
@@ -708,7 +709,7 @@ function SettingsWithHead() {
 }
 
 // The body of each inspector tab the editor draws; the tab of any other is not available yet.
-const TAB_BODIES: Readonly<Record<string, ComponentType>> = { style: StyleTab, settings: SettingsWithHead, interactions: InteractionsTab };
+const TAB_BODIES: Readonly<Record<string, ComponentType>> = { style: StyleTab, settings: SettingsWithHead, interactions: InteractionsTab, logic: LogicTab };
 
 export function Inspector() {
   const t = useT();

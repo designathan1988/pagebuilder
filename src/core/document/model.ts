@@ -8,6 +8,7 @@ import type { InlineRun } from '../text/inline.ts';
 import type { Bound, Collection, DataItem, DataList, SharedRegion } from '../data/model.ts';
 import type { Behaviour, MotionInteraction, MotionTimeline } from '../motion/model.ts';
 import type { Authoring } from './authoring.ts';
+import type { AppLayer, NodeLogic } from '../logic/model.ts';
 import type { ProjectBreakpoint } from './breakpoint-rules.ts';
 import type { CapturedPage } from './captured.ts';
 
@@ -95,6 +96,9 @@ export interface DocNode {
   // the authoring data of removable modules (core/document/authoring.ts): a tool's record by its namespace, inert for
   // everything else (never rendered, exported or shown); absent while no module keeps anything on the element
   readonly authoring?: Authoring;
+  // the element's logic (core/logic/model.ts, spec app-logic): expressions that fill, show, repeat and bind it, and the
+  // code its events run; absent while it has none. The editing canvas never runs it; the preview and the export do.
+  readonly logic?: NodeLogic;
 }
 
 interface LayerColor {
@@ -199,6 +203,9 @@ export interface DocumentJson {
   // the project's collections, in the order they were made: typed fields and items, which bound lists and item pages
   // show (core/data/collections.ts, spec content-data); absent while none is
   readonly collections?: readonly Collection[];
+  // the project's application layer (core/logic/model.ts, spec app-logic): its variables, scripts, code components and
+  // libraries; absent while it has none
+  readonly app?: AppLayer;
 }
 
 // An uploaded file (spec explorer-assets): its bytes as base64 at its path in the project ("img/logo.png"), the MIME

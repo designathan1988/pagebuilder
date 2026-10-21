@@ -60,6 +60,16 @@
           "type": "string",
           "values": [],
           "optional": true
+        },
+        "preset": {
+          "type": "enum",
+          "values": [
+            "fade-up",
+            "fade-in",
+            "zoom-in",
+            "slide-in"
+          ],
+          "optional": true
         }
       },
       "availability": {

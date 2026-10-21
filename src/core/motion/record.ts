@@ -6,6 +6,8 @@
 // The same read value, one command, one undo step: only the holder changes, as a keyframe of a CSS animation does.
 import type { NodeId } from '../../generated/commands.ts';
 import { message, type HandlerContext, type Outcome } from '../commands/registry.ts';
+import { manifest } from '../../manifest/runtime.ts';
+import type { MessageId } from '../../generated/ids.ts';
 import type { DocNode, StoredValue } from '../document/model.ts';
 import { EFFECTS } from './catalog.ts';
 import { findTimeline, motionsOf, writeTimeline } from './document.ts';
@@ -80,6 +82,13 @@ export function recordStyleWrite<Ui>(context: HandlerContext<Ui>, node: DocNode,
   return {
     kind: 'change',
     patches: [writeTimeline(found.index, read.value)],
-    message: message('status.motion.recorded', { property, time: (target.time / 1000).toFixed(2), timeline: target.timeline }),
+    message: message('status.motion.recorded', { property: propertyName(property), time: (target.time / 1000).toFixed(2), timeline: target.timeline }),
   };
+}
+
+// the property as the inspector names it (Opacity, not opacity); a transform part or a property it does not list keeps
+// its CSS name
+function propertyName(property: string): string | { key: MessageId; params: Record<string, never> } {
+  const found = manifest.properties.properties.find((one) => one.id === property);
+  return found === undefined ? property : { key: found.labelKey as MessageId, params: {} };
 }

@@ -245,6 +245,10 @@ export const FEATURES = {
   'component-master-edit': registerFeature('component-master-edit'),
   'component-variants': registerFeature('component-variants'),
   'capture-url': registerFeature('capture-url'),
+  // 27 the application layer: state, logic, scripts, code components and libraries
+  'app-logic': registerFeature('app-logic'),
+  'export-packages': registerFeature('export-packages'),
+  'site-templates': registerFeature('site-templates'),
 } as const satisfies FeatureTable;
 
 installFeatureTable(FEATURES);

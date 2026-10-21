@@ -212,7 +212,21 @@ export interface CommandArgs {
   "layout.template": { readonly template: "dashboard" | "landing" | "sidebar" | "article" | "gallery" };
   "layout.reference": { readonly file?: string; readonly opacity?: string };
   "layout.trace": { readonly luminance?: JsonValue };
-  "motion.add": { readonly trigger?: "click" | "double-click" | "pointer-down" | "pointer-up" | "pointer-enter" | "pointer-leave" | "hover" | "pointer-move" | "focus" | "blur" | "focus-within" | "key" | "input" | "change" | "form-submit" | "form-invalid" | "long-press" | "scroll-into-view" | "scroll-out-of-view" | "while-visible" | "page-scroll" | "scroll-direction" | "page-load" | "page-leave" | "visibility" | "resize" | "breakpoint" | "timer" | "interval" | "idle" | "media-play" | "media-pause" | "media-end" | "media-time" | "dropdown-open" | "dropdown-close" | "tab-change" | "slide-change" | "dialog-open" | "dialog-close" | "details-open" | "mobile-menu-open" | "custom"; readonly timeline?: string };
+  "app.setVariable": { readonly name?: string; readonly type?: "text" | "number" | "boolean" | "list" | "object"; readonly initial?: JsonValue; readonly persist?: boolean; readonly previous?: string };
+  "app.removeVariable": { readonly name: string };
+  "app.setModule": { readonly kind: "script" | "component"; readonly name?: string; readonly code?: string; readonly previous?: string };
+  "app.removeModule": { readonly kind: "script" | "component"; readonly name: string };
+  "app.setLibrary": { readonly name: string; readonly url: string; readonly previous?: string };
+  "app.removeLibrary": { readonly name: string };
+  "app.setTable": { readonly name?: string; readonly read?: "public" | "members" | "owner" | "admin"; readonly write?: "public" | "members" | "admin"; readonly previous?: string };
+  "app.removeTable": { readonly name: string };
+  "logic.set": { readonly field: "text" | "html" | "show" | "each" | "as" | "key" | "model" | "component"; readonly value: string };
+  "logic.setBinding": { readonly binding: string; readonly value: string; readonly previous?: string };
+  "logic.addHandler": { readonly event?: string; readonly code?: string };
+  "logic.updateHandler": { readonly handler: number; readonly event?: string; readonly code?: string };
+  "logic.removeHandler": { readonly handler: number };
+  "logic.clear": Record<string, never>;
+  "motion.add": { readonly trigger?: "click" | "double-click" | "pointer-down" | "pointer-up" | "pointer-enter" | "pointer-leave" | "hover" | "pointer-move" | "focus" | "blur" | "focus-within" | "key" | "input" | "change" | "form-submit" | "form-invalid" | "long-press" | "scroll-into-view" | "scroll-out-of-view" | "while-visible" | "page-scroll" | "scroll-direction" | "page-load" | "page-leave" | "visibility" | "resize" | "breakpoint" | "timer" | "interval" | "idle" | "media-play" | "media-pause" | "media-end" | "media-time" | "dropdown-open" | "dropdown-close" | "tab-change" | "slide-change" | "dialog-open" | "dialog-close" | "details-open" | "mobile-menu-open" | "custom"; readonly timeline?: string; readonly preset?: "fade-up" | "fade-in" | "zoom-in" | "slide-in" };
   "motion.update": { readonly interaction?: number; readonly field?: "trigger" | "timeline" | "control" | "leave" | "scope" | "once" | "delay" | "breakpoints" | "reducedMotion" | "key" | "threshold" | "milliseconds" | "direction" | "axis" | "breakpoint" | "seconds" | "state" | "event" | "scrollStart" | "scrollEnd"; readonly value?: JsonValue };
   "motion.remove": { readonly interaction?: number };
   "motion.createTimeline": { readonly name?: string };
@@ -260,7 +274,7 @@ export interface CommandArgs {
   "project.open": { readonly file: string };
   "project.openFolder": { readonly folder: string };
   "project.importHtml": { readonly files: readonly PickedFile[]; readonly destination?: "page" | "inside" | "replace"; readonly target?: NodeId };
-  "project.export": Record<string, never>;
+  "project.export": { readonly format?: "site" | "pwa" | "android" | "desktop" };
   "project.setLanguage": { readonly language: string };
   "project.setCodeLanguage": { readonly language: string };
   "project.captureUrl": { readonly url: string; readonly pages?: number };
@@ -374,7 +388,7 @@ export interface CommandArgs {
   "view.resizeViewport": { readonly size?: number; readonly distance: number };
   "view.toggleSideBySide": Record<string, never>;
   "view.selectTool": Record<string, never>;
-  "workspace.setPanelOpen": { readonly panel: "elements" | "layers" | "inspector" | "explorer" | "timeline" | "motion" | "variables" | "checks" | "workbench" | "shortcuts" | "document" | "canvas-tools" | "assistant" | "layout-composer" | "data"; readonly open: "open" | "close" | "toggle"; readonly focus?: boolean };
+  "workspace.setPanelOpen": { readonly panel: "elements" | "layers" | "inspector" | "explorer" | "timeline" | "motion" | "variables" | "checks" | "workbench" | "shortcuts" | "document" | "canvas-tools" | "assistant" | "layout-composer" | "data" | "app"; readonly open: "open" | "close" | "toggle"; readonly focus?: boolean };
   "workspace.toggleLeftDock": Record<string, never>;
   "workspace.toggleInspector": Record<string, never>;
   "workspace.collapseDocks": Record<string, never>;
@@ -632,4 +646,7 @@ export const FEATURE_COMMANDS: Readonly<Record<FeatureId, readonly CommandId[]>>
   "shared-regions": ["regions.share","regions.detach","regions.stopSharing","text.set","pages.add","workspace.setPanelOpen"],
   "project-breakpoints": ["breakpoints.add","breakpoints.rename","breakpoints.setWidth","breakpoints.remove","workspace.openDialog","view.setBreakpoint","view.setViewportWidth","style.set","project.export"],
   "side-by-side-view": ["view.toggleSideBySide","view.setBreakpoint"],
+  "app-logic": ["app.setVariable","app.removeVariable","app.setModule","app.removeModule","app.setLibrary","app.removeLibrary","app.setTable","app.removeTable","logic.set","logic.setBinding","logic.addHandler","logic.updateHandler","logic.removeHandler","logic.clear","workspace.setPanelOpen","workspace.setActiveTab","project.open"],
+  "export-packages": ["project.export"],
+  "site-templates": ["project.open","assistant.update","workspace.setPanelOpen"],
 };

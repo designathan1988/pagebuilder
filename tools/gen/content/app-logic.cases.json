@@ -1,0 +1,311 @@
+[
+ [
+  "new-variable",
+  "empty",
+  [],
+  "app.setVariable",
+  {}
+ ],
+ [
+  "rename",
+  "app-logic",
+  [],
+  "app.setVariable",
+  {
+   "previous": "count",
+   "name": "clicks"
+  }
+ ],
+ [
+  "retype",
+  "app-logic",
+  [],
+  "app.setVariable",
+  {
+   "previous": "count",
+   "name": "count",
+   "type": "text"
+  }
+ ],
+ [
+  "initial",
+  "app-logic",
+  [],
+  "app.setVariable",
+  {
+   "previous": "title",
+   "name": "title",
+   "initial": "Hi there"
+  }
+ ],
+ [
+  "persist",
+  "app-logic",
+  [],
+  "app.setVariable",
+  {
+   "previous": "count",
+   "name": "count",
+   "persist": true
+  }
+ ],
+ [
+  "remove-var",
+  "app-logic",
+  [],
+  "app.removeVariable",
+  {
+   "name": "title"
+  }
+ ],
+ [
+  "new-script",
+  "empty",
+  [],
+  "app.setModule",
+  {
+   "kind": "script"
+  }
+ ],
+ [
+  "new-component",
+  "app-logic",
+  [],
+  "app.setModule",
+  {
+   "kind": "component"
+  }
+ ],
+ [
+  "module-name",
+  "app-logic",
+  [],
+  "app.setModule",
+  {
+   "kind": "script",
+   "previous": "util",
+   "name": "helpers"
+  }
+ ],
+ [
+  "module-code",
+  "app-logic",
+  [],
+  "app.setModule",
+  {
+   "kind": "script",
+   "name": "util",
+   "code": "export const answer = 7;\n"
+  }
+ ],
+ [
+  "module-remove",
+  "app-logic",
+  [],
+  "app.removeModule",
+  {
+   "kind": "script",
+   "name": "util"
+  }
+ ],
+ [
+  "library-add",
+  "app-logic",
+  [],
+  "app.setLibrary",
+  {
+   "name": "dayjs",
+   "url": "https://cdn.jsdelivr.net/npm/dayjs@1.11.13/+esm"
+  }
+ ],
+ [
+  "library-remove",
+  "app-logic",
+  [],
+  "app.removeLibrary",
+  {
+   "name": "confetti"
+  }
+ ],
+ [
+  "new-table",
+  "empty",
+  [],
+  "app.setTable",
+  {}
+ ],
+ [
+  "table-name",
+  "app-logic",
+  [],
+  "app.setTable",
+  {
+   "previous": "posts",
+   "name": "articles"
+  }
+ ],
+ [
+  "table-read",
+  "app-logic",
+  [],
+  "app.setTable",
+  {
+   "previous": "posts",
+   "read": "owner"
+  }
+ ],
+ [
+  "table-write",
+  "app-logic",
+  [],
+  "app.setTable",
+  {
+   "previous": "posts",
+   "write": "admin"
+  }
+ ],
+ [
+  "table-bad-name",
+  "app-logic",
+  [],
+  "app.setTable",
+  {
+   "previous": "posts",
+   "name": "Posts"
+  }
+ ],
+ [
+  "table-remove",
+  "app-logic",
+  [],
+  "app.removeTable",
+  {
+   "name": "posts"
+  }
+ ],
+ [
+  "logic-field",
+  "app-logic",
+  [
+   "n2"
+  ],
+  "logic.set",
+  {
+   "field": "show",
+   "value": "state.count"
+  }
+ ],
+ [
+  "use-component",
+  "app-logic",
+  [
+   "n2"
+  ],
+  "logic.set",
+  {
+   "field": "component",
+   "value": "Badge"
+  }
+ ],
+ [
+  "binding",
+  "app-logic",
+  [
+   "n1"
+  ],
+  "logic.setBinding",
+  {
+   "binding": "class:active",
+   "value": "state.count"
+  }
+ ],
+ [
+  "add-binding",
+  "app-logic",
+  [
+   "n1"
+  ],
+  "logic.setBinding",
+  {
+   "binding": "attr:title",
+   "value": "state.title"
+  }
+ ],
+ [
+  "add-handler",
+  "app-logic",
+  [
+   "n2"
+  ],
+  "logic.addHandler",
+  {
+   "event": "mouseenter"
+  }
+ ],
+ [
+  "handler-event",
+  "app-logic",
+  [
+   "n1"
+  ],
+  "logic.updateHandler",
+  {
+   "handler": 0,
+   "event": "dblclick"
+  }
+ ],
+ [
+  "handler-code",
+  "app-logic",
+  [
+   "n1"
+  ],
+  "logic.updateHandler",
+  {
+   "handler": 0,
+   "code": "state.count += 2"
+  }
+ ],
+ [
+  "handler-remove",
+  "app-logic",
+  [
+   "n1"
+  ],
+  "logic.removeHandler",
+  {
+   "handler": 0
+  }
+ ],
+ [
+  "clear",
+  "app-logic",
+  [
+   "n1"
+  ],
+  "logic.clear",
+  {}
+ ],
+ [
+  "reserved",
+  "app-logic",
+  [],
+  "app.setVariable",
+  {
+   "previous": "count",
+   "name": "state"
+  }
+ ],
+ [
+  "bad-binding",
+  "app-logic",
+  [
+   "n1"
+  ],
+  "logic.setBinding",
+  {
+   "binding": "onclick",
+   "value": "state.count"
+  }
+ ]
+]

@@ -143,4 +143,4 @@ Após toda escrita: esquema de cada bloco válido; IDs únicos; nenhum bloco ór
 - **Finais de linha:** convivem arquivos CRLF e LF. Ao editar por script, preserve o final de linha de cada arquivo.
 - **Ids do manifesto:** nunca se escrevem à mão (regra de lint `builder/no-manifest-id`). Leia do manifesto.
 - **Mensagem nova:** entra em `en.json` **e** em `pt-BR.json`. Depois rode `node tools/gen/generate.ts`.
-- **Repositório:** `origin` é `github.com/designathan1988/app-pagebuilder-v5`; commit e push a cada lote. Ficam fora do repositório `PROMPT.md`, `claude-tarefa.md`, `deepseek-tarefa.md`, `deepseek.ps1` e `.claude/`.
+- **Repositório:** `origin` é `github.com/designathan1988/pagebuilder` (exigência do dono, 2026-10-21: sempre esse); commit e push a cada lote, sem pedir autorização. Ficam fora do repositório `PROMPT.md`, `claude-tarefa.md`, `deepseek-tarefa.md`, `deepseek.ps1` e `.claude/`.

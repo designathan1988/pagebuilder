@@ -8,7 +8,7 @@ import type { NodeId } from '../../generated/commands.ts';
 import { message, registerHandler } from '../commands/registry.ts';
 import { locate } from '../document/model.ts';
 import { replaceLayer } from './set.ts';
-import { lockRefusal } from '../nodes/flags.ts';
+import { lockRefusal, stateRefusal } from '../nodes/flags.ts';
 import { parseDeclarations } from './custom.ts';
 
 export const applyCssRuleCommand = registerHandler('style.applyCssRule', (context, { css }) => {
@@ -17,7 +17,7 @@ export const applyCssRuleCommand = registerHandler('style.applyCssRule', (contex
   if (id === undefined) return { kind: 'refused' as const, message: message('status.needsSingleSelection') };
   const at = locate(state.document, id);
   if (at === null) throw new Error(`style.applyCssRule: the document has no node ${id as NodeId}`);
-  const locked = lockRefusal(state.document, at.node.id, 'status.locked.edit');
+  const locked = lockRefusal(state.document, at.node.id, 'status.locked.edit') ?? stateRefusal(state.document, [at.node.id as NodeId], context.rules);
   if (locked !== null) return { kind: 'refused' as const, message: locked };
   const parsed = parseDeclarations(String(css ?? ''), context);
   if ('refused' in parsed) return { kind: 'refused' as const, message: parsed.refused };

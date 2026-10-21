@@ -33,7 +33,8 @@ export const CONTRAST_MINIMUM = 4.5;
 
 // a colour the reader understands: #rgb, #rrggbb, rgb(r, g, b) and rgba(r, g, b, a) with a fully opaque alpha; null
 // for everything else (a variable, a keyword, a partly transparent colour)
-function readColour(text: string): readonly [number, number, number] | null {
+// a colour as red, green, blue; a translucent one is laid over the colour under it, when that is known
+function readColour(text: string, under: readonly [number, number, number] | null = null): readonly [number, number, number] | null {
   const value = text.trim().toLowerCase();
   const short = /^#([0-9a-f]{3})$/.exec(value);
   if (short !== null) {
@@ -48,8 +49,10 @@ function readColour(text: string): readonly [number, number, number] | null {
   const rgb = /^rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)(?:[\s,/]+([\d.]+))?\s*\)$/.exec(value);
   if (rgb === null) return null;
   const alpha = rgb[4] === undefined ? 1 : Number(rgb[4]);
-  if (alpha < 1) return null;
-  return [Number(rgb[1]), Number(rgb[2]), Number(rgb[3])];
+  const colour = [Number(rgb[1]), Number(rgb[2]), Number(rgb[3])] as const;
+  if (alpha >= 1) return colour;
+  if (under === null || alpha <= 0) return null;
+  return [0, 1, 2].map((i) => Math.round((colour[i] as number) * alpha + (under[i] as number) * (1 - alpha))) as unknown as readonly [number, number, number];
 }
 
 // the luminance of a colour, and the contrast between two of them, as WCAG defines them
@@ -101,7 +104,7 @@ export function checksOf(document: DocumentJson, properties: CheckProperties): r
   const visit = (node: DocNode, hidden: boolean, background: readonly [number, number, number] | null, seenHeading: number): number => {
     const isHidden = hiddenWithin(node, hidden);
     if (isHidden || node.tag === null) return seenHeading;
-    const own = readColour(baseValue(node, properties.backgroundProperty) ?? '') ?? background;
+    const own = readColour(baseValue(node, properties.backgroundProperty) ?? '', background) ?? background;
     const level = /^h([1-6])$/.exec(node.tag);
     let heading = seenHeading;
     if (level !== null) {

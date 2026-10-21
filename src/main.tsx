@@ -20,8 +20,9 @@ import './editor/shell/window-overlays.css';
 import sprite from './ui/icons.svg?raw';
 import { App } from './editor/app.tsx';
 import { windowIsNarrow } from './editor/workspace/narrow.ts';
-import { currentWorkRevision, readSavedWork, readVersions, restoredWork, startAutosave } from './editor/persistence/autosave.ts';
-import { claimEditing, isEditing } from './editor/persistence/tab-guard.ts';
+import { currentWorkRevision, readSavedWork, readVersions, restoredWork, startAutosave, type SavedWork } from './editor/persistence/autosave.ts';
+import { claimEditing, isEditing, lockProject } from './editor/persistence/tab-guard.ts';
+import { cloudProjectId, openCloud, startCloudSave, type CloudProject } from './editor/cloud/cloud.ts';
 import { startDrafts } from './editor/persistence/drafts.ts';
 import { MODEL_RULES, createEditorStore } from './editor/store.ts';
 import { installTestPort } from './editor/test-port.ts';
@@ -32,6 +33,33 @@ import { installBrowserPorts } from './core/ports/browser.ts';
 import { browserPorts } from './editor/browser-ports.ts';
 import { installWiring } from './editor/wiring.ts';
 import { EDITOR_WIRING } from './app/wiring.ts';
+
+// the cloud project's document as the autosave's record, or null for a project created empty
+function cloudWork(project: CloudProject): SavedWork | null {
+  const document = project.document as { version?: unknown } | null;
+  if (document === null || typeof document !== 'object') return null;
+  return { revision: 0, format: typeof document.version === 'number' ? document.version : 0, document, selection: [] };
+}
+
+// the page in place of the editor when a cloud project cannot be opened, with the way back to the dashboard
+function stopWith(reason: string): never {
+  const root = document.getElementById('root');
+  if (root) {
+    root.innerHTML = '';
+    const box = document.createElement('div');
+    box.className = 'cloud-failure';
+    const title = document.createElement('h1');
+    title.textContent = 'Não foi possível abrir este projeto';
+    const detail = document.createElement('p');
+    detail.textContent = reason;
+    const back = document.createElement('a');
+    back.href = '/painel/';
+    back.textContent = 'Voltar ao painel';
+    box.append(title, detail, back);
+    root.append(box);
+  }
+  throw new Error(`cloud: ${reason}`);
+}
 
 // in the test builds, what the page's storage held before the editor's first statement (src/editor/test-boot.ts)
 if (__BUILDER_TEST_PORT__) noteStoredAtStart();
@@ -56,13 +84,25 @@ document.body.prepend(icons);
 // the work kept from the last session (autosave-restore), restored before anything is drawn; then every change is
 // written again
 // the editing lock first: a tab that opens while another edits only reads (multi-tab-guard)
+// a project kept in the cloud (opened from the dashboard with ?project=) is read from there and saved there instead
+// (src/editor/cloud/cloud.ts); one that cannot be read stops here, so an empty project never overwrites it
+const cloudId = cloudProjectId();
+if (cloudId !== null) lockProject(cloudId);
+let cloud: CloudProject | null = null;
+try {
+  cloud = await openCloud();
+} catch (error) {
+  stopWith(error instanceof Error ? error.message : String(error));
+}
 await claimEditing();
-const saved = await readSavedWork();
+const saved = cloud === null ? await readSavedWork() : cloudWork(cloud);
 const restored = restoredWork(saved, MODEL_RULES);
+if (cloud !== null && saved !== null && restored === null) stopWith('the saved document could not be read');
 // saved work the reader refused: the recovery dialog offers the versions IndexedDB keeps (autosave-corruption-recovery)
-const recovery = saved !== null && restored === null ? await readVersions() : null;
+const recovery = cloud === null && saved !== null && restored === null ? await readVersions() : null;
 const store = createEditorStore({ restored, recovery, narrow: windowIsNarrow() });
-startAutosave(store, saved, restored !== null, isEditing);
+if (cloud === null) startAutosave(store, saved, restored !== null, isEditing);
+else startCloudSave(store, isEditing);
 startDrafts(store, currentWorkRevision, isEditing);
 // what the end-to-end tests read, and the state a test hands the editor before it starts (src/editor/test-boot.ts): in
 // the dev server and the e2e build only, never in the build a person uses (Vite replaces the flag statically, so that

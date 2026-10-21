@@ -14,6 +14,22 @@
   padding: var(--space-3) var(--space-6) 0;
 }
 
+/* the quick effects: a label, then one button per preset, wrapping at the inspector's width */
+.motion-interactions__quick {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6) 0;
+}
+
+.motion-interactions__quick-title {
+  flex-basis: 100%;
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--color-text-muted);
+}
+
 .motion-interactions__head .interactions__title {
   padding: 0;
 }
@@ -212,9 +228,16 @@
   border-bottom: 1px solid var(--color-border);
 }
 
+/* the lane's name in the label column, left of the time axis: held at the scroller's left edge while the seconds
+   scroll under it (it scrolled away with them, and a person who scrolled the Timeline to see past its width read
+   "ment" for "Element", DEF-0629); in the track's flow, its margin taking back the column the track leaves for it */
 .motion-lane__label {
-  position: absolute;
-  right: 100%;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  flex: none;
+  margin-left: calc(-1 * var(--size-label-column));
+  background: var(--color-surface);
   display: flex;
   align-items: center;
   gap: var(--space-1);

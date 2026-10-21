@@ -6,6 +6,7 @@ import { setAssistantModel, setAssistantPreferences, attachAssistantReference, c
 import { MODULE_COMMANDS, MODULE_PREDICATES } from './modules.ts';
 import { always, type CommandTable, type PredicateTable } from '../core/commands/registry.ts';
 import { setLinkCommand } from '../core/elements/link.ts';
+import { addHandlerCommand, clearLogicCommand, removeHandlerCommand, removeLibraryCommand, removeModuleCommand, removeTableCommand, setTableCommand, removeVariableCommand, setBindingCommand, setLibraryCommand, setLogicCommand, setModuleCommand, setVariableCommand, updateHandlerCommand } from '../core/logic/commands.ts';
 import { createFileCommand, createFolderCommand, deleteFileCommand, moveFileCommand, renameFileCommand, saveFileContentCommand, uploadCommand } from '../core/files/files.ts';
 import { insertImageFileCommand } from '../core/files/assets.ts';
 import { removeCustomAttributeCommand, setAttributeCommand, setClassesCommand, setCustomAttributeCommand, setIdCommand } from '../core/elements/attributes.ts';
@@ -216,6 +217,21 @@ export const COMMANDS = {
   'project.captureUrl': captureUrlCommand,
   'capture.edit': editCaptureCommand,
   'capture.select': selectCapturedCommand,
+  // 27 the application layer (spec app-logic)
+  'app.setVariable': setVariableCommand,
+  'app.removeVariable': removeVariableCommand,
+  'app.setModule': setModuleCommand,
+  'app.removeModule': removeModuleCommand,
+  'app.setLibrary': setLibraryCommand,
+  'app.removeLibrary': removeLibraryCommand,
+  'app.setTable': setTableCommand,
+  'app.removeTable': removeTableCommand,
+  'logic.set': setLogicCommand,
+  'logic.setBinding': setBindingCommand,
+  'logic.addHandler': addHandlerCommand,
+  'logic.updateHandler': updateHandlerCommand,
+  'logic.removeHandler': removeHandlerCommand,
+  'logic.clear': clearLogicCommand,
   'components.updateFromInstance': updateFromInstanceCommand,
   'components.setVariant': setVariantCommand,
   'design.applySuggestion': applySuggestionCommand,
