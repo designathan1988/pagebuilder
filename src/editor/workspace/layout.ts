@@ -303,12 +303,30 @@ const sign = (data: SplitterData): number => (data.grow === data.directions[0] ?
 // the directions along the splitter's axis: an arrow across it is no step at all
 const along = (data: SplitterData, direction: string): boolean => (data.directions as readonly string[]).includes(direction);
 
-// the size a splitter shows now: the person's, else the one layout.json declares, always within its bounds; null for
-// a name the manifest does not declare (a defect of the caller)
-export function splitterSize(ui: EditorUi, splitter: string): number | null {
+// the size a splitter's panel is given: the person's, else the one layout.json declares, always within its bounds;
+// null for a name the manifest does not declare (a defect of the caller)
+export function chosenSplitterSize(ui: EditorUi, splitter: string): number | null {
   const data = SPLITTERS[splitter as SplitterId] as SplitterData | undefined;
   if (data === undefined) return null;
   return clamped(data, ui.preferences.splitterSizes?.[splitter] ?? data.size);
+}
+
+// The size a panel is drawn at where the window holds less than it is given (the Layers under the sidebar's view,
+// which keeps a minimum height of its own, sidebar.css): the panel that draws it says so (setDrawnSplitterSize), so a
+// drag or an arrow key starts from what the person sees, never from a size hidden past the window's edge (the
+// real-use audit, USE-5)
+const drawnSizes = new Map<string, number>();
+export function setDrawnSplitterSize(splitter: string, size: number | null): void {
+  if (size === null) drawnSizes.delete(splitter);
+  else drawnSizes.set(splitter, Math.round(size));
+}
+
+// the size a splitter shows now: the one its panel is given, or less where the window holds less (the drawn size);
+// null for a name the manifest does not declare (a defect of the caller)
+export function splitterSize(ui: EditorUi, splitter: string): number | null {
+  const chosen = chosenSplitterSize(ui, splitter);
+  const drawn = drawnSizes.get(splitter);
+  return chosen === null || drawn === undefined ? chosen : Math.min(chosen, drawn);
 }
 
 export const resizeSplitter = registerHandler<'workspace.resizeSplitter', EditorUi>(

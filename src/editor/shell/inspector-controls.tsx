@@ -13,7 +13,7 @@ import { MODEL_RULES, useEditorState, useStore, layeredRules } from '../store.ts
 import { isLinked } from '../inspector/spacing.ts';
 import { styleSource } from '../inspector/style-target.ts';
 import { pluralForm } from '../../i18n/index.ts';
-import { useLocale, useT } from '../text.ts';
+import { useLocale, useT, useValueLabel } from '../text.ts';
 import { usePrimarySize } from '../view/selection-size.ts';
 import { KeywordButtons, NumberField, propertyWord, TextStyleField, presetsOf, useEffectiveText, useKeptField, useMixed, type FieldPart } from './field.tsx';
 import { shownText } from '../../core/style/set.ts';
@@ -76,6 +76,8 @@ function FieldInput({ entry, target, label, available }: { readonly entry: DoorE
   const d = entry.door;
   const off = available ? '' : ' is-unavailable';
   const ariaDisabled = available ? undefined : true;
+  // a keyword's name in the person's language (the catalogue's value.<property>.<value>), as KeywordButtons says it
+  const valueLabel = useValueLabel();
   // a field the door draws as a button (its drawnAs): an editor's action, or one fixed value (Spread writes
   // space-between)
   if (d.kind === 'inspector-field' && d.drawnAs === 'button') {
@@ -91,7 +93,7 @@ function FieldInput({ entry, target, label, available }: { readonly entry: DoorE
         {offered(entry).map((value) => {
           const icon = target.icons[value];
           return (
-            <button key={value} type="button" className={`door door--segment${off}`} aria-disabled={ariaDisabled} title={value} aria-label={value}>
+            <button key={value} type="button" className={`door door--segment${off}`} aria-disabled={ariaDisabled} title={valueLabel(target.id, value)} aria-label={icon !== undefined ? valueLabel(target.id, value) : undefined}>
               {icon !== undefined ? <Icon name={icon} size="sm" /> : <span className="door__label">{value}</span>}
             </button>
           );

@@ -20,6 +20,35 @@
 // tooth-plugin.ts), and only a function can be stubbed.
 import { generate as generateCssTree, parse as parseCssTree } from 'css-tree';
 
+// The web components' closed parts (editor/widgets/widgets.js, the ready components of the Insert panel): the cart
+// drawer, the phone menu's links, every tab panel but the first, the countdown's "over" text and the filter's "nothing
+// matches" text stay closed until the site's script opens them, which it does by marking the part data-wc-open. The
+// closed state is CSS beside the base, which the canvas writes after it and the export writes into the stylesheet of a
+// site that holds a web component (core/export/export.ts siteFiles; the rules match nothing on a page without one),
+// unscoped on a captured page too, since the marks are the builder's own (the user's final-use audit, USE-1: the rule
+// lived in the script alone, so the canvas, which runs no script, drew the cart drawer open over the page). The
+// canvas opens a part while it or a node inside it is selected (editor/canvas/render/render.ts reveal), so it can be
+// seen and edited; the document and the export keep it closed.
+export const WIDGET_OPEN_ATTRIBUTE = 'data-wc-open';
+// Whether a node with these custom attributes is a closed part of a web component (the rules below name each one).
+// A popup's opener names its dialog in the same attribute (data-wc-open="<id>"): it is no part of these rules.
+export function widgetClosedPart(attributes: Readonly<Record<string, string>>): boolean {
+  const kind = attributes['data-wc'];
+  return kind === 'cart' || kind === 'menu' || 'data-wc-panel' in attributes || 'data-wc-done' in attributes || 'data-wc-empty' in attributes;
+}
+export function widgetStateCss(): string {
+  return `[data-wc="cart"]:not([data-wc-open]) { transform: translateX(105%); visibility: hidden; }
+[data-wc="tabs"] [data-wc-panel] ~ [data-wc-panel]:not([data-wc-open]) { display: none !important; }
+[data-wc="countdown"] [data-wc-done]:not([data-wc-open]) { display: none !important; }
+[data-wc="filter"] [data-wc-empty]:not([data-wc-open]) { display: none !important; }
+@media (max-width: 767px) {
+  [data-wc="menu"] [data-wc-toggle] { display: inline-flex !important; }
+  [data-wc="menu"]:not([data-wc-open]) [data-wc-menu] { display: none !important; }
+  [data-wc="menu"][data-wc-open] [data-wc-menu] { display: flex !important; flex-direction: column; width: 100%; }
+}
+`;
+}
+
 export function baseCss(): string {
   return `*, *::before, *::after { box-sizing: border-box; }
 [hidden] { display: none !important; }

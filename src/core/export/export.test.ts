@@ -237,14 +237,16 @@ describe('the site stylesheet in cascade order (AUD-02)', () => {
   it('writes every element rule before the breakpoint blocks, widest first, the same text every time', async () => {
     const fs = await import('node:fs');
     const document = JSON.parse(fs.readFileSync('manifest/features/fixtures/responsive-sections.json', 'utf8')) as DocumentJson;
-    const { css } = siteFiles(document, RULES);
+    const whole = siteFiles(document, RULES).css;
+    // the elements' own rules, under their heading (the base before them holds the web components' phone rule)
+    const css = whole.slice(whole.indexOf('/* Elements */'));
     const firstMedia = css.indexOf('@media (max-width: ');
     const lastBase = Math.max(...[...css.matchAll(/^\.[a-z][^\n]* \{$/gm)].map((match) => match.index));
     expect(firstMedia).toBeGreaterThan(lastBase);
     const queries = [...css.matchAll(/^@media \(max-width: (\d+)px\) \{$/gm)].map((match) => Number(match[1]));
     expect(queries).toEqual([...queries].sort((a, b) => b - a));
     expect(new Set(queries).size).toBe(queries.length);
-    expect(siteFiles(document, RULES).css).toBe(css);
+    expect(siteFiles(document, RULES).css).toBe(whole);
   });
 });
 

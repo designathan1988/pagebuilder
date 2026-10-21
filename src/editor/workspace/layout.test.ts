@@ -7,7 +7,7 @@ import type { CommandId } from '../../generated/ids.ts';
 import type { PreferenceStorage } from '../preferences/preferences.ts';
 import type { EditorUi } from '../state.ts';
 import { createEditorStore } from '../store.ts';
-import { INSPECTOR_TABS, inspectorTab } from './layout.ts';
+import { chosenSplitterSize, INSPECTOR_TABS, inspectorTab, setDrawnSplitterSize, splitterSize } from './layout.ts';
 
 const memory = (): PreferenceStorage => ({ read: () => null, write: () => undefined });
 const store = () => createEditorStore({ storage: memory(), ids: sequentialIds('n'), clock: manualClock() });
@@ -61,5 +61,23 @@ describe('the active tab of a tab group (workspace/layout.ts)', () => {
     expect(said({ group: 'workbench', panel: 'shortcuts' })).toEqual(['refused', 'status.args.invalid', 'panel']);
     expect(said({ group: 'nope', panel: 'style' })).toEqual(['refused', 'status.stale', undefined]);
     expect(inspectorTab(s.getState().ui)).toBe('style');
+  });
+});
+
+// a stacked panel drawn shorter than its size (the window holds less, sidebar.css): the splitter shows, and a key's
+// step starts from, the height the person sees (the real-use audit, USE-5)
+describe('a splitter whose panel is drawn shorter than its size', () => {
+  it('shows the drawn size and steps from it, keeping the chosen size where nothing is drawn', () => {
+    const s = store();
+    const chosen = chosenSplitterSize(s.getState().ui, 'sidebar-stack') ?? 0;
+    try {
+      setDrawnSplitterSize('sidebar-stack', 270);
+      expect(splitterSize(s.getState().ui, 'sidebar-stack')).toBe(Math.min(chosen, 270));
+      s.dispatch('workspace.resizeSplitter', { splitter: 'sidebar-stack', direction: 'down' });
+      expect(chosenSplitterSize(s.getState().ui, 'sidebar-stack')).toBeLessThan(270);
+    } finally {
+      setDrawnSplitterSize('sidebar-stack', null);
+    }
+    expect(splitterSize(s.getState().ui, 'sidebar-stack')).toBe(chosenSplitterSize(s.getState().ui, 'sidebar-stack'));
   });
 });

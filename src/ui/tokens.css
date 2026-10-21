@@ -102,6 +102,9 @@
   --size-header: 32px;
   --size-tile: 48px;
   --size-start-card: 520px;
+  /* the room the left dock's upper panel keeps over Layers (the final use's USE-5: Insert tiles and the Data panel's
+     buttons fit at 1280 x 720) */
+  --size-sidebar-view-min: 380px;
   --size-icon-md: 20px;
   --size-icon-lg: 32px;
   --size-label-column: 116px;

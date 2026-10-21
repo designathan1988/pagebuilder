@@ -76,15 +76,22 @@ describe('the application layer', () => {
     expect(modules[0]?.code.startsWith("import { state, app, fn } from '@app/runtime';")).toBe(true);
   });
 
-  it('links the import map and the module from every page, and archives the application files', () => {
+  it('links the start script from every page, and archives the application files', () => {
     const site = siteFiles(fixture('test-app'), RULES, true, scripts);
     const html = site.pages[0]?.html ?? '';
-    expect(html).toContain('<script type="importmap">{"imports":{"@app/runtime":"./js/app-layer/runtime.js","@app/script/util":"./js/app-layer/scripts/util.js","@app/component/Etiqueta":"./js/app-layer/components/Etiqueta.js"}}</script>');
-    expect(html).toContain('<script type="module" src="js/app-layer/main.js"></script>');
-    expect(html.indexOf('importmap')).toBeLessThan(html.indexOf('type="module"'));
+    // one classic script, which a page opened from disk runs too (final-use audit USE-3): no module tag, no import map
+    expect(html).toContain('<script defer src="js/app-layer/start.js"></script>');
+    expect(html).not.toContain('type="module"');
+    expect(html).not.toContain('importmap');
     expect(html).toMatch(/data-app="a\d+"/u);
+    // the start script names each module's file beside it, and carries each module's text for a page opened from disk
+    const start = site.app?.start ?? '';
+    expect(start).toContain('var files = {"@app/runtime":"runtime.js","@app/script/util":"scripts/util.js","@app/component/Etiqueta":"components/Etiqueta.js"};');
+    expect(start).toContain('"@app/script/util":"import { state, app, fn } from \'@app/runtime\';');
+    expect(start).toContain('/^(file|about|data|blob):$/.test(location.protocol)');
+    expect(() => new Function(start)).not.toThrow();
     const archive = new TextDecoder('latin1').decode(siteArchive(fixture('test-app'), RULES, scripts));
-    for (const path of ['js/app-layer/main.js', 'js/app-layer/runtime.js', 'js/app-layer/scripts/util.js', 'js/app-layer/components/Etiqueta.js']) expect(archive).toContain(path);
+    for (const path of ['js/app-layer/start.js', 'js/app-layer/main.js', 'js/app-layer/runtime.js', 'js/app-layer/scripts/util.js', 'js/app-layer/components/Etiqueta.js']) expect(archive).toContain(path);
   });
 
   it('refuses what only a classic script parses, so one piece never stops main.js (the audit LOGIC-1 and LOGIC-2)', () => {
@@ -126,9 +133,11 @@ describe('the application layer', () => {
 
   it('runs the preview from data: modules', () => {
     const html = previewPage(fixture('test-app'), RULES, 0, scripts);
-    expect(html).toContain('"@app/runtime":"data:text/javascript;charset=utf-8,');
+    // the start script itself, written in: in the preview's frame (about:srcdoc) it runs the modules from their text
+    expect(html).toContain(siteFiles(fixture('test-app'), RULES, false, scripts).app?.start.slice(0, 200) ?? 'no start');
+    expect(html).toContain("'data:text/javascript;charset=utf-8,' + encodeURIComponent(code)");
     expect(html).toContain('<html data-app-debug');
-    expect(html).not.toContain('src="js/app-layer/main.js"');
+    expect(html).not.toContain('src="js/app-layer/start.js"');
     // the browser tests read the preview of every example application (APP_OUT=<folder>)
     const out = process.env.APP_OUT;
     if (out !== undefined) {

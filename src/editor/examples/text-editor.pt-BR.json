@@ -889,10 +889,10 @@
             }
            }
           },
-          "text": "14 palavras · salvo neste navegador",
+          "text": "Palavras: 14 · salvo neste navegador",
           "children": [],
           "logic": {
-           "text": "fn.words(state.html) + ' palavras · salvo neste navegador'"
+           "text": "'Palavras: ' + fn.words(state.html) + ' · salvo neste navegador'"
           }
          }
         ]

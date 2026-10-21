@@ -133,7 +133,17 @@ export const insertInstanceCommand = registerHandler('components.insertInstance'
   const definition = componentsOf(state.document).find((c) => c.name === component);
   // every tile stands for a component of the project, so an unknown one is a defect of the door
   if (definition === undefined) throw new Error(`components.insertInstance: the project has no component ${component}`);
-  const placed = placement(state, state.selection, rules, parent, index);
+  const make = nodeMaker(state.document, rules, ids, words);
+  // the instance is named after its component, with a simple number (the audit's A3.12): "Card", "Card 2", "Card 3"
+  const name = copyName(definition.name, make.taken);
+  make.taken.add(name);
+  const plainCopy = copied(definition.tree, () => ids.next() as NodeId, make, true);
+  const copiedTree = refreshCopiedIdentities(state.document, [{ source: definition.tree, copy: plainCopy }])[0];
+  if (copiedTree === undefined) throw new Error('components.insertInstance: the instance copy is missing');
+  const node = marked({ ...copiedTree, name }, [], definition.name);
+  // placed by the one rule a palette tile is placed by (insert.ts placement, given the instance): a header's component
+  // with a header selected lands after it, never inside it where it is refused (the real-use audit, USE-7)
+  const placed = placement(state, state.selection, rules, parent, index, node);
   if (placed === null) throw new Error(`components.insertInstance: the document has no node ${String(parent)}`);
   // an instance lies inside no other instance: placed by the selection (no parent given) inside an instance, the new
   // one goes right after that instance, in its parent, as an element follows a selected element of its own kind (the
@@ -146,14 +156,6 @@ export const insertInstanceCommand = registerHandler('components.insertInstance'
   const receiver = at.parent.node;
   const locked = lockRefusal(state.document, receiver.id, 'status.locked.insert');
   if (locked !== null) return { kind: 'refused', message: locked };
-  const make = nodeMaker(state.document, rules, ids, words);
-  // the instance is named after its component, with a simple number (the audit's A3.12): "Card", "Card 2", "Card 3"
-  const name = copyName(definition.name, make.taken);
-  make.taken.add(name);
-  const plainCopy = copied(definition.tree, () => ids.next() as NodeId, make, true);
-  const copiedTree = refreshCopiedIdentities(state.document, [{ source: definition.tree, copy: plainCopy }])[0];
-  if (copiedTree === undefined) throw new Error('components.insertInstance: the instance copy is missing');
-  const node = marked({ ...copiedTree, name }, [], definition.name);
   // a parent named inside an instance (a drop, a door that names it) refuses: an instance lies inside no other
   const host = instanceRootOf(state.document, receiver.id);
   if (host !== null) return { kind: 'refused', message: message('status.instance.nested', { name: node.name, instance: host.name }) };

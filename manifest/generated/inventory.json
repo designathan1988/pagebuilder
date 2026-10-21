@@ -5,8 +5,8 @@
     "commands": 387,
     "doors": 1401,
     "scenarios": 1872,
-    "modules": 518,
-    "lines": 92090,
+    "modules": 519,
+    "lines": 92416,
     "fields": 207,
     "interactive": 270
   },
@@ -4168,14 +4168,14 @@
         "owner": "inside-door"
       },
       {
-        "key": "src/editor/app-panel/logic-tab.tsx|input|aria-label,autoComplete,className,name,placeholder,spellCheck|1",
+        "key": "src/editor/app-panel/logic-tab.tsx|input|aria-describedby,aria-label,autoComplete,className,name,spellCheck|1",
         "tag": "input",
         "role": null,
         "handlers": [],
         "owner": "none"
       },
       {
-        "key": "src/editor/app-panel/logic-tab.tsx|input|aria-label,autoComplete,className,name,placeholder,spellCheck|2",
+        "key": "src/editor/app-panel/logic-tab.tsx|input|aria-label,autoComplete,className,name,placeholder,spellCheck|1",
         "tag": "input",
         "role": null,
         "handlers": [],
@@ -5449,7 +5449,7 @@
         "owner": "wraps-door"
       },
       {
-        "key": "src/editor/shell/field.tsx|button|aria-checked,className,data-args,data-door,key,onClick,role,type|2",
+        "key": "src/editor/shell/field.tsx|button|aria-checked,className,data-args,data-door,key,onClick,role,title,type|1",
         "tag": "button",
         "role": "menuitemradio",
         "handlers": [

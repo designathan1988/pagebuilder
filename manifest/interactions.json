@@ -1758,7 +1758,8 @@
   ],
   "checks": {
     "colourProperty": "color",
-    "backgroundProperty": "background-color"
+    "backgroundProperty": "background-color",
+    "backgroundImageProperty": "background-image"
   },
   "layerColours": [
     "--color-canvas-selection",

@@ -147,6 +147,25 @@ describe('the application runtime', () => {
     expect(localStorage.getItem('app:host.test/one/|state:basket')).toBeNull();
   });
 
+  // the user's final-use audit, USE-8: the preview's sandboxed frame has no localStorage; the runtime keeps its values
+  // in the store the preview lends, says nothing, and a kept variable starts from what that store holds
+  it('keeps its values in the store the preview lends, without a warning', async () => {
+    happy().setURL('https://host.test/one/index.html');
+    const held = new Map<string, string>([['app:host.test/one/|state:tasks', '["write"]']]);
+    const lent = { getItem: (key: string) => held.get(key) ?? null, setItem: (key: string, value: string) => void held.set(key, value), removeItem: (key: string) => void held.delete(key) };
+    vi.stubGlobal('__builderPreviewStore', lent);
+    const warn = vi.spyOn(console, 'warn');
+    const runtime = await fresh();
+    await runtime.start({ variables: [{ name: 'tasks', type: 'list', initial: [], persist: true }], nodes: {} });
+    expect(runtime.state.tasks).toEqual(['write']);
+    runtime.state.tasks = ['write', 'read'];
+    await settle();
+    expect(held.get('app:host.test/one/|state:tasks')).toBe('["write","read"]');
+    expect(Object.keys(localStorage)).toEqual([]);
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
   it('sends a request body that is no plain object as it is, with the headers given (LOGIC-20)', async () => {
     const runtime = await fresh();
     const sent: RequestInit[] = [];
@@ -213,5 +232,31 @@ describe('the web components', () => {
     expect(later.querySelector('[data-wc-price]')?.textContent?.replace(/\s/gu, ' ')).toBe('R$ 12.500,00');
     later.querySelector<HTMLElement>('[data-wc-add]')?.click();
     expect(document.querySelector('[data-wc-count]')?.textContent).toBe('1');
+  });
+
+  // the user's final-use audit, USE-1: a closed part opens by data-wc-open, the mark the base CSS's closed rules read
+  it('marks the open part of each component with data-wc-open, and only that one', () => {
+    document.body.innerHTML = [
+      '<div data-wc="tabs"><div><button data-wc-tab>A</button><button data-wc-tab>B</button></div><div data-wc-panel>a</div><div data-wc-panel>b</div></div>',
+      '<button data-wc-cart-open>Cart</button><aside data-wc="cart"><button data-wc-close>x</button></aside>',
+      '<div data-wc="filter"><input data-wc-search><div data-wc-item>one</div><p data-wc-empty>none</p></div>',
+    ].join('');
+    new Function(widgetsScript())();
+    const panels = [...document.querySelectorAll('[data-wc-panel]')];
+    expect(panels.map((panel) => panel.hasAttribute('data-wc-open'))).toEqual([true, false]);
+    document.querySelectorAll<HTMLElement>('[data-wc-tab]')[1]?.click();
+    expect(panels.map((panel) => panel.hasAttribute('data-wc-open'))).toEqual([false, true]);
+    const cart = document.querySelector('[data-wc="cart"]');
+    expect(cart?.hasAttribute('data-wc-open')).toBe(false);
+    document.querySelector<HTMLElement>('[data-wc-cart-open]')?.click();
+    expect(cart?.hasAttribute('data-wc-open')).toBe(true);
+    document.querySelector<HTMLElement>('[data-wc-close]')?.click();
+    expect(cart?.hasAttribute('data-wc-open')).toBe(false);
+    const search = document.querySelector<HTMLInputElement>('[data-wc-search]');
+    const empty = document.querySelector('[data-wc-empty]');
+    expect(empty?.hasAttribute('data-wc-open')).toBe(false);
+    if (search !== null) search.value = 'zzz';
+    search?.dispatchEvent(new Event('input'));
+    expect(empty?.hasAttribute('data-wc-open')).toBe(true);
   });
 });

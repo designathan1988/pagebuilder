@@ -107,7 +107,9 @@ export function CanvasFrame({ width, screen, zoom, onExtent }: { readonly width:
           setExtent(measured);
           reportExtent.current(measured);
         }
-        if (import.meta.env.DEV && inside.innerHeight < screen - 0.5) reportCanvas('the canvas frame is shorter than the screen', `the frame shows ${String(inside.innerHeight)} px of a ${String(screen)} px screen`);
+        // innerHeight is whole px of the zoomed frame: at a fractional zoom (51 %) a 900 px screen reads 899, which is
+        // rounding, not a short frame; 1 px is allowed, as the growth check allows it
+        if (import.meta.env.DEV && inside.innerHeight < screen - 1) reportCanvas('the canvas frame is shorter than the screen', `the frame shows ${String(inside.innerHeight)} px of a ${String(screen)} px screen`);
       };
       const probeSoon = () => {
         caused = true;

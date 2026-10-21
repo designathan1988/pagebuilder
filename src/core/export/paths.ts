@@ -18,7 +18,10 @@ export const WIDGETS_SCRIPT = 'js/widgets.js';
 export const APP_MAIN_SCRIPT = 'js/app-layer/main.js';
 export const APP_MODULES_FOLDER = 'js/app-layer';
 export const APP_RUNTIME_SCRIPT = `${APP_MODULES_FOLDER}/runtime.js`;
+// the classic script every page with an application links: it writes the import map and starts main.js, from the
+// modules' files when served, from their text when opened from disk (app-start.ts)
+export const APP_START_SCRIPT = `${APP_MODULES_FOLDER}/start.js`;
 // every path the export may write a generated file at: no stored file may take one
-export const GENERATED_PATHS: readonly string[] = [STYLESHEET, INTERACTIONS_SCRIPT, FORMS_SCRIPT, MOTION_SCRIPT, LOTTIE_SCRIPT, WIDGETS_SCRIPT, APP_MAIN_SCRIPT, APP_RUNTIME_SCRIPT];
+export const GENERATED_PATHS: readonly string[] = [STYLESHEET, INTERACTIONS_SCRIPT, FORMS_SCRIPT, MOTION_SCRIPT, LOTTIE_SCRIPT, WIDGETS_SCRIPT, APP_START_SCRIPT, APP_MAIN_SCRIPT, APP_RUNTIME_SCRIPT];
 // the folders whose every path the export writes (a stored file may take none of them)
 export const GENERATED_FOLDERS: readonly string[] = [APP_MODULES_FOLDER];

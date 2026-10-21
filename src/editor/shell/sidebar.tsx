@@ -3,6 +3,7 @@
 // one per page, node or palette entry; a section's actions are the region's controls before its first item.
 // Each view is a file of its own under sidebar/ (plan I.12): explorer.tsx, layers.tsx, insert.tsx, styles.tsx, and the
 // doors they share in doors.tsx; this file draws the activity bar, the sidebar and the views' table.
+import { useLayoutEffect, useRef, useState } from 'react';
 import { AssistantPanel } from '../assistant/panel.tsx';
 import { DataPanel } from '../data/panel.tsx';
 import { AppPanel } from '../app-panel/panel.tsx';
@@ -13,7 +14,7 @@ import { useEditorState } from '../store.ts';
 import { atPlace, isPanelOpen } from '../workspace/panels.ts';
 import { panelName, stackedSections, type Panel } from '../workspace/panel-catalogue.ts';
 import { Splitter } from './splitter.tsx';
-import { combinationAt, splitterSize } from '../workspace/layout.ts';
+import { chosenSplitterSize, combinationAt, setDrawnSplitterSize } from '../workspace/layout.ts';
 import { PanelArea } from '../workspace/windows.tsx';
 import { useT } from '../text.ts';
 import type { BodyTable } from './bodies.ts';
@@ -64,8 +65,32 @@ export function Sidebar() {
   // drawn there and never twice (spec floating-panels)
   const here = useEditorState((s) => stackedSections().filter((panel) => atPlace(s.ui, panel)).join(','));
   const shown = useEditorState((s) => stackedSections().filter((panel) => isPanelOpen(s.ui, panel) && atPlace(s.ui, panel)).join(','));
-  const size = useEditorState((s) => splitterSize(s.ui, 'sidebar-stack'));
+  const size = useEditorState((s) => chosenSplitterSize(s.ui, 'sidebar-stack'));
   const open = new Set(shown === '' ? [] : shown.split(','));
+  // the first open section's drawn height: less than its size where the sidebar holds less (the view keeps its own
+  // minimum, sidebar.css), told to the splitter so a drag or an arrow starts from what is seen (USE-5)
+  const stack = useRef<HTMLDivElement | null>(null);
+  const [drawn, setDrawn] = useState<number | null>(null);
+  const first = (here === '' ? [] : here.split(',')).find((name) => open.has(name)) ?? null;
+  useLayoutEffect(() => {
+    const element = stack.current;
+    if (first === null || element === null) {
+      setDrawnSplitterSize('sidebar-stack', null);
+      setDrawn(null);
+      return undefined;
+    }
+    const read = () => {
+      setDrawnSplitterSize('sidebar-stack', element.offsetHeight);
+      setDrawn(element.offsetHeight);
+    };
+    read();
+    const observer = new ResizeObserver(read);
+    observer.observe(element);
+    return () => {
+      observer.disconnect();
+      setDrawnSplitterSize('sidebar-stack', null);
+    };
+  }, [first]);
   // panels combined with the view's area (spec panel-combine-tabs): one more tab of it, or one stacked under it; the
   // area then draws itself (PanelArea), so the tab strip and the stacked bodies have one owner
   const combined = useEditorState((s) => combinationAt(s.ui, view).tabs.length > 1 || combinationAt(s.ui, view).stack.length > 0);
@@ -80,11 +105,11 @@ export function Sidebar() {
           {View ? <View /> : <EmptyView panel={view} />}
         </div>
       )}
-      {open.size > 0 ? <Splitter splitter="sidebar-stack" /> : null}
+      {open.size > 0 ? <Splitter splitter="sidebar-stack" drawn={drawn} /> : null}
       {(here === '' ? [] : here.split(',')).map((name) => {
         const panel = name as Panel;
         return (
-          <div key={panel} className="sidebar__stack" style={open.has(name) ? { height: size ?? undefined } : undefined}>
+          <div key={panel} ref={name === first ? stack : undefined} className="sidebar__stack" style={open.has(name) ? { height: size ?? undefined } : undefined}>
             {/* the section draws itself and everything combined with it (spec panel-combine-tabs) */}
             <PanelArea panel={panel} />
           </div>

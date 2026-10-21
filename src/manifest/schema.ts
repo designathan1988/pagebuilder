@@ -529,7 +529,7 @@ export const interactionsFileSchema = z.strictObject({
     .min(1),
   // the properties the accessibility checks read (core/a11y/checks.ts): the text colour and the background it sits
   // on, so no property id is written by hand in the code
-  checks: z.strictObject({ colourProperty: cssName, backgroundProperty: cssName }),
+  checks: z.strictObject({ colourProperty: cssName, backgroundProperty: cssName, backgroundImageProperty: cssName }),
   // the label colours a Layers row offers (core/nodes/flags.ts element.setLayerColor): the design tokens whose values
   // the row draws as its palette, in their order
   layerColours: z.array(z.string().startsWith('--')).min(1),

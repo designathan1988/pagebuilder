@@ -180,6 +180,34 @@ export function clearedLabel(
   return { box, placement: 'below', covers: content.some((c) => overlaps(inner, c)) };
 }
 
+// The selection's label kept in what the person sees of the canvas (`stage`), above its element still (DEC-70): where
+// its one place runs past the stage's right edge (a long name over an element near that edge), the label and what
+// stands with it (`width`: the chip beside it, the text toolbar above it) move left along the frame's top line just
+// enough to end at the edge, and no further left than the stage's own left edge; hidden for running past the edge, the
+// label of a long-named button near the canvas's right edge vanished (the real-use audit, USE-4). A group wider than
+// the whole stage starts at the stage's left edge, and the label's name gives way (labelRoom). Only while the element
+// itself reaches into the stage across: the label of an element panned out of view is not drawn over another.
+export function heldInStage(
+  placed: { readonly box: Box; readonly placement: Placement; readonly covers: boolean },
+  frame: Box,
+  width: number,
+  stage: Box,
+  content: readonly Box[],
+): { box: Box; placement: Placement; covers: boolean } {
+  if (frame.x + frame.width < stage.x || frame.x > stage.x + stage.width) return { ...placed };
+  const x = Math.max(stage.x, Math.min(placed.box.x, stage.x + stage.width - width));
+  if (Math.abs(x - placed.box.x) < 0.5) return { ...placed };
+  const box = { ...placed.box, x };
+  const inner = { x: box.x + SLACK, y: box.y + SLACK, width: box.width - 2 * SLACK, height: box.height - 2 * SLACK };
+  return { box, placement: placed.placement, covers: content.some((c) => overlaps(inner, c)) };
+}
+
+// The widest the selection's label may be drawn: the stage's width less the chip that stands beside it, so label and
+// chip stand whole in view together; past it the element's name ends in an ellipsis (canvas.css .chrome__name).
+export function labelRoom(stage: Box, chipWidth: number): number {
+  return Math.max(0, Math.floor(stage.width - chipWidth));
+}
+
 // A label's box held inside an area: moved the least distance that puts it inside, its size kept.
 function heldInside(box: Box, area: Box): Box {
   return {

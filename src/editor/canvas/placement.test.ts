@@ -4,7 +4,7 @@
 // button's label over a card's price selected the button). A drop label takes the first free place around its element,
 // and where none is free it covers the least it can and says so.
 import { describe, expect, it } from 'vitest';
-import { clearedLabel, placeLabel, selectionLabelBox, turnedFrame, type Box } from './placement.ts';
+import { clearedLabel, heldInStage, labelRoom, placeLabel, selectionLabelBox, turnedFrame, type Box } from './placement.ts';
 
 const box = (x: number, y: number, width: number, height: number): Box => ({ x, y, width, height });
 const CANVAS = box(0, 0, 1000, 1000);
@@ -74,6 +74,40 @@ describe("the selection's label", () => {
       const one = selectionLabelBox(TOP, SIZE, 2, []);
       expect(clearedLabel(one, TOP, 2, { above: 0, width: SIZE.width }, TABS, [box(270, -20, 100, 10)]).covers).toBe(true);
     });
+  });
+});
+
+// near the stage's right edge a long label moves left to stay in view, above its element still (the real-use audit,
+// USE-4: the label of a long-named button near the canvas's right edge was hidden)
+describe("the selection's label kept in the stage", () => {
+  const STAGE = box(0, 0, 800, 600);
+  const LONG = { width: 358, height: 16 };
+  it('keeps its one place where it fits', () => {
+    const one = selectionLabelBox(BUTTON, SIZE, 2, []);
+    expect(heldInStage(one, BUTTON, SIZE.width + 24, STAGE, [])).toEqual(one);
+  });
+  it('moves left just enough that it and the chip end at the stage edge, still above its element', () => {
+    const near = box(640, 300, 120, 30);
+    const one = selectionLabelBox(near, LONG, 2, []);
+    const held = heldInStage(one, near, LONG.width + 24, STAGE, []);
+    expect(held.placement).toBe('above');
+    expect(held.box).toEqual(box(800 - 358 - 24, 282, 358, 16));
+  });
+  it('starts at the stage edge when the group is wider than the stage, and the name gives way to the room', () => {
+    const near = box(640, 300, 120, 30);
+    const one = selectionLabelBox(near, { width: 900, height: 16 }, 2, []);
+    expect(heldInStage(one, near, 924, STAGE, []).box.x).toBe(0);
+    expect(labelRoom(STAGE, 24)).toBe(776);
+  });
+  it('leaves the label of an element out of the stage across where it was', () => {
+    const away = box(900, 300, 100, 30);
+    const one = selectionLabelBox(away, LONG, 2, []);
+    expect(heldInStage(one, away, LONG.width, STAGE, [])).toEqual(one);
+  });
+  it('says it covers page text where it lands on it', () => {
+    const near = box(640, 300, 120, 30);
+    const one = selectionLabelBox(near, LONG, 2, []);
+    expect(heldInStage(one, near, LONG.width, STAGE, [box(450, 270, 40, 20)]).covers).toBe(true);
   });
 });
 

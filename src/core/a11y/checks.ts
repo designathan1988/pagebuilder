@@ -12,10 +12,14 @@
 //    form with no submit button (WCAG technique H32: a visitor has no way to send it; the audit's AUD-22, the one
 //    html-validate error of a fixture export left to the person, src/core/export/validity.test.ts); a WhatsApp link
 //    with no phone number, and a shop's cart with no number or e-mail to send the order to.
-//  - A value the reader cannot understand (a colour that is a variable, a gradient background) is left alone: a check
-//    never guesses, and a page that says nothing about colour is never reported.
+//  - A colour that names the project's variables (var(--brand)) is read as the variable's value, its aliases and
+//    fallbacks followed (core/style/swatch.ts resolvedVariables). A value the reader still cannot understand (a
+//    variable the project does not define, a keyword, a translucent colour over an unknown one) is left alone: a check
+//    never guesses, so an element whose own background is unknown makes the background unknown for it and everything
+//    inside it (never the one further out), and a page that says nothing about colour is never reported.
 import type { MessageId } from '../../generated/ids.ts';
 import type { DocNode, DocumentJson, NodeId } from '../document/model.ts';
+import { resolvedVariables } from '../style/swatch.ts';
 
 export interface CheckIssue {
   // the node the issue is about
@@ -82,10 +86,11 @@ const textWithin = (node: DocNode): string => `${node.text ?? ''}${node.children
 const hiddenWithin = (node: DocNode, hidden: boolean): boolean => node.hidden === true || hidden;
 
 // Every issue the page has, in document order: the checks of the report, each once, over every page of the project.
-// the two properties the contrast check reads, named by the manifest (interactions.json checks), never here
+// the properties the contrast check reads, named by the manifest (interactions.json checks), never here
 export interface CheckProperties {
   readonly colourProperty: string;
   readonly backgroundProperty: string;
+  readonly backgroundImageProperty: string;
 }
 
 // whether a form holds a control that sends it: a button whose type is submit (the export writes submit for a button
@@ -115,10 +120,25 @@ function cartWithoutAddress(node: DocNode): boolean {
 
 export function checksOf(document: DocumentJson, properties: CheckProperties): readonly CheckIssue[] {
   const issues: CheckIssue[] = [];
+  const tokens = document.tokens ?? [];
+  // a colour value as the page paints it: its variables resolved, then read; null when either cannot be done
+  const colourOf = (text: string, under: readonly [number, number, number] | null = null) => {
+    const resolved = resolvedVariables(text, tokens);
+    return resolved === null ? null : readColour(resolved, under);
+  };
+  // the background behind a node's content: unknown over an image or a gradient of its own (a photo's colours are not
+  // read), the one under it when the node sets none (or a transparent one), its own when it can be read, else unknown
+  const backgroundOf = (node: DocNode, under: readonly [number, number, number] | null) => {
+    const image = baseValue(node, properties.backgroundImageProperty);
+    if (image !== null && resolvedVariables(image, tokens)?.trim().toLowerCase() !== 'none') return null;
+    const set = baseValue(node, properties.backgroundProperty);
+    if (set === null || resolvedVariables(set, tokens)?.trim().toLowerCase() === 'transparent') return under;
+    return colourOf(set, under);
+  };
   const visit = (node: DocNode, hidden: boolean, background: readonly [number, number, number] | null, seenHeading: number): number => {
     const isHidden = hiddenWithin(node, hidden);
     if (isHidden || node.tag === null) return seenHeading;
-    const own = readColour(baseValue(node, properties.backgroundProperty) ?? '', background) ?? background;
+    const own = backgroundOf(node, background);
     const level = /^h([1-6])$/.exec(node.tag);
     let heading = seenHeading;
     if (level !== null) {
@@ -137,7 +157,7 @@ export function checksOf(document: DocumentJson, properties: CheckProperties): r
     }
     if (cartWithoutAddress(node)) issues.push({ node: node.id, category: 'export', rule: 'checks.cartDestination', fix: 'checks.cartDestination.fix' });
     // text with a colour of its own over a background that is known: below the contrast WCAG asks for is an issue
-    const colour = readColour(baseValue(node, properties.colourProperty) ?? '');
+    const colour = colourOf(baseValue(node, properties.colourProperty) ?? '');
     if (colour !== null && own !== null && textWithin(node) !== '' && contrast(colour, own) < CONTRAST_MINIMUM) {
       issues.push({ node: node.id, category: 'accessibility', rule: 'checks.contrast', fix: 'checks.contrast.fix' });
     }

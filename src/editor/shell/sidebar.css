@@ -88,12 +88,25 @@
   overflow: hidden;
 }
 
-/* a stacked section (the Layers, spec panel-resize): its height is the size its splitter holds, set inline */
+/* the view (or the area it is combined in) keeps a height of its own, at most a share of a short sidebar, so the
+   stack under it never squeezes it to a strip: at 1280 x 720 the Layers took 440 px and the Insert, Data and Pages
+   views had about 200, their tiles cut and their buttons out of sight (the real-use audit, USE-5; CLAUDE.md, rule G5) */
+.sidebar {
+  --sidebar-view-min: var(--size-sidebar-view-min);
+}
+
+.sidebar > :first-child {
+  min-height: min(var(--sidebar-view-min), 60%);
+}
+
+/* a stacked section (the Layers, spec panel-resize): its height is the size its splitter holds, set inline; where the
+   sidebar holds less, it gives way to the view's own height, its header always in sight (sidebar.tsx tells the
+   splitter the height it is drawn at) */
 .sidebar__stack {
   display: flex;
-  flex: none;
+  flex: 0 1 auto;
   flex-direction: column;
-  min-height: 0;
+  min-height: var(--size-header);
   overflow: hidden;
 }
 

@@ -889,10 +889,10 @@
             }
            }
           },
-          "text": "14 words · saved in this browser",
+          "text": "Words: 14 · saved in this browser",
           "children": [],
           "logic": {
-           "text": "fn.words(state.html) + ' words · saved in this browser'"
+           "text": "'Words: ' + fn.words(state.html) + ' · saved in this browser'"
           }
          }
         ]

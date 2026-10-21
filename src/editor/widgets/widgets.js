@@ -1,7 +1,8 @@
 /* Webconstructor web components (js/widgets.js): what the ready components of the Insert panel do on the published
    site. Each component is an element with data-wc="<kind>", and its parts carry data-wc-* attributes. The canvas
-   draws them without this script, so every component reads well without it too: a carousel scrolls, a menu shows its
-   links. No dependency, no network request of its own. */
+   draws them without this script, so every component reads well without it too: a carousel scrolls, and a closed part
+   (the cart drawer, a phone menu's links) is closed by the base CSS the canvas and the site share. No dependency, no
+   network request of its own. */
 (function () {
   'use strict';
   if (window.__wcWidgets) return;
@@ -40,18 +41,21 @@
     console.warn('[widgets] this browser keeps no values: they last this visit only.', error);
   };
   var memory = {};
+  // localStorage, or, in the editor's preview, whose sandboxed frame has none, the store the preview lends for the
+  // preview session (editor/shell/preview.tsx; the user's final-use audit, USE-8)
+  var browserStore = function () { return window.__builderPreviewStore || window.localStorage; };
   var store = {
     get: function (key, fallback) {
       var raw = Object.prototype.hasOwnProperty.call(memory, site + key) ? memory[site + key] : null;
       if (raw === null) {
-        try { raw = window.localStorage.getItem('wc:' + site + '|' + key); } catch (error) { unkept(error); }
+        try { raw = browserStore().getItem('wc:' + site + '|' + key); } catch (error) { unkept(error); }
       }
       if (raw === null || raw === undefined) return fallback;
       try { return JSON.parse(raw); } catch (error) { if (window.console) console.warn('[widgets] the value kept as ' + key + ' is no JSON:', error); return fallback; }
     },
     set: function (key, value) {
       var raw = JSON.stringify(value);
-      try { window.localStorage.setItem('wc:' + site + '|' + key, raw); } catch (error) { unkept(error); memory[site + key] = raw; }
+      try { browserStore().setItem('wc:' + site + '|' + key, raw); } catch (error) { unkept(error); memory[site + key] = raw; }
     },
   };
   var money = function (value, currency) {
@@ -90,8 +94,13 @@
     return Number(t.slice(0, at).split(grouped[1]).join('') + (grouped[2] ? '.' + t.slice(at + 1) : ''));
   };
 
-  /* The rules the components' states need (open, active, hidden): attribute selectors the editor's own styles do not
-     write. Written once, before the site's own stylesheet rules could not reach them. */
+  /* A closed part of a component (the cart drawer, the phone menu's links, a tab panel, the countdown's "over" text,
+     the filter's "nothing matches" text) opens when it carries data-wc-open: its closed state is a rule of the base CSS
+     (core/render/base.ts widgetStateCss), which the canvas writes too, so the canvas draws it closed as the site does. */
+  var OPEN = 'data-wc-open';
+
+  /* The rules the components' states need (active, hidden) besides those: attribute selectors the editor's own styles
+     do not write. Written once, before the site's own stylesheet rules could not reach them. */
   var css = document.createElement('style');
   css.setAttribute('data-wc-style', '');
   css.textContent = [
@@ -103,9 +112,6 @@
     '[data-wc="tabs"] [data-wc-tab]{cursor:pointer}',
     '[data-wc="tabs"] [data-wc-tab][aria-selected="true"]{box-shadow:inset 0 -2px 0 currentColor;font-weight:600}',
     '[data-wc-panel][hidden],[data-wc-done][hidden],[data-wc-empty][hidden]{display:none!important}',
-    '@media (max-width: 767px){[data-wc="menu"] [data-wc-toggle]{display:inline-flex!important}',
-    '[data-wc="menu"]:not([data-wc-open]) [data-wc-menu]{display:none!important}',
-    '[data-wc="menu"][data-wc-open] [data-wc-menu]{display:flex!important;flex-direction:column;width:100%}}',
     '.wc-lightbox{position:fixed;inset:0;z-index:2147483000;background:rgba(10,12,16,.92);display:flex;align-items:center;justify-content:center;padding:56px 16px;border:0;width:100%;height:100%;max-width:none;max-height:none;margin:0}',
     '.wc-lightbox img{max-width:100%;max-height:100%;object-fit:contain;border-radius:6px}',
     '.wc-lightbox p{position:absolute;bottom:16px;left:16px;right:16px;margin:0;text-align:center;color:#e5e7eb;font:14px/1.4 system-ui,sans-serif}',
@@ -114,10 +120,11 @@
     '.wc-lb-close{top:12px;right:12px}.wc-lb-prev{left:12px;top:50%;transform:translateY(-50%)}.wc-lb-next{right:12px;top:50%;transform:translateY(-50%)}',
     '[data-wc="lightbox"] img{cursor:zoom-in}',
     '[data-wc="cart"]{transition:transform .25s ease}',
-    '[data-wc="cart"]:not([data-wc-open]){transform:translateX(105%);visibility:hidden}',
     '.wc-cart-row{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:12px 0;border-bottom:1px solid rgba(127,127,127,.25)}',
     '.wc-cart-row strong{font-weight:600}.wc-cart-qty{display:flex;align-items:center;gap:8px}',
     '.wc-cart-qty button,.wc-cart-row .wc-remove{border:1px solid rgba(127,127,127,.4);background:transparent;color:inherit;border-radius:6px;min-width:28px;height:28px;cursor:pointer}',
+    // the base's button padding (10px 16px) left no room inside 28px: the "−" and "+" sat on the button's bottom edge
+    '.wc-cart-qty button{display:inline-grid;place-items:center;padding:0;line-height:1}',
     '.wc-cart-row .wc-remove{grid-column:2;justify-self:end;font-size:12px;padding:0 8px}',
     '[data-wc-item][hidden]{display:none!important}',
     '[data-wc-filter][aria-pressed="true"]{box-shadow:inset 0 0 0 2px currentColor}',
@@ -135,10 +142,10 @@
     if (menu && !menu.id) menu.id = 'wc-menu-' + Math.random().toString(36).slice(2, 8);
     if (menu) toggle.setAttribute('aria-controls', menu.id);
     var set = function (open) {
-      if (open) root.setAttribute('data-wc-open', ''); else root.removeAttribute('data-wc-open');
+      root.toggleAttribute(OPEN, open);
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
     };
-    toggle.addEventListener('click', function () { set(!root.hasAttribute('data-wc-open')); });
+    toggle.addEventListener('click', function () { set(!root.hasAttribute(OPEN)); });
     all(root, '[data-wc-menu] a').forEach(function (a) { a.addEventListener('click', function () { set(false); }); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
   });
@@ -270,7 +277,10 @@
       tabs.forEach(function (tab, j) {
         tab.setAttribute('aria-selected', i === j ? 'true' : 'false');
         tab.setAttribute('tabindex', i === j ? '0' : '-1');
-        if (panels[j]) panels[j].hidden = i !== j;
+        if (panels[j]) {
+          panels[j].hidden = i !== j;
+          panels[j].toggleAttribute(OPEN, i === j);
+        }
       });
       if (focus) tabs[i].focus();
     };
@@ -302,6 +312,11 @@
     var units = { days: 86400000, hours: 3600000, minutes: 60000, seconds: 1000 };
     var done = root.querySelector('[data-wc-done]');
     if (done) done.hidden = true;
+    var over = function () {
+      if (!done) return;
+      done.hidden = false;
+      done.setAttribute(OPEN, '');
+    };
     var tick = function () {
       var left = Math.max(0, end - Date.now());
       var rest = left;
@@ -311,7 +326,7 @@
         all(root, '[data-wc-unit="' + unit + '"]').forEach(function (el) { el.textContent = unit === 'days' ? String(value) : String(value).padStart(2, '0'); });
       });
       if (left === 0) {
-        if (done) done.hidden = false;
+        over();
         window.clearInterval(timer);
       }
     };
@@ -381,7 +396,7 @@
     var count = cart.reduce(function (n, item) { return n + item.qty; }, 0);
     all(document, '[data-wc-count]').forEach(function (el) { el.textContent = String(count); el.hidden = count === 0 && el.hasAttribute('data-wc-hide-empty'); });
   };
-  var openCart = function () { all(document, '[data-wc="cart"]').forEach(function (c) { c.setAttribute('data-wc-open', ''); var f = c.querySelector('button, a'); if (f) f.focus(); }); };
+  var openCart = function () { all(document, '[data-wc="cart"]').forEach(function (c) { c.setAttribute(OPEN, ''); var f = c.querySelector('button, a'); if (f) f.focus(); }); };
   each('product', function (root) {
     var name = root.getAttribute('data-wc-name') || ((root.querySelector('h1,h2,h3,h4') || {}).textContent || '').trim();
     var priceEl = root.querySelector('[data-wc-price]');
@@ -417,7 +432,7 @@
     var total = root.querySelector('[data-wc-total]');
     var empty = root.querySelector('[data-wc-empty]');
     var checkout = root.querySelector('[data-wc-checkout]');
-    var close = function () { root.removeAttribute('data-wc-open'); };
+    var close = function () { root.removeAttribute(OPEN); };
     all(root, '[data-wc-close]').forEach(function (b) { b.addEventListener('click', close); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
     var paint = function () {
@@ -484,7 +499,10 @@
         item.hidden = !ok;
         if (ok) shown += 1;
       });
-      if (empty) empty.hidden = shown > 0;
+      if (empty) {
+        empty.hidden = shown > 0;
+        empty.toggleAttribute(OPEN, shown === 0);
+      }
     };
     buttons.forEach(function (b) {
       b.setAttribute('aria-pressed', b.getAttribute('data-wc-filter') === '*' ? 'true' : 'false');
@@ -538,7 +556,7 @@
   /* Popups: a button with data-wc-open="<id>" opens the <dialog> of that id; data-wc-close closes it; a press on the
      backdrop too. A dialog with data-wc-delay opens by itself after that many milliseconds, once per visitor. */
   var popups = function (root) {
-    within(root, '[data-wc-open]').forEach(function (b) {
+    within(root, '[data-wc-open]:not([data-wc-open=""])').forEach(function (b) {
       if (b.__wcOpen) return;
       b.__wcOpen = true;
       b.addEventListener('click', function (e) {

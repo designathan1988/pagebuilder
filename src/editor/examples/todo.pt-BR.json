@@ -512,10 +512,10 @@
               }
              }
             },
-            "text": "1 abertas de 2",
+            "text": "Abertas: 1 de 2",
             "children": [],
             "logic": {
-             "text": "state.tasks.filter((task) => !task.done).length + ' abertas de ' + state.tasks.length"
+             "text": "'Abertas: ' + state.tasks.filter((task) => !task.done).length + ' de ' + state.tasks.length"
             }
            }
           ]

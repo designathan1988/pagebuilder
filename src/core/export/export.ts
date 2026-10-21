@@ -33,7 +33,7 @@ import { walk, type Animation, type DocNode, type DocumentJson } from '../docume
 import type { ModelRules } from '../document/validate.ts';
 import { zip, type ZipEntry } from '../project/zip.ts';
 import { PACKAGE_ARCHIVE, packageEntries, type PackageFormat } from './packages.ts';
-import { baseCss, capturedBaseCss } from '../render/base.ts';
+import { baseCss, capturedBaseCss, widgetStateCss } from '../render/base.ts';
 import { classesCss, elementAttributes, fileUrlsIn, mediaQuery, nodeCss, writesNode } from '../render/output.ts';
 import { svgMarkupOf } from '../elements/svg.ts';
 import { dataUrl, fileAt, fileBytes, relativePath } from '../files/files.ts';
@@ -51,8 +51,9 @@ import { motionConfig, siteUsesLottie } from '../motion/export.ts';
 import { rulesForDocument } from '../document/breakpoint-rules.ts';
 import { capturedExportHtml, exportedCapturedRoot, type CapturedHead } from '../render/captured.ts';
 import { captureSnapshotPath, type CapturedSnapshotPackage } from '../document/captured.ts';
-import { APP_MAIN_SCRIPT, APP_RUNTIME_SCRIPT, FORMS_SCRIPT, INTERACTIONS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, STYLESHEET, WIDGETS_SCRIPT } from './paths.ts';
-import { compileApp, importMap, mapAddress, siteUsesApp } from '../logic/compile.ts';
+import { APP_MAIN_SCRIPT, APP_RUNTIME_SCRIPT, APP_START_SCRIPT, FORMS_SCRIPT, INTERACTIONS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, STYLESHEET, WIDGETS_SCRIPT } from './paths.ts';
+import { compileApp, siteUsesApp } from '../logic/compile.ts';
+import { appStartScript } from './app-start.ts';
 
 // the generated files' paths (paths.ts, the one list the file tree reads too), published here for the editor
 export { FORMS_SCRIPT, INTERACTIONS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, STYLESHEET, WIDGETS_SCRIPT } from './paths.ts';
@@ -93,7 +94,7 @@ function headLines(document: DocumentJson, page: DocNode, rules: ModelRules, fro
   return lines;
 }
 
-const generatedScriptPaths: readonly string[] = [INTERACTIONS_SCRIPT, FORMS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, WIDGETS_SCRIPT, APP_MAIN_SCRIPT, APP_RUNTIME_SCRIPT];
+const generatedScriptPaths: readonly string[] = [INTERACTIONS_SCRIPT, FORMS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, WIDGETS_SCRIPT, APP_START_SCRIPT, APP_MAIN_SCRIPT, APP_RUNTIME_SCRIPT];
 const linksScript = (page: DocNode, path: string): boolean =>
   typeof page.attributes.pageScripts === 'string' && page.attributes.pageScripts.split(/\s+/).includes(path);
 
@@ -275,7 +276,6 @@ const PREVIEW_BASE = '';
 // and for previewPage, which finds the very tag it replaces with the script's text: it looked the tags up from the
 // page's own file, so a page in a folder (blog/post.html) ran none of its scripts in Preview (the audit's RENDER-5).
 const deferredScriptTag = (from: string, path: string): string => `  <script defer src="${escapeAttribute(relativePath(from, path))}"></script>`;
-const moduleScriptTag = (from: string, path: string): string => `  <script type="module" src="${escapeAttribute(relativePath(from, path))}"></script>`;
 
 export function pageLines(document: DocumentJson, pageIndex: number, manifestRules: ModelRules, shared: SharedClasses = newShared(document, manifestRules), relative = true): PageCode {
   // the project's breakpoints: its media queries (core/document/breakpoints.ts)
@@ -401,10 +401,9 @@ export function pageLines(document: DocumentJson, pageIndex: number, manifestRul
     ...(treeUsesMotion(page.tree) && siteUsesLottie(document) || linksScript(page.tree, LOTTIE_SCRIPT) ? [deferredScriptTag(from, LOTTIE_SCRIPT)] : []),
     ...(treeUsesMotion(page.tree) || linksScript(page.tree, MOTION_SCRIPT) ? [deferredScriptTag(from, MOTION_SCRIPT)] : []),
     ...(pageUsesWidgets(page.tree) || linksScript(page.tree, WIDGETS_SCRIPT) ? [deferredScriptTag(from, WIDGETS_SCRIPT)] : []),
-    // the application (spec app-logic): the import map that names its modules, before the module that starts it
-    ...(siteUsesApp(document)
-      ? [`  <script type="importmap">${importMap(document, (path) => mapAddress(relativePath(from, path)))}</script>`, moduleScriptTag(from, APP_MAIN_SCRIPT)]
-      : []),
+    // the application (spec app-logic): the classic script that writes the import map of its modules and starts
+    // main.js, so the site runs its application served or opened from disk (app-start.ts; the final-use audit, USE-3)
+    ...(siteUsesApp(document) ? [deferredScriptTag(from, APP_START_SCRIPT)] : []),
     '</head>',
   ].map((text) => ({ text, node: null }));
   const html: CodeLine[] = [...head, ...body, { text: '</html>', node: null }, { text: '', node: null }];
@@ -435,8 +434,8 @@ export function siteFiles(
   readonly lottie: string | null;
   readonly widgets: string | null;
   // the application (spec app-logic): js/app-layer/main.js, the runtime and the project's modules, while the project
-  // has one
-  readonly app: { readonly main: string; readonly runtime: string; readonly modules: readonly { readonly path: string; readonly code: string }[] } | null;
+  // has one, and its start script (app-start.ts)
+  readonly app: { readonly main: string; readonly runtime: string; readonly modules: readonly { readonly path: string; readonly code: string }[]; readonly start: string } | null;
 } {
   const rules = rulesForDocument(manifestRules, document);
   const usesForms = document.pages.some(page => pageUsesForms(page.tree));
@@ -453,7 +452,9 @@ export function siteFiles(
   // import tells a class of the person's one element alone lists from the class the export made for its own styles
   const classRules = classesCss(document.classes ?? [], rules.output, 'block');
   const base = document.pages.some(page => fileAt(document, capturedPageStylePath(page)) !== null) ? capturedBaseCss() : baseCss();
-  const shared = [base, rootCss(document.tokens ?? []), fonts === '' ? '' : `${fonts}\n`, classRules === '' ? '' : `${CLASSES_HEADING}\n${classRules}`].filter((c) => c !== '').map((c) => `${relative ? writtenCss(document, c, STYLESHEET) : c}\n`);
+  // the web components' closed parts, closed as the canvas draws them (base.ts widgetStateCss), in a site holding one
+  const widgetStates = document.pages.some((page) => pageUsesWidgets(page.tree)) ? widgetStateCss() : '';
+  const shared = [base, widgetStates, rootCss(document.tokens ?? []), fonts === '' ? '' : `${fonts}\n`, classRules === '' ? '' : `${CLASSES_HEADING}\n${classRules}`].filter((c) => c !== '').map((c) => `${relative ? writtenCss(document, c, STYLESHEET) : c}\n`);
   // the elements' rules in cascade order (every base rule, then each breakpoint's block, widest first), their identical
   // bodies merged inside a block (core/render/clean.ts; the audit's AUD-02)
   const media = rules.output.breakpoints.filter((breakpoint) => !breakpoint.base).map(mediaQuery);
@@ -487,7 +488,8 @@ export function siteFiles(
   const widgets = document.pages.some((page) => pageUsesWidgets(page.tree)) && scripts?.widgets !== undefined ? scripts.widgets() : null;
   if (siteUsesApp(document) && scripts?.app === undefined) throw new Error('The application layer requires the site script writer');
   const compiled = siteUsesApp(document) && scripts?.app !== undefined ? compileApp(document, scripts.checkSyntax) : null;
-  const app = compiled === null || scripts?.app === undefined ? null : { main: compiled.main, runtime: scripts.app(), modules: compiled.modules };
+  const runtime = compiled === null || scripts?.app === undefined ? null : scripts.app();
+  const app = compiled === null || runtime === null ? null : { main: compiled.main, runtime, modules: compiled.modules, start: appStartScript(document, { main: compiled.main, runtime, modules: compiled.modules }) };
   return { pages: pages.map(({ page, code }) => ({ file: page.file, html: code.html.map((line) => line.text).join('\n') })), css, cssLines, interactions, forms, motion, lottie, widgets, app };
 }
 
@@ -571,17 +573,12 @@ export function previewPage(document: DocumentJson, rules: ModelRules, pageIndex
   if (site.lottie !== null) html = html.replace(deferredScriptTag(PREVIEW_BASE, LOTTIE_SCRIPT), () => `  <script>\n${inlineScript(site.lottie ?? '')}\n  </script>`);
   if (site.motion !== null) html = html.replace(deferredScriptTag(PREVIEW_BASE, MOTION_SCRIPT), () => `  <script>document.addEventListener('DOMContentLoaded', function () {\n${inlineScript(site.motion ?? '')}\n});</script>`);
   if (site.widgets !== null) html = html.replace(deferredScriptTag(PREVIEW_BASE, WIDGETS_SCRIPT), () => `  <script>document.addEventListener('DOMContentLoaded', function () {\n${inlineScript(site.widgets ?? '')}\n});</script>`);
-  // the application runs from its own text too: the import map gives each module as a data: address (the frame has no
-  // folder), js/app-layer/main.js is written in, and the runtime shows its errors in the page (data-app-debug)
+  // the application runs from its own text too: its start script (app-start.ts) is written in, and in the preview's
+  // frame, which has no folder, it gives each module as a data: address, as a site opened from disk does; the runtime
+  // shows its errors in the page (data-app-debug)
   if (site.app !== null) {
-    const app = site.app;
-    const dataAddress = (code: string) => `data:text/javascript;charset=utf-8,${encodeURIComponent(code)}`;
-    const map = importMap(document, (path, code) => (code !== null ? dataAddress(code) : (() => {
-      const file = fileAt(document, path);
-      return file === null ? path : dataAddress(new TextDecoder().decode(fileBytes(file)));
-    })()), app.runtime, { main: app.main, modules: app.modules });
-    html = html.replace(/ {2}<script type="importmap">.*<\/script>/u, () => `  <script type="importmap">${map}</script>`);
-    html = html.replace(moduleScriptTag(PREVIEW_BASE, APP_MAIN_SCRIPT), () => `  <script type="module">\n${inlineScript(app.main)}\n  </script>`);
+    const start = site.app.start;
+    html = html.replace(deferredScriptTag(PREVIEW_BASE, APP_START_SCRIPT), () => `  <script>\n${inlineScript(start)}\n  </script>`);
     html = html.replace('<html', '<html data-app-debug');
   }
   // the stylesheet through a function too, so its $&, $' and $` stay as they are (RP1), and with its "</style" written
@@ -621,7 +618,7 @@ export function siteEntries(document: DocumentJson, rules: ModelRules, siteScrip
   if (site.lottie !== null) script.push({ path: LOTTIE_SCRIPT, bytes: encoder.encode(site.lottie) });
   if (site.widgets !== null) script.push({ path: WIDGETS_SCRIPT, bytes: encoder.encode(site.widgets) });
   if (site.app !== null) {
-    script.push({ path: APP_MAIN_SCRIPT, bytes: encoder.encode(site.app.main) }, { path: APP_RUNTIME_SCRIPT, bytes: encoder.encode(site.app.runtime) });
+    script.push({ path: APP_START_SCRIPT, bytes: encoder.encode(site.app.start) }, { path: APP_MAIN_SCRIPT, bytes: encoder.encode(site.app.main) }, { path: APP_RUNTIME_SCRIPT, bytes: encoder.encode(site.app.runtime) });
     for (const module of site.app.modules) script.push({ path: module.path, bytes: encoder.encode(module.code) });
   }
   return [...site.pages.map(({ file, html }) => ({ path: file, bytes: encoder.encode(html) })), { path: STYLESHEET, bytes: encoder.encode(site.css) }, ...capturedSnapshots, ...script, ...assets];

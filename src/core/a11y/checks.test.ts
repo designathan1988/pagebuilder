@@ -42,3 +42,44 @@ describe('text over a translucent background', () => {
     expect(contrastReported('rgba(15, 23, 42, 0.1)')).toBe(true);
   });
 });
+
+// The contrast rule over the project's variables (the final use's USE-2): white text on var(--color-1), a dark
+// orange, is read as the variable's value (an alias and a fallback followed), never as the white section around it; a
+// variable the project does not define is unknown and skipped, never judged against the background further out.
+describe('text and background that name the project variables', () => {
+  const contrastReported = (colour: string, background: string): boolean => {
+    const label = node('label', 'paragraph', 'p', { text: 'Comprar', styles: { desktop: { base: { color: colour, 'background-color': background } } } as DocNode['styles'] });
+    const section = node('section', 'div', 'section', { styles: { desktop: { base: { 'background-color': '#ffffff' } } } as DocNode['styles'], children: [label] });
+    const tokens = [{ name: 'color-1', kind: 'color', value: '#b45309' }, { name: 'brand', kind: 'color', value: 'var(--color-1)' }, { name: 'paper', kind: 'color', value: '#ffffff' }];
+    const document = { ...documentOf({ pages: [{ id: 'p', name: 'Home', file: 'index.html', tree: node('page', 'page', 'body', { children: [section] }) }] }), tokens };
+    return checksOf(document, manifest.interactions.checks).some((issue) => issue.node === 'label' && issue.rule === 'checks.contrast');
+  };
+
+  it('reads a variable, an alias and a fallback as the colour they name', () => {
+    expect(contrastReported('#ffffff', 'var(--color-1)')).toBe(false);
+    expect(contrastReported('#ffffff', 'var(--brand)')).toBe(false);
+    expect(contrastReported('#ffffff', 'var(--missing, #b45309)')).toBe(false);
+    expect(contrastReported('var(--paper)', 'var(--paper)')).toBe(true);
+  });
+
+  it('skips a variable the project does not define instead of judging against the section around it', () => {
+    expect(contrastReported('#ffffff', 'var(--missing)')).toBe(false);
+  });
+});
+
+// The contrast rule over an image or a gradient: a photo's colours are not read, so the text over it is skipped, never
+// judged against the plain colour of the section around it.
+describe('text over a background image', () => {
+  const contrastReported = (image: string): boolean => {
+    const hero = node('hero', 'div', 'section', { styles: { desktop: { base: { 'background-image': image } } } as DocNode['styles'], children: [node('title', 'heading', 'h1', { text: 'Welcome', styles: { desktop: { base: { color: '#ffffff' } } } as DocNode['styles'] })] });
+    const page = node('page', 'page', 'body', { styles: { desktop: { base: { 'background-color': '#ffffff' } } } as DocNode['styles'], children: [hero] });
+    const document = documentOf({ pages: [{ id: 'p', name: 'Home', file: 'index.html', tree: page }] });
+    return checksOf(document, manifest.interactions.checks).some((issue) => issue.node === 'title' && issue.rule === 'checks.contrast');
+  };
+
+  it('is unknown under a photo or a gradient, and judged again when the image is none', () => {
+    expect(contrastReported('url("img/hero.jpg")')).toBe(false);
+    expect(contrastReported('linear-gradient(#000, #333)')).toBe(false);
+    expect(contrastReported('none')).toBe(true);
+  });
+});

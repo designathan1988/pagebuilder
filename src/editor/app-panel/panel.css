@@ -141,6 +141,14 @@
   gap: var(--space-2);
 }
 
+/* the example of a binding's name under its field (logic-tab.tsx): code, wrapping at its commas in any width */
+.logic-binding__example {
+  margin-top: calc(-1 * var(--space-1));
+  color: var(--color-text-subtle);
+  font: var(--fs-code) / var(--lh-code) var(--font-mono);
+  overflow-wrap: anywhere;
+}
+
 /* the Logic tab: groups of rows, the label above its field (the inspector is narrow) */
 .inspector-tab--logic {
   display: flex;

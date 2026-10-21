@@ -54,7 +54,7 @@ import { parseDeclarations } from '../style/custom.ts';
 import { shadowLayersFromCss } from '../style/shadows.ts';
 import { matches, readSelector, type Compound, type Facts, type Selector } from './selectors.ts';
 import { readDeclarations, readStylesheet, type CssRule, type CssSheet } from './stylesheet.ts';
-import { baseCss, capturedBaseCss, CAPTURE_BASE_LAYER } from '../render/base.ts';
+import { baseCss, capturedBaseCss, CAPTURE_BASE_LAYER, widgetStateCss } from '../render/base.ts';
 import { ELEMENTS_HEADING, underClassesHeading } from '../export/sheet-headings.ts';
 // reading markup (core/import/markup.ts): the DOM walk and the source lines, moved out of this file
 import { lineOf, lineOfNode, parseMarkup, parsePage, textOf, type MarkupChild, type MarkupNode } from './markup.ts';
@@ -1328,7 +1328,14 @@ function keyframesIn(builder: Builder, sources: readonly SheetSource[]): Readonl
 // The stylesheet reader splits a selector list into rules, so this comparison also handles the grouped :where rules.
 const normalizedBaseText = (text: string): string => text.replace(/\s+/g, ' ').trim().toLowerCase();
 const BASE_RULES = [...readStylesheet(baseCss()).rules, ...readStylesheet(capturedBaseCss()).rules];
+// the web components' closed parts (base.ts widgetStateCss), which the export writes beside the base in a site holding
+// one: matched whole, with their media query and their importance, so a site read back never takes them as its own
+const WIDGET_STATE_RULES = readStylesheet(widgetStateCss()).rules;
+const ruleText = (rule: CssRule): string =>
+  JSON.stringify([normalizedBaseText(rule.selector), rule.media.map(normalizedBaseText), rule.declarations.map((declaration) => [normalizedBaseText(declaration.text), declaration.important]).sort()]);
+const WIDGET_STATE_TEXTS = new Set(WIDGET_STATE_RULES.map(ruleText));
 function isBaseRule(rule: CssRule): boolean {
+  if (WIDGET_STATE_TEXTS.has(ruleText(rule))) return true;
   if (rule.media.length > 0 || rule.declarations.some((declaration) => declaration.important)) return false;
   const selector = normalizedBaseText(rule.selector);
   const declarations = rule.declarations.map((declaration) => normalizedBaseText(declaration.text)).sort();

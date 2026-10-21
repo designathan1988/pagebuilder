@@ -512,10 +512,10 @@
               }
              }
             },
-            "text": "1 open of 2",
+            "text": "Open: 1 of 2",
             "children": [],
             "logic": {
-             "text": "state.tasks.filter((task) => !task.done).length + ' open of ' + state.tasks.length"
+             "text": "'Open: ' + state.tasks.filter((task) => !task.done).length + ' of ' + state.tasks.length"
             }
            }
           ]

@@ -255,7 +255,7 @@
             "text": "Pronto para jogar?",
             "children": [],
             "logic": {
-             "text": "state.over ? 'Fim de jogo! ' + state.score + ' pontos' : 'Pronto para jogar?'"
+             "text": "state.over ? 'Fim de jogo! Pontos: ' + state.score : 'Pronto para jogar?'"
             }
            },
            {

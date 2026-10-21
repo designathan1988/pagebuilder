@@ -12,9 +12,12 @@ import { SPLITTERS, splitterSize, type SplitterId } from '../workspace/layout.ts
 // the divider's drag door: the panel-drag door whose source is a splitter
 const SPLITTER_DRAG = manifest.doors.find((d) => d.door.kind === 'panel-drag' && d.door.source === 'splitter');
 
-export function Splitter({ splitter, className }: { readonly splitter: string; readonly className?: string }) {
+// `drawn`: the height its panel is drawn at, where the window holds less than its size (sidebar.tsx): the value the
+// separator says is the one the person sees
+export function Splitter({ splitter, className, drawn = null }: { readonly splitter: string; readonly className?: string; readonly drawn?: number | null }) {
   const t = useT();
-  const size = useEditorState((s) => splitterSize(s.ui, splitter));
+  const chosen = useEditorState((s) => splitterSize(s.ui, splitter));
+  const size = chosen === null || drawn === null ? chosen : Math.min(chosen, drawn);
   const data = SPLITTERS[splitter as SplitterId] as (typeof SPLITTERS)[SplitterId] | undefined;
   if (data === undefined || size === null || SPLITTER_DRAG === undefined) return null;
   return (

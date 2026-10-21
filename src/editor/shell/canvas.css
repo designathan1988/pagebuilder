@@ -1103,6 +1103,19 @@
   position: fixed;
 }
 
+/* the label is never wider than the stage holds with the chip beside it (its max-width, placement.ts labelRoom): the
+   tag, size, class, state and breakpoint keep their width and the element's name gives way, ending in an ellipsis */
+.chrome__label > * {
+  flex-shrink: 0;
+}
+
+.chrome__label > .chrome__name {
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .chrome__label.is-away,
 .text-toolbar.is-away {
   visibility: hidden;

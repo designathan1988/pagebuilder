@@ -7,7 +7,7 @@
 import type { ReactNode } from 'react';
 import type { NodeId } from '../../generated/commands.ts';
 import { DataRefusal, queryItems } from '../../core/data/collections.ts';
-import { reached, targetsOf, fieldFits, itemPagesOf, valueFor } from '../../core/data/bindings.ts';
+import { reached, targetsOf, fieldFits, itemPagesOf, shownBy, valueFor } from '../../core/data/bindings.ts';
 import { ITEM_PAGE, type BindTarget, type Collection, type Query } from '../../core/data/model.ts';
 import { lineage, type DocNode, type DocumentJson } from '../../core/document/model.ts';
 import { fileAt, objectUrl } from '../../core/files/files.ts';
@@ -86,17 +86,23 @@ export function MappingView({ collection, query, selected }: { readonly collecti
       <p className="data-panel__note">{t('data.mappingHelp', { name: template.root.name })}</p>
       {columns}
       <ul className="data-targets" aria-label={t('data.targets')}>
-        {targets.map(({ node, to }) => (
-          <li key={`${node.id}:${to}`} className="data-target" data-data-target="" data-args={JSON.stringify({ node: node.id, to })}>
-            {/* the part's name over what it shows, each on its line: a narrow panel cuts them, and the whole names stay
-                readable on hover */}
-            <span className="data-target__name" title={`${node.name} — ${t(`data.target.${to}` as MessageId)}`}>
-              <span className="data-target__label">{node.name}</span>
-              <span className="data-column__type">{t(`data.target.${to}` as MessageId)}</span>
-            </span>
-            <DoorField entry={BIND} args={{ node: node.id, to }} name="field" value={(node.bind ?? []).find((b) => b.to === to)?.field ?? ''} options={options(to)} label={t('data.bindLabel', { name: node.name, target: t(`data.target.${to}` as MessageId) })} />
-          </li>
-        ))}
+        {targets.map(({ node, to }) => {
+          // what the part shows now (a paragraph's text, an image's file): three paragraphs of a card are told apart by
+          // what they say (the final use's USE-9: three rows read "Paragra… text")
+          const shows = shownBy(node, to)?.trim() ?? '';
+          return (
+            <li key={`${node.id}:${to}`} className="data-target" data-data-target="" data-args={JSON.stringify({ node: node.id, to })}>
+              {/* the part's name, what it shows and what of it binds, each on its line; the menu moves under them when
+                  the panel is too narrow for both (panel.css), and the whole texts stay readable on hover */}
+              <span className="data-target__name" title={[node.name, shows, t(`data.target.${to}` as MessageId)].filter((part) => part !== '').join(' — ')}>
+                <span className="data-target__label">{node.name}</span>
+                {shows === '' ? null : <span className="data-target__shows">{shows}</span>}
+                <span className="data-column__type">{t(`data.target.${to}` as MessageId)}</span>
+              </span>
+              <DoorField entry={BIND} args={{ node: node.id, to }} name="field" value={(node.bind ?? []).find((b) => b.to === to)?.field ?? ''} options={options(to)} label={t('data.bindLabel', { name: node.name, target: t(`data.target.${to}` as MessageId) })} />
+            </li>
+          );
+        })}
       </ul>
       {bound.length === 0 ? null : (
         <div className="data-grid" aria-label={t('data.previewTitle')}>

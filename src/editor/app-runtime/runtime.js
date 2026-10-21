@@ -227,7 +227,13 @@ function keyOf(part) {
   return `app:${siteKey}|${part}`;
 }
 
-// what this browser keeps when localStorage is closed to it (a sandboxed preview, a private mode, a full disk): the
+// The store the values are kept in: localStorage, or, in the editor's preview, whose sandboxed frame has none, the
+// store the preview lends (globalThis.__builderPreviewStore, editor/shell/preview.tsx), which the editor keeps while
+// the preview is open, so a kept variable lasts from one page of the preview to the next and nothing is logged (the
+// user's final-use audit, USE-8). The exported site has no such store.
+const browserStore = () => globalThis.__builderPreviewStore || localStorage;
+
+// what this browser keeps when localStorage is closed to it (a private mode, a full disk, a sandboxed frame): the
 // page's own memory, for this visit; the console says so once
 const memory = new Map();
 let warned = false;
@@ -241,7 +247,7 @@ function unkept(error) {
 function keep(key, value) {
   const written = JSON.stringify(value);
   try {
-    localStorage.setItem(key, written);
+    browserStore().setItem(key, written);
     memory.delete(key);
   } catch (error) {
     unkept(error);
@@ -253,7 +259,7 @@ function kept(key, fallback) {
   let held = memory.has(key) ? memory.get(key) : null;
   if (held === null) {
     try {
-      held = localStorage.getItem(key);
+      held = browserStore().getItem(key);
     } catch (error) {
       unkept(error);
     }
@@ -270,7 +276,7 @@ function kept(key, fallback) {
 function forget(key) {
   memory.delete(key);
   try {
-    localStorage.removeItem(key);
+    browserStore().removeItem(key);
   } catch (error) {
     unkept(error);
   }

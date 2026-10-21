@@ -37,18 +37,21 @@
 }
 
 /* an action whose name is longer than the panel's room (A page per item of Cardapio, named by name) keeps within the
-   panel: its name is cut with an ellipsis and read whole in its accessible name (the panel scrolled 19 to 51 px
-   sideways) */
+   panel by breaking its name over lines, the button growing in height: never cut (G5; the final use's photo C06 read
+   "Uma página por item de Cole…"), never wider than the panel (it scrolled 19 to 51 px sideways) */
 .data-panel__actions > .door {
   max-width: 100%;
   min-width: 0;
+  height: auto;
+  min-height: var(--size-control);
+  padding-block: var(--space-2);
 }
 
 .data-panel__actions > .door .door__label {
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  text-align: start;
+  white-space: normal;
 }
 
 /* a field, a menu or a form keeps its control on one line and gives it what the row leaves */
@@ -123,12 +126,23 @@
   color: var(--color-text);
 }
 
-/* a part's name over what it shows (an image, a text), beside the field that binds it */
+/* a part's name over what it shows (an image, a text), beside the field that binds it: it keeps the room of a label
+   column, and in a panel too narrow for both the field moves to the line under it (.data-target wraps), so the name is
+   never cut to "Paragra…" (the final use's USE-9) */
 .data-target__name {
   display: flex;
-  flex: 1;
+  flex: 1 1 var(--size-label-column);
   flex-direction: column;
   min-width: 0;
+}
+
+/* what the part shows now, on one line: its start tells the parts apart, the whole of it is on the name's title */
+.data-target__shows {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text-muted);
+  font: var(--fw-micro) var(--fs-micro) / var(--lh-micro) var(--font-ui);
 }
 
 /* the part's name, a word or two of the catalogue, wraps under the element's name rather than being cut: "alternative
@@ -217,10 +231,11 @@
 
 .data-target {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-1) var(--space-2);
   min-height: var(--size-row);
-  padding: 0 var(--space-2);
+  padding: var(--space-1) var(--space-2);
   border: 1px dashed var(--color-border);
   border-radius: var(--radius-sm);
 }

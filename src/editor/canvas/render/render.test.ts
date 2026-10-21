@@ -403,6 +403,38 @@ describe('the renderer (src/editor/canvas/render/render.ts)', () => {
       URL.createObjectURL = created;
     }
   });
+
+  // The user's final-use audit, USE-1: a web component's closed part is closed on the canvas by the base CSS the export
+  // writes too, and opened (data-wc-open, the mark its site script opens it with) while it or a node inside is selected
+  it('draws a closed cart drawer closed, and open while it or a node inside it is selected', () => {
+    const cart = node('cart', 'box', 'aside', { customAttributes: { 'data-wc': 'cart' }, children: [node('cartTitle', 'heading', 'h2', { text: 'Your cart' })] });
+    const opener = node('opener', 'button', 'button', { text: 'Open', customAttributes: { 'data-wc-open': 'dialog-1' } });
+    const page = { ...doc, pages: [{ ...must(doc.pages[0]), tree: node('root', 'page', 'body', { children: [cart, opener] }) }] };
+    const { target, renderer } = mounted(page);
+    const drawer = must(target.querySelector('[data-node="cart"]'));
+    expect(drawer.hasAttribute('data-wc-open')).toBe(false);
+    expect(target.head.querySelector('style[data-base-style]')?.textContent).toContain('[data-wc="cart"]:not([data-wc-open]) { transform: translateX(105%); visibility: hidden; }');
+    renderer.reveal(page, ['cartTitle' as NodeId]);
+    expect(drawer.getAttribute('data-wc-open')).toBe('');
+    renderer.reveal(page, ['opener' as NodeId]);
+    expect(drawer.hasAttribute('data-wc-open')).toBe(false);
+    // a popup's opener keeps the dialog it names
+    expect(target.querySelector('[data-node="opener"]')?.getAttribute('data-wc-open')).toBe('dialog-1');
+  });
+
+  // The user's final-use audit, USE-6: a frame of another site (a map) cannot run in the canvas's sandbox, so the
+  // canvas draws a placeholder with its title and host; the document keeps the address
+  it("draws a frame of another site as a placeholder with its title and the address's host", () => {
+    const map = node('map', 'iframe', 'iframe', { attributes: attributes({ src: 'https://www.openstreetmap.org/export/embed.html?bbox=1', title: 'Map' }) });
+    const page = { ...doc, pages: [{ ...must(doc.pages[0]), tree: node('root', 'page', 'body', { children: [map] }) }] };
+    const { target } = mounted(page);
+    const frame = must(target.querySelector('[data-node="map"]'));
+    expect(frame.getAttribute('sandbox')).toBe('');
+    expect(frame.getAttribute('src')).toBe('https://www.openstreetmap.org/export/embed.html?bbox=1');
+    const shown = frame.getAttribute('srcdoc') ?? '';
+    expect(shown).toContain('<strong>Map</strong><span>www.openstreetmap.org</span>');
+    expect(shown).not.toContain('<script');
+  });
 });
 
 // DCS-035: the canvas frame is as tall as the page, so every sheet the canvas writes takes the breakpoint's screen as

@@ -3,7 +3,7 @@
 // component it draws, its bindings (an attribute, a class, a style or a component's prop that follows an expression)
 // and its events (code that runs on click, on a key, on mount, every frame or on a timer). Every control is a door the
 // manifest places in the inspector-logic region; the code fields complete the project's names (scope.ts).
-import type { ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
 import { primaryNodeOf } from '../../core/events/interactions.ts';
 import { logicOf, type NodeLogic } from '../../core/logic/model.ts';
 import type { NodeId } from '../../generated/commands.ts';
@@ -53,6 +53,7 @@ function Row({ label, children }: { readonly label: string; readonly children: R
 
 export function LogicTab(): ReactNode {
   const t = useT();
+  const example = useId();
   const document = useEditorState((state) => state.document);
   const selection = useEditorState((state) => state.selection);
   const node = selection.length === 1 ? primaryNodeOf(document, selection) : null;
@@ -111,7 +112,10 @@ export function LogicTab(): ReactNode {
             </div>
           ))}
           <DoorForm entry={ADD_BINDING} args={{}} className="logic-binding__add">
-            <input className="input" name="binding" aria-label={t('command.logic.addBinding')} placeholder={t('logic.binding.new')} autoComplete="off" spellCheck={false} />
+            {/* the example of a binding's name stands in a line of its own under the field, wrapping in any width: as the
+                field's placeholder it was cut mid-word (the real-use audit, USE-12) */}
+            <input className="input" name="binding" aria-label={t('command.logic.addBinding')} aria-describedby={example} autoComplete="off" spellCheck={false} />
+            <small id={example} className="logic-binding__example">{t('logic.binding.new')}</small>
             <input className="input input--code" name="value" aria-label={t('logic.binding.value')} placeholder={t('logic.binding.value')} autoComplete="off" spellCheck={false} />
           </DoorForm>
         </Group>

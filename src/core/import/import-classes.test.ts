@@ -81,4 +81,21 @@ describe('export then import keeps the project’s classes (B-04)', () => {
     const read = runHandler(importHtmlCommand, documentOf({ pages: [page('p', 'Home', 'index.html')] }), { files: elsewhere }, { confirmed: true });
     expect(read.document.classes?.map((c) => c.name)).toEqual(['card']);
   });
+
+  // the user's final-use audit, USE-1: a site holding a web component carries its closed parts' rules beside the base;
+  // read back, they are the export's own, never the site's, and the second export writes them once again
+  it("reads a web component's closed-part rules as the export's own", () => {
+    const base64 = (text: string) => btoa(String.fromCharCode(...new TextEncoder().encode(text)));
+    const cart = node('Cart', 'box', 'aside', { customAttributes: { 'data-wc': 'cart' }, children: [node('CartTitle', 'heading', 'h2', { text: 'Cart' })] });
+    const first = siteFiles(documentOf({ pages: [page('p', 'Home', 'index.html', [cart])] }), RULES);
+    expect(first.css).toContain('[data-wc="cart"]:not([data-wc-open])');
+    expect(siteFiles(documentOf({ pages: [page('p', 'Home', 'index.html')] }), RULES).css).not.toContain('[data-wc');
+    const files = [
+      { name: 'index.html', type: 'text/html', bytes: base64(first.pages[0]?.html ?? '') },
+      { name: 'css/styles.css', type: 'text/css', bytes: base64(first.css) },
+    ];
+    const ran = runHandler(importHtmlCommand, documentOf({ pages: [page('p', 'Home', 'index.html')] }), { files }, { confirmed: true });
+    expect(ran.problems).toEqual([]);
+    expect(siteFiles(ran.document, RULES).css).toBe(first.css);
+  });
 });

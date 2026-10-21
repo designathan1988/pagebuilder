@@ -58,7 +58,7 @@ const LEAVE_MODE = manifest.doors.find((d) => d.door.kind === 'shortcut' && d.do
 import { ViewOverlays } from './view-overlays.tsx';
 import { GridOverlay } from './grid-overlay.tsx';
 // where a label and a resize handle may be drawn (canvas/placement.ts): the rules moved out of this file, which draws
-import { clearedLabel, controlBoxes, handleHitBox, overlaps as overlapsBox, placeLabel, selectionLabelBox, turnedFrame, visibleCanvas, type Box, type Placement } from './placement.ts';
+import { clearedLabel, controlBoxes, handleHitBox, heldInStage, labelRoom, overlaps as overlapsBox, placeLabel, selectionLabelBox, turnedFrame, visibleCanvas, type Box, type Placement } from './placement.ts';
 import { ARRANGED, ARRANGED_SELECTOR, ROTATION_SIDES, placeRotationZones, yieldingAt, type Arranged } from './arrangement.ts';
 import { distancesOf, type Distance } from './distances.ts';
 import { altDistances, hoverSizeOf, type HoverSize } from './hover-measure.ts';
@@ -256,7 +256,8 @@ interface Layout {
   readonly hovered: Box | null;
   // `seen`: whether its place lies in view (the element's top inside the page's view, the label inside the stage): it
   // is drawn fixed in the window (canvas.css), so nothing clips it and it hides itself where it would stand out of view
-  readonly label: { readonly box: Box; readonly placement: Placement; readonly covers?: boolean; readonly seen?: boolean } | null;
+  // `room`: the widest the label may be drawn, so it and the chip beside it stand whole in the stage (labelRoom)
+  readonly label: { readonly box: Box; readonly placement: Placement; readonly covers?: boolean; readonly seen?: boolean; readonly room?: number } | null;
   // where the text toolbar goes while a text is edited in place: above the edit's label, placed with it as one
   readonly toolbar: { readonly x: number; readonly y: number } | null;
   // the marquee's band while one is drawn (pointer.ts)
@@ -754,7 +755,9 @@ function useChromeLayout({ layer, label, bar, selection, targets, hovered, node,
         // an element's own rotation turns its frame (item 4.4): the label stands on the turned frame's bounding box
         const turn = union === null && selection.length === 1 && selection[0] !== undefined ? elementRotation(iframe, selection[0]) : 0;
         // the quick panel's chip stands beside the label, touching it: kept clear of the editor's controls with it
-        const chipBox = document.querySelector<HTMLElement>('.quick-panel-chip:not(.is-measuring)');
+        // counted while it is still measured too (hidden until the label is placed in view): left out then, the label
+        // was given the chip's room, grew past the stage's edge, hid the chip again, and the two never settled (USE-4)
+        const chipBox = document.querySelector<HTMLElement>('.quick-panel-chip');
         const chipWidth = chipBox?.offsetWidth ?? 0;
         // the chip rests on the frame as the label does: taller than the label, it rises above the label's top
         const chipRise = Math.max(0, (chipBox?.offsetHeight ?? 0) - (size?.height ?? 0));
@@ -776,20 +779,22 @@ function useChromeLayout({ layer, label, bar, selection, targets, hovered, node,
           const content = contentBoxes(iframe).map((b) => local(b) as Box);
           pageText = content;
           const labelFrame = turn === 0 || first === undefined ? first : turnedFrame(first, turn, edge);
-          const one = selectionLabelBox(labelFrame, size, edge, content);
-          const spot = clearedLabel(one, labelFrame, edge, { above: Math.max(tools === null ? 0 : gap + tools.height, chipRise), width: Math.max(size.width + chipWidth, tools?.width ?? 0) }, tabs, content);
-          // in view while the element's top is inside the stage and the label inside it: the label is fixed in the
-          // window, above the page's edge too (an element at the page's top), so no layer clips it, and it hides where
-          // it would stand over the rulers or the panels, its element's top panned out of the stage (DCS-035: the frame
-          // is the whole page tall, the stage is what the person sees of it)
+          // the stage: what the person sees of the canvas (DCS-035: the frame is the whole page tall)
           const shown = document.querySelector('[data-canvas-stage]')?.getBoundingClientRect();
           const stage = shown === undefined ? { x: 0, y: 0, width: origin.width, height: origin.height } : { x: shown.x - origin.x, y: shown.y - origin.y, width: shown.width, height: shown.height };
+          const groupWidth = Math.max(size.width + chipWidth, tools?.width ?? 0);
+          // near the stage's right edge the label moves left along the frame's top to stay in view (heldInStage)
+          const one = heldInStage(selectionLabelBox(labelFrame, size, edge, content), labelFrame, groupWidth, stage, content);
+          const spot = clearedLabel(one, labelFrame, edge, { above: Math.max(tools === null ? 0 : gap + tools.height, chipRise), width: groupWidth }, tabs, content);
+          // in view while the element's top is inside the stage and the label inside it: the label is fixed in the
+          // window, above the page's edge too (an element at the page's top), so no layer clips it, and it hides where
+          // it would stand over the rulers or the panels, its element's top panned out of the stage
           // the text toolbar above the label; under it where the label stands under its element (clearedLabel)
           const under = spot.placement === 'below';
           const top = tools === null || under ? spot.box.y : spot.box.y - gap - tools.height;
           const topSeen = first.y >= Math.max(0, stage.y) - edge - 0.5 && first.y <= Math.min(origin.height, stage.y + stage.height) + 0.5;
           const seen = topSeen && spot.box.x >= stage.x - 0.5 && spot.box.x + Math.max(size.width, tools?.width ?? 0) <= stage.x + stage.width + 0.5 && top >= stage.y - 0.5;
-          placed = { ...spot, seen };
+          placed = { ...spot, seen, room: labelRoom(stage, chipWidth) };
           placedToolbar = tools === null ? null : { x: spot.box.x, y: under ? spot.box.y + size.height + gap : top };
         }
         placedFor = key;
@@ -1019,7 +1024,8 @@ function SelectionLabel({ labelRef, selection, node, targets, shown, dropping, e
   // a layout measured for another selection places nothing yet: the label waits, measuring, for its own
   const placed = shown.measuredFor === selection.join(' ') ? shown.label : null;
   // fixed in the window (DEC-70): the chrome layer's place on the screen plus the label's in the layer
-  const at = placed ? { left: origin.x + placed.box.x, top: origin.y + placed.box.y } : undefined;
+  // never wider than the stage holds with the chip beside it: past that the name ends in an ellipsis (canvas.css)
+  const at = placed ? { left: origin.x + placed.box.x, top: origin.y + placed.box.y, maxWidth: placed.room } : undefined;
   const away = placed?.seen === false ? ' is-away' : '';
   return selection.length > 1 ? (
     <div

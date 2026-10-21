@@ -255,7 +255,7 @@
             "text": "Ready to play?",
             "children": [],
             "logic": {
-             "text": "state.over ? 'Game over! ' + state.score + ' points' : 'Ready to play?'"
+             "text": "state.over ? 'Game over! Score: ' + state.score : 'Ready to play?'"
             }
            },
            {

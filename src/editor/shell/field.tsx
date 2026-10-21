@@ -1385,6 +1385,10 @@ export function KeywordButtons({ entry, door, property, values, icons, label }: 
   const appearance = useFieldAppearance(properties, mixed);
   const anyStored = useAnyStored(properties);
   const t = useT();
+  // each value's name in the person's language (the catalogue's value.<property>.<value>: "Centro" for center), said
+  // by an icon button's tooltip and accessible name; a worded button shows the keyword as CSS writes it (DEC-65) and
+  // keeps the name for its tooltip
+  const valueLabel = useValueLabel();
   // pressed: the document's value; the effective one, while the element holds none, is marked muted (spec
   // inspector-provenance-reset, Problems in Pager 4)
   const shown = mixed ? '' : (stored ?? '');
@@ -1456,6 +1460,7 @@ export function KeywordButtons({ entry, door, property, values, icons, label }: 
                   type="button"
                   role="menuitemradio"
                   aria-checked={shown === value}
+                  title={valueLabel(property, value)}
                   className="menu__item"
                   data-door={entry.ref}
                   data-args={JSON.stringify({ property, [valueArg]: value })}
@@ -1494,8 +1499,8 @@ export function KeywordButtons({ entry, door, property, values, icons, label }: 
               className={`door door--segment${available ? '' : ' is-unavailable'}${shown === value ? ' is-current' : ''}${muted === value ? ' is-default' : ''}`}
               aria-disabled={available ? undefined : true}
               aria-pressed={shown === value}
-              title={value}
-              aria-label={value}
+              title={valueLabel(property, value)}
+              aria-label={icon !== undefined ? valueLabel(property, value) : undefined}
               data-door={entry.ref}
               data-args={JSON.stringify({ property, [valueArg]: value })}
               // one Tab stop for the group, and the arrows move among its buttons (keymap.ts roving groups; the

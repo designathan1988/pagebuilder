@@ -181,7 +181,7 @@ export function placement(
   if (primary && rules.elements.get(primary.node.type)?.content === 'children') {
     // a selected container that does not take the new element (a list takes only its items) is followed by it, as a
     // leaf is, where its parent takes it: a table clicked with a list selected was refused, "<ul> only accepts <li>"
-    // (DEF-0601)
+    // (DEF-0601); a saved component is placed by this same rule (components.insertInstance, USE-7)
     const up = incoming !== undefined && primary.parent ? locate(document, primary.parent.id) : null;
     if (up && incoming !== undefined && placementRefusal(document, rules, primary.node.id, [incoming]) !== null && placementRefusal(document, rules, up.node.id, [incoming]) === null) {
       return { parent: up, index: primary.index + 1 };

@@ -40,7 +40,7 @@
 // text-inline-formatting). The marks go when the edit ends, and the element shows again the text the document holds.
 // They are the renderer's state, never the document's, and the page still gets no event handler.
 import type { NodeId } from '../../../generated/commands.ts';
-import { baseCss, capturedBaseCss } from '../../../core/render/base.ts';
+import { baseCss, capturedBaseCss, WIDGET_OPEN_ATTRIBUTE, widgetClosedPart, widgetStateCss } from '../../../core/render/base.ts';
 import { formNodes } from '../../../core/export/authoring.ts';
 import { canvasViewport, classesCss, elementAttributes, fileUrlsIn, nodeCss, outputModelFromManifest, type OutputModel } from '../../../core/render/output.ts';
 export {  nodeCss,   } from '../../../core/render/output.ts';
@@ -89,6 +89,24 @@ function withoutScripts(target: Document, markup: string): string {
   template.innerHTML = markup;
   for (const script of template.content.querySelectorAll('script')) script.remove();
   return template.innerHTML;
+}
+// Editor-only: what a frame showing another site draws on the canvas (dress): a light panel with a map pin when the
+// address is a map's (OpenStreetMap, Google Maps…) and a window otherwise, the frame's title (else its layer name) and
+// the address's host. Static HTML, so the sandboxed frame runs nothing.
+const escapeHtml = (text: string): string => text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
+const MAP_ICON = '<path d="M24 44s14-12.6 14-24a14 14 0 0 0-28 0c0 11.4 14 24 14 24z"/><circle cx="24" cy="20" r="5"/>';
+const FRAME_ICON = '<rect x="6" y="9" width="36" height="30" rx="4"/><path d="M6 17h36M12 13h.01M17 13h.01"/>';
+const PLACEHOLDER_STYLE =
+  'html,body{height:100%;margin:0}body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px;box-sizing:border-box;' +
+  'background:#f1f5f9;color:#475569;font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif;text-align:center;overflow:hidden}' +
+  'svg{width:48px;height:48px;flex:none}strong{color:#1e293b;font-size:15px;font-weight:600}span{overflow-wrap:anywhere}';
+function framePlaceholder(address: string, title: string): string {
+  // the host of an absolute or protocol-relative address (the caller passes only those); one no URL reads ("https://")
+  // is shown as it is written
+  const base = 'https://site.invalid/';
+  const host = URL.canParse(address, base) ? new URL(address, base).host : address;
+  const icon = /map/i.test(address) ? MAP_ICON : FRAME_ICON;
+  return `<!doctype html><html><head><meta charset="utf-8"><style>${PLACEHOLDER_STYLE}</style></head><body><svg viewBox="0 0 48 48" fill="none" stroke="#64748b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icon}</svg><strong>${escapeHtml(title)}</strong><span>${escapeHtml(host)}</span></body></html>`;
 }
 // the style element of the project's design tokens (core/design/tokens.ts): the :root rule of its variables, after the
 // editor's, before every node's (the export writes the same rule first in its stylesheet)
@@ -268,7 +286,7 @@ export class PageRenderer {
   private readonly markups = new WeakMap<Element, string>();
   // the text being edited in place: its node and the key context its element names
   private edit: { readonly node: NodeId; readonly context: string } | null = null;
-  // the closed details and dialogs drawn open because of the selection (reveal)
+  // the closed details, dialogs and web components' parts drawn open because of the selection (reveal)
   private revealed = new Set<NodeId>();
   // The document the page shows now, kept at every entry point: a stylesheet's url(…) naming a project file is written
   // as the file's object URL, as the source attributes are (files.ts), since the canvas holds the bytes and has no
@@ -300,12 +318,14 @@ export class PageRenderer {
   }
 
   // Editor-only (spec elements-interactive): a closed <details> or <dialog> is drawn open while it, or a node inside
-  // it, is selected, so its content can be seen and edited; the document and the export keep its own open state.
+  // it, is selected, so its content can be seen and edited; the document and the export keep its own open state. A
+  // web component's closed part (core/render/base.ts widgetClosedPart: the cart drawer, a phone menu, a tab panel…) is
+  // opened the same way, with the mark its site script opens it with (data-wc-open).
   reveal(doc: DocumentJson, selection: readonly NodeId[]): void {
     const wanted = new Set<NodeId>();
     for (const id of selection) {
       for (let at = locate(doc, id); at !== null; at = at.parent === null ? null : locate(doc, at.parent.id)) {
-        if (at.node.tag === 'details' || at.node.tag === 'dialog') wanted.add(at.node.id);
+        if (at.node.tag === 'details' || at.node.tag === 'dialog' || widgetClosedPart(at.node.customAttributes ?? {})) wanted.add(at.node.id);
       }
     }
     const changed = [...wanted].filter((id) => !this.revealed.has(id)).concat([...this.revealed].filter((id) => !wanted.has(id)));
@@ -598,7 +618,8 @@ export class PageRenderer {
     // out as the site does (the user's real-use audit, items 2.4 and 7.7)
     const base = this.target.createElement('style');
     base.setAttribute(BASE_STYLE_ATTRIBUTE, '');
-    base.textContent = this.viewport(baseCss());
+    // and the web components' closed parts after it (base.ts widgetStateCss), as the export writes them
+    base.textContent = this.viewport(`${baseCss()}${widgetStateCss()}`);
     this.target.head.prepend(base);
     // the editor's style element, next, so every node's rules come after it
     const editor = this.target.createElement('style');
@@ -795,7 +816,16 @@ export class PageRenderer {
     // editor-only: an embedded frame is sandboxed, so what it shows can run nothing against the editor; an image with
     // no source shows a placeholder of its default size (spec elements-media-images)
     if (tag === 'iframe') wanted.set('sandbox', '');
-    if (this.revealed.has(node.id)) wanted.set('open', '');
+    // editor-only: a page of another site in a frame runs its own scripts (a map, a video player), which the sandbox
+    // refuses, so it drew an empty box and each draw logged a blocked script (the user's final-use audit, USE-6): the
+    // canvas shows a placeholder with its icon, its title and the address's host instead; the export writes the frame
+    const away = tag === 'iframe' && !wanted.has('srcdoc') ? wanted.get('src') : undefined;
+    if (away !== undefined && /^(https?:)?\/\//i.test(away)) wanted.set('srcdoc', framePlaceholder(away, wanted.get('title') ?? node.name));
+    if (this.revealed.has(node.id)) {
+      if (tag === 'details' || tag === 'dialog') wanted.set('open', '');
+      // a part's own data-wc-open (a popup's opener naming its dialog) is never written over
+      if (widgetClosedPart(node.customAttributes ?? {}) && !wanted.has(WIDGET_OPEN_ATTRIBUTE)) wanted.set(WIDGET_OPEN_ATTRIBUTE, '');
+    }
     if (tag === 'img' && !wanted.has('src')) wanted.set('src', IMAGE_PLACEHOLDER);
     // a text element with no text (editor-only, the audit's A3.38), but the one being edited in place
     if (!edited && this.model.elements.get(node.type)?.content === 'text' && (node.text ?? '') === '') wanted.set(EMPTY_TEXT_ATTRIBUTE, '');
@@ -924,7 +954,7 @@ export class PageRenderer {
     const page = doc.pages[this.page];
     const css = page === undefined ? '' : this.viewport(fileUrlsIn(capturedPageCss(doc, page), (address) => resolvedSource(doc, captureAssetPath(page, address))));
     const hasCapture = page !== undefined && doc.files?.some(file => file.path === capturedPageStylePath(page));
-    const starting = this.viewport(hasCapture ? capturedBaseCss() : baseCss());
+    const starting = this.viewport(`${hasCapture ? capturedBaseCss() : baseCss()}${widgetStateCss()}`);
     if (base !== null && base.textContent !== starting) base.textContent = starting;
     this.target.documentElement.toggleAttribute('data-builder-capture', hasCapture === true);
     if (sheet !== null && sheet.textContent !== css) sheet.textContent = css;

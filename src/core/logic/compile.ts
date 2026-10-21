@@ -1,5 +1,6 @@
 // The application layer as the site runs it (spec app-logic): js/app-layer/main.js, the project's modules beside it
-// under js/app-layer/, and the import map every page carries, so each module imports the runtime, the scripts, the
+// under js/app-layer/, and the import map every page's start script writes (core/export/app-start.ts), so each module
+// imports the runtime, the scripts, the
 // code components and the libraries by name ('@app/runtime', '@app/script/<name>', '@app/component/<name>',
 // '<library>').
 //  - Every expression and handler is written as a function of its own in js/app-layer/main.js, the element's item
@@ -10,7 +11,7 @@
 //  - The runtime itself is the composition layer's (SiteScripts.app: the editor's app-runtime/runtime.js).
 import type { DocNode, DocumentJson } from '../document/model.ts';
 import { walk } from '../document/model.ts';
-import { APP_MAIN_SCRIPT, APP_MODULES_FOLDER, APP_RUNTIME_SCRIPT } from '../export/paths.ts';
+import { APP_MAIN_SCRIPT, APP_MODULES_FOLDER, APP_RUNTIME_SCRIPT, APP_START_SCRIPT } from '../export/paths.ts';
 import { hasLogic, readBinding, type AppModule, type NodeLogic } from './model.ts';
 
 
@@ -219,11 +220,12 @@ function moduleCode(module: AppModule): string {
   return names.length === 0 ? module.code : `import { ${names.join(', ')} } from '${RUNTIME_SPECIFIER}'; ${module.code}`;
 }
 
-// The files the application is written as while the project has one (main, runtime, then each module), in that order.
+// The files the application is written as while the project has one (the start script, main, runtime, then each
+// module), in that order.
 export function appPaths(document: DocumentJson): readonly string[] {
   if (!siteUsesApp(document)) return [];
   const app = document.app ?? {};
-  return [APP_MAIN_SCRIPT, APP_RUNTIME, ...(app.scripts ?? []).map((one) => scriptPath(one.name)), ...(app.components ?? []).map((one) => componentPath(one.name))];
+  return [APP_START_SCRIPT, APP_MAIN_SCRIPT, APP_RUNTIME, ...(app.scripts ?? []).map((one) => scriptPath(one.name)), ...(app.components ?? []).map((one) => componentPath(one.name))];
 }
 
 export function compileApp(document: DocumentJson, check?: SyntaxCheck): Compiled {
@@ -305,6 +307,3 @@ export function importMap(document: DocumentJson, at: (path: string, code: strin
   for (const one of app.libraries ?? []) imports[one.name] = one.url.startsWith('https://') ? one.url : at(one.url, null);
   return json({ imports });
 }
-
-// The specifier map's own rule: a relative address starts with ./ or ../ (MDN, <script type="importmap">)
-export const mapAddress = (relative: string): string => (relative.startsWith('.') || relative.startsWith('/') ? relative : `./${relative}`);

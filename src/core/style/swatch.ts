@@ -14,3 +14,16 @@ export function swatchColour(text: string, tokens: readonly { readonly name: str
   }
   return out.includes('var(') ? 'transparent' : out;
 }
+
+// The same reading for a reader that must not guess (the Checks panel's contrast rule): each var() is the variable's
+// value, its aliases followed, else its fallback; a variable the project does not define and that names no fallback,
+// or an alias chain deeper than the swatch follows, makes the whole value unknown (null) instead of transparent.
+export function resolvedVariables(text: string, tokens: readonly { readonly name: string; readonly value: string }[]): string | null {
+  const valueOf = (name: string, fallback: string | undefined): string | undefined => tokens.find((token) => token.name === name)?.value ?? fallback?.trim();
+  let out = text;
+  for (let depth = 0; depth < ALIAS_DEPTH && out.includes('var('); depth += 1) {
+    if ([...out.matchAll(VARIABLE_REFERENCE)].some(([, name = '', fallback]) => valueOf(name, fallback) === undefined)) return null;
+    out = out.replace(VARIABLE_REFERENCE, (whole, name: string, fallback: string | undefined) => valueOf(name, fallback) ?? whole);
+  }
+  return out.includes('var(') ? null : out;
+}

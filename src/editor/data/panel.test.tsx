@@ -97,6 +97,19 @@ describe('the Data panel', () => {
     expect(panel.querySelector('.data-mapping table')?.textContent).toContain('Filtrado Sul de Minas');
   });
 
+  // the final use's USE-9: three paragraphs of a card were three rows reading "Paragra… text"
+  it('tells the parts apart by what each shows now, beside its name', () => {
+    const store = storeOf('content-menu-list');
+    run(store, 'selection.select', { target: idOf(store, 'Title 2') });
+    const panel = draw(store);
+    const nodes = new Map(store.getState().document.pages.flatMap((page) => [...walk(page.tree)]).map((node) => [node.id, node]));
+    const texts = [...panel.querySelectorAll('[data-data-target]')].filter((part) => (args(part) as { to: string }).to === 'text');
+    expect(texts.length).toBeGreaterThan(1);
+    const shown = texts.map((part) => part.querySelector('.data-target__shows')?.textContent);
+    expect(shown).toEqual(texts.map((part) => nodes.get((args(part) as { node: string }).node)?.text?.trim()));
+    expect(new Set(shown).size).toBe(shown.length);
+  });
+
   it("binds a part from its menu, through data.bindElement", () => {
     const store = storeOf('content-menu-list');
     run(store, 'selection.select', { target: idOf(store, 'Card') });

@@ -10,7 +10,7 @@ import type { DocumentJson, Page, ProjectFile } from '../../core/document/model.
 import { byteCount, fileAt, folderOf, folderPaths } from '../../core/files/files.ts';
 import { filesOf } from '../../core/document/model.ts';
 import { FORMS_SCRIPT, INTERACTIONS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, STYLESHEET, WIDGETS_SCRIPT, siteFiles, siteScriptsWritten } from '../../core/export/export.ts';
-import { APP_MAIN_SCRIPT, APP_RUNTIME_SCRIPT } from '../../core/export/paths.ts';
+import { APP_MAIN_SCRIPT, APP_RUNTIME_SCRIPT, APP_START_SCRIPT } from '../../core/export/paths.ts';
 import { appPaths } from '../../core/logic/compile.ts';
 import { siteScripts } from '../forms/script.ts';
 import type { ModelRules } from '../../core/document/validate.ts';
@@ -74,8 +74,13 @@ export function generatedScripts(document: DocumentJson, rules: ModelRules): rea
     const text = site[part];
     return text === null ? [] : [{ path, text }];
   });
-  // the application: its main script, the runtime and each module, as the archive holds them
-  const app = site.app === null ? [] : [{ path: APP_MAIN_SCRIPT, text: site.app.main }, { path: APP_RUNTIME_SCRIPT, text: site.app.runtime }, ...site.app.modules.map((one) => ({ path: one.path, text: one.code }))];
+  // the application: its start script, its main script, the runtime and each module, as the archive holds them
+  const app = site.app === null ? [] : [
+    { path: APP_START_SCRIPT, text: site.app.start },
+    { path: APP_MAIN_SCRIPT, text: site.app.main },
+    { path: APP_RUNTIME_SCRIPT, text: site.app.runtime },
+    ...site.app.modules.map((one) => ({ path: one.path, text: one.code })),
+  ];
   return [...scripts, ...app];
 }
 

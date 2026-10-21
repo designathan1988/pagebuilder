@@ -111,7 +111,7 @@ EXAMPLES = []
 
 # what an element whose text an expression gives shows on the canvas, which runs no code: the text its first state gives
 SAMPLES = {
-    'Contagem': {'todo': '1 abertas de 2', 'text': '14 palavras · salvo neste navegador'},
+    'Contagem': {'todo': 'Abertas: 1 de 2', 'text': 'Palavras: 14 · salvo neste navegador'},
     'Texto': {'todo': 'Tarefa'},
     'Celula': {'sheet': 'A1'}, 'Resultado': {'sheet': '= Produto'},
     'Tamanho': {'paint': 'Tamanho 8'},
@@ -179,7 +179,8 @@ export function clearDone() {
                                                                                          'style:border-color': f"state.filter === '{value}' ? '{ACCENT}' : ''"}})
                 for label, value in (('Todas', 'all'), ('Abertas', 'open'), ('Feitas', 'done'))],
               node('paragraph', 'Contagem', style={**NOTE, 'margin-left': 'auto'},
-                   logic={'text': "state.tasks.filter((task) => !task.done).length + ' abertas de ' + state.tasks.length"}),
+                   # a label and its counts, never "1 abertas": the same words for any count (the final use's USE-11)
+                   logic={'text': "'Abertas: ' + state.tasks.filter((task) => !task.done).length + ' de ' + state.tasks.length"}),
               style={**BAR, 'margin-top': '12px'}),
          node('list', 'Lista',
               node('listItem', 'Tarefa',
@@ -241,7 +242,7 @@ export async function open() {
          node('div', 'Pagina', style={'min-height': '420px', **pad('24px', '28px'), 'font-size': '17px', 'line-height': '1.6', 'outline-style': 'none'},
               phone=pad('16px', '4px'), logic={'binds': {'attr:contenteditable': "'true'", 'attr:spellcheck': "'true'"}, 'model': 'state.html'}),
          node('paragraph', 'Contagem', style={**NOTE, 'padding-top': '8px', 'border-top-width': '1px', 'border-top-style': 'solid', 'border-top-color': LINE},
-              logic={'text': "fn.words(state.html) + ' palavras · salvo neste navegador'"}),
+              logic={'text': "'Palavras: ' + fn.words(state.html) + ' · salvo neste navegador'"}),
          style=CARD),
 )
 
@@ -761,7 +762,7 @@ export default {
          node('div', 'Tabuleiro', logic={'component': 'Cobrinha'}),
          node('div', 'Aviso',
               node('paragraph', 'Mensagem', style={'margin-top': '0', 'margin-bottom': '12px', 'font-size': '20px', 'font-weight': '700', 'color': '#ffffff'},
-                   logic={'text': "state.over ? 'Fim de jogo! ' + state.score + ' pontos' : 'Pronto para jogar?'"}),
+                   logic={'text': "state.over ? 'Fim de jogo! Pontos: ' + state.score : 'Pronto para jogar?'"}),
               button('Jogar', 'Jogar', 'fn.start()', primary=True),
               style={'position': 'absolute', 'top': '0', 'left': '0', 'right': '0', 'bottom': '0', 'display': 'flex', 'flex-direction': 'column',
                      'align-items': 'center', 'justify-content': 'center', 'background-color': 'rgba(15, 23, 42, 0.72)', **radius('12px')},
@@ -1084,11 +1085,11 @@ EN_TEXT = {
     'Gravidade, colisões e quicadas calculadas a cada quadro. Clique na área para lançar mais bolas.': 'Gravity, collisions and bounces calculated every frame. Click the area to throw more balls.',
     'Cadastro e login de membros, um mural público e notas privadas: tudo num banco de dados, sem servidor para configurar.': 'Member sign-up and log-in, a public board and private notes: all in a database, with no server to set up.',
     # tasks
-    '1 abertas de 2': '1 open of 2', 'Abertas': 'Open', 'Adicionar': 'Add', 'Feitas': 'Done', 'Todas': 'All', 'Tarefa': 'Task',
+    'Abertas: 1 de 2': 'Open: 1 of 2', 'Abertas': 'Open', 'Adicionar': 'Add', 'Feitas': 'Done', 'Todas': 'All', 'Tarefa': 'Task',
     'Nada por aqui.': 'Nothing here.', 'Limpar feitas': 'Clear done', 'Remover': 'Remove', 'O que precisa ser feito?': 'What needs doing?',
     'Experimentar o painel App': 'Try the App panel', 'Criar meu primeiro app': 'Build my first app',
     # text editor
-    '1. Lista': '1. List', '• Lista': '• List', '14 palavras · salvo neste navegador': '14 words · saved in this browser',
+    '1. Lista': '1. List', '• Lista': '• List', 'Palavras: 14 · salvo neste navegador': 'Words: 14 · saved in this browser',
     'Abrir…': 'Open…', 'Baixar .html': 'Download .html', 'Baixar .txt': 'Download .txt', 'Limpar': 'Clear', 'Nome do arquivo': 'File name',
     '<h2>Meu documento</h2><p>Escreva aqui. Selecione um trecho e use a barra acima.</p>': '<h2>My document</h2><p>Write here. Select some text and use the toolbar above.</p>',
     'documento': 'document',
@@ -1120,10 +1121,10 @@ EN_TEXT = {
 
 # the texts the examples' code writes on the page (the string literals of their expressions and scripts)
 EN_CODE = {
-    '   Recorde: ': '   Best: ', ' abertas de ': ' open of ', ' palavras · salvo neste navegador': ' words · saved in this browser',
-    ' pontos': ' points', ' quadros/s · energia ': ' frames/s · energy ', '#CICLO': '#CYCLE', '#ERRO': '#ERROR', 'Aguarde…': 'Please wait…',
+    '   Recorde: ': '   Best: ', 'Abertas: ': 'Open: ', ' de ': ' of ', 'Palavras: ': 'Words: ', ' · salvo neste navegador': ' · saved in this browser',
+    ' quadros/s · energia ': ' frames/s · energy ', '#CICLO': '#CYCLE', '#ERRO': '#ERROR', 'Aguarde…': 'Please wait…',
     'Bem-vindo, ': 'Welcome, ', 'Bolas: ': 'Balls: ', 'Continuar': 'Resume', 'Criar conta': 'Sign up', 'Elasticidade: ': 'Bounciness: ',
-    'Entrar': 'Log in', 'Fim de jogo! ': 'Game over! ', 'Gravidade: ': 'Gravity: ', 'Olá, ': 'Hi, ', 'Pausar': 'Pause',
+    'Entrar': 'Log in', 'Fim de jogo! Pontos: ': 'Game over! Score: ', 'Gravidade: ': 'Gravity: ', 'Olá, ': 'Hi, ', 'Pausar': 'Pause',
     'Pontos: ': 'Score: ', 'Pronto para jogar?': 'Ready to play?', 'Recado publicado': 'Post published', 'Tamanho ': 'Size ',
     'Velocidade ': 'Speed ', 'desenho.png': 'drawing.png', 'desenho.svg': 'drawing.svg', 'documento': 'document',
     'planilha.csv': 'spreadsheet.csv', 'pt-BR': 'en',

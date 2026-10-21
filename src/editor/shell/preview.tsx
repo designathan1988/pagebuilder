@@ -34,7 +34,7 @@ export function PreviewPage() {
   // the page the editor has open, never the project's first: previewing a second page must show that page (the
   // interface audit F03), and the memo re-runs when the open page changes
   const page = useEditorState((s) => openedPage(s));
-  const html = useMemo(() => withKeyRelay(previewPage(document, MODEL_RULES, page, siteScripts)), [document, page]);
+  const html = useMemo(() => withPreviewStore(withKeyRelay(previewPage(document, MODEL_RULES, page, siteScripts)), PREVIEW_KEPT), [document, page]);
   const frame = useRef<HTMLIFrameElement>(null);
   const store = useStore();
   // a key the page relays (KEY_RELAY) is pressed again on the preview bar, in the preview's key context, so the keymap
@@ -47,6 +47,12 @@ export function PreviewPage() {
       // the sender), and only the two keys it relays and the page it asks for
       // eslint-disable-next-line builder/frame-owner -- the preview's own frame: its window is compared, never read
       if (event.source === null || event.source !== frame.current?.contentWindow) return;
+      const stored = keptValue((event.data as { builderPreviewStore?: unknown } | null)?.builderPreviewStore);
+      if (stored !== null) {
+        if (stored.value === null) PREVIEW_KEPT.delete(stored.key);
+        else PREVIEW_KEPT.set(stored.key, stored.value);
+        return;
+      }
       const asked = (event.data as { builderPreviewPage?: unknown } | null)?.builderPreviewPage;
       if (typeof asked === 'string') {
         const state = store.getState();
@@ -102,3 +108,29 @@ export function pageAt(pages: readonly Page[], from: string, address: string): P
 }
 
 const withKeyRelay =(html: string): string => (html.includes('</body>') ? html.replace('</body>', `${KEY_RELAY}</body>`) : html + KEY_RELAY);
+
+// The store the preview lends its page (the user's final-use audit, USE-8): the page runs sandboxed in an opaque
+// origin, where localStorage throws, so the site's runtimes (js/widgets.js, js/app-layer/runtime.js) logged that this
+// browser keeps no values, and a kept variable started over at every preview. They keep their values in this store
+// instead (globalThis.__builderPreviewStore), which starts with the values the editor holds and sends every write to
+// the editor, which keeps them (PREVIEW_KEPT) while the editor is open: the next page the preview opens, and the next
+// preview, start with them, as a site's next page and next visit start with what the visitor's browser keeps. Written
+// first in the head, before any script of the page; the preview's page alone has it, never the export.
+const PREVIEW_KEPT = new Map<string, string>();
+const previewStoreScript = (kept: ReadonlyMap<string, string>): string => `<script>(function () {
+  var held = ${JSON.stringify(Object.fromEntries(kept)).replace(/</g, '\\u003c')};
+  var send = function (key, value) { parent.postMessage({ builderPreviewStore: { key: key, value: value } }, '*'); };
+  window.__builderPreviewStore = {
+    getItem: function (key) { return Object.prototype.hasOwnProperty.call(held, key) ? held[key] : null; },
+    setItem: function (key, value) { held[key] = String(value); send(key, held[key]); },
+    removeItem: function (key) { delete held[key]; send(key, null); }
+  };
+})();</script>`;
+const withPreviewStore = (html: string, kept: ReadonlyMap<string, string>): string => html.replace('<head>', () => `<head>\n${previewStoreScript(kept)}`);
+// a write the page's store sends: a key and its text, or null when the key is removed
+function keptValue(sent: unknown): { readonly key: string; readonly value: string | null } | null {
+  if (sent === null || typeof sent !== 'object') return null;
+  const { key, value } = sent as Record<string, unknown>;
+  if (typeof key !== 'string' || (typeof value !== 'string' && value !== null)) return null;
+  return { key, value };
+}

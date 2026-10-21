@@ -2209,6 +2209,10 @@
       "reader": "src/core/a11y/checks.ts"
     },
     {
+      "field": "interactions:checks.backgroundImageProperty",
+      "reader": "src/core/a11y/checks.ts"
+    },
+    {
       "field": "interactions:layerColours",
       "reader": "src/editor/shell/sidebar.tsx"
     },

@@ -79,6 +79,24 @@ describe('components.insertInstance and detach', () => {
     }
   });
 
+  // the one rule a palette tile is placed by (insert.ts placement): an instance its selected place refuses goes right
+  // after the nearest ancestor whose parent takes it (the real-use audit, USE-7: a site header's component with the
+  // page's header selected was refused, "<header> cannot sit inside <header>"; with a section's box selected it landed
+  // inside the section)
+  it('places an instance its selected place refuses after it, where a parent takes it, as a palette tile is placed', () => {
+    const top = node('Top', 'header', 'header', { children: [node('Brand', 'link', 'a', { text: 'Brand' })] });
+    const contact = node('Contact', 'section', 'section', { children: [node('Box', 'div', 'div')] });
+    const first: DocumentJson = { ...doc([top, contact]), components: [{ name: 'Site header', tree: node('Def', 'header', 'header', { children: [node('Def-brand', 'link', 'a', { text: 'Brand' })] }) }] };
+    for (const [selected, at] of [['Top', 1], ['Brand', 1], ['Box', 2], ['Contact', 2]] as const) {
+      const next = after(first, insertInstanceCommand.run(context(first, [selected]), { component: 'Site header' }));
+      expect(next.pages[0]?.tree.children[at]?.component).toBe('Site header');
+    }
+    // a list takes only its items: a paragraph's component goes right after the selected list (DEF-0601)
+    const listed: DocumentJson = { ...doc([node('Perks', 'list', 'ul', { children: [node('One', 'listItem', 'li')] })]), components: [{ name: 'Note', tree: node('Def-note', 'paragraph', 'p', { text: 'Note' }) }] };
+    const noted = after(listed, insertInstanceCommand.run(context(listed, ['Perks']), { component: 'Note' }));
+    expect(noted.pages[0]?.tree.children.map((child) => child.component ?? child.name)).toEqual(['Perks', 'Note']);
+  });
+
   it('gives each instance fresh HTML ids while preserving references within it', () => {
     const source = node('Card', 'article', 'article', { attributes: { id: 'card' }, children: [
       node('Control', 'input', 'input', { attributes: { id: 'control' } }),
