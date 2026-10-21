@@ -240,3 +240,12 @@
 ## DCS-033 — a agulha da Linha do tempo perto de um quadro-chave
 - **Origem:** uso de 2026-10-09: um clique no rótulo "1 s" da régua parou a agulha em 0,97 s; a opacidade digitada foi para o estilo base do elemento ("Opacidade de Intro: 1."), não para o quadro-chave de 100 %.
 - **Decidido:** sem mudança (comportamento atual: a gravação vai ao quadro-chave só com a agulha sobre ele; o painel diz "Em 97%" e oferece "Adicionar quadro-chave"). Fica para o dono decidir se a agulha deve encostar no quadro-chave a poucos pixels.
+
+## DCS-034 — a troca de breakpoint sem seleção
+- **Origem:** DEF-0622. Com um elemento selecionado, a troca de breakpoint passou a trazer o elemento para a vista, abaixo das barras presas no topo da página.
+- **Decidido:** sem seleção, a troca continua com o comportamento atual: a vista guarda o ponto da página que estava no meio dela, em px. Se o dono preferir outra âncora (o topo da página, ou o primeiro elemento visível), a mudança fica em `frame.tsx`, no efeito da largura.
+
+## DCS-035 — canvas como prancheta (página inteira, pan livre), pedido do dono de 2026-10-21
+- **Origem:** o dono notou que a página fica presa numa moldura da altura da área, que rola por dentro; pediu para ver a página inteira, com pan, zoom e rolagem no canvas, como no Figma.
+- **Medido:** a 15 % de zoom, a moldura continua com 665 px de altura (a página do Restaurante tem 7.520 px); Espaço + arraste só rola a página por dentro; a roda horizontal não faz nada.
+- **Decidido:** proposta registrada para o dono aprovar (resposta da sessão de 2026-10-21); nada mudou no modelo da câmera neste lote.

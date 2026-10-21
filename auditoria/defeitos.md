@@ -1406,43 +1406,103 @@
 - Prova: `paineis-cabem.spec.ts`, "the new field form … reads whole in Portuguese": falha sem a correção, passa nas duas condições.
 
 ## DEF-0615 — atualizar o componente não leva textos nem links às outras instâncias
-- Status: aberto (prontidão, 2026-10-10)
+- Status: corrigido (etapa 1, 2026-10-21)
 - Sintoma: cabeçalho do Início virou o componente "Cabeçalho do site", inserido em Sobre e Contato; no Início, "Marca" → "Torra Fresca" e os links do menu ligados às páginas; "Atualizar o componente a partir desta instância" diz "2 outras instâncias acompanham", mas Sobre e Contato seguem com "Marca" e links vazios, e o ZIP sai assim. O estilo (fundo) propaga.
 - Causa: `src/core/design/components.ts:394`: cada outra instância mantém `text` e `attributes` próprios mesmo sem nunca tê-los mudado; não há distinção entre valor herdado e sobreposto.
 - Prova: reproduzido 2× (links e texto da marca), fotos `auditoria/fotos/prontidao/78`, `80`, `81`; contorno: excluir a instância e inserir de novo (foto 83).
 
 ## DEF-0616 — "+ Classe" com classe existente: o nome digitado some e o Enter aplica a primeira classe da lista
-- Status: aberto (prontidão, 2026-10-10)
+- Status: corrigido (etapa 1, 2026-10-21)
 - Sintoma: com `.botao-primario` no projeto, selecionar o parágrafo do rodapé, clicar "+ Classe", digitar "rodape-texto" e Enter: o campo fica vazio e a barra diz ".botao-primario aplicada".
 - Causa: `src/editor/shell/popover.tsx:78`: `querySelector(FOCUSABLE)` devolve o primeiro focável na ordem do documento (os itens da lista vêm antes do campo marcado `data-autofocus`).
 - Prova: reproduzido 2×, fotos 94 e 95; clicando antes no campo, a classe nova é criada.
 
 ## DEF-0617 — "Abrir um endereço da web": o endereço digitado não entra no campo
-- Status: aberto (prontidão, 2026-10-10)
+- Status: corrigido (etapa 1, 2026-10-21)
 - Sintoma: Arquivo › Abrir um endereço da web…, digitar "https://example.com": o campo continua vazio; é preciso clicar nele antes.
 - Causa: `src/editor/shell/dialog.tsx:28`: o diálogo põe o foco no próprio painel e ignora o campo `data-autofocus` (`capture-url.tsx:44`); vale para os outros `ModalDialog` com campo assim.
 - Prova: reproduzido 2× (foco lido: `DIV dialog capture-url`), foto 100.
 
 ## DEF-0618 — Variáveis: Tab no nome da variável nova perde o foco em vez de ir ao valor
-- Status: aberto (prontidão, 2026-10-10)
+- Status: corrigido (etapa 1, 2026-10-21)
 - Sintoma: Estilos › + › Cor, digitar "creme" e Tab: o foco vai para a página (`BODY`); o que se digita a seguir (ex.: "#6b3e26", Ctrl+A) vira atalho do editor (Ctrl+A selecionou os irmãos no canvas).
 - Causa: `src/editor/shell/variables.tsx:167`: a linha tem `key={token.name}`; o nome gravado no blur troca a chave, e o React refaz a linha com o campo de valor que acabava de receber o foco.
 - Prova: reproduzido 2×, fotos 11 e 93.
 
 ## DEF-0619 — a "Barra de navegação" pronta passa da largura do Celular
-- Status: aberto (prontidão, 2026-10-10)
+- Status: corrigido (etapa 1, 2026-10-21)
 - Sintoma: inserir "Barra de navegação" e ver em Celular (390): a barra mede 423 px, "Entrar" fica cortado e o site exportado rola de lado no telefone.
 - Causa: `manifest/elements.json:88`: o elemento Navegação traz `padding` 20px 40px por padrão, somado aos 40px do modelo `template-navbar` (`manifest/elements.json:3195`), sem regra para telas estreitas.
 - Prova: reproduzido 2× (423 de 390), fotos 39 e 96.
 
 ## DEF-0620 — o preço "6,50" de um CSV aparece no site como "6.5"
-- Status: aberto (prontidão, 2026-10-10)
+- Status: corrigido (etapa 1, 2026-10-21)
 - Sintoma: fluxo `data-c4` (cardapio.csv importado como coleção nova, preço ligado ao parágrafo, Preencher): a prévia mostra "6,50" e "5,00" e marca a coluna como Número, mas o canvas e o HTML exportado mostram "6.5", "5", "9.9". Contorno: trocar a coluna para Texto na prévia.
 - Causa: `src/core/data/collections.ts:116` `cellText` devolve `String(value)` do número, sem as casas decimais nem o separador do idioma do projeto.
 - Prova: reproduzido 3× (2 pelo subagente, 1 aqui com `pront-t3.mjs`), fotos `sub-a-11-preenchido-r1/r2`.
 
 ## DEF-0621 — o menu de contexto que sobe até o topo fica por baixo da barra de menus
-- Status: aberto (prontidão, 2026-10-10)
+- Status: corrigido (etapa 1, 2026-10-21)
 - Sintoma: clicar com o botão direito numa camada no meio do painel (Rodapé, Botão 2, a 1366×768): o menu abre em y=8, e "Organizar" da barra de menus aparece sobre "Renomear".
 - Causa: `src/editor/shell/top-bar.css:30`: os botões da barra têm `z-index: var(--z-menu-anchor)` (51), acima de `--z-menu` (50) do menu de contexto.
 - Prova: reproduzido 2× no Chrome (`elementFromPoint` no primeiro item = "Organizar"), fotos 68, 79 e `105-menu-contexto-*`.
+
+## DEF-0622 — trocar de breakpoint com um elemento selecionado o deixa fora de vista
+- Status: corrigido (lote de 2026-10-21, sem commit: a pasta não é repositório git)
+- Sintoma: Restaurante, título do destaque selecionado no Desktop, aba Tablet: o topo do título fica 53 px acima da vista, o rótulo some; de volta ao Desktop a vista cai na galeria, e o título, a 35 px, fica sob o cabeçalho fixo do site.
+- Causa: `src/editor/canvas/frame.tsx:214`: a troca de largura muda o zoom, que guarda o ponto da página em px; na largura nova a página se reorganiza e o ponto cai sobre outro conteúdo.
+- Prova: `tests/e2e/breakpoint-keeps-selection.spec.ts` falha antes (passo "tablet": `inside false`, `labelAway true`) e passa depois; `travelWhole` em `src/editor/canvas/reveal.test.ts`.
+
+## DEF-0623 — o ícone de girar fica sozinho no topo do canvas quando o elemento selecionado está fora de vista
+- Status: corrigido (lote de 2026-10-21, sem commit: a pasta não é repositório git)
+- Sintoma: título selecionado e a página rolada até a galeria: o ícone de girar aparece sobre o cabeçalho, longe do elemento.
+- Causa: `src/editor/canvas/arrangement.ts:72` `rotationPlaces` prende cada zona dentro do canvas mesmo quando o elemento inteiro está fora dele.
+- Prova: `tests/e2e/breakpoint-keeps-selection.spec.ts` falha antes (passo "away": 2 zonas) e passa depois; caso em `src/editor/canvas/arrangement.test.ts`.
+
+## DEF-0624 — o cartão de início fica sobre a borda de arrastar a moldura
+- Status: corrigido (lote de 2026-10-21, sem commit: a pasta não é repositório git)
+- Sintoma: projeto vazio no Celular ou no Tablet (ou janela de 1024 px): o cartão "Comece seu site", mais largo que a moldura, cobre a borda de arrastar a largura, que não recebe o toque.
+- Causa: `src/editor/shell/canvas.tsx:209` `FrameEdge` era desenhada com o cartão aberto; o cartão, centrado na área, passa da moldura estreita.
+- Prova: `empty-page-size.spec.ts` e `narrow-window.spec.ts` falham antes (guarda de tela: `covered`, `frame__edge` sob `start-screen__card`) e passam depois, nas duas condições.
+
+## DEF-0625 — a premissa do teste do Explorer só valia sem barra de rolagem (defeito do teste)
+- Status: corrigido (lote de 2026-10-21, sem commit)
+- Sintoma: `paineis-cabem.spec.ts:48` falhava só na condição Windows: a linha de "index.html" tem 177 px (187 sem barra), e a marca "gerado" fica 3 px curta, então sai, como manda a regra (`name-first.ts`).
+- Causa: o teste esperava a marca sempre visível; agora confere a regra: visível onde cabe, fora onde não cabe.
+- Prova: o caso passa nas duas condições. Junto: a guarda de tela lia o realce `.command-bar__match` ("cart" digitado) como texto em inglês ("Cart", `comp.shop.cart`); exceção com motivo em `screen-guard-allowed.ts`.
+
+## DEF-0626 — o cartão de início cobria o Compositor de layout
+- Status: corrigido (lote de 2026-10-21)
+- Sintoma: página vazia, ferramenta Layout: "Vazio. Arraste nele para desenhar uma região", mas o cartão "Comece seu site" ficava sobre a área de desenho.
+- Causa: `src/editor/shell/canvas.css` desenhava `.start-screen` sobre toda camada do canvas; agora um módulo que toma o canvas marca `data-canvas-mode` (`src/modules/layout-composer/ui/overlay.tsx`) e o cartão sai.
+- Prova: 9 cenários `layout-composer` (guarda de tela `covered`) falhavam na suíte inteira de 2026-10-21.
+
+## DEF-0627 — a guia e o seu valor ficavam sob o cartão de início
+- Status: corrigido (lote de 2026-10-21)
+- Sintoma: página vazia, guia arrastada da régua: o número da posição sumia sob o campo "Crie seu site com IA".
+- Causa: `.guide` sem `z-index` na pilha do palco; agora `--z-canvas-edge` só enquanto o cartão existe (`src/editor/shell/canvas.css`).
+- Prova: `guides-manual.spec.ts` (2 casos) falhava na suíte inteira.
+
+## DEF-0628 — a zona de girar ficava sob uma aba de âncora
+- Status: corrigido (lote de 2026-10-21)
+- Sintoma: Alt+Shift+seta ancora o título; a aba da esquerda ficava sobre a zona de girar.
+- Causa: `src/editor/canvas/anchor-tabs.tsx` move as abas no seu próprio laço sem avisar o relógio da página; as zonas eram arrumadas contra a posição antiga. Agora `pageChanged()` a cada posição nova.
+- Prova: 6 cenários `absolute-anchors` falhavam na suíte inteira.
+
+## DEF-0629 — o nome da trilha cortado ao rolar a Linha do tempo
+- Status: corrigido (lote de 2026-10-21)
+- Sintoma: Movimento, Linha do tempo rolada de lado: o nome "Element" aparecia como "ment".
+- Causa: `.motion-lane__label` era absoluto e rolava com os segundos; agora `position: sticky` à esquerda, com fundo (`src/editor/motion/ui/motion.css`).
+- Prova: foto do cenário `a-keyframe-time-is-typed`.
+
+## DEF-0630 — a barra de comandos punha um nome parecido antes do exato
+- Status: corrigido (lote de 2026-10-21)
+- Sintoma: "ins hero" oferecia "Insert Hero with image" antes de "Insert Hero"; em pt-BR "header" punha "Menu que recolhe no celular" antes de "Cabeçalho".
+- Causa: `src/editor/command-bar/command-bar.ts` desempatava pela ordem da lista; agora as palavras não nomeadas e a posição do outro nome desempatam.
+- Prova: `command-bar.spec.ts:69` e `command-bar-other-names.spec.ts:11` falhavam na suíte inteira.
+
+## DEF-0631 — testes e cenários que não conheciam as novidades da etapa 1 (defeito de teste)
+- Status: corrigido (lote de 2026-10-21)
+- Sintoma: 160+ falhas sem defeito do app: porta "Adicionar interação" com os atalhos do Movimento (`tests/e2e/door.ts` `control`), régua maior que a área (`tools/runner/scenarios.ts` `controlPoint`), campo de código confirmado com Enter, cenários do App/Lógica com `type` duplicado ou porta não desenhada, blocos do cartão de início contados como do Inserir, rótulo por trecho ("Button" em "WhatsApp button").
+- Causa: os specs e o manifesto (`24-motion.json`, `27-app-logic.json`, `09-panels.json`) não acompanharam a etapa 1.
+- Prova: os grupos voltaram a passar (Movimento 143+71, App/Lógica 32 de 35).

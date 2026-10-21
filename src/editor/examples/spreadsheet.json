@@ -1,0 +1,487 @@
+{
+ "version": 4,
+ "language": "pt-BR",
+ "codeLanguage": "en",
+ "pages": [
+  {
+   "id": "sheetpage",
+   "name": "Planilha",
+   "file": "index.html",
+   "tree": {
+    "id": "sheet58",
+    "type": "page",
+    "name": "Body",
+    "tag": "body",
+    "attributes": {},
+    "classes": [],
+    "styles": {
+     "desktop": {
+      "base": {
+       "margin-top": "0",
+       "margin-right": "0",
+       "margin-bottom": "0",
+       "margin-left": "0",
+       "background-color": "#f4f5f9",
+       "color": "#14161f",
+       "font-family": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+       "min-height": "100vh"
+      }
+     }
+    },
+    "text": null,
+    "children": [
+     {
+      "id": "sheet57",
+      "type": "main",
+      "name": "App",
+      "tag": "main",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "max-width": "1080px",
+         "margin-left": "auto",
+         "margin-right": "auto",
+         "padding-top": "24px",
+         "padding-bottom": "40px",
+         "padding-left": "20px",
+         "padding-right": "20px",
+         "display": "flex",
+         "flex-direction": "column",
+         "row-gap": "16px"
+        }
+       },
+       "phone": {
+        "base": {
+         "padding-left": "12px",
+         "padding-right": "12px",
+         "padding-top": "12px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "sheet51",
+        "type": "header",
+        "name": "Topo",
+        "tag": "header",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "column-gap": "8px",
+           "row-gap": "8px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "sheet50",
+          "type": "div",
+          "name": "Titulos",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-right": "auto",
+             "min-width": "0"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "sheet48",
+            "type": "heading",
+            "name": "Titulo",
+            "tag": "h1",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "font-size": "24px",
+               "line-height": "1.2",
+               "margin-right": "auto"
+              }
+             }
+            },
+            "text": "Planilha",
+            "children": []
+           },
+           {
+            "id": "sheet49",
+            "type": "paragraph",
+            "name": "Descricao",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "color": "#5b6170",
+               "font-size": "14px"
+              }
+             }
+            },
+            "text": "Fórmulas como =B2*C2 e =SUM(D2:D4): um componente de código desenha a grade, um script calcula.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "sheet46",
+          "type": "button",
+          "name": "Baixar CSV",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#4f46e5",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#4f46e5",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#4f46e5",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#4f46e5",
+             "background-color": "#4f46e5",
+             "color": "#ffffff",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Baixar CSV",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "app.download('planilha.csv', fn.csv(state.cells), 'text/csv')"
+            }
+           ]
+          }
+         },
+         {
+          "id": "sheet47",
+          "type": "button",
+          "name": "Limpar",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Limpar tudo",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "state.cells = {}"
+            }
+           ]
+          }
+         }
+        ]
+       },
+       {
+        "id": "sheet55",
+        "type": "section",
+        "name": "Formula",
+        "tag": "section",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "column-gap": "8px",
+           "row-gap": "8px",
+           "background-color": "#ffffff",
+           "border-top-width": "1px",
+           "border-right-width": "1px",
+           "border-bottom-width": "1px",
+           "border-left-width": "1px",
+           "border-top-style": "solid",
+           "border-right-style": "solid",
+           "border-bottom-style": "solid",
+           "border-left-style": "solid",
+           "border-top-color": "#dfe3ea",
+           "border-right-color": "#dfe3ea",
+           "border-bottom-color": "#dfe3ea",
+           "border-left-color": "#dfe3ea",
+           "border-top-left-radius": "12px",
+           "border-top-right-radius": "12px",
+           "border-bottom-left-radius": "12px",
+           "border-bottom-right-radius": "12px",
+           "padding-top": "10px",
+           "padding-right": "12px",
+           "padding-bottom": "10px",
+           "padding-left": "12px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "sheet52",
+          "type": "paragraph",
+          "name": "Celula",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-top": "0",
+             "margin-bottom": "0",
+             "font-weight": "700",
+             "min-width": "44px",
+             "color": "#4f46e5"
+            }
+           }
+          },
+          "text": "A1",
+          "children": [],
+          "logic": {
+           "text": "state.selected"
+          }
+         },
+         {
+          "id": "sheet53",
+          "type": "input",
+          "name": "Conteudo",
+          "tag": "input",
+          "attributes": {
+           "inputType": "text",
+           "placeholder": "Valor ou fórmula (=A1+B1)"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "10px",
+             "padding-right": "10px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "font-size": "14px",
+             "font-family": "ui-monospace, monospace",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "flex-grow": "1"
+            }
+           }
+          },
+          "text": null,
+          "children": [],
+          "logic": {
+           "model": "state.cells[state.selected]"
+          }
+         },
+         {
+          "id": "sheet54",
+          "type": "paragraph",
+          "name": "Resultado",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-top": "0",
+             "margin-bottom": "0",
+             "color": "#5b6170",
+             "font-size": "14px",
+             "min-width": "90px",
+             "text-align": "right"
+            }
+           }
+          },
+          "text": "= Produto",
+          "children": [],
+          "logic": {
+           "text": "'= ' + fn.shown(state.cells, state.selected)"
+          }
+         }
+        ]
+       },
+       {
+        "id": "sheet56",
+        "type": "div",
+        "name": "Grade",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "background-color": "#ffffff",
+           "border-top-width": "1px",
+           "border-right-width": "1px",
+           "border-bottom-width": "1px",
+           "border-left-width": "1px",
+           "border-top-style": "solid",
+           "border-right-style": "solid",
+           "border-bottom-style": "solid",
+           "border-left-style": "solid",
+           "border-top-color": "#dfe3ea",
+           "border-right-color": "#dfe3ea",
+           "border-bottom-color": "#dfe3ea",
+           "border-left-color": "#dfe3ea",
+           "border-top-left-radius": "12px",
+           "border-top-right-radius": "12px",
+           "border-bottom-left-radius": "12px",
+           "border-bottom-right-radius": "12px",
+           "padding-top": "0",
+           "padding-right": "0",
+           "padding-bottom": "0",
+           "padding-left": "0",
+           "overflow-x": "auto",
+           "max-height": "70vh",
+           "overflow-y": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [],
+        "logic": {
+         "component": "Grade"
+        }
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "app": {
+  "variables": [
+   {
+    "name": "cells",
+    "type": "object",
+    "initial": {
+     "A1": "Produto",
+     "B1": "Qtd",
+     "C1": "Preço",
+     "D1": "Total",
+     "A2": "Caderno",
+     "B2": "3",
+     "C2": "12.5",
+     "D2": "=B2*C2",
+     "A3": "Caneta",
+     "B3": "10",
+     "C3": "2.9",
+     "D3": "=B3*C3",
+     "A4": "Mochila",
+     "B4": "1",
+     "C4": "89",
+     "D4": "=B4*C4",
+     "C6": "Soma",
+     "D6": "=SUM(D2:D4)",
+     "C7": "Média",
+     "D7": "=AVG(D2:D4)"
+    },
+    "persist": true
+   },
+   {
+    "name": "selected",
+    "type": "text",
+    "initial": "A1"
+   }
+  ],
+  "scripts": [
+   {
+    "name": "formulas",
+    "code": "// the spreadsheet's formulas: =A1+B2*3, =SUM(A1:A9), AVG, MIN, MAX, COUNT, ABS, ROUND — read by a small parser,\n// never evaluated as JavaScript\nconst FUNCTIONS = {\n  SUM: (values) => values.reduce((sum, value) => sum + value, 0),\n  AVG: (values) => (values.length === 0 ? 0 : values.reduce((sum, value) => sum + value, 0) / values.length),\n  MIN: (values) => Math.min(...values),\n  MAX: (values) => Math.max(...values),\n  COUNT: (values) => values.length,\n  ABS: (values) => Math.abs(values[0] ?? 0),\n  ROUND: (values) => Number((values[0] ?? 0).toFixed(values[1] ?? 0)),\n}\n\nexport const COLUMNS = 'ABCDEFGHIJ'.split('')\nexport const ROWS = 30\n\nconst column = (letter) => letter.charCodeAt(0) - 65\n\nfunction range(from, to) {\n  const out = []\n  const [, c1, r1] = from.match(/([A-Z])(\\d+)/)\n  const [, c2, r2] = to.match(/([A-Z])(\\d+)/)\n  for (let c = Math.min(column(c1), column(c2)); c <= Math.max(column(c1), column(c2)); c++)\n    for (let r = Math.min(+r1, +r2); r <= Math.max(+r1, +r2); r++) out.push(String.fromCharCode(65 + c) + r)\n  return out\n}\n\nexport function value(cells, id, seen = new Set()) {\n  const raw = cells[id] ?? ''\n  if (typeof raw !== 'string' || !raw.startsWith('=')) return raw === '' || isNaN(Number(raw)) ? raw : Number(raw)\n  if (seen.has(id)) return '#CICLO'\n  seen.add(id)\n  try {\n    const result = parse(raw.slice(1).toUpperCase(), cells, seen)\n    seen.delete(id)\n    return result\n  } catch (error) {\n    seen.delete(id)\n    // a cell that names itself, directly or through others, says so; any other mistake is an error\n    return error.message === '#CICLO' ? '#CICLO' : '#ERRO'\n  }\n}\n\nfunction parse(source, cells, seen) {\n  const tokens = source.match(/[A-Z]+\\d+:[A-Z]+\\d+|[A-Z]+\\d+|[A-Z]+(?=\\()|\\d+(?:\\.\\d+)?|[-+*/(),^]/g) || []\n  let at = 0\n  const peek = () => tokens[at]\n  const take = () => tokens[at++]\n  const number = (v) => {\n    if (typeof v === 'number') return v\n    if (v === '') return 0\n    if (v === '#CICLO') throw new Error('#CICLO')\n    if (Number.isNaN(Number(v))) throw new Error('not a number')\n    return Number(v)\n  }\n  const primary = () => {\n    const token = take()\n    if (token === undefined) throw new Error('end')\n    if (token === '(') { const v = sum(); take(); return v }\n    if (token === '-') return -primary()\n    if (/^\\d/.test(token)) return Number(token)\n    if (FUNCTIONS[token]) {\n      take()\n      const args = []\n      while (peek() !== ')') {\n        if (/:/.test(peek())) { const [a, b] = take().split(':'); args.push(...range(a, b).map((id) => value(cells, id, seen)).filter((v) => typeof v === 'number')) }\n        else args.push(number(sum()))\n        if (peek() === ',') take()\n        if (peek() === undefined) throw new Error('end')\n      }\n      take()\n      return FUNCTIONS[token](args)\n    }\n    if (/^[A-Z]+\\d+$/.test(token)) return number(value(cells, token, seen))\n    throw new Error('unexpected ' + token)\n  }\n  const power = () => { let v = primary(); while (peek() === '^') { take(); v = v ** primary() } return v }\n  const product = () => { let v = power(); while (peek() === '*' || peek() === '/') v = take() === '*' ? v * power() : v / power(); return v }\n  const sum = () => { let v = product(); while (peek() === '+' || peek() === '-') v = take() === '+' ? v + product() : v - product(); return v }\n  const result = sum()\n  if (at < tokens.length) throw new Error('rest')\n  return result\n}\n\nexport function shown(cells, id) {\n  const v = value(cells, id)\n  return typeof v === 'number' ? (Number.isInteger(v) ? String(v) : v.toFixed(2)) : String(v)\n}\n\nexport function csv(cells) {\n  let last = 0\n  for (const id of Object.keys(cells)) last = Math.max(last, Number(id.slice(1)))\n  const lines = []\n  for (let r = 1; r <= last; r++) lines.push(COLUMNS.map((c) => '\"' + shown(cells, c + r).replace(/\"/g, '\"\"') + '\"').join(','))\n  return lines.join('\\n')\n}\n"
+   }
+  ],
+  "components": [
+   {
+    "name": "Grade",
+    "code": "// the grid: a table of cells, each showing its value and, while it has the focus, its formula\nimport { COLUMNS, ROWS, shown } from '@app/script/formulas'\n\nexport default {\n  mount(el, props, ctx) {\n    const table = document.createElement('table')\n    table.style.cssText = 'border-collapse:collapse;font:14px system-ui;min-width:100%;background:#fff'\n    const head = table.createTHead().insertRow()\n    head.appendChild(document.createElement('th'))\n    for (const c of COLUMNS) { const th = document.createElement('th'); th.textContent = c; head.appendChild(th) }\n    const inputs = {}\n    const body = table.createTBody()\n    for (let r = 1; r <= ROWS; r++) {\n      const row = body.insertRow()\n      const th = document.createElement('th'); th.textContent = r; row.appendChild(th)\n      for (const c of COLUMNS) {\n        const id = c + r\n        const input = document.createElement('input')\n        input.dataset.cell = id\n        input.style.cssText = 'width:100%;min-width:88px;box-sizing:border-box;border:0;padding:6px 8px;font:inherit;background:transparent;outline:none'\n        input.addEventListener('focus', () => { ctx.state.selected = id; input.value = ctx.state.cells[id] ?? '' })\n        input.addEventListener('blur', () => { input.value = shown(ctx.state.cells, id) })\n        input.addEventListener('change', () => { ctx.state.cells[id] = input.value })\n        input.addEventListener('keydown', (event) => {\n          const [, letter, number] = id.match(/([A-Z])(\\d+)/)\n          const move = { Enter: [0, 1], ArrowDown: [0, 1], ArrowUp: [0, -1] }[event.key]\n          if (!move) return\n          event.preventDefault()\n          input.dispatchEvent(new Event('change'))\n          inputs[letter + Math.min(ROWS, Math.max(1, Number(number) + move[1]))]?.focus()\n        })\n        const cell = row.insertCell(); cell.appendChild(input)\n        inputs[id] = input\n      }\n    }\n    for (const cell of table.querySelectorAll('th, td')) cell.style.cssText += ';border:1px solid #dfe3ea;padding:0'\n    for (const th of table.querySelectorAll('th')) th.style.cssText += ';background:#f4f5f9;color:#5b6170;font-weight:600;padding:4px 8px;min-width:32px'\n    el.appendChild(table)\n    // every cell shows its value again when any cell changes; the one being typed in keeps its text\n    ctx.effect(() => {\n      const cells = ctx.state.cells\n      for (const [id, input] of Object.entries(inputs)) {\n        if (document.activeElement === input) continue\n        input.value = shown(cells, id)\n        input.style.textAlign = typeof Number(shown(cells, id)) === 'number' && shown(cells, id) !== '' && !isNaN(Number(shown(cells, id))) ? 'right' : 'left'\n      }\n    })\n    ctx.effect(() => {\n      for (const [id, input] of Object.entries(inputs)) input.parentElement.style.boxShadow = id === ctx.state.selected ? 'inset 0 0 0 2px #4f46e5' : ''\n    })\n    return { destroy() { table.remove() } }\n  },\n}\n"
+   }
+  ]
+ }
+}

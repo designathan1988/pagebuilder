@@ -13,6 +13,7 @@ import { MenuButton } from '../doors/menu.tsx';
 import { GLYPHS, doorSlots, slotsIn } from '../doors/placement.ts';
 import { codeTabs } from '../explorer/file-tabs.ts';
 import { useEditorState } from '../store.ts';
+import { isEmptyProject } from '../../core/document/model.ts';
 import { FIT_MARGIN, fitZoom, panOf, registerStage } from '../view/camera.ts';
 import { activeBreakpoint, viewportWidth } from '../view/breakpoints.ts';
 import { activeState } from '../view/style-state.ts';
@@ -28,6 +29,7 @@ import { QuickPanel } from '../canvas/quick-panel.tsx';
 import { RevealSelection } from '../canvas/reveal-selection.tsx';
 import { AnchorTabs } from '../canvas/anchor-tabs.tsx';
 import { usePointerValue } from '../input/pointer/use-views.ts';
+import { StartScreen } from './start-screen.tsx';
 
 const PAGE_ICON = manifest.elements.elements.find((e) => e.tag === 'body')?.icon ?? null;
 const NO_CODE: readonly string[] = [];
@@ -205,10 +207,13 @@ function CanvasToolbar() {
 const FRAME_EDGE = manifest.doors.find((d) => d.door.kind === 'panel-drag' && d.door.source === 'frame-edge');
 
 // The right edge of the frame (spec breakpoints-switch): a separator the pointer drags (the pointer owner runs it, as
-// it runs the splitters); the width field and its range stay the keyboard's way to the same width.
+// it runs the splitters); the width field and its range stay the keyboard's way to the same width. Not drawn while the
+// start card is (an empty project, start-screen.tsx): the card, wider than a Phone or Tablet frame, lay over the edge,
+// which took no press there (DEF-0624); the first element placed takes the card away and brings the edge back.
 function FrameEdge({ width }: { readonly width: number }) {
   const t = useT();
-  if (FRAME_EDGE === undefined) return null;
+  const starting = useEditorState((s) => isEmptyProject(s.document));
+  if (FRAME_EDGE === undefined || starting) return null;
   return <div className="frame__edge" role="separator" aria-orientation="vertical" aria-label={t('command.resizeViewport')} title={t('command.resizeViewport')} aria-valuenow={width} data-door={FRAME_EDGE.ref} />;
 }
 
@@ -360,6 +365,8 @@ export function CanvasColumn() {
                   <AnchorTabs stage={stage} />
                   {/* a selection made away from the canvas brings it into view (canvas/reveal-selection.tsx) */}
                   <RevealSelection stage={stage} />
+                  {/* the first look at an empty project: a ready page or section to start from (start-screen.tsx) */}
+                  <StartScreen />
                 </div>
               </div>
             </div>

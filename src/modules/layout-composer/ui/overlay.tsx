@@ -131,8 +131,10 @@ export function LayoutOverlay() {
   const reading = held?.reading ?? null;
   const refused = reading !== null && (reading.problems.length > 0 || reading.result?.ok === false);
   const problem = reading === null ? null : (reading.problems[0] ?? (reading.result?.ok === false ? reading.result.problems[0] : undefined) ?? null);
+  // the composer takes the canvas: the editor's first-look card steps aside while it does (data-canvas-mode,
+  // shell/canvas.css; DEF-0626)
   return (
-    <div ref={layer} className="layout-composer" data-region="layout-composer-canvas">
+    <div ref={layer} className="layout-composer" data-region="layout-composer-canvas" data-canvas-mode="layout">
       <div
         className={`layout-composer__stage${refused ? ' is-refused' : ''}`}
         ref={stage}

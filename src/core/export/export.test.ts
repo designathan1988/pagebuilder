@@ -246,7 +246,7 @@ describe('class names say the role in the code language, and a second look a mod
     expect(html).toContain('<article class="section__card">');
     expect(html).toContain('<article class="section__card--raised">');
     expect(html).toContain('<article class="section__card--dark">');
-    // the second section: a dark one
-    expect(html).toContain('<section class="section--dark">');
+    // the second section, named Depoimentos: the editor's own Testimonials section, in English
+    expect(html).toContain('<section class="testimonials">');
   });
 });

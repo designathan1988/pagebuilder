@@ -6,3 +6,5 @@ playwright-report/
 coverage/
 .playwright-mcp/
 *.log
+.wrangler/
+.dev.vars

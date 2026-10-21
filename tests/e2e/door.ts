@@ -249,9 +249,13 @@ export function barLabel(d: Door, args: Readonly<Record<string, unknown>>, nameO
 export async function pagePoint(page: Page, where: 'centre' | 'free' = 'centre'): Promise<{ readonly x: number; readonly y: number }> {
   const found = await page.locator('.frame__page').evaluate((frame, wanted) => {
     const box = frame.getBoundingClientRect();
-    const centre = { x: box.left + box.width / 2, y: box.top + box.height / 2 };
-    if (wanted === 'centre') return centre;
     const inset = 20;
+    // the page's centre, or, where the empty page's first-look card lies over it (start-screen.tsx), the middle of the
+    // page's left or right edge, which the card leaves free
+    const middle = box.top + box.height / 2;
+    const onPage = (at: { readonly x: number; readonly y: number }) => document.elementFromPoint(at.x, at.y)?.closest('.start-screen') == null;
+    const centre = [{ x: box.left + box.width / 2, y: middle }, { x: box.left + inset, y: middle }, { x: box.right - inset, y: middle }].find(onPage) ?? { x: box.left + box.width / 2, y: middle };
+    if (wanted === 'centre') return centre;
     const candidates = [
       { x: box.right - inset, y: box.bottom - inset },
       { x: box.left + inset, y: box.bottom - inset },
@@ -327,9 +331,15 @@ export function control(page: Page, ref: string, options: { readonly args?: Read
   // a CSS string of any text: quoted with ', its backslashes and quotes escaped
   const css = (text: string) => `'${text.replaceAll('\\', '\\\\').replaceAll("'", "\\'")}'`;
   const given = Object.entries(options.args ?? {}).map(([name, value]) => `[data-args*=${css(`${JSON.stringify(name)}:${JSON.stringify(value)}`)}]`);
-  const all = page.locator(`[data-door="${ref}"]${given.join('')}`);
+  // A step with no arguments presses the control drawn with none, where its door draws one beside controls that stand
+  // for more (the Interactions tab's "Add an interaction" beside its quick effects, the same door with a `preset`); a
+  // door that draws no such control keeps every control it draws (a Layers row, a tile: each with its own arguments)
+  const door = `[data-door="${ref}"]`;
+  const bare = `${door}:is([data-args="{}"], :not([data-args]))`;
+  const which = given.length > 0 ? `${door}${given.join('')}` : `${bare}, :root:not(:has(${bare})) ${door}`;
+  const all = page.locator(which);
   if (options.any !== true) return all;
-  const available = page.locator(`[data-door="${ref}"]${given.join('')}:not([aria-disabled="true"]):not([disabled])`);
+  const available = page.locator(given.length > 0 ? `${which}:not([aria-disabled="true"]):not([disabled])` : `:is(${which}):not([aria-disabled="true"]):not([disabled])`);
   return available.first();
 }
 

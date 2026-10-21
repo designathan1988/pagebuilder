@@ -78,6 +78,11 @@ export interface BarEntry {
 }
 // below every match of a label: a match of another name only
 const ALSO_RANK = 100;
+// the tie-breakers, fractions below a whole step of a score: a word of the label the query leaves unnamed, and the
+// place of another name among an entry's (its English name before its synonyms and its tag: "header" in Portuguese
+// finds Cabeçalho, named Header, before an element whose tag only is header)
+const UNNAMED_WORD = 0.01;
+const LATER_NAME = 0.001;
 export const entryKey = (entry: DoorEntry, args: Readonly<Record<string, unknown>>): string => `${entry.ref} ${JSON.stringify(args)}`;
 
 // the words of a text as matched (core/text/fold.ts: lower case, without accents)
@@ -101,7 +106,10 @@ export function matchScore(query: string, label: string): number | null {
   }
   // the label that starts as the query does comes first
   const first = words[0];
-  return first !== undefined && text.startsWith(first) ? score + 1 : score;
+  // and of two labels the query matches alike, the one with fewer words it leaves unnamed: "ins hero" finds Insert
+  // Hero before Insert Hero with image (a fraction, below every whole step of the score)
+  const unnamed = labelWords.filter((w) => !words.some((word) => w.startsWith(word))).length;
+  return (first !== undefined && text.startsWith(first) ? score + 1 : score) - unnamed * UNNAMED_WORD;
 }
 
 // How well a query matches another name of an entry (BarEntry.also): every word of the query starts a word of the
@@ -158,7 +166,11 @@ export function shownEntries(query: string, offered: readonly BarEntry[], recent
   return pool
     .flatMap((e, index) => {
       const own = matchScore(words, e.label);
-      const other = own === null ? Math.max(-Infinity, ...(e.also ?? []).flatMap((name) => alsoScore(words, name) ?? [])) : -Infinity;
+      const alsoScores = (e.also ?? []).flatMap((name, place) => {
+        const one = alsoScore(words, name);
+        return one === null ? [] : [one - place * LATER_NAME];
+      });
+      const other = own === null ? Math.max(-Infinity, ...alsoScores) : -Infinity;
       const score = own ?? (other === -Infinity ? null : other - ALSO_RANK);
       return score === null ? [] : [{ e, score, index }];
     })

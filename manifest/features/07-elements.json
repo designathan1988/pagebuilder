@@ -1035,17 +1035,17 @@
               "hold": false,
               "type": null
             },
-          {
-            "door": "element.insert#elements-tile",
-            "args": {
-              "entry": "container"
+            {
+              "door": "element.insert#elements-tile",
+              "args": {
+                "entry": "container"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
             },
-            "target": null,
-            "drop": null,
-            "action": false,
-            "hold": false,
-            "type": null
-          },
             {
               "door": "element.insert#elements-tile",
               "args": {
@@ -3370,15 +3370,25 @@
                         ]
                       }
                     ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "name": "Paragraph 2",
+                    "tag": "p",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": "A freshly created paragraph.",
+                    "children": []
                   }
                 ]
               }
             ],
             "selection": [
-              "/Page/Unordered list"
+              "/Page/Paragraph 2"
             ],
             "history": {
-              "undoSteps": 1,
+              "undoSteps": 2,
               "undoRestores": true,
               "redoRestores": true
             },
@@ -3387,10 +3397,12 @@
               "geometry": [],
               "feedback": [
                 {
-                  "key": "status.refused.onlyAccepts",
+                  "key": "status.placed",
                   "params": {
-                    "parent": "<ul>",
-                    "children": "<li>"
+                    "element": "Paragraph 2",
+                    "parent": "Page",
+                    "position": 2,
+                    "count": 2
                   }
                 }
               ]
@@ -3399,12 +3411,7 @@
             "persistence": null,
             "export": null
           },
-          "refusals": [
-            {
-              "key": "status.refused.onlyAccepts",
-              "document": "unchanged"
-            }
-          ]
+          "refusals": []
         },
         {
           "id": "a-list-cannot-go-straight-inside-an-ordered-list",
@@ -3493,15 +3500,47 @@
                         ]
                       }
                     ]
+                  },
+                  {
+                    "type": "list",
+                    "name": "Unordered list",
+                    "tag": "ul",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": null,
+                    "children": [
+                      {
+                        "type": "listItem",
+                        "name": "List item 2",
+                        "tag": "li",
+                        "attributes": {},
+                        "classes": [],
+                        "styles": {},
+                        "text": null,
+                        "children": [
+                          {
+                            "type": "paragraph",
+                            "name": "Paragraph 2",
+                            "tag": "p",
+                            "attributes": {},
+                            "classes": [],
+                            "styles": {},
+                            "text": "A freshly created paragraph.",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
                   }
                 ]
               }
             ],
             "selection": [
-              "/Page/Ordered list"
+              "/Page/Unordered list"
             ],
             "history": {
-              "undoSteps": 1,
+              "undoSteps": 2,
               "undoRestores": true,
               "redoRestores": true
             },
@@ -3510,10 +3549,12 @@
               "geometry": [],
               "feedback": [
                 {
-                  "key": "status.refused.onlyAccepts",
+                  "key": "status.placed",
                   "params": {
-                    "parent": "<ol>",
-                    "children": "<li>"
+                    "element": "Unordered list",
+                    "parent": "Page",
+                    "position": 2,
+                    "count": 2
                   }
                 }
               ]
@@ -3522,12 +3563,7 @@
             "persistence": null,
             "export": null
           },
-          "refusals": [
-            {
-              "key": "status.refused.onlyAccepts",
-              "document": "unchanged"
-            }
-          ]
+          "refusals": []
         },
         {
           "id": "a-definition-list-only-accepts-terms-and-descriptions",
@@ -3637,15 +3673,25 @@
                         ]
                       }
                     ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "name": "Paragraph 3",
+                    "tag": "p",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": "A freshly created paragraph.",
+                    "children": []
                   }
                 ]
               }
             ],
             "selection": [
-              "/Page/Definition list"
+              "/Page/Paragraph 3"
             ],
             "history": {
-              "undoSteps": 1,
+              "undoSteps": 2,
               "undoRestores": true,
               "redoRestores": true
             },
@@ -3654,10 +3700,12 @@
               "geometry": [],
               "feedback": [
                 {
-                  "key": "status.refused.onlyAccepts",
+                  "key": "status.placed",
                   "params": {
-                    "parent": "<dl>",
-                    "children": "<dt>, <dd>, <div>"
+                    "element": "Paragraph 3",
+                    "parent": "Page",
+                    "position": 2,
+                    "count": 2
                   }
                 }
               ]
@@ -3666,12 +3714,7 @@
             "persistence": null,
             "export": null
           },
-          "refusals": [
-            {
-              "key": "status.refused.onlyAccepts",
-              "document": "unchanged"
-            }
-          ]
+          "refusals": []
         }
       ]
     },
@@ -3787,15 +3830,25 @@
                         ]
                       }
                     ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "name": "Paragraph 2",
+                    "tag": "p",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": "A freshly created paragraph.",
+                    "children": []
                   }
                 ]
               }
             ],
             "selection": [
-              "/Page/Unordered list"
+              "/Page/Paragraph 2"
             ],
             "history": {
-              "undoSteps": 1,
+              "undoSteps": 2,
               "undoRestores": true,
               "redoRestores": true
             },
@@ -3804,10 +3857,12 @@
               "geometry": [],
               "feedback": [
                 {
-                  "key": "status.refused.onlyAccepts",
+                  "key": "status.placed",
                   "params": {
-                    "parent": "<ul>",
-                    "children": "<li>"
+                    "element": "Paragraph 2",
+                    "parent": "Page",
+                    "position": 2,
+                    "count": 2
                   }
                 }
               ]
@@ -3816,12 +3871,7 @@
             "persistence": null,
             "export": null
           },
-          "refusals": [
-            {
-              "key": "status.refused.onlyAccepts",
-              "document": "unchanged"
-            }
-          ]
+          "refusals": []
         },
         {
           "id": "a-list-item-is-not-pasted-into-a-section",

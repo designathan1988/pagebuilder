@@ -19,7 +19,7 @@ import { message, registerHandler, registerPredicate, type HandlerContext } from
 import { locate, type DocNode } from '../document/model.ts';
 import type { ModelRules } from '../document/validate.ts';
 import { applyPatches, type Patch } from '../history/transaction.ts';
-import { firstLockRefusal } from '../nodes/flags.ts';
+import { firstLockRefusal, stateRefusal } from '../nodes/flags.ts';
 import { selectionRoots } from '../structure/remove.ts';
 import { valuePredicateHolds } from '../style/couplings.ts';
 import { propertyName, readValue, styleHolders, writeDeclarations, writeStyle } from '../style/set.ts';
@@ -108,7 +108,7 @@ export const movePositionedCommand = registerHandler('position.move', (context, 
   const roots = selectionRoots(state.document, state.selection);
   const primary = roots[0];
   if (primary === undefined) return { kind: 'change' };
-  const locked = firstLockRefusal(state.document, roots.map((at) => at.node.id as NodeId), 'status.locked.move');
+  const locked = firstLockRefusal(state.document, roots.map((at) => at.node.id as NodeId), 'status.locked.move') ?? stateRefusal(state.document, roots.map((at) => at.node.id as NodeId), rules);
   if (locked !== null) return { kind: 'refused', message: locked };
   const patches: Patch[] = [];
   let shown = { x: 0, y: 0 };

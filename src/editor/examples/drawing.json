@@ -1,0 +1,952 @@
+{
+ "version": 4,
+ "language": "pt-BR",
+ "codeLanguage": "en",
+ "pages": [
+  {
+   "id": "paintpage",
+   "name": "Desenho",
+   "file": "index.html",
+   "tree": {
+    "id": "paint81",
+    "type": "page",
+    "name": "Body",
+    "tag": "body",
+    "attributes": {},
+    "classes": [],
+    "styles": {
+     "desktop": {
+      "base": {
+       "margin-top": "0",
+       "margin-right": "0",
+       "margin-bottom": "0",
+       "margin-left": "0",
+       "background-color": "#f4f5f9",
+       "color": "#14161f",
+       "font-family": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+       "min-height": "100vh"
+      }
+     }
+    },
+    "text": null,
+    "children": [
+     {
+      "id": "paint80",
+      "type": "main",
+      "name": "App",
+      "tag": "main",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "max-width": "1080px",
+         "margin-left": "auto",
+         "margin-right": "auto",
+         "padding-top": "24px",
+         "padding-bottom": "40px",
+         "padding-left": "20px",
+         "padding-right": "20px",
+         "display": "flex",
+         "flex-direction": "column",
+         "row-gap": "16px"
+        }
+       },
+       "phone": {
+        "base": {
+         "padding-left": "12px",
+         "padding-right": "12px",
+         "padding-top": "12px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "paint64",
+        "type": "header",
+        "name": "Topo",
+        "tag": "header",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "column-gap": "8px",
+           "row-gap": "8px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "paint63",
+          "type": "div",
+          "name": "Titulos",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-right": "auto",
+             "min-width": "0"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "paint61",
+            "type": "heading",
+            "name": "Titulo",
+            "tag": "h1",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "font-size": "24px",
+               "line-height": "1.2",
+               "margin-right": "auto"
+              }
+             }
+            },
+            "text": "Desenho",
+            "children": []
+           },
+           {
+            "id": "paint62",
+            "type": "paragraph",
+            "name": "Descricao",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "color": "#5b6170",
+               "font-size": "14px"
+              }
+             }
+            },
+            "text": "Pincel, borracha, filtros e imagens: um canvas num componente de código, comandado pela barra.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "paint59",
+          "type": "button",
+          "name": "Abrir imagem",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Abrir imagem…",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "const file = await app.pick('image/*', { as: 'dataUrl' })\nif (file) app.emit('paint:open', file.text)"
+            }
+           ]
+          }
+         },
+         {
+          "id": "paint60",
+          "type": "button",
+          "name": "Baixar PNG",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#4f46e5",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#4f46e5",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#4f46e5",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#4f46e5",
+             "background-color": "#4f46e5",
+             "color": "#ffffff",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Baixar PNG",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "app.emit('paint:download')"
+            }
+           ]
+          }
+         }
+        ]
+       },
+       {
+        "id": "paint78",
+        "type": "section",
+        "name": "Ferramentas",
+        "tag": "section",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "column-gap": "8px",
+           "row-gap": "8px",
+           "background-color": "#ffffff",
+           "border-top-width": "1px",
+           "border-right-width": "1px",
+           "border-bottom-width": "1px",
+           "border-left-width": "1px",
+           "border-top-style": "solid",
+           "border-right-style": "solid",
+           "border-bottom-style": "solid",
+           "border-left-style": "solid",
+           "border-top-color": "#dfe3ea",
+           "border-right-color": "#dfe3ea",
+           "border-bottom-color": "#dfe3ea",
+           "border-left-color": "#dfe3ea",
+           "border-top-left-radius": "12px",
+           "border-top-right-radius": "12px",
+           "border-bottom-left-radius": "12px",
+           "border-bottom-right-radius": "12px",
+           "padding-top": "10px",
+           "padding-right": "12px",
+           "padding-bottom": "10px",
+           "padding-left": "12px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "paint65",
+          "type": "button",
+          "name": "Pincel",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Pincel",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "state.tool = 'brush'"
+            }
+           ],
+           "binds": {
+            "style:border-color": "state.tool === 'brush' ? '#4f46e5' : ''",
+            "style:background-color": "state.tool === 'brush' ? '#eef0ff' : ''"
+           }
+          }
+         },
+         {
+          "id": "paint66",
+          "type": "button",
+          "name": "Borracha",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Borracha",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "state.tool = 'eraser'"
+            }
+           ],
+           "binds": {
+            "style:border-color": "state.tool === 'eraser' ? '#4f46e5' : ''",
+            "style:background-color": "state.tool === 'eraser' ? '#eef0ff' : ''"
+           }
+          }
+         },
+         {
+          "id": "paint67",
+          "type": "paragraph",
+          "name": "Cor",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-top": "0",
+             "margin-bottom": "0",
+             "color": "#5b6170",
+             "font-size": "14px"
+            }
+           }
+          },
+          "text": "Cor",
+          "children": []
+         },
+         {
+          "id": "paint68",
+          "type": "input",
+          "name": "Escolher cor",
+          "tag": "input",
+          "attributes": {
+           "inputType": "color"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "width": "40px",
+             "height": "34px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px"
+            }
+           }
+          },
+          "text": null,
+          "children": [],
+          "logic": {
+           "model": "state.color"
+          }
+         },
+         {
+          "id": "paint69",
+          "type": "paragraph",
+          "name": "Tamanho",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-top": "0",
+             "margin-bottom": "0",
+             "color": "#5b6170",
+             "font-size": "14px"
+            }
+           }
+          },
+          "text": "Tamanho 8",
+          "children": [],
+          "logic": {
+           "text": "'Tamanho ' + state.size"
+          }
+         },
+         {
+          "id": "paint70",
+          "type": "input",
+          "name": "Espessura",
+          "tag": "input",
+          "attributes": {
+           "inputType": "range",
+           "min": "1",
+           "max": "60",
+           "step": "1"
+          },
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [],
+          "logic": {
+           "model": "state.size"
+          }
+         },
+         {
+          "id": "paint71",
+          "type": "button",
+          "name": "Desfazer",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Desfazer",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "app.emit('paint:undo')"
+            }
+           ]
+          }
+         },
+         {
+          "id": "paint72",
+          "type": "button",
+          "name": "Limpar",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Limpar",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "app.emit('paint:clear')"
+            }
+           ]
+          }
+         },
+         {
+          "id": "paint73",
+          "type": "button",
+          "name": "Filtro Cinza",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Cinza",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "app.emit('paint:filter', 'gray')"
+            }
+           ]
+          }
+         },
+         {
+          "id": "paint74",
+          "type": "button",
+          "name": "Filtro Inverter",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Inverter",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "app.emit('paint:filter', 'invert')"
+            }
+           ]
+          }
+         },
+         {
+          "id": "paint75",
+          "type": "button",
+          "name": "Filtro Sépia",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Sépia",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "app.emit('paint:filter', 'sepia')"
+            }
+           ]
+          }
+         },
+         {
+          "id": "paint76",
+          "type": "button",
+          "name": "Filtro Clarear",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Clarear",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "app.emit('paint:filter', 'light')"
+            }
+           ]
+          }
+         },
+         {
+          "id": "paint77",
+          "type": "button",
+          "name": "Filtro Escurecer",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Escurecer",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "app.emit('paint:filter', 'dark')"
+            }
+           ]
+          }
+         }
+        ]
+       },
+       {
+        "id": "paint79",
+        "type": "div",
+        "name": "Quadro",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "background-color": "#ffffff",
+           "border-top-width": "1px",
+           "border-right-width": "1px",
+           "border-bottom-width": "1px",
+           "border-left-width": "1px",
+           "border-top-style": "solid",
+           "border-right-style": "solid",
+           "border-bottom-style": "solid",
+           "border-left-style": "solid",
+           "border-top-color": "#dfe3ea",
+           "border-right-color": "#dfe3ea",
+           "border-bottom-color": "#dfe3ea",
+           "border-left-color": "#dfe3ea",
+           "border-top-left-radius": "12px",
+           "border-top-right-radius": "12px",
+           "border-bottom-left-radius": "12px",
+           "border-bottom-right-radius": "12px",
+           "padding-top": "8px",
+           "padding-right": "8px",
+           "padding-bottom": "8px",
+           "padding-left": "8px"
+          }
+         }
+        },
+        "text": null,
+        "children": [],
+        "logic": {
+         "component": "Tela"
+        }
+       }
+      ]
+     }
+    ],
+    "logic": {
+     "on": [
+      {
+       "event": "window:keydown",
+       "code": "if (($event.ctrlKey || $event.metaKey) && $event.key === 'z') { $event.preventDefault(); app.emit('paint:undo') }"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "app": {
+  "variables": [
+   {
+    "name": "color",
+    "type": "text",
+    "initial": "#4f46e5",
+    "persist": true
+   },
+   {
+    "name": "size",
+    "type": "number",
+    "initial": 8,
+    "persist": true
+   },
+   {
+    "name": "tool",
+    "type": "text",
+    "initial": "brush"
+   }
+  ],
+  "components": [
+   {
+    "name": "Tela",
+    "code": "// the drawing surface: a canvas that draws with the pointer, keeps an undo history and answers the toolbar's\n// events (document:paint:<action>) — clear, undo, a filter, open an image, download\nexport default {\n  mount(el, props, ctx) {\n    const canvas = document.createElement('canvas')\n    canvas.width = 1200\n    canvas.height = 720\n    canvas.style.cssText = 'width:100%;height:auto;display:block;touch-action:none;cursor:crosshair;background:#fff;border-radius:8px'\n    el.appendChild(canvas)\n    const g = canvas.getContext('2d', { willReadFrequently: true })\n    const history = []\n    const save = () => { history.push(g.getImageData(0, 0, canvas.width, canvas.height)); if (history.length > 40) history.shift() }\n    const clear = () => { g.fillStyle = '#ffffff'; g.fillRect(0, 0, canvas.width, canvas.height) }\n    clear()\n    const point = (event) => {\n      const box = canvas.getBoundingClientRect()\n      return [(event.clientX - box.left) * (canvas.width / box.width), (event.clientY - box.top) * (canvas.height / box.height)]\n    }\n    let last = null\n    canvas.addEventListener('pointerdown', (event) => {\n      canvas.setPointerCapture(event.pointerId)\n      save()\n      last = point(event)\n      stroke(last, last)\n    })\n    canvas.addEventListener('pointermove', (event) => { if (last) { const now = point(event); stroke(last, now); last = now } })\n    const end = () => { last = null }\n    canvas.addEventListener('pointerup', end)\n    canvas.addEventListener('pointercancel', end)\n    function stroke(from, to) {\n      g.globalCompositeOperation = 'source-over'\n      g.strokeStyle = ctx.state.tool === 'eraser' ? '#ffffff' : ctx.state.color\n      g.lineWidth = Number(ctx.state.size) || 1\n      g.lineCap = 'round'\n      g.lineJoin = 'round'\n      g.beginPath(); g.moveTo(from[0], from[1]); g.lineTo(to[0], to[1]); g.stroke()\n    }\n    const filters = {\n      gray: (r, gr, b) => { const y = 0.299 * r + 0.587 * gr + 0.114 * b; return [y, y, y] },\n      invert: (r, gr, b) => [255 - r, 255 - gr, 255 - b],\n      sepia: (r, gr, b) => [0.393 * r + 0.769 * gr + 0.189 * b, 0.349 * r + 0.686 * gr + 0.168 * b, 0.272 * r + 0.534 * gr + 0.131 * b],\n      light: (r, gr, b) => [r * 1.15 + 10, gr * 1.15 + 10, b * 1.15 + 10],\n      dark: (r, gr, b) => [r * 0.85, gr * 0.85, b * 0.85],\n    }\n    const actions = {\n      clear: () => { save(); clear() },\n      undo: () => { const image = history.pop(); if (image) g.putImageData(image, 0, 0) },\n      filter: (name) => {\n        save()\n        const image = g.getImageData(0, 0, canvas.width, canvas.height)\n        const d = image.data\n        for (let i = 0; i < d.length; i += 4) { const [r, gr, b] = filters[name](d[i], d[i + 1], d[i + 2]); d[i] = r; d[i + 1] = gr; d[i + 2] = b }\n        g.putImageData(image, 0, 0)\n      },\n      open: (url) => {\n        const image = new Image()\n        image.onload = () => {\n          save(); clear()\n          const scale = Math.min(canvas.width / image.width, canvas.height / image.height)\n          g.drawImage(image, (canvas.width - image.width * scale) / 2, (canvas.height - image.height * scale) / 2, image.width * scale, image.height * scale)\n        }\n        image.src = url\n      },\n      download: () => { const link = document.createElement('a'); link.download = 'desenho.png'; link.href = canvas.toDataURL('image/png'); link.click() },\n    }\n    const listener = (event) => actions[event.type.slice('paint:'.length)]?.(event.detail)\n    for (const name of Object.keys(actions)) document.addEventListener('paint:' + name, listener)\n    ctx.onCleanup(() => { for (const name of Object.keys(actions)) document.removeEventListener('paint:' + name, listener) })\n    return { destroy() { canvas.remove() } }\n  },\n}\n"
+   }
+  ]
+ }
+}

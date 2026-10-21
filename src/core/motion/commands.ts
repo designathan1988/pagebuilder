@@ -45,7 +45,7 @@ import {
 } from './timeline.ts';
 import type { Behaviour, Effect, MotionInteraction, MotionTimeline, TimelineAction, Trigger } from './model.ts';
 import { RUNTIME_BEHAVIOURS, type BehaviourKind, type RuntimeBehaviourKind } from './model.ts';
-import { DIRECTION } from './words.ts';
+import { DIRECTION, OPACITY } from './words.ts';
 
 type Located = { readonly node: DocNode; readonly path: readonly (string | number)[] };
 
@@ -122,10 +122,33 @@ function firstAction<Ui>(context: HandlerContext<Ui>): TimelineAction {
   return { id: id(), target: { kind: 'self' }, start: 0, duration: EFFECTS.animate.duration, effect: defaultEffect('animate', id), easing: 'ease-out' };
 }
 
-export const addMotionCommand = registerHandler('motion.add', (context, { trigger, timeline }): Outcome<never> => {
+// The quick effects (the Interactions tab's "Appear on scroll" row): a timeline the element enters the page with,
+// keyed from its hidden state to the state it holds, played once when it scrolls into view. Each preset is the tracks
+// of one animate action: the property, then its value at the start and at the end.
+export const MOTION_PRESETS = {
+  'fade-up': [[OPACITY, '0', '1'], ['translate-y', '32px', '0px']],
+  'fade-in': [[OPACITY, '0', '1']],
+  'zoom-in': [[OPACITY, '0', '1'], ['scale-x', '0.9', '1'], ['scale-y', '0.9', '1']],
+  'slide-in': [[OPACITY, '0', '1'], ['translate-x', '-48px', '0px']],
+} as const satisfies Record<string, readonly (readonly [string, string, string])[]>;
+export type MotionPreset = keyof typeof MOTION_PRESETS;
+const PRESET_DURATION = 700;
+
+function presetAction<Ui>(context: HandlerContext<Ui>, preset: MotionPreset): TimelineAction {
+  const id = () => context.ids.next();
+  const tracks = MOTION_PRESETS[preset].map(([property, from, to]) => ({
+    id: id(),
+    property,
+    keyframes: [{ id: id(), time: 0, value: from }, { id: id(), time: PRESET_DURATION, value: to }],
+  }));
+  return { id: id(), target: { kind: 'self' }, start: 0, duration: PRESET_DURATION, effect: { kind: 'animate', tracks }, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' };
+}
+
+export const addMotionCommand = registerHandler('motion.add', (context, { trigger, timeline, preset }): Outcome<never> => {
   const found = primaryNode(context.state.document, context.state.selection);
   if (found === null) return { kind: 'change' };
-  const kind = trigger ?? applicableTriggers(found.node)[0] ?? 'click';
+  // a quick effect enters the page as it scrolls into view, unless another trigger is asked for
+  const kind = trigger ?? (preset === undefined ? undefined : 'scroll-into-view') ?? applicableTriggers(found.node)[0] ?? 'click';
   if (!isTriggerKind(kind) || !triggerApplies(kind, found.node)) return { kind: 'refused', message: message('status.motion.notApplicable', { name: { key: triggerLabel(kind) }, element: found.node.name }) };
   const locked = lockedRefusal(context, found.node);
   if (locked !== null) return { kind: 'refused', message: locked };
@@ -137,7 +160,7 @@ export const addMotionCommand = registerHandler('motion.add', (context, { trigge
     name = timeline;
   } else {
     name = timelineNameFor(context.state.document, found.node, kind);
-    const made: MotionTimeline = { id: context.ids.next(), name, actions: [firstAction(context)], markers: [] };
+    const made: MotionTimeline = { id: context.ids.next(), name, actions: [preset === undefined ? firstAction(context) : presetAction(context, preset)], markers: [] };
     patches.push(...writeTimelines(context.state.document, [...timelinesOf(context.state.document), made]));
   }
   const spec = TRIGGERS[kind];
@@ -146,7 +169,8 @@ export const addMotionCommand = registerHandler('motion.add', (context, { trigge
     trigger: defaultTrigger(kind, context.rules.base.breakpoint),
     timeline: name,
     control: continuousControl(kind),
-    ...(spec.paired ? { leave: 'reverse' as const } : {}),
+    // a quick effect plays once and stays: the element does not hide again when it scrolls away
+    ...(preset !== undefined ? { leave: 'none' as const, once: true as const } : spec.paired ? { leave: 'reverse' as const } : {}),
   };
   const read = readInteraction(interaction);
   if (!read.ok) return invalid(kind);

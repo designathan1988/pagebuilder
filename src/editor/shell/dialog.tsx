@@ -25,7 +25,9 @@ export function ModalDialog({ region, titleKey, className, children }: { readonl
     return before?.closest('.menu-anchor')?.querySelector('.menu-button') ?? before;
   });
   useEffect(() => {
-    panel.current?.focus();
+    // the field the dialog marks data-autofocus takes the focus, else the dialog itself: the panel alone left "Open a
+    // web address" with its address field empty while the person typed (DEF-0617)
+    (panel.current?.querySelector<HTMLElement>('[data-autofocus]') ?? panel.current)?.focus();
     return () => {
       if (returnTo instanceof HTMLElement && returnTo.isConnected) returnTo.focus();
     };

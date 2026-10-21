@@ -31,7 +31,8 @@ import { capturedPageStylePath, capturedPageCss, captureAssetPath } from '../imp
 import type { NodeId } from '../../generated/commands.ts';
 import { walk, type Animation, type DocNode, type DocumentJson } from '../document/model.ts';
 import type { ModelRules } from '../document/validate.ts';
-import { zip } from '../project/zip.ts';
+import { zip, type ZipEntry } from '../project/zip.ts';
+import { PACKAGE_ARCHIVE, packageEntries, type PackageFormat } from './packages.ts';
 import { baseCss, capturedBaseCss } from '../render/base.ts';
 import { classesCss, elementAttributes, fileUrlsIn, mediaQuery, nodeCss, writesNode } from '../render/output.ts';
 import { svgMarkupOf } from '../elements/svg.ts';
@@ -50,11 +51,13 @@ import { motionConfig, siteUsesLottie } from '../motion/export.ts';
 import { rulesForDocument } from '../document/breakpoint-rules.ts';
 import { capturedExportHtml, exportedCapturedRoot, type CapturedHead } from '../render/captured.ts';
 import { captureSnapshotPath, type CapturedSnapshotPackage } from '../document/captured.ts';
-import { FORMS_SCRIPT, INTERACTIONS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, STYLESHEET } from './paths.ts';
+import { APP_MAIN_SCRIPT, APP_RUNTIME_SCRIPT, FORMS_SCRIPT, INTERACTIONS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, STYLESHEET, WIDGETS_SCRIPT } from './paths.ts';
+import { compileApp, importMap, mapAddress, siteUsesApp } from '../logic/compile.ts';
 
-const SITE_ARCHIVE = 'site.zip';
 // the generated files' paths (paths.ts, the one list the file tree reads too), published here for the editor
-export { FORMS_SCRIPT, INTERACTIONS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, STYLESHEET } from './paths.ts';
+export { FORMS_SCRIPT, INTERACTIONS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, STYLESHEET, WIDGETS_SCRIPT } from './paths.ts';
+// a page holding a web component (a data-wc attribute: carousel, lightbox, tabs, cart…) links js/widgets.js
+export const pageUsesWidgets = (tree: DocNode): boolean => [...walk(tree)].some((node) => node.customAttributes?.['data-wc'] !== undefined);
 const pageUsesForms = (tree: DocNode): boolean => [...walk(tree)].some(node => node.attributes.formField !== undefined || node.attributes.formSubmit !== undefined);
 // the page setting that is the page's title (elements.json), written in the head rather than as an attribute
 const TITLE_SETTING = 'pageTitle';
@@ -88,7 +91,7 @@ function headLines(document: DocumentJson, page: DocNode, rules: ModelRules, fro
   return lines;
 }
 
-const generatedScriptPaths: readonly string[] = [INTERACTIONS_SCRIPT, FORMS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT];
+const generatedScriptPaths: readonly string[] = [INTERACTIONS_SCRIPT, FORMS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, WIDGETS_SCRIPT, APP_MAIN_SCRIPT, APP_RUNTIME_SCRIPT];
 const linksScript = (page: DocNode, path: string): boolean =>
   typeof page.attributes.pageScripts === 'string' && page.attributes.pageScripts.split(/\s+/).includes(path);
 
@@ -376,6 +379,11 @@ export function pageLines(document: DocumentJson, pageIndex: number, manifestRul
     // a page holding motion links the Lottie player when the site uses one, then the motion script
     ...(treeUsesMotion(page.tree) && siteUsesLottie(document) || linksScript(page.tree, LOTTIE_SCRIPT) ? [`  <script defer src="${escapeAttribute(relativePath(from, LOTTIE_SCRIPT))}"></script>`] : []),
     ...(treeUsesMotion(page.tree) || linksScript(page.tree, MOTION_SCRIPT) ? [`  <script defer src="${escapeAttribute(relativePath(from, MOTION_SCRIPT))}"></script>`] : []),
+    ...(pageUsesWidgets(page.tree) || linksScript(page.tree, WIDGETS_SCRIPT) ? [`  <script defer src="${escapeAttribute(relativePath(from, WIDGETS_SCRIPT))}"></script>`] : []),
+    // the application (spec app-logic): the import map that names its modules, before the module that starts it
+    ...(siteUsesApp(document)
+      ? [`  <script type="importmap">${importMap(document, (path) => mapAddress(relativePath(from, path)))}</script>`, `  <script type="module" src="${escapeAttribute(relativePath(from, APP_MAIN_SCRIPT))}"></script>`]
+      : []),
     '</head>',
   ].map((text) => ({ text, node: null }));
   const html: CodeLine[] = [...head, ...body, { text: '</html>', node: null }, { text: '', node: null }];
@@ -403,7 +411,11 @@ export function siteFiles(
   readonly interactions: string | null;
   readonly forms: string | null;
   readonly motion: string | null;
-  readonly lottie: string | null
+  readonly lottie: string | null;
+  readonly widgets: string | null;
+  // the application (spec app-logic): js/app-layer/main.js, the runtime and the project's modules, while the project
+  // has one
+  readonly app: { readonly main: string; readonly runtime: string; readonly modules: readonly { readonly path: string; readonly code: string }[] } | null;
 } {
   const rules = rulesForDocument(manifestRules, document);
   const usesForms = document.pages.some(page => pageUsesForms(page.tree));
@@ -451,19 +463,25 @@ export function siteFiles(
   if (config !== null && scripts?.motion === undefined) throw new Error('Motion requires the site script writer');
   const motion = config === null || scripts?.motion === undefined ? null : scripts.motion(config);
   const lottie = config !== null && siteUsesLottie(document) && scripts?.lottie !== undefined ? scripts.lottie() : null;
-  return { pages: pages.map(({ page, code }) => ({ file: page.file, html: code.html.map((line) => line.text).join('\n') })), css, cssLines, interactions, forms, motion, lottie };
+  const widgets = document.pages.some((page) => pageUsesWidgets(page.tree)) && scripts?.widgets !== undefined ? scripts.widgets() : null;
+  if (siteUsesApp(document) && scripts?.app === undefined) throw new Error('The application layer requires the site script writer');
+  const compiled = siteUsesApp(document) && scripts?.app !== undefined ? compileApp(document, scripts.checkSyntax) : null;
+  const app = compiled === null || scripts?.app === undefined ? null : { main: compiled.main, runtime: scripts.app(), modules: compiled.modules };
+  return { pages: pages.map(({ page, code }) => ({ file: page.file, html: code.html.map((line) => line.text).join('\n') })), css, cssLines, interactions, forms, motion, lottie, widgets, app };
 }
 
 // The scripts the site writes beside its pages: the same answers siteFiles reaches, read without writing the pages or
 // their stylesheet — the selectors a script names change its text, never whether it is written (every element an
 // interaction or a motion addresses takes a generated class). The Explorer lists the generated files at every change of
 // the document (the audit's AUD-36: listing them through siteFiles wrote the whole site at every undo).
-export type SiteScriptPart = 'interactions' | 'forms' | 'motion' | 'lottie';
+export type SiteScriptPart = 'interactions' | 'forms' | 'motion' | 'lottie' | 'widgets' | 'app';
 export function siteScriptsWritten(document: DocumentJson, manifestRules: ModelRules): ReadonlySet<SiteScriptPart> {
   const written = new Set<SiteScriptPart>();
   const anywhere = () => '.';
   if (interactionsJs(document, anywhere) !== null) written.add('interactions');
   if (document.pages.some((page) => pageUsesForms(page.tree))) written.add('forms');
+  if (document.pages.some((page) => pageUsesWidgets(page.tree))) written.add('widgets');
+  if (siteUsesApp(document)) written.add('app');
   const breakpoints = rulesForDocument(manifestRules, document).output.breakpoints.map(({ id, width, base }) => ({ id, width, base }));
   if (motionConfig(document, { selectorOf: anywhere, breakpoints, playedClassName }) !== null) {
     written.add('motion');
@@ -532,21 +550,43 @@ export function previewPage(document: DocumentJson, rules: ModelRules, pageIndex
   const pageFile = page?.file ?? '';
   if (site.lottie !== null) html = html.replace(`  <script defer src="${relativePath(pageFile, LOTTIE_SCRIPT)}"></script>`, () => `  <script>\n${inlineScript(site.lottie ?? '')}\n  </script>`);
   if (site.motion !== null) html = html.replace(`  <script defer src="${relativePath(pageFile, MOTION_SCRIPT)}"></script>`, () => `  <script>document.addEventListener('DOMContentLoaded', function () {\n${inlineScript(site.motion ?? '')}\n});</script>`);
+  if (site.widgets !== null) html = html.replace(`  <script defer src="${relativePath(pageFile, WIDGETS_SCRIPT)}"></script>`, () => `  <script>document.addEventListener('DOMContentLoaded', function () {\n${inlineScript(site.widgets ?? '')}\n});</script>`);
+  // the application runs from its own text too: the import map gives each module as a data: address (the frame has no
+  // folder), js/app-layer/main.js is written in, and the runtime shows its errors in the page (data-app-debug)
+  if (site.app !== null) {
+    const app = site.app;
+    const dataAddress = (code: string) => `data:text/javascript;charset=utf-8,${encodeURIComponent(code)}`;
+    const map = importMap(document, (path, code) => (code !== null ? dataAddress(code) : (() => {
+      const file = fileAt(document, path);
+      return file === null ? path : dataAddress(new TextDecoder().decode(fileBytes(file)));
+    })()), app.runtime, { main: app.main, modules: app.modules });
+    html = html.replace(/ {2}<script type="importmap">.*<\/script>/u, () => `  <script type="importmap">${map}</script>`);
+    html = html.replace(`  <script type="module" src="${relativePath(pageFile, APP_MAIN_SCRIPT)}"></script>`, () => `  <script type="module">\n${inlineScript(app.main)}\n  </script>`);
+    html = html.replace('<html', '<html data-app-debug');
+  }
   return html.replace(link, `  <base target="_blank">\n  <style>\n${css}  </style>`);
 }
 
-export const exportProject = registerHandler('project.export', ({ state, rules, siteScripts }) => {
+// The site's archive (spec export-zip): the pages, the stylesheet, the scripts the project needs and every file of
+// the project at its path. Export ZIP downloads it; a cloud project's Publish sends the same bytes to the platform
+// (src/editor/cloud/), so a published site is exactly the exported one.
+export function siteArchive(document: DocumentJson, rules: ModelRules, siteScripts?: SiteScripts): Uint8Array {
+  return zip(siteEntries(document, rules, siteScripts), FIXED_TIME);
+}
+
+// The archive's files, in its order: what siteArchive zips and what the app packages (packages.ts) build on.
+export function siteEntries(document: DocumentJson, rules: ModelRules, siteScripts?: SiteScripts): readonly ZipEntry[] {
   const encoder = new TextEncoder();
-  const site = siteFiles(state.document, rules, true, siteScripts);
+  const site = siteFiles(document, rules, true, siteScripts);
   // every file of the project at its path (spec export-assets): an image an element uses is in the archive, so the
   // exported page shows it
-  const assets = filesOf(state.document).map((file) => ({ path: file.path, bytes: fileBytes(file) }));
-  const capturedSnapshots = state.document.pages.flatMap((page) => {
+  const assets = filesOf(document).map((file) => ({ path: file.path, bytes: fileBytes(file) }));
+  const capturedSnapshots = document.pages.flatMap((page) => {
     if (page.capture === undefined) return [];
     const packageData: CapturedSnapshotPackage = {
       format: 2,
       widths: page.capture.widths,
-      root: exportedCapturedRoot(page.capture.root, capturedHeadOf(state.document, page)),
+      root: exportedCapturedRoot(page.capture.root, capturedHeadOf(document, page)),
       ...(page.capture.resourceProblems === undefined ? {} : { resourceProblems: page.capture.resourceProblems }),
     };
     return [{ path: captureSnapshotPath(page.file), bytes: encoder.encode(JSON.stringify(packageData)) }];
@@ -557,7 +597,23 @@ export const exportProject = registerHandler('project.export', ({ state, rules, 
   if (site.forms !== null) script.push({ path: FORMS_SCRIPT, bytes: encoder.encode(site.forms) });
   if (site.motion !== null) script.push({ path: MOTION_SCRIPT, bytes: encoder.encode(site.motion) });
   if (site.lottie !== null) script.push({ path: LOTTIE_SCRIPT, bytes: encoder.encode(site.lottie) });
-  const entries = [...site.pages.map(({ file, html }) => ({ path: file, bytes: encoder.encode(html) })), { path: STYLESHEET, bytes: encoder.encode(site.css) }, ...capturedSnapshots, ...script, ...assets];
-  const bytes = zip(entries, FIXED_TIME);
-  return { kind: 'change' as const, message: message('status.export.done', { file: SITE_ARCHIVE }), download: { name: SITE_ARCHIVE, type: 'application/zip', bytes } };
+  if (site.widgets !== null) script.push({ path: WIDGETS_SCRIPT, bytes: encoder.encode(site.widgets) });
+  if (site.app !== null) {
+    script.push({ path: APP_MAIN_SCRIPT, bytes: encoder.encode(site.app.main) }, { path: APP_RUNTIME_SCRIPT, bytes: encoder.encode(site.app.runtime) });
+    for (const module of site.app.modules) script.push({ path: module.path, bytes: encoder.encode(module.code) });
+  }
+  return [...site.pages.map(({ file, html }) => ({ path: file, bytes: encoder.encode(html) })), { path: STYLESHEET, bytes: encoder.encode(site.css) }, ...capturedSnapshots, ...script, ...assets];
+}
+
+// The site packed for where it runs (packages.ts): the plain site, an installable web app, an Android and iOS
+// project, a Windows, macOS and Linux project. A published site is the installable web app.
+export function packageArchive(format: PackageFormat, document: DocumentJson, rules: ModelRules, siteScripts?: SiteScripts): Uint8Array {
+  return zip(packageEntries(format, siteEntries(document, rules, siteScripts), document), FIXED_TIME);
+}
+
+export const exportProject = registerHandler('project.export', ({ state, rules, siteScripts }, args) => {
+  const format: PackageFormat = args.format ?? 'site';
+  const bytes = packageArchive(format, state.document, rules, siteScripts);
+  const name = PACKAGE_ARCHIVE[format];
+  return { kind: 'change' as const, message: message('status.export.done', { file: name }), download: { name, type: 'application/zip', bytes } };
 });

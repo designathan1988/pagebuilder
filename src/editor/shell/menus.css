@@ -141,8 +141,11 @@
   display: contents;
 }
 
+/* over the menu bar's buttons too (they stand at --z-menu-anchor, above an open menu's backdrop): a context menu that
+   reaches the top of the window showed "Organize" over "Rename" (DEF-0621) */
 .context-menu > .menu {
   position: fixed;
+  z-index: calc(var(--z-menu-anchor) + 1);
 }
 
 /* a submenu shows while the pointer is over its item or the focus is in it, or once its item is clicked; fixed to the

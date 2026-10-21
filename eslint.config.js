@@ -17,6 +17,8 @@ export default defineConfig(
   globalIgnores(['dist', 'reference', '.cache', '.playwright-mcp', '.claude', 'node_modules', 'test-results', 'playwright-report', 'tests/support/folders']),
   // The audit journeys (jornada*/) hold the auditors' capture scripts and evidence, not project code.
   globalIgnores(['jornada01', 'jornada02', 'jornada03']),
+  // The SaaS backend (saas/): Deno Edge Functions, the sites Worker and the dashboard, each with its own type check.
+  globalIgnores(['saas']),
   // Third-party code shipped as it was published (the Lottie player, minified, with its licence): never edited here.
   globalIgnores(['src/**/vendor/**']),
   // the browser extension as built (npm run extension:build): generated from companion/extension/src
@@ -28,6 +30,16 @@ export default defineConfig(
     // The JavaScript and TypeScript rules. Stylesheets are linted by their own language below.
     files: ['**/*.{js,mjs,cjs,ts,mts,cts,tsx}'],
     extends: [js.configs.recommended, tseslint.configs.strict],
+  },
+  {
+    // the web components' script runs as it is in the published site (src/editor/widgets/widgets.js)
+    files: ['src/editor/widgets/*.js'],
+    languageOptions: { globals: globals.browser, sourceType: 'script' },
+  },
+  {
+    // the application runtime runs as it is in the published site, a module (src/editor/app-runtime/runtime.js)
+    files: ['src/editor/app-runtime/*.js'],
+    languageOptions: { globals: globals.browser, sourceType: 'module' },
   },
   {
     files: ['src/**/*.{ts,tsx}'],

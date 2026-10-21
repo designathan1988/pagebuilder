@@ -707,8 +707,34 @@ async function controlPoint(page: Page, ref: string, args: Record<string, unknow
   // the tree lays its rows out for the new scroll a frame after it (A3.28): the box is read once it has, so the point
   // is on the row the step names and not on the one it was drawn over before
   await nextFrames(page);
-  const box = await target.boundingBox();
-  if (box === null) throw new Error(`${ref} ${JSON.stringify(args)} is not laid out`);
+  // A control wider than the area that shows it has its middle brought into that area, as a person scrolls to it: the
+  // Timeline's ruler, 1200 px in a scroller of 592, had its middle (3 s) under the Inspector, where the press that sets
+  // the playhead landed. Then the press goes to the part of the control a person sees: its box cut by every ancestor
+  // that clips it, up to a fixed layer (the screen guard's own reading, tests/support/screen-guard.ts).
+  await target.evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    const middle = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    for (let p = el.parentElement; p !== null && p !== el.ownerDocument.documentElement; p = p.parentElement) {
+      const style = getComputedStyle(p);
+      const b = p.getBoundingClientRect();
+      if (/(auto|scroll)/.test(style.overflowX) && (middle.x < b.left || middle.x > b.right)) p.scrollLeft += middle.x - (b.left + b.width / 2);
+      if (/(auto|scroll)/.test(style.overflowY) && (middle.y < b.top || middle.y > b.bottom)) p.scrollTop += middle.y - (b.top + b.height / 2);
+    }
+  });
+  await nextFrames(page);
+  const box = await target.evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    let [left, top, right, bottom] = [r.left, r.top, r.right, r.bottom];
+    for (let p = el.parentElement; p !== null && p !== el.ownerDocument.documentElement; p = p.parentElement) {
+      const style = getComputedStyle(p);
+      const b = p.getBoundingClientRect();
+      if (style.overflowX !== 'visible') [left, right] = [Math.max(left, b.left), Math.min(right, b.right)];
+      if (style.overflowY !== 'visible') [top, bottom] = [Math.max(top, b.top), Math.min(bottom, b.bottom)];
+      if (style.position === 'fixed') break;
+    }
+    return right > left && bottom > top ? { x: left, y: top, width: right - left, height: bottom - top } : null;
+  });
+  if (box === null) throw new Error(`${ref} ${JSON.stringify(args)} is not laid out where it can be seen`);
   return { x: box.x + box.width / 2, y: box.y + box.height * at };
 }
 
@@ -1645,7 +1671,10 @@ async function runStep(page: Page, step: Step, ref: string, held: { current: Hel
     if (typeof value === 'string' || typeof value === 'number') {
       await page.keyboard.press('Backspace');
       if (value !== '') await page.keyboard.type(String(value));
-      await page.keyboard.press('Enter');
+      // a code field (the App panel's and the Logic tab's: app-panel/code-editor.tsx) keeps its text with Ctrl+Enter
+      // or on leaving it, as a code editor does; Enter there is a new line
+      const code = await typedInto.evaluate((el) => el.closest('.cm-editor') !== null);
+      await page.keyboard.press(code ? 'Control+Enter' : 'Enter');
     }
   } else if (d.kind === 'toolbar' || d.kind === 'menu' || d.kind === 'panel-control' || d.kind === 'context-menu' || d.kind === 'quick-panel') {
     // a control drawn only in some states (the toast's Undo after a delete, an item of the open context menu) fails the

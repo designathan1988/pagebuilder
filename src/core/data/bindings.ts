@@ -72,7 +72,7 @@ export function valueFor(document: DocumentJson, bound: Bound, place: Place, pag
   if (field === undefined) return undefined;
   const value: Cell | undefined = place.item.values[field.key];
   if (value === undefined) return undefined;
-  const text = cellText(value, yesNo(context.words));
+  const text = cellText(value, yesNo(context.words), { language: document.language, decimals: field.decimals });
   switch (bound.to) {
     case 'text':
       return Array.isArray(value) ? canonical(value as readonly InlineRun[]) : text;

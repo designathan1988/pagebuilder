@@ -209,6 +209,7 @@ test('a Link Block tile dragged over a Link Block draws it refused with the refu
   const block = await screenBox(page, target.id);
   // over its lower half: the nearest place that takes a Link Block is after it (spec drag-layout, Problems in Pager 4)
   const over = { x: centre(block).x, y: block.y + block.height * 0.75 };
+  await control(page, TILE, { args: { entry: 'link-block' } }).scrollIntoViewIfNeeded();
   const tile = await control(page, TILE, { args: { entry: 'link-block' } }).boundingBox();
   if (tile === null) throw new Error('the Link Block tile is not laid out');
   const from = centre(tile);
@@ -226,6 +227,9 @@ test('a Link Block tile dragged over a Link Block draws it refused with the refu
   expect((await port(page)).undoSteps).toBe(before.undoSteps + 1);
 
   // a Container dragged there lands inside it
+  // the Insert panel scrolls: the tile is scrolled to before it is pressed, as a person does (its ready sections come
+  // first)
+  await control(page, TILE, { args: { entry: 'container' } }).scrollIntoViewIfNeeded();
   const containerTile = await control(page, TILE, { args: { entry: 'container' } }).boundingBox();
   if (containerTile === null) throw new Error('the Container tile is not laid out');
   const start = centre(containerTile);

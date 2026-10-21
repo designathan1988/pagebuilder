@@ -117,3 +117,100 @@
 .top-bar__saved.is-recoveryRequired {
   color: var(--color-warning);
 }
+
+/* ---------------------------------------------------------------- the cloud bar (src/editor/cloud/cloud-bar.tsx) */
+
+.cloud-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-left: var(--space-4);
+  padding-left: var(--space-4);
+  border-left: 1px solid var(--color-border);
+}
+
+.cloud-bar__save {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--fs-caption);
+  white-space: nowrap;
+}
+
+.cloud-bar__save--saved {
+  color: var(--color-success);
+}
+
+.cloud-bar__save--failed,
+.cloud-bar__save--conflict {
+  color: var(--color-danger);
+}
+
+.cloud-bar a.door {
+  text-decoration: none;
+}
+
+.cloud-publish {
+  display: grid;
+  gap: var(--space-4);
+  width: calc(var(--size-popover) * 1.5);
+  padding: var(--space-6);
+}
+
+.cloud-publish__label {
+  font-weight: var(--fw-title);
+  font-size: var(--fs-title);
+}
+
+.cloud-publish__address {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.cloud-publish__address .input {
+  flex: 1;
+  min-width: 0;
+}
+
+.cloud-publish__suffix,
+.cloud-publish__hint {
+  color: var(--color-text-muted);
+  font-size: var(--fs-caption);
+}
+
+.cloud-publish__hint,
+.cloud-publish__refusal {
+  margin: 0;
+}
+
+.cloud-publish__refusal {
+  color: var(--color-danger);
+  font-size: var(--fs-caption);
+}
+
+.cloud-publish__link {
+  color: var(--color-accent);
+  font-size: var(--fs-body);
+  overflow-wrap: anywhere;
+}
+
+/* the page drawn in place of the editor when a cloud project cannot be opened (src/main.tsx) */
+.cloud-failure {
+  display: grid;
+  gap: var(--space-6);
+  max-width: var(--size-start-card);
+  margin: var(--space-10) auto;
+  padding: 0 var(--space-7);
+  font-size: var(--fs-dialog);
+}
+
+.cloud-failure h1 {
+  margin: 0;
+  font-size: var(--fs-headline);
+}
+
+.cloud-failure a {
+  color: var(--color-accent);
+}

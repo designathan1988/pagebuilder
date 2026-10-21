@@ -1,7 +1,7 @@
 {
   "$generated": {
     "by": "tools/ui-fit/measure.spec.ts",
-    "css": "fe22568fdef654ad2377f7ddcf83f4b1b7b38b6631476f458d86101178478fa5"
+    "css": "6fb062a283416568c2f79567e3c38678da0f8cbe8f784b9e6a8859830869eedc"
   },
   "regions": {
     "activity-bar": {
@@ -17,6 +17,40 @@
       },
       "ptbr": {
         "width": 39,
+        "fontSize": 12,
+        "fontWeight": 400
+      }
+    },
+    "app-panel": {
+      "default": {
+        "width": 223,
+        "fontSize": 12,
+        "fontWeight": 400
+      },
+      "windows": {
+        "width": 213,
+        "fontSize": 12,
+        "fontWeight": 400
+      },
+      "ptbr": {
+        "width": 213,
+        "fontSize": 12,
+        "fontWeight": 400
+      }
+    },
+    "app-panel-examples": {
+      "default": {
+        "width": 223,
+        "fontSize": 12,
+        "fontWeight": 400
+      },
+      "windows": {
+        "width": 213,
+        "fontSize": 12,
+        "fontWeight": 400
+      },
+      "ptbr": {
+        "width": 213,
         "fontSize": 12,
         "fontWeight": 400
       }
@@ -288,7 +322,7 @@
         "fontWeight": 400
       },
       "ptbr": {
-        "width": 223,
+        "width": 213,
         "fontSize": 12,
         "fontWeight": 400
       }
@@ -305,7 +339,7 @@
         "fontWeight": 400
       },
       "ptbr": {
-        "width": 223,
+        "width": 213,
         "fontSize": 12,
         "fontWeight": 400
       }
@@ -339,7 +373,7 @@
         "fontWeight": 400
       },
       "ptbr": {
-        "width": 223,
+        "width": 213,
         "fontSize": 12,
         "fontWeight": 400
       }
@@ -652,7 +686,7 @@
         "fontWeight": 400
       },
       "ptbr": {
-        "width": 238,
+        "width": 243,
         "fontSize": 12,
         "fontWeight": 400
       }
@@ -914,6 +948,136 @@
     }
   },
   "doors": {
+    "app.setLibrary#app-library-add": {
+      "default": {
+        "width": 1158.375,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Add library"
+      },
+      "windows": {
+        "width": 1163.375,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Add library"
+      },
+      "ptbr": {
+        "width": 1163.375,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Adicionar biblioteca"
+      }
+    },
+    "app.setModule#app-new-component": {
+      "default": {
+        "width": 159,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "New code component"
+      },
+      "windows": {
+        "width": 149,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "New code component"
+      },
+      "ptbr": {
+        "width": 149,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Novo componente de código"
+      }
+    },
+    "app.setModule#app-new-script": {
+      "default": {
+        "width": 159,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "New script"
+      },
+      "windows": {
+        "width": 149,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "New script"
+      },
+      "ptbr": {
+        "width": 149,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Novo script"
+      }
+    },
+    "app.setTable#app-new-table": {
+      "default": {
+        "width": 159,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "New table"
+      },
+      "windows": {
+        "width": 149,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "New table"
+      },
+      "ptbr": {
+        "width": 149,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Nova tabela"
+      }
+    },
+    "app.setVariable#app-new-variable": {
+      "default": {
+        "width": 159,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "New variable"
+      },
+      "windows": {
+        "width": 149,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "New variable"
+      },
+      "ptbr": {
+        "width": 149,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Nova variável"
+      }
+    },
     "assistant.attachReference#assistant-reference": {
       "default": {
         "width": 1158.375,
@@ -1919,7 +2083,8 @@
         "fontWeight": 400,
         "letterSpacing": 0,
         "textTransform": "none",
-        "text": "Container"
+        "text": "Full landing page",
+        "lines": 2
       },
       "windows": {
         "width": 88.5,
@@ -1927,7 +2092,8 @@
         "fontWeight": 400,
         "letterSpacing": 0,
         "textTransform": "none",
-        "text": "Container"
+        "text": "Full landing page",
+        "lines": 2
       },
       "ptbr": {
         "width": 88.5,
@@ -1935,7 +2101,8 @@
         "fontWeight": 400,
         "letterSpacing": 0,
         "textTransform": "none",
-        "text": "Contêiner"
+        "text": "Landing page completa",
+        "lines": 2
       }
     },
     "element.moveDown#context-menu": {
@@ -2936,7 +3103,7 @@
         "text": "Validate"
       },
       "windows": {
-        "width": 111.96875,
+        "width": 303.890625,
         "fontSize": 11,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -4320,7 +4487,7 @@
     },
     "files.move#panel-drag-explorer-row-folder": {
       "default": {
-        "width": 77.578125,
+        "width": 76.140625,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -4328,7 +4495,7 @@
         "text": "index.html"
       },
       "windows": {
-        "width": 77.578125,
+        "width": 76.140625,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -4336,7 +4503,7 @@
         "text": "index.html"
       },
       "ptbr": {
-        "width": 91.125,
+        "width": 79.6875,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -4658,7 +4825,7 @@
     },
     "layers.startRename#layers-row-name": {
       "default": {
-        "width": 56.65625,
+        "width": 53.875,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -4666,7 +4833,7 @@
         "text": "Hero"
       },
       "windows": {
-        "width": 46.65625,
+        "width": 43.875,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -4674,7 +4841,7 @@
         "text": "Hero"
       },
       "ptbr": {
-        "width": 68.65625,
+        "width": 65.875,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -5178,7 +5345,7 @@
     },
     "pages.switch#file-tab": {
       "default": {
-        "width": 487.828125,
+        "width": 479.484375,
         "fontSize": 11,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -5186,7 +5353,7 @@
         "text": "sobre.html"
       },
       "windows": {
-        "width": 487.828125,
+        "width": 479.484375,
         "fontSize": 11,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -5194,7 +5361,7 @@
         "text": "sobre.html"
       },
       "ptbr": {
-        "width": 551.828125,
+        "width": 543.484375,
         "fontSize": 11,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -5204,7 +5371,7 @@
     },
     "pages.switch#toolbar-top-bar-page-switcher": {
       "default": {
-        "width": 653.859375,
+        "width": 659.03125,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -5212,7 +5379,7 @@
         "text": "index.html"
       },
       "windows": {
-        "width": 653.859375,
+        "width": 659.03125,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -5220,7 +5387,7 @@
         "text": "index.html"
       },
       "ptbr": {
-        "width": 425.375,
+        "width": 428.90625,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -5235,7 +5402,7 @@
         "fontWeight": 600,
         "letterSpacing": 0,
         "textTransform": "none",
-        "text": "Structure and layout"
+        "text": "Ready sections"
       },
       "windows": {
         "width": 192,
@@ -5243,7 +5410,7 @@
         "fontWeight": 600,
         "letterSpacing": 0,
         "textTransform": "none",
-        "text": "Structure and layout"
+        "text": "Ready sections"
       },
       "ptbr": {
         "width": 192,
@@ -5251,7 +5418,7 @@
         "fontWeight": 600,
         "letterSpacing": 0,
         "textTransform": "none",
-        "text": "Estrutura e layout"
+        "text": "Seções prontas"
       }
     },
     "parts.add#inspector-media-sources-add-source": {
@@ -5670,6 +5837,84 @@
         "text": "Exportar ZIP"
       }
     },
+    "project.export#menu-file-android": {
+      "default": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Export for Android and iPhone"
+      },
+      "windows": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Export for Android and iPhone"
+      },
+      "ptbr": {
+        "width": 1280,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Exportar para Android e iPhone"
+      }
+    },
+    "project.export#menu-file-desktop": {
+      "default": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Export for Windows, Mac and Linux"
+      },
+      "windows": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Export for Windows, Mac and Linux"
+      },
+      "ptbr": {
+        "width": 1280,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Exportar para Windows, Mac e Linux"
+      }
+    },
+    "project.export#menu-file-pwa": {
+      "default": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Export as installable app (PWA)"
+      },
+      "windows": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Export as installable app (PWA)"
+      },
+      "ptbr": {
+        "width": 1280,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Exportar como app instalável (PWA)"
+      }
+    },
     "project.export#toolbar-top-bar-export": {
       "default": {
         "width": 2145.609375,
@@ -5772,6 +6017,32 @@
         "letterSpacing": 0,
         "textTransform": "none",
         "text": "Nova página em branco"
+      }
+    },
+    "project.open#app-open-example": {
+      "default": {
+        "width": 159,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Tasks"
+      },
+      "windows": {
+        "width": 149,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Tasks"
+      },
+      "ptbr": {
+        "width": 149,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Tarefas"
       }
     },
     "project.open#menu-file": {
@@ -7024,7 +7295,7 @@
     },
     "style.set#inspector-font-family": {
       "default": {
-        "width": 64.5625,
+        "width": 60.984375,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -7032,7 +7303,7 @@
         "text": "\"Segoe UI\", system-ui, sans-serif"
       },
       "windows": {
-        "width": 54.5625,
+        "width": 50.984375,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -7040,7 +7311,7 @@
         "text": "\"Segoe UI\", system-ui, sans-serif"
       },
       "ptbr": {
-        "width": 66.65625,
+        "width": 63.875,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -8748,7 +9019,7 @@
         "text": "system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
       },
       "windows": {
-        "width": 171.484375,
+        "width": 64.25,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -11470,7 +11741,7 @@
     },
     "workspace.setActiveTab#inspector-tab-interactions": {
       "default": {
-        "width": 1245.84375,
+        "width": 1255.40625,
         "fontSize": 12,
         "fontWeight": 600,
         "letterSpacing": 0,
@@ -11478,7 +11749,7 @@
         "text": "Interactions"
       },
       "windows": {
-        "width": 1245.84375,
+        "width": 1255.40625,
         "fontSize": 12,
         "fontWeight": 600,
         "letterSpacing": 0,
@@ -11486,7 +11757,7 @@
         "text": "Interactions"
       },
       "ptbr": {
-        "width": 1244.1875,
+        "width": 1254.140625,
         "fontSize": 12,
         "fontWeight": 600,
         "letterSpacing": 0,
@@ -11494,9 +11765,35 @@
         "text": "Interações"
       }
     },
+    "workspace.setActiveTab#inspector-tab-logic": {
+      "default": {
+        "width": 1235.328125,
+        "fontSize": 12,
+        "fontWeight": 600,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Logic"
+      },
+      "windows": {
+        "width": 1235.328125,
+        "fontSize": 12,
+        "fontWeight": 600,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Logic"
+      },
+      "ptbr": {
+        "width": 1234.21875,
+        "fontSize": 12,
+        "fontWeight": 600,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Lógica"
+      }
+    },
     "workspace.setActiveTab#inspector-tab-settings": {
       "default": {
-        "width": 1267.125,
+        "width": 1276.234375,
         "fontSize": 12,
         "fontWeight": 600,
         "letterSpacing": 0,
@@ -11504,7 +11801,7 @@
         "text": "Settings"
       },
       "windows": {
-        "width": 1267.125,
+        "width": 1276.234375,
         "fontSize": 12,
         "fontWeight": 600,
         "letterSpacing": 0,
@@ -11512,7 +11809,7 @@
         "text": "Settings"
       },
       "ptbr": {
-        "width": 1266.5625,
+        "width": 1276,
         "fontSize": 12,
         "fontWeight": 600,
         "letterSpacing": 0,
@@ -11522,7 +11819,7 @@
     },
     "workspace.setActiveTab#inspector-tab-style": {
       "default": {
-        "width": 1286.515625,
+        "width": 1295.34375,
         "fontSize": 12,
         "fontWeight": 600,
         "letterSpacing": 0,
@@ -11530,7 +11827,7 @@
         "text": "Style"
       },
       "windows": {
-        "width": 1286.515625,
+        "width": 1295.34375,
         "fontSize": 12,
         "fontWeight": 600,
         "letterSpacing": 0,
@@ -11538,7 +11835,7 @@
         "text": "Style"
       },
       "ptbr": {
-        "width": 1287.609375,
+        "width": 1296.59375,
         "fontSize": 12,
         "fontWeight": 600,
         "letterSpacing": 0,
@@ -12180,6 +12477,7 @@
       "workspace.movePanel#panel-drag-panel-header-right-edge",
       "workspace.resizeSplitter#panel-drag-splitter-workspace",
       "workspace.setPanelOpen#panel-header-close",
+      "workspace.setPanelOpen#toolbar-activity-bar-app",
       "workspace.setPanelOpen#toolbar-activity-bar-assistant",
       "workspace.setPanelOpen#toolbar-activity-bar-data",
       "workspace.setPanelOpen#toolbar-activity-bar-explorer",
@@ -12302,6 +12600,7 @@
       "workspace.movePanel#panel-drag-panel-header-right-edge",
       "workspace.resizeSplitter#panel-drag-splitter-workspace",
       "workspace.setPanelOpen#panel-header-close",
+      "workspace.setPanelOpen#toolbar-activity-bar-app",
       "workspace.setPanelOpen#toolbar-activity-bar-assistant",
       "workspace.setPanelOpen#toolbar-activity-bar-data",
       "workspace.setPanelOpen#toolbar-activity-bar-explorer",
@@ -12424,6 +12723,7 @@
       "workspace.movePanel#panel-drag-panel-header-right-edge",
       "workspace.resizeSplitter#panel-drag-splitter-workspace",
       "workspace.setPanelOpen#panel-header-close",
+      "workspace.setPanelOpen#toolbar-activity-bar-app",
       "workspace.setPanelOpen#toolbar-activity-bar-assistant",
       "workspace.setPanelOpen#toolbar-activity-bar-data",
       "workspace.setPanelOpen#toolbar-activity-bar-explorer",

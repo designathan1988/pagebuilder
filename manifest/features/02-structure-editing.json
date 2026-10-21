@@ -881,12 +881,151 @@
             "element.insert#key-space-in-palette"
           ],
           "expect": {
-            "document": [],
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Plans/@children",
+                "value": [
+                  {
+                    "type": "div",
+                    "name": "Grid",
+                    "tag": "div",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": null,
+                    "children": [
+                      {
+                        "type": "article",
+                        "name": "CardA",
+                        "tag": "article",
+                        "attributes": {},
+                        "classes": [
+                          "card"
+                        ],
+                        "styles": {},
+                        "text": null,
+                        "children": [
+                          {
+                            "type": "heading",
+                            "name": "CardATitle",
+                            "tag": "h3",
+                            "attributes": {},
+                            "classes": [],
+                            "styles": {},
+                            "text": "Monthly",
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "type": "article",
+                        "name": "CardB",
+                        "tag": "article",
+                        "attributes": {},
+                        "classes": [
+                          "card"
+                        ],
+                        "styles": {},
+                        "text": null,
+                        "children": [
+                          {
+                            "type": "heading",
+                            "name": "CardBTitle",
+                            "tag": "h3",
+                            "attributes": {},
+                            "classes": [],
+                            "styles": {},
+                            "text": "Weekly",
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "type": "article",
+                        "name": "CardC",
+                        "tag": "article",
+                        "attributes": {},
+                        "classes": [
+                          "card"
+                        ],
+                        "styles": {},
+                        "text": null,
+                        "children": []
+                      }
+                    ]
+                  },
+                  {
+                    "type": "list",
+                    "name": "Perks",
+                    "tag": "ul",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": null,
+                    "children": [
+                      {
+                        "type": "listItem",
+                        "name": "PerkOne",
+                        "tag": "li",
+                        "attributes": {},
+                        "classes": [],
+                        "styles": {},
+                        "text": null,
+                        "children": [
+                          {
+                            "type": "paragraph",
+                            "name": "PerkOneText",
+                            "tag": "p",
+                            "attributes": {},
+                            "classes": [],
+                            "styles": {},
+                            "text": "Free delivery",
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "type": "listItem",
+                        "name": "PerkTwo",
+                        "tag": "li",
+                        "attributes": {},
+                        "classes": [],
+                        "styles": {},
+                        "text": null,
+                        "children": [
+                          {
+                            "type": "paragraph",
+                            "name": "PerkTwoText",
+                            "tag": "p",
+                            "attributes": {},
+                            "classes": [],
+                            "styles": {},
+                            "text": "Pause anytime",
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "type": "paragraph",
+                    "name": "Paragraph",
+                    "tag": "p",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": "A freshly created paragraph.",
+                    "children": []
+                  }
+                ]
+              }
+            ],
             "selection": [
-              "/Page/Plans/Perks"
+              "/Page/Plans/Paragraph"
             ],
             "history": {
-              "undoSteps": 0,
+              "undoSteps": 1,
               "undoRestores": true,
               "redoRestores": true
             },
@@ -895,10 +1034,12 @@
               "geometry": [],
               "feedback": [
                 {
-                  "key": "status.refused.onlyAccepts",
+                  "key": "status.placed",
                   "params": {
-                    "parent": "<ul>",
-                    "children": "<li>"
+                    "element": "Paragraph",
+                    "parent": "Plans",
+                    "position": 3,
+                    "count": 3
                   }
                 }
               ]
@@ -907,12 +1048,7 @@
             "persistence": null,
             "export": null
           },
-          "refusals": [
-            {
-              "key": "status.refused.onlyAccepts",
-              "document": "unchanged"
-            }
-          ]
+          "refusals": []
         },
         {
           "id": "a-new-element-takes-the-class-its-siblings-share",

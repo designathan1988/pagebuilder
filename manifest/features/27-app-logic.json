@@ -1,0 +1,2986 @@
+{
+  "group": "app-logic",
+  "titleKey": "featureGroup.appLogic",
+  "features": [
+    {
+      "id": "app-logic",
+      "titleKey": "feature.appLogic",
+      "commands": [
+        "app.setVariable",
+        "app.removeVariable",
+        "app.setModule",
+        "app.removeModule",
+        "app.setLibrary",
+        "app.removeLibrary",
+        "app.setTable",
+        "app.removeTable",
+        "logic.set",
+        "logic.setBinding",
+        "logic.addHandler",
+        "logic.updateHandler",
+        "logic.removeHandler",
+        "logic.clear",
+        "workspace.setPanelOpen",
+        "workspace.setActiveTab",
+        "project.open"
+      ],
+      "dependsOn": [
+        "dock-toggles"
+      ],
+      "intent": {
+        "title": "An application layer: state, logic, scripts, code components and libraries",
+        "steps": [
+          "Open the App panel; add variables, scripts, code components and libraries.",
+          "Select an element; in the Logic tab bind its text, visibility, repetition, fields, attributes, classes, styles and component properties to expressions, and add handlers for its events.",
+          "Preview or export: the site runs the application from js/app-layer/main.js."
+        ],
+        "expected": [
+          "Every name is a JavaScript identifier, once, and not a word every expression already has; a rename follows every expression, handler and module that names it.",
+          "The canvas never runs the application; the preview and the exported site do, and the preview shows an error where a piece of code fails."
+        ]
+      },
+      "scenarios": [
+        {
+          "id": "a-new-variable-starts-as-an-empty-text",
+          "setup": {
+            "fixture": "empty",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.setVariable#app-new-variable",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.setVariable#app-new-variable"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@app",
+                "value": {
+                  "variables": [
+                    {
+                      "name": "variable",
+                      "type": "text",
+                      "initial": ""
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.variableAdded",
+                  "params": {
+                    "name": "variable"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-renamed-variable-is-renamed-in-every-expression",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.setVariable#app-variable-name",
+              "args": {
+                "previous": "count",
+                "name": "clicks"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.setVariable#app-variable-name"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@app",
+                "value": {
+                  "variables": [
+                    {
+                      "name": "clicks",
+                      "type": "number",
+                      "initial": 0
+                    },
+                    {
+                      "name": "title",
+                      "type": "text",
+                      "initial": "Hello"
+                    }
+                  ],
+                  "scripts": [
+                    {
+                      "name": "util",
+                      "code": "export const answer = 42;\n"
+                    }
+                  ],
+                  "components": [
+                    {
+                      "name": "Badge",
+                      "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+                    }
+                  ],
+                  "libraries": [
+                    {
+                      "name": "confetti",
+                      "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+                    }
+                  ],
+                  "tables": [
+                    {
+                      "name": "posts",
+                      "read": "public",
+                      "write": "members"
+                    }
+                  ]
+                }
+              },
+              {
+                "op": "set",
+                "path": "/Page/Title/@logic",
+                "value": {
+                  "text": "state.title",
+                  "on": [
+                    {
+                      "event": "click",
+                      "code": "state.clicks++"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.variableChanged",
+                  "params": {
+                    "name": "clicks"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-variable-of-another-type-starts-from-its-empty-value",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.setVariable#app-variable-type",
+              "args": {
+                "previous": "count",
+                "name": "count",
+                "type": "text"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.setVariable#app-variable-type"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@app",
+                "value": {
+                  "variables": [
+                    {
+                      "name": "count",
+                      "type": "text",
+                      "initial": ""
+                    },
+                    {
+                      "name": "title",
+                      "type": "text",
+                      "initial": "Hello"
+                    }
+                  ],
+                  "scripts": [
+                    {
+                      "name": "util",
+                      "code": "export const answer = 42;\n"
+                    }
+                  ],
+                  "components": [
+                    {
+                      "name": "Badge",
+                      "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+                    }
+                  ],
+                  "libraries": [
+                    {
+                      "name": "confetti",
+                      "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+                    }
+                  ],
+                  "tables": [
+                    {
+                      "name": "posts",
+                      "read": "public",
+                      "write": "members"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.variableChanged",
+                  "params": {
+                    "name": "count"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-variable-takes-its-first-value",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.setVariable#app-variable-initial",
+              "args": {
+                "previous": "title",
+                "name": "title",
+                "initial": "Hi there"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.setVariable#app-variable-initial"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@app",
+                "value": {
+                  "variables": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "initial": 0
+                    },
+                    {
+                      "name": "title",
+                      "type": "text",
+                      "initial": "Hi there"
+                    }
+                  ],
+                  "scripts": [
+                    {
+                      "name": "util",
+                      "code": "export const answer = 42;\n"
+                    }
+                  ],
+                  "components": [
+                    {
+                      "name": "Badge",
+                      "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+                    }
+                  ],
+                  "libraries": [
+                    {
+                      "name": "confetti",
+                      "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+                    }
+                  ],
+                  "tables": [
+                    {
+                      "name": "posts",
+                      "read": "public",
+                      "write": "members"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.variableChanged",
+                  "params": {
+                    "name": "title"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-variable-is-kept-in-the-browser",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.setVariable#app-variable-persist",
+              "args": {
+                "previous": "count",
+                "name": "count",
+                "persist": true
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.setVariable#app-variable-persist"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@app",
+                "value": {
+                  "variables": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "initial": 0,
+                      "persist": true
+                    },
+                    {
+                      "name": "title",
+                      "type": "text",
+                      "initial": "Hello"
+                    }
+                  ],
+                  "scripts": [
+                    {
+                      "name": "util",
+                      "code": "export const answer = 42;\n"
+                    }
+                  ],
+                  "components": [
+                    {
+                      "name": "Badge",
+                      "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+                    }
+                  ],
+                  "libraries": [
+                    {
+                      "name": "confetti",
+                      "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+                    }
+                  ],
+                  "tables": [
+                    {
+                      "name": "posts",
+                      "read": "public",
+                      "write": "members"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.variableChanged",
+                  "params": {
+                    "name": "count"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-variable-is-removed",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.removeVariable#app-variable-remove",
+              "args": {
+                "name": "title"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.removeVariable#app-variable-remove"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@app",
+                "value": {
+                  "variables": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "initial": 0
+                    }
+                  ],
+                  "scripts": [
+                    {
+                      "name": "util",
+                      "code": "export const answer = 42;\n"
+                    }
+                  ],
+                  "components": [
+                    {
+                      "name": "Badge",
+                      "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+                    }
+                  ],
+                  "libraries": [
+                    {
+                      "name": "confetti",
+                      "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+                    }
+                  ],
+                  "tables": [
+                    {
+                      "name": "posts",
+                      "read": "public",
+                      "write": "members"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.variableRemoved",
+                  "params": {
+                    "name": "title"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-new-script-starts-with-an-exported-function",
+          "setup": {
+            "fixture": "empty",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.setModule#app-new-script",
+              "args": {
+                "kind": "script"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.setModule#app-new-script"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@app",
+                "value": {
+                  "scripts": [
+                    {
+                      "name": "script",
+                      "code": "// What a script exports, every expression calls as fn.name(): fn.greet(state.user)\nexport function greet(name) {\n  return 'Hello, ' + name + '!'\n}\n"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.moduleAdded",
+                  "params": {
+                    "name": "script"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-new-code-component-draws-into-its-element",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.setModule#app-new-component",
+              "args": {
+                "kind": "component"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.setModule#app-new-component"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@app",
+                "value": {
+                  "variables": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "initial": 0
+                    },
+                    {
+                      "name": "title",
+                      "type": "text",
+                      "initial": "Hello"
+                    }
+                  ],
+                  "scripts": [
+                    {
+                      "name": "util",
+                      "code": "export const answer = 42;\n"
+                    }
+                  ],
+                  "components": [
+                    {
+                      "name": "Badge",
+                      "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+                    },
+                    {
+                      "name": "Component",
+                      "code": "// A code component draws anything into its element; props are the bindings prop: of the Logic tab, ctx.emit(event, data) fires the element’s events\nexport default {\n  mount(el, props, ctx) {\n    const box = document.createElement('div');\n    box.textContent = props.text ?? 'Component';\n    el.replaceChildren(box);\n    return {\n      update(next) { box.textContent = next.text ?? 'Component'; },\n      destroy() {},\n    };\n  },\n};\n"
+                    }
+                  ],
+                  "libraries": [
+                    {
+                      "name": "confetti",
+                      "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+                    }
+                  ],
+                  "tables": [
+                    {
+                      "name": "posts",
+                      "read": "public",
+                      "write": "members"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.moduleAdded",
+                  "params": {
+                    "name": "Component"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-script-is-renamed",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.setModule#app-module-name",
+              "args": {
+                "kind": "script",
+                "previous": "util",
+                "name": "helpers"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.setModule#app-module-name"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@app",
+                "value": {
+                  "variables": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "initial": 0
+                    },
+                    {
+                      "name": "title",
+                      "type": "text",
+                      "initial": "Hello"
+                    }
+                  ],
+                  "scripts": [
+                    {
+                      "name": "helpers",
+                      "code": "export const answer = 42;\n"
+                    }
+                  ],
+                  "components": [
+                    {
+                      "name": "Badge",
+                      "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+                    }
+                  ],
+                  "libraries": [
+                    {
+                      "name": "confetti",
+                      "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+                    }
+                  ],
+                  "tables": [
+                    {
+                      "name": "posts",
+                      "read": "public",
+                      "write": "members"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.moduleChanged",
+                  "params": {
+                    "name": "helpers"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-script-keeps-its-new-code",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.setModule#app-module-code",
+              "args": {
+                "kind": "script",
+                "name": "util",
+                "code": "export const answer = 7;\n"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.setModule#app-module-code"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@app",
+                "value": {
+                  "variables": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "initial": 0
+                    },
+                    {
+                      "name": "title",
+                      "type": "text",
+                      "initial": "Hello"
+                    }
+                  ],
+                  "scripts": [
+                    {
+                      "name": "util",
+                      "code": "export const answer = 7;\n"
+                    }
+                  ],
+                  "components": [
+                    {
+                      "name": "Badge",
+                      "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+                    }
+                  ],
+                  "libraries": [
+                    {
+                      "name": "confetti",
+                      "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+                    }
+                  ],
+                  "tables": [
+                    {
+                      "name": "posts",
+                      "read": "public",
+                      "write": "members"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.moduleChanged",
+                  "params": {
+                    "name": "util"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-script-is-removed",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.removeModule#app-module-remove",
+              "args": {
+                "kind": "script",
+                "name": "util"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.removeModule#app-module-remove"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@app",
+                "value": {
+                  "variables": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "initial": 0
+                    },
+                    {
+                      "name": "title",
+                      "type": "text",
+                      "initial": "Hello"
+                    }
+                  ],
+                  "components": [
+                    {
+                      "name": "Badge",
+                      "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+                    }
+                  ],
+                  "libraries": [
+                    {
+                      "name": "confetti",
+                      "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+                    }
+                  ],
+                  "tables": [
+                    {
+                      "name": "posts",
+                      "read": "public",
+                      "write": "members"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.moduleRemoved",
+                  "params": {
+                    "name": "util"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-library-is-named-for-the-imports",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.setLibrary#app-library-add",
+              "args": {
+                "name": "dayjs",
+                "url": "https://cdn.jsdelivr.net/npm/dayjs@1.11.13/+esm"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.setLibrary#app-library-add"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@app",
+                "value": {
+                  "variables": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "initial": 0
+                    },
+                    {
+                      "name": "title",
+                      "type": "text",
+                      "initial": "Hello"
+                    }
+                  ],
+                  "scripts": [
+                    {
+                      "name": "util",
+                      "code": "export const answer = 42;\n"
+                    }
+                  ],
+                  "components": [
+                    {
+                      "name": "Badge",
+                      "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+                    }
+                  ],
+                  "libraries": [
+                    {
+                      "name": "confetti",
+                      "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+                    },
+                    {
+                      "name": "dayjs",
+                      "url": "https://cdn.jsdelivr.net/npm/dayjs@1.11.13/+esm"
+                    }
+                  ],
+                  "tables": [
+                    {
+                      "name": "posts",
+                      "read": "public",
+                      "write": "members"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.libraryChanged",
+                  "params": {
+                    "name": "dayjs"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-library-is-removed",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.removeLibrary#app-library-remove",
+              "args": {
+                "name": "confetti"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.removeLibrary#app-library-remove"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@app",
+                "value": {
+                  "variables": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "initial": 0
+                    },
+                    {
+                      "name": "title",
+                      "type": "text",
+                      "initial": "Hello"
+                    }
+                  ],
+                  "scripts": [
+                    {
+                      "name": "util",
+                      "code": "export const answer = 42;\n"
+                    }
+                  ],
+                  "components": [
+                    {
+                      "name": "Badge",
+                      "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+                    }
+                  ],
+                  "tables": [
+                    {
+                      "name": "posts",
+                      "read": "public",
+                      "write": "members"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.libraryRemoved",
+                  "params": {
+                    "name": "confetti"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-new-table-is-read-by-anyone-and-added-to-by-members",
+          "setup": {
+            "fixture": "empty",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.setTable#app-new-table",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.setTable#app-new-table"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@app",
+                "value": {
+                  "tables": [
+                    {
+                      "name": "table",
+                      "read": "public",
+                      "write": "members"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.tableAdded",
+                  "params": {
+                    "name": "table"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-table-is-renamed",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.setTable#app-table-name",
+              "args": {
+                "previous": "posts",
+                "name": "articles"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.setTable#app-table-name"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@app",
+                "value": {
+                  "variables": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "initial": 0
+                    },
+                    {
+                      "name": "title",
+                      "type": "text",
+                      "initial": "Hello"
+                    }
+                  ],
+                  "scripts": [
+                    {
+                      "name": "util",
+                      "code": "export const answer = 42;\n"
+                    }
+                  ],
+                  "components": [
+                    {
+                      "name": "Badge",
+                      "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+                    }
+                  ],
+                  "libraries": [
+                    {
+                      "name": "confetti",
+                      "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+                    }
+                  ],
+                  "tables": [
+                    {
+                      "name": "articles",
+                      "read": "public",
+                      "write": "members"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.tableChanged",
+                  "params": {
+                    "name": "articles"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-table-is-read-only-by-its-owners",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.setTable#app-table-read",
+              "args": {
+                "previous": "posts",
+                "read": "owner"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.setTable#app-table-read"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@app",
+                "value": {
+                  "variables": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "initial": 0
+                    },
+                    {
+                      "name": "title",
+                      "type": "text",
+                      "initial": "Hello"
+                    }
+                  ],
+                  "scripts": [
+                    {
+                      "name": "util",
+                      "code": "export const answer = 42;\n"
+                    }
+                  ],
+                  "components": [
+                    {
+                      "name": "Badge",
+                      "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+                    }
+                  ],
+                  "libraries": [
+                    {
+                      "name": "confetti",
+                      "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+                    }
+                  ],
+                  "tables": [
+                    {
+                      "name": "posts",
+                      "read": "owner",
+                      "write": "members"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.tableChanged",
+                  "params": {
+                    "name": "posts"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-table-is-added-to-only-by-admins",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.setTable#app-table-write",
+              "args": {
+                "previous": "posts",
+                "write": "admin"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.setTable#app-table-write"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@app",
+                "value": {
+                  "variables": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "initial": 0
+                    },
+                    {
+                      "name": "title",
+                      "type": "text",
+                      "initial": "Hello"
+                    }
+                  ],
+                  "scripts": [
+                    {
+                      "name": "util",
+                      "code": "export const answer = 42;\n"
+                    }
+                  ],
+                  "components": [
+                    {
+                      "name": "Badge",
+                      "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+                    }
+                  ],
+                  "libraries": [
+                    {
+                      "name": "confetti",
+                      "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+                    }
+                  ],
+                  "tables": [
+                    {
+                      "name": "posts",
+                      "read": "public",
+                      "write": "admin"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.tableChanged",
+                  "params": {
+                    "name": "posts"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-table-name-with-capitals-is-refused",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.setTable#app-table-name",
+              "args": {
+                "previous": "posts",
+                "name": "Posts"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.setTable#app-table-name"
+          ],
+          "refusals": [
+            {
+              "key": "status.app.invalid",
+              "document": "unchanged"
+            }
+          ],
+          "expect": {
+            "document": [],
+            "selection": [],
+            "history": {
+              "undoSteps": 0,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.invalid",
+                  "params": {
+                    "reason": "a table is named in lower-case letters, digits and _, starting with a letter"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-table-is-removed",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.removeTable#app-table-remove",
+              "args": {
+                "name": "posts"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.removeTable#app-table-remove"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@app",
+                "value": {
+                  "variables": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "initial": 0
+                    },
+                    {
+                      "name": "title",
+                      "type": "text",
+                      "initial": "Hello"
+                    }
+                  ],
+                  "scripts": [
+                    {
+                      "name": "util",
+                      "code": "export const answer = 42;\n"
+                    }
+                  ],
+                  "components": [
+                    {
+                      "name": "Badge",
+                      "code": "export default { mount(el) { el.textContent = 'ok'; } };\n"
+                    }
+                  ],
+                  "libraries": [
+                    {
+                      "name": "confetti",
+                      "url": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/+esm"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.tableRemoved",
+                  "params": {
+                    "name": "posts"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "an-element-shows-while-its-expression-is-true",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [
+              "/Page/Box"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setActiveTab#inspector-tab-logic",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "logic.set#inspector-logic-field",
+              "args": {
+                "field": "show",
+                "value": "state.count"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "logic.set#inspector-logic-field"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Box/@logic",
+                "value": {
+                  "show": "state.count"
+                }
+              }
+            ],
+            "selection": [
+              "/Page/Box"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.logicSet",
+                  "params": {
+                    "element": "Box"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "an-element-draws-a-code-component",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [
+              "/Page/Box"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "logic.set#app-use-component",
+              "args": {
+                "field": "component",
+                "value": "Badge"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "logic.set#app-use-component"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Box/@logic",
+                "value": {
+                  "component": "Badge"
+                }
+              }
+            ],
+            "selection": [
+              "/Page/Box"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.logicSet",
+                  "params": {
+                    "element": "Box"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-class-follows-an-expression",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [
+              "/Page/Title"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setActiveTab#inspector-tab-logic",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "logic.setBinding#inspector-logic-add-binding",
+              "args": {
+                "binding": "class:active",
+                "value": "state.title"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "logic.setBinding#inspector-logic-binding",
+              "args": {
+                "binding": "class:active",
+                "value": "state.count"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "logic.setBinding#inspector-logic-binding"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Title/@logic",
+                "value": {
+                  "text": "state.title",
+                  "on": [
+                    {
+                      "event": "click",
+                      "code": "state.count++"
+                    }
+                  ],
+                  "binds": {
+                    "class:active": "state.count"
+                  }
+                }
+              }
+            ],
+            "selection": [
+              "/Page/Title"
+            ],
+            "history": {
+              "undoSteps": 2,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.logicSet",
+                  "params": {
+                    "element": "Title"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "an-attribute-follows-an-expression",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [
+              "/Page/Title"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setActiveTab#inspector-tab-logic",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "logic.setBinding#inspector-logic-add-binding",
+              "args": {
+                "binding": "attr:title",
+                "value": "state.title"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "logic.setBinding#inspector-logic-add-binding"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Title/@logic",
+                "value": {
+                  "text": "state.title",
+                  "on": [
+                    {
+                      "event": "click",
+                      "code": "state.count++"
+                    }
+                  ],
+                  "binds": {
+                    "attr:title": "state.title"
+                  }
+                }
+              }
+            ],
+            "selection": [
+              "/Page/Title"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.logicSet",
+                  "params": {
+                    "element": "Title"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "an-event-is-added",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [
+              "/Page/Box"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setActiveTab#inspector-tab-logic",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "logic.addHandler#inspector-logic-add-handler",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "logic.addHandler#inspector-logic-add-handler"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Box/@logic",
+                "value": {
+                  "on": [
+                    {
+                      "event": "click",
+                      "code": ""
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [
+              "/Page/Box"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.handlerAdded",
+                  "params": {
+                    "event": "click",
+                    "element": "Box"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "an-event-is-changed",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [
+              "/Page/Title"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setActiveTab#inspector-tab-logic",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "logic.updateHandler#inspector-logic-handler-event",
+              "args": {
+                "handler": 0,
+                "event": "dblclick"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "logic.updateHandler#inspector-logic-handler-event"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Title/@logic",
+                "value": {
+                  "text": "state.title",
+                  "on": [
+                    {
+                      "event": "dblclick",
+                      "code": "state.count++"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [
+              "/Page/Title"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.logicSet",
+                  "params": {
+                    "element": "Title"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "an-event-runs-its-new-code",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [
+              "/Page/Title"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setActiveTab#inspector-tab-logic",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "logic.updateHandler#inspector-logic-handler-code",
+              "args": {
+                "handler": 0,
+                "code": "state.count += 2"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "logic.updateHandler#inspector-logic-handler-code"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Title/@logic",
+                "value": {
+                  "text": "state.title",
+                  "on": [
+                    {
+                      "event": "click",
+                      "code": "state.count += 2"
+                    }
+                  ]
+                }
+              }
+            ],
+            "selection": [
+              "/Page/Title"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.logicSet",
+                  "params": {
+                    "element": "Title"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "an-event-is-removed",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [
+              "/Page/Title"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setActiveTab#inspector-tab-logic",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "logic.removeHandler#inspector-logic-handler-remove",
+              "args": {
+                "handler": 0
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "logic.removeHandler#inspector-logic-handler-remove"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Title/@logic",
+                "value": {
+                  "text": "state.title"
+                }
+              }
+            ],
+            "selection": [
+              "/Page/Title"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.handlerRemoved",
+                  "params": {
+                    "element": "Title"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "an-element-loses-its-logic",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [
+              "/Page/Title"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setActiveTab#inspector-tab-logic",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "logic.clear#inspector-logic-clear",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "logic.clear#inspector-logic-clear"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [
+              {
+                "op": "remove",
+                "path": "/Page/Title/@logic/text"
+              },
+              {
+                "op": "remove",
+                "path": "/Page/Title/@logic/on"
+              }
+            ],
+            "selection": [
+              "/Page/Title"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.logicCleared",
+                  "params": {
+                    "element": "Title"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-reserved-name-is-refused",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-app",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "app.setVariable#app-variable-name",
+              "args": {
+                "previous": "count",
+                "name": "state"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "app.setVariable#app-variable-name"
+          ],
+          "refusals": [
+            {
+              "key": "status.app.reserved",
+              "document": "unchanged"
+            }
+          ],
+          "expect": {
+            "document": [],
+            "selection": [],
+            "history": {
+              "undoSteps": 0,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.reserved",
+                  "params": {
+                    "name": "state"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-binding-of-no-kind-is-refused",
+          "setup": {
+            "fixture": "app-logic",
+            "selection": [
+              "/Page/Title"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setActiveTab#inspector-tab-logic",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "logic.setBinding#inspector-logic-add-binding",
+              "args": {
+                "binding": "onclick",
+                "value": "state.count"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "logic.setBinding#inspector-logic-add-binding"
+          ],
+          "refusals": [
+            {
+              "key": "status.app.badBinding",
+              "document": "unchanged"
+            }
+          ],
+          "expect": {
+            "document": [],
+            "selection": [
+              "/Page/Title"
+            ],
+            "history": {
+              "undoSteps": 0,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.app.badBinding",
+                  "params": {
+                    "binding": "onclick"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-project-opens-through-start-open-example",
+          "setup": {
+            "fixture": "aurora",
+            "selection": [
+              "/Page/Hero/Intro"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": "fit"
+          },
+          "steps": [
+            {
+              "door": "project.save#menu-file",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "element.delete#key-delete-in-canvas",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "project.open#start-open-example",
+              "args": {
+                "file": "download"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null,
+              "answer": "confirm"
+            }
+          ],
+          "doors": [
+            "project.open#start-open-example"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [],
+            "selection": [
+              "/Page/Hero/Intro"
+            ],
+            "history": {
+              "undoSteps": 0,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.open.opened",
+                  "params": {}
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": {
+              "reload": "immediate",
+              "document": "same",
+              "preferences": null
+            },
+            "export": null
+          }
+        },
+        {
+          "id": "a-project-opens-through-app-open-example",
+          "setup": {
+            "fixture": "aurora",
+            "selection": [
+              "/Page/Hero/Intro"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": "fit"
+          },
+          "steps": [
+            {
+              "door": "project.save#menu-file",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "element.delete#key-delete-in-canvas",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "project.open#app-open-example",
+              "args": {
+                "file": "download"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null,
+              "answer": "confirm"
+            }
+          ],
+          "doors": [
+            "project.open#app-open-example"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [],
+            "selection": [
+              "/Page/Hero/Intro"
+            ],
+            "history": {
+              "undoSteps": 0,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.open.opened",
+                  "params": {}
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": {
+              "reload": "immediate",
+              "document": "same",
+              "preferences": null
+            },
+            "export": null
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+// O Worker que serve os sites publicados (developers.cloudflare.com/workers/wrangler/configuration, 2026-10-21).
+// Rota "*/*" na zona dos sites: cobre <slug>.seusites.com.br e todo domínio próprio (Cloudflare for SaaS).
+// Segredos (nunca aqui): npx wrangler secret put PLATFORM_SECRET
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "webconstructor-sites",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-21",
+  "workers_dev": false,
+  "observability": { "enabled": true },
+  "r2_buckets": [{ "binding": "SITES", "bucket_name": "webconstructor-sites" }],
+  "vars": {
+    // o domínio dos sites, com o ponto: <slug>.seusites.com.br
+    "SITES_SUFFIX": ".seusites.com.br",
+    // o único host que aceita publicação e mapeamento de domínios (com o segredo)
+    "PLATFORM_HOST": "publish.seusites.com.br",
+    // a Edge Function que grava formulários enviados
+    "FORMS_ENDPOINT": "https://SEU-PROJETO.supabase.co/functions/v1/form-submit",
+    // a Edge Function do banco de dados dos apps (app.db, app.auth): o Worker repassa /_api/* para ela
+    "DATA_ENDPOINT": "https://SEU-PROJETO.supabase.co/functions/v1/site-data",
+    // de onde vem o selo do plano grátis
+    "BADGE_URL": "https://app.seudominio.com.br/?ref=selo"
+  },
+  "routes": [{ "pattern": "*/*", "zone_name": "seusites.com.br" }]
+}

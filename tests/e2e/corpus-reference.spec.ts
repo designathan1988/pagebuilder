@@ -36,6 +36,8 @@ test('a recorded reference comes from a fresh navigation at each viewport and re
     const address = server.address();
     if (address === null || typeof address === 'string') throw new Error('fixture server has no port');
     const url = `http://127.0.0.1:${address.port}/`;
+    // the logs folder of a fresh checkout does not exist yet (.cache is not kept in the repository)
+    fs.mkdirSync(path.join('.cache', 'logs'), { recursive: true });
     const directory = fs.mkdtempSync(path.join('.cache', 'logs', 'r6-reference-'));
     const har = path.join(directory, 'site.har');
     const reference = path.join(directory, 'reference');

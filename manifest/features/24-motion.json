@@ -18260,7 +18260,7 @@
                 {
                   "key": "status.motion.recorded",
                   "params": {
-                    "property": "opacity",
+                    "property": "Opacity",
                     "time": "0.00",
                     "timeline": "Hero click"
                   }

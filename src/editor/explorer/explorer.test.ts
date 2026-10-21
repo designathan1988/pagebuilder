@@ -42,7 +42,7 @@ describe('the generated scripts listed', () => {
   it.each(fixtures)('are the scripts the export writes, on %s', (name) => {
     const document = JSON.parse(fs.readFileSync(`manifest/features/fixtures/${name}`, 'utf8')) as DocumentJson;
     const site = siteFiles(document, MODEL_RULES, true, siteScripts);
-    const written = (['interactions', 'forms', 'motion', 'lottie'] as const).filter((part) => site[part] !== null);
+    const written = (['interactions', 'forms', 'motion', 'lottie', 'widgets', 'app'] as const).filter((part) => site[part] !== null);
     expect([...siteScriptsWritten(document, MODEL_RULES)].sort()).toEqual([...written].sort());
   });
 });

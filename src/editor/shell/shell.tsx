@@ -33,6 +33,7 @@ import { SnapSettingsDialog } from './snap-settings.tsx';
 import { BreakpointsDialog } from './breakpoints-dialog.tsx';
 import { BatchRenameDialog } from './batch-rename.tsx';
 import { CaptureUrlDialog } from './capture-url.tsx';
+import { cloudCapture } from '../cloud/cloud.ts';
 import { installCapture } from '../import/capture.ts';
 import { uninstallAssistant } from '../assistant/controller.ts';
 import { RecoveryDialog } from './recovery.tsx';
@@ -131,7 +132,7 @@ export function Shell() {
   useEffect(() => installOsFileDrop(store, window, false), [store]);
   useEffect(() => installFocus(store), [store]);
   // a web address asked to be captured goes to the Builder Companion (import/capture.ts, spec capture-url)
-  useEffect(() => installCapture(store), [store]);
+  useEffect(() => installCapture(store, cloudCapture() ?? undefined), [store]);
   useEffect(() => installSelectOnFocus(), []);
   // the widths the person gave the sidebar and the inspector (their splitters: workspace.resizeSplitter), which the
   // window's columns and everything sized by them take

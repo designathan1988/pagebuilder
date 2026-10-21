@@ -3,7 +3,11 @@
 // while another holds it is read-only (it writes nothing, the store refuses its document commands). Take over editing
 // steals the lock and starts this tab again on the latest saved project; the tab it was taken from, its lock gone,
 // becomes read-only at once ("lost"). A browser without Web Locks edits in every tab, as before.
-const LOCK = 'builder-project-editing';
+let LOCK = 'builder-project-editing';
+// a project kept in the cloud (src/editor/cloud/cloud.ts) has a lock of its own: two of them edit side by side
+export function lockProject(id: string): void {
+  LOCK = `builder-project-editing:${id}`;
+}
 
 export type TabRole = 'editing' | 'readOnly' | 'lost';
 let role: TabRole = 'editing';

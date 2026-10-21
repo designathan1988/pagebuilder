@@ -69,22 +69,39 @@ const fileOf = (one: { readonly path: string; readonly type: string; readonly ba
   return new File([bytes], one.path, { type: one.type });
 };
 
-export function installCapture(store: EditorStore, companion = COMPANION): () => void {
+// `service`: where the capture is asked and the headers it takes: the Companion on this machine, or in cloud mode the
+// platform's capture service with the person's session (saas/capture, src/editor/cloud/cloud.ts)
+export interface CaptureService {
+  readonly url: string;
+  readonly headers: () => Promise<Readonly<Record<string, string>>>;
+  readonly cloud: boolean;
+}
+const LOCAL: CaptureService = { url: COMPANION, headers: async () => ({}), cloud: false };
+
+export function installCapture(store: EditorStore, service: CaptureService = LOCAL): () => void {
+  const companion = service.url;
   let done = store.getState().ui.capture?.count ?? 0;
   let alive = true;
   const run = async (request: CaptureRequest) => {
     let answer: Answer;
     try {
-      const response = await fetch(`${companion}/capture`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ url: request.url, pages: request.pages ?? 1 }) });
+      const response = await fetch(`${companion}/capture`, { method: 'POST', headers: { 'content-type': 'application/json', ...(await service.headers()) }, body: JSON.stringify({ url: request.url, pages: request.pages ?? 1 }) });
       answer = (await response.json()) as Answer;
+      if (response.status === 401) answer = { ...answer, errorCode: 'signedOut' };
     } catch {
-      if (alive) store.notice(message('status.capture.noCompanion'));
+      if (alive) store.notice(message(service.cloud ? 'status.capture.serviceDown' : 'status.capture.noCompanion'));
       return;
     }
     if (!alive) return;
     if (answer.files === undefined || answer.files.length === 0) {
       if (answer.errorCode === 'challenge') {
-        store.notice(message('status.capture.challenge'));
+        store.notice(message(service.cloud ? 'status.capture.challengeCloud' : 'status.capture.challenge'));
+        return;
+      }
+      // the cloud service's refusals: a private address, too many captures, a session that ended
+      const refused = answer.errorCode === 'blocked' ? 'status.capture.blocked' : answer.errorCode === 'rate' ? 'status.capture.rate' : answer.errorCode === 'signedOut' ? 'status.capture.signedOut' : null;
+      if (refused !== null) {
+        store.notice(message(refused));
         return;
       }
       store.notice(message('status.capture.failed', { url: request.url, reason: answer.error ?? '' }));

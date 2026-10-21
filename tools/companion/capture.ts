@@ -9,7 +9,7 @@
 // (src/core/import/import.ts).
 import fs from 'node:fs';
 import { createHash } from 'node:crypto';
-import type { Browser, BrowserContext, Page, Response } from '@playwright/test';
+import type { Browser, BrowserContext, LaunchOptions, Page, Response } from '@playwright/test';
 import { chromium } from '@playwright/test';
 import { parse as parseCss, type CssNode } from 'css-tree';
 import { serializePage, type PageRead } from './serialize.ts';
@@ -59,8 +59,14 @@ const isHttp = (url: string) => /^https?:$/.test(new URL(url).protocol);
 const MOST_PAGES = 30;
 
 let shared: Browser | null = null;
+// how the browser is launched: the installed Chrome on the person's machine (the Companion); the cloud capture service
+// (saas/capture) launches the bundled Chromium behind its guard proxy instead
+let launchOptions: LaunchOptions = { channel: 'chrome' };
+export function configureBrowser(options: LaunchOptions): void {
+  launchOptions = options;
+}
 async function browser(): Promise<Browser> {
-  if (shared === null || !shared.isConnected()) shared = await chromium.launch({ channel: 'chrome' });
+  if (shared === null || !shared.isConnected()) shared = await chromium.launch(launchOptions);
   return shared;
 }
 export async function closeBrowser(): Promise<void> {
@@ -548,7 +554,9 @@ async function responsiveDocuments(page: Page, read: PageRead, url: string, orig
   }
   return observations;
 }
-export async function capture(address: string, options: { readonly width?: number; readonly timeout?: number; readonly pages?: number; readonly har?: string } = {}): Promise<Capture> {
+// `allow`: whether a file of the site may be fetched (the cloud service refuses this machine's network and private
+// addresses; the browser's own requests go through its proxy)
+export async function capture(address: string, options: { readonly width?: number; readonly timeout?: number; readonly pages?: number; readonly har?: string; readonly allow?: (url: string) => Promise<boolean> } = {}): Promise<Capture> {
   const start = new URL(address);
   if (!isHttp(start.href)) throw new Error(`${address} is no http or https address`);
   const limit = Math.max(1, Math.min(options.pages ?? 1, MOST_PAGES));
@@ -563,6 +571,7 @@ export async function capture(address: string, options: { readonly width?: numbe
         const one = recorded.get(url);
         return one === undefined ? null : { ok: one.status >= 200 && one.status < 300, type: one.type, body: one.body };
       }
+      if (options.allow !== undefined && !(await options.allow(url))) return null;
       const response = await page.request.get(url, { timeout }).catch(() => null);
       return response === null ? null : { ok: response.ok(), type: response.headers()['content-type'] ?? '', body: await response.body() };
     };

@@ -1,0 +1,650 @@
+{
+ "version": 4,
+ "language": "pt-BR",
+ "codeLanguage": "en",
+ "pages": [
+  {
+   "id": "gamepage",
+   "name": "Jogo da cobrinha",
+   "file": "index.html",
+   "tree": {
+    "id": "game121",
+    "type": "page",
+    "name": "Body",
+    "tag": "body",
+    "attributes": {},
+    "classes": [],
+    "styles": {
+     "desktop": {
+      "base": {
+       "margin-top": "0",
+       "margin-right": "0",
+       "margin-bottom": "0",
+       "margin-left": "0",
+       "background-color": "#f4f5f9",
+       "color": "#14161f",
+       "font-family": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+       "min-height": "100vh"
+      }
+     }
+    },
+    "text": null,
+    "children": [
+     {
+      "id": "game120",
+      "type": "main",
+      "name": "App",
+      "tag": "main",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "max-width": "1080px",
+         "margin-left": "auto",
+         "margin-right": "auto",
+         "padding-top": "24px",
+         "padding-bottom": "40px",
+         "padding-left": "20px",
+         "padding-right": "20px",
+         "display": "flex",
+         "flex-direction": "column",
+         "row-gap": "16px"
+        }
+       },
+       "phone": {
+        "base": {
+         "padding-left": "12px",
+         "padding-right": "12px",
+         "padding-top": "12px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "game107",
+        "type": "header",
+        "name": "Topo",
+        "tag": "header",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "column-gap": "8px",
+           "row-gap": "8px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "game106",
+          "type": "div",
+          "name": "Titulos",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-right": "auto",
+             "min-width": "0"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "game104",
+            "type": "heading",
+            "name": "Titulo",
+            "tag": "h1",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "font-size": "24px",
+               "line-height": "1.2",
+               "margin-right": "auto"
+              }
+             }
+            },
+            "text": "Jogo da cobrinha",
+            "children": []
+           },
+           {
+            "id": "game105",
+            "type": "paragraph",
+            "name": "Descricao",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "color": "#5b6170",
+               "font-size": "14px"
+              }
+             }
+            },
+            "text": "Setas ou WASD para virar, espaço para começar. Um canvas, um laço de animação e o estado do jogo.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "game103",
+          "type": "paragraph",
+          "name": "Placar",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-top": "0",
+             "margin-bottom": "0",
+             "font-weight": "700",
+             "font-size": "18px"
+            }
+           }
+          },
+          "text": "Pontos: 0   Recorde: 0",
+          "children": [],
+          "logic": {
+           "text": "'Pontos: ' + state.score + '   Recorde: ' + state.best"
+          }
+         }
+        ]
+       },
+       {
+        "id": "game112",
+        "type": "section",
+        "name": "Jogo",
+        "tag": "section",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "position": "relative",
+           "max-width": "576px",
+           "width": "100%",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "game108",
+          "type": "div",
+          "name": "Tabuleiro",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [],
+          "logic": {
+           "component": "Cobrinha"
+          }
+         },
+         {
+          "id": "game111",
+          "type": "div",
+          "name": "Aviso",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "position": "absolute",
+             "top": "0",
+             "left": "0",
+             "right": "0",
+             "bottom": "0",
+             "display": "flex",
+             "flex-direction": "column",
+             "align-items": "center",
+             "justify-content": "center",
+             "background-color": "rgba(15, 23, 42, 0.72)",
+             "border-top-left-radius": "12px",
+             "border-top-right-radius": "12px",
+             "border-bottom-left-radius": "12px",
+             "border-bottom-right-radius": "12px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "game109",
+            "type": "paragraph",
+            "name": "Mensagem",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "12px",
+               "font-size": "20px",
+               "font-weight": "700",
+               "color": "#ffffff"
+              }
+             }
+            },
+            "text": "Pronto para jogar?",
+            "children": [],
+            "logic": {
+             "text": "state.over ? 'Fim de jogo! ' + state.score + ' pontos' : 'Pronto para jogar?'"
+            }
+           },
+           {
+            "id": "game110",
+            "type": "button",
+            "name": "Jogar",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "button"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "14px",
+               "padding-right": "14px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#4f46e5",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#4f46e5",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#4f46e5",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#4f46e5",
+               "background-color": "#4f46e5",
+               "color": "#ffffff",
+               "font-size": "14px",
+               "font-weight": "600",
+               "cursor": "pointer",
+               "font-family": "inherit"
+              }
+             }
+            },
+            "text": "Jogar",
+            "children": [],
+            "logic": {
+             "on": [
+              {
+               "event": "click",
+               "code": "fn.start()"
+              }
+             ]
+            }
+           }
+          ],
+          "logic": {
+           "show": "!state.playing"
+          }
+         }
+        ]
+       },
+       {
+        "id": "game119",
+        "type": "div",
+        "name": "Controles",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "column-gap": "8px",
+           "row-gap": "8px",
+           "justify-content": "center"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "game113",
+          "type": "button",
+          "name": "Seta ←",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "←",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "pointerdown",
+             "code": "fn.turn('left')"
+            }
+           ]
+          }
+         },
+         {
+          "id": "game114",
+          "type": "button",
+          "name": "Seta ↑",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "↑",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "pointerdown",
+             "code": "fn.turn('up')"
+            }
+           ]
+          }
+         },
+         {
+          "id": "game115",
+          "type": "button",
+          "name": "Seta ↓",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "↓",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "pointerdown",
+             "code": "fn.turn('down')"
+            }
+           ]
+          }
+         },
+         {
+          "id": "game116",
+          "type": "button",
+          "name": "Seta →",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "→",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "pointerdown",
+             "code": "fn.turn('right')"
+            }
+           ]
+          }
+         },
+         {
+          "id": "game117",
+          "type": "paragraph",
+          "name": "Velocidade",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-top": "0",
+             "margin-bottom": "0",
+             "color": "#5b6170",
+             "font-size": "14px"
+            }
+           }
+          },
+          "text": "Velocidade 8",
+          "children": [],
+          "logic": {
+           "text": "'Velocidade ' + state.speed"
+          }
+         },
+         {
+          "id": "game118",
+          "type": "input",
+          "name": "Ritmo",
+          "tag": "input",
+          "attributes": {
+           "inputType": "range",
+           "min": "4",
+           "max": "20",
+           "step": "1"
+          },
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [],
+          "logic": {
+           "model": "state.speed"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ],
+    "logic": {
+     "on": [
+      {
+       "event": "window:keydown",
+       "code": "fn.key($event)"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "app": {
+  "variables": [
+   {
+    "name": "score",
+    "type": "number",
+    "initial": 0
+   },
+   {
+    "name": "best",
+    "type": "number",
+    "initial": 0,
+    "persist": true
+   },
+   {
+    "name": "playing",
+    "type": "boolean",
+    "initial": false
+   },
+   {
+    "name": "over",
+    "type": "boolean",
+    "initial": false
+   },
+   {
+    "name": "direction",
+    "type": "text",
+    "initial": "right"
+   },
+   {
+    "name": "speed",
+    "type": "number",
+    "initial": 8
+   }
+  ],
+  "scripts": [
+   {
+    "name": "controls",
+    "code": "// the keys and the buttons turn the snake; it never turns back on itself\nconst OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' }\nconst KEYS = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', w: 'up', s: 'down', a: 'left', d: 'right' }\n\nexport function turn(direction) {\n  if (direction && OPPOSITE[direction] !== state.direction) state.direction = direction\n}\n\nexport function key(event) {\n  if (event.key === ' ' && !state.playing) { start(); event.preventDefault(); return }\n  const direction = KEYS[event.key]\n  if (direction) { event.preventDefault(); turn(direction) }\n}\n\nexport function start() {\n  state.score = 0\n  state.direction = 'right'\n  state.over = false\n  state.playing = true\n}\n"
+   }
+  ],
+  "components": [
+   {
+    "name": "Cobrinha",
+    "code": "// the board: a grid on a canvas; while state.playing it moves state.speed steps a second, eats, grows, and ends\n// the game on a wall or on itself\nconst SIZE = 24\n\nexport default {\n  mount(el, props, ctx) {\n    const { state } = ctx\n    const canvas = document.createElement('canvas')\n    canvas.width = SIZE * 24\n    canvas.height = SIZE * 24\n    canvas.style.cssText = 'width:100%;max-width:576px;height:auto;display:block;margin:0 auto;background:#0f172a;border-radius:12px'\n    el.appendChild(canvas)\n    const g = canvas.getContext('2d')\n    let snake, food, step = 0\n    const reset = () => { snake = [[8, 12], [7, 12], [6, 12]]; food = place() }\n    const place = () => {\n      let spot\n      do spot = [Math.floor(Math.random() * SIZE), Math.floor(Math.random() * SIZE)]\n      while (snake.some(([x, y]) => x === spot[0] && y === spot[1]))\n      return spot\n    }\n    reset()\n    const draw = () => {\n      g.fillStyle = '#0f172a'; g.fillRect(0, 0, canvas.width, canvas.height)\n      g.fillStyle = '#f43f5e'; g.beginPath(); g.arc(food[0] * 24 + 12, food[1] * 24 + 12, 9, 0, Math.PI * 2); g.fill()\n      snake.forEach(([x, y], i) => { g.fillStyle = i === 0 ? '#a7f3d0' : '#34d399'; g.fillRect(x * 24 + 2, y * 24 + 2, 20, 20) })\n    }\n    const move = () => {\n      const [dx, dy] = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[state.direction]\n      const head = [snake[0][0] + dx, snake[0][1] + dy]\n      if (head[0] < 0 || head[1] < 0 || head[0] >= SIZE || head[1] >= SIZE || snake.some(([x, y]) => x === head[0] && y === head[1])) {\n        state.playing = false\n        state.over = true\n        state.best = Math.max(state.best, state.score)\n        return\n      }\n      snake.unshift(head)\n      if (head[0] === food[0] && head[1] === food[1]) { state.score += 10; food = place() }\n      else snake.pop()\n    }\n    let frame = 0\n    let last = performance.now()\n    const loop = (now) => {\n      frame = requestAnimationFrame(loop)\n      if (!state.playing) { draw(); last = now; return }\n      step += (now - last) / 1000 * state.speed\n      last = now\n      while (step >= 1 && state.playing) { move(); step -= 1 }\n      draw()\n    }\n    frame = requestAnimationFrame(loop)\n    // a new game starts from the first snake\n    ctx.effect(() => { if (state.playing && state.score === 0) reset() })\n    return { destroy() { cancelAnimationFrame(frame); canvas.remove() } }\n  },\n}\n"
+   }
+  ]
+ }
+}

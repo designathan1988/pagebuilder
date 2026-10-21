@@ -22,7 +22,7 @@ if (!fs.existsSync(dir)) {
   console.error(`auditoria/${registro}/ não existe: nada a juntar.`);
   process.exit(1);
 }
-// PROCESSO.md e PROCEDIMENTO.md descrevem o trabalho; não são itens do registro.
+// Os arquivos de processo e de procedimento da pasta do registro descrevem o trabalho; não são itens do registro.
 const files = fs.readdirSync(dir).filter((e) => e.endsWith('.md') && !e.startsWith('PROCEDIMENTO')).sort();
 let out = `# ${TITULOS[registro]}\n\n`;
 for (const f of files) {

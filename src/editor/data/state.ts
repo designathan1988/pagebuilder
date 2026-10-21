@@ -4,7 +4,7 @@
 // the rows of the file the person checked, as a new collection or into one.
 import { message, registerHandler, type Message, type MessageParam } from '../../core/commands/registry.ts';
 import { contentChange, shownCollection } from '../../core/data/commands.ts';
-import { DataRefusal, canonicalQuery, collectionNamed, collectionsOf, createCollection, guessType, importRows, keyFor, queryItems, queryRefusal, refuse, type ImportMode } from '../../core/data/collections.ts';
+import { DataRefusal, canonicalQuery, collectionNamed, collectionsOf, createCollection, decimalsOf, guessType, importRows, keyFor, queryItems, queryRefusal, refuse, type ImportMode } from '../../core/data/collections.ts';
 import type { DataFile, Sheet } from '../../core/data/readers.ts';
 import { FIELD_TYPES, FILTER_OPERATORS, type Field, type FieldType, type FilterOperator, type Query, type Sort } from '../../core/data/model.ts';
 import { fold } from '../../core/text/fold.ts';
@@ -198,7 +198,10 @@ export const importNew = registerHandler<'data.importNew', EditorUi>('data.impor
     const fields: Field[] = sheet.columns.map((column) => {
       const key = keyFor(column, taken);
       taken.push(key);
-      return { key, label: column, type: preview.types[column] ?? 'text' };
+      const type = preview.types[column] ?? 'text';
+      // a number column keeps the decimal places the file writes ("6,50" stays "6,50" on the site, DEF-0620)
+      const decimals = type === 'number' ? decimalsOf(sheet.rows.map((row) => row[column])) : 0;
+      return { key, label: column, type, ...(decimals > 0 ? { decimals } : {}) };
     });
     const typed = name.trim() === '' ? stem(preview.file) : name.trim();
     const empty = createCollection(collectionsOf(document), typed, fields);
@@ -236,7 +239,14 @@ export const importInto = registerHandler<'data.importInto', EditorUi>('data.imp
     const key = mode === 'update' ? (first === undefined ? undefined : matched.get(first)?.key) : null;
     if (key === undefined) refuse('status.data.keyNeeded', { collection: held.name });
     const rows = sheet.rows.map((row) => Object.fromEntries([...matched].map(([column, field]) => [field.key, row[column]])));
-    const next = importRows(held, rows, mode as ImportMode, key, () => data.ids.next());
+    // a number field takes the most decimal places of what it held and what the file writes
+    const widened = held.fields.map((field) => {
+      const column = [...matched].find(([, f]) => f.key === field.key)?.[0];
+      if (field.type !== 'number' || column === undefined) return field;
+      const decimals = Math.max(field.decimals ?? 0, decimalsOf(sheet.rows.map((row) => row[column])));
+      return decimals > 0 ? { ...field, decimals } : field;
+    });
+    const next = importRows({ ...held, fields: widened }, rows, mode as ImportMode, key, () => data.ids.next());
     return {
       document: { ...document, collections: collectionsOf(document).map((c) => (c.name === held.name ? next : c)) },
       message: message('status.data.importedInto', { collection: held.name, count: { plural: 'data.items', count: rows.length }, mode: { key: `data.mode.${mode}` as MessageId } }),

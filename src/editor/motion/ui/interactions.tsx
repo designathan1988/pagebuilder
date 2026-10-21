@@ -20,7 +20,7 @@ import { useT } from '../../text.ts';
 import { MOTION_DOORS, motionDoor } from './doors.ts';
 import { camel, controlsFor, interactionFields, interactionValue } from './options.ts';
 import { DIRECTION } from '../../../core/motion/words.ts';
-import { behaviourAxis } from '../../../core/motion/commands.ts';
+import { MOTION_PRESETS, behaviourAxis, type MotionPreset } from '../../../core/motion/commands.ts';
 
 type Translate = ReturnType<typeof useT>;
 
@@ -164,6 +164,8 @@ function Behaviours({ node }: { readonly node: DocNode }) {
 
 // The section the Interactions tab draws for motion, under the element it shows (src/editor/shell/interactions.tsx
 // mounts it with the primary selected element).
+const QUICK_EFFECTS = Object.keys(MOTION_PRESETS) as MotionPreset[];
+
 export function MotionInteractions({ node }: { readonly node: DocNode | null }) {
   const t = useT();
   const document = useEditorState((state) => state.document);
@@ -178,6 +180,18 @@ export function MotionInteractions({ node }: { readonly node: DocNode | null }) 
           {t('inspector.addMotion')}
         </PanelButton>
       </div>
+      {/* the quick effects: one click gives the element a timeline that brings it in as it scrolls into view
+          (core/motion/commands.ts MOTION_PRESETS), the add door with its preset */}
+      {node === null ? null : (
+        <div className="motion-interactions__quick">
+          <span className="motion-interactions__quick-title">{t('motion.quick.title')}</span>
+          {QUICK_EFFECTS.map((preset) => (
+            <PanelButton key={preset} entry={motionDoor(MOTION_DOORS.add)} args={{ preset }} label={t('motion.quick.label', { effect: t(`motion.quick.${preset}` as MessageId) })} disabled={!single}>
+              {t(`motion.quick.${preset}` as MessageId)}
+            </PanelButton>
+          ))}
+        </div>
+      )}
       {node !== null && interactions.length === 0 ? <p className="motion-interactions__none">{t('motion.card.none')}</p> : null}
       {node === null ? null : interactions.map((interaction, index) => <Card key={interaction.id} node={node} interaction={interaction} index={index} timelines={timelines} />)}
       {node !== null ? <Behaviours node={node} /> : null}

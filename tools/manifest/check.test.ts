@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { RULES, checkManifest, generatedOffer, generatedUnits, htmlRefusal, supportedKeywords, type RuleId } from '../../src/manifest/check.ts';
 import { normaliseChord } from '../../src/manifest/chord.ts';
@@ -272,7 +273,9 @@ describe('manifest:check', () => {
 
   it('reads the generated files once: every fixture shares them, frozen, and a plant copies only what it changes', () => {
     const generated = Object.keys(loaded.input.files).filter((file) => file.startsWith('generated/'));
-    expect(generated).toEqual(['generated/css-compat.json', 'generated/css-properties.json', 'generated/html-elements.json', 'generated/icons.json']);
+    // every JSON table of the generated folder, as tools/gen and tools/inventory write them (the list grew with
+    // behavior.json, inventory.json and ui-widths.json after this case was written)
+    expect(generated).toEqual(fs.readdirSync('manifest/generated').filter((file) => file.endsWith('.json')).sort().map((file) => `generated/${file}`));
     for (const file of generated) expect(Object.isFrozen(loaded.input.files[file])).toBe(true);
     const plant = PLANTS.find((p) => p.id === 'door-unplaced');
     if (!plant) throw new Error('no plant door-unplaced');

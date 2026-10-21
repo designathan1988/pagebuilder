@@ -2454,6 +2454,76 @@
       "kind": "handler",
       "id": "capture.select",
       "status": "registered"
+    },
+    {
+      "kind": "handler",
+      "id": "app.setVariable",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
+      "id": "app.removeVariable",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
+      "id": "app.setModule",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
+      "id": "app.removeModule",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
+      "id": "app.setLibrary",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
+      "id": "app.removeLibrary",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
+      "id": "app.setTable",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
+      "id": "app.removeTable",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
+      "id": "logic.set",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
+      "id": "logic.setBinding",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
+      "id": "logic.addHandler",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
+      "id": "logic.updateHandler",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
+      "id": "logic.removeHandler",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
+      "id": "logic.clear",
+      "status": "registered"
     }
   ]
 }

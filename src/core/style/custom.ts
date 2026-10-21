@@ -11,7 +11,7 @@
 import type { NodeId } from '../../generated/commands.ts';
 import { message, registerHandler, type HandlerContext, type Message, type Outcome } from '../commands/registry.ts';
 import { locate } from '../document/model.ts';
-import { lockRefusal } from '../nodes/flags.ts';
+import { lockRefusal, stateRefusal } from '../nodes/flags.ts';
 import { declarationsOf, readValue, replaceLayer } from './set.ts';
 import { readAddress } from '../elements/address.ts';
 
@@ -71,7 +71,7 @@ export const setCustomDeclarationsCommand = registerHandler('style.setCustomDecl
   if (id === undefined) return { kind: 'refused', message: message('status.needsSingleSelection') };
   const at = locate(state.document, id);
   if (at === null) throw new Error(`style.setCustomDeclarations: the document has no node ${id}`);
-  const locked = lockRefusal(state.document, at.node.id, 'status.locked.edit');
+  const locked = lockRefusal(state.document, at.node.id, 'status.locked.edit') ?? stateRefusal(state.document, [at.node.id as NodeId], rules);
   if (locked !== null) return { kind: 'refused', message: locked };
   const parsed = parseDeclarations(String(declarations), context);
   if ('refused' in parsed) return { kind: 'refused', message: parsed.refused };

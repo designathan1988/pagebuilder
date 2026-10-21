@@ -9,7 +9,7 @@
 import type { NodeId } from '../../generated/commands.ts';
 import { message, registerHandler, type Outcome } from '../commands/registry.ts';
 import { locate } from '../document/model.ts';
-import { lockRefusal } from '../nodes/flags.ts';
+import { lockRefusal, stateRefusal } from '../nodes/flags.ts';
 import { styleHolders, writeDeclarations } from '../style/set.ts';
 import { attributeOf, geometryAttributes, resizedShape, shapeBox } from '../elements/svg.ts';
 import { argumentRefused } from '../store/args.ts';
@@ -25,7 +25,7 @@ export const resizeCommand = registerHandler('geometry.resize', (context, args):
   if (id === undefined) return { kind: 'refused', message: message('status.needsSingleSelection') };
   const at = locate(state.document, id);
   if (at === null) throw new Error(`geometry.resize: the document has no node ${id}`);
-  const locked = lockRefusal(state.document, at.node.id, 'status.locked.edit');
+  const locked = lockRefusal(state.document, at.node.id, 'status.locked.edit') ?? stateRefusal(state.document, [at.node.id as NodeId], rules);
   if (locked !== null) return { kind: 'refused', message: locked };
   const values: Record<string, string> = {};
   for (const [property, value] of Object.entries(args)) {

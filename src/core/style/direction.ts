@@ -17,7 +17,7 @@ import { locate, type DocNode, type StoredValue } from '../document/model.ts';
 import type { ModelRules } from '../document/validate.ts';
 import type { Patch } from '../history/transaction.ts';
 import { commandOf } from '../../manifest/runtime.ts';
-import { firstLockRefusal } from '../nodes/flags.ts';
+import { firstLockRefusal, stateRefusal } from '../nodes/flags.ts';
 import { styleHolders, writeDeclarations, writeStyle } from './set.ts';
 import { storedValue } from './stored.ts';
 import { tracksForChildren } from './tracks.ts';
@@ -98,7 +98,7 @@ export const stackOnPhoneCommand = registerHandler('element.stackOnPhone', (cont
   const primary = nodes[0];
   // the availability predicate (flexOrGridContainer) keeps an empty selection and a container of neither layout away
   if (primary === undefined) throw new Error('element.stackOnPhone: nothing is selected');
-  const locked = firstLockRefusal(state.document, nodes.map((found) => found.node.id as NodeId), 'status.locked.edit');
+  const locked = firstLockRefusal(state.document, nodes.map((found) => found.node.id as NodeId), 'status.locked.edit') ?? stateRefusal(state.document, nodes.map((found) => found.node.id as NodeId), rules);
   if (locked !== null) return { kind: 'refused', message: locked };
   const at = narrowest(rules);
   const layer = { breakpoint: at.id, state: rules.baseLayer.state };

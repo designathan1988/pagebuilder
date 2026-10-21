@@ -122,12 +122,13 @@ test('a control reached inside a panel just opened keeps the focus', runs('works
   await page.setViewportSize({ width: 1440, height: 900 });
   await openEditor(page);
   await page.locator('[data-door="workspace.setPanelOpen#toolbar-activity-bar-explorer"]').click();
-  await expect(page.locator('[data-door="element.insert#elements-tile"]')).toHaveCount(0);
+  // the Insert panel's tiles (the start card of the empty page draws some of its own)
+  await expect(page.locator('[data-region="insert"] [data-door="element.insert#elements-tile"]')).toHaveCount(0);
   const held = await page.evaluate(async () => {
     const frame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
     document.querySelector<HTMLElement>('[data-door="workspace.setPanelOpen#toolbar-activity-bar-insert"]')?.click();
     await frame();
-    const tile = document.querySelectorAll<HTMLElement>('[data-door="element.insert#elements-tile"]')[1];
+    const tile = document.querySelectorAll<HTMLElement>('[data-region="insert"] [data-door="element.insert#elements-tile"]')[1];
     tile?.focus();
     await frame();
     await frame();

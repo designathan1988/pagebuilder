@@ -6,7 +6,7 @@
 import fs from 'node:fs';
 import { expect, test, type Page } from '../support/test.ts';
 import { openEditor } from '../support/editor.ts';
-import { control, openMenu, runDoor, runs } from './door.ts';
+import { control, openMenu, pagePoint, runDoor, runs } from './door.ts';
 
 const FIXTURE = 'manifest/features/fixtures/aurora.json';
 
@@ -116,8 +116,9 @@ test(
 );
 
 test('a click on empty page area selects the page root, whose label reads its exported tag body', runs('selection.select#canvas-click-element-or-page'), async ({ page }) => {
-  const root = await screenBox(page, null);
-  await page.mouse.click(centre(root).x, centre(root).y);
+  // a point of the page itself: the empty page's first-look card lies over its centre
+  const free = await pagePoint(page);
+  await page.mouse.click(free.x, free.y);
   const id = await rootId(page);
   expect(await selection(page)).toEqual([id]);
   await expect(page.locator('[data-chrome="label"]')).toHaveText(/Page\s*body/);

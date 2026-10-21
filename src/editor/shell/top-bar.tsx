@@ -12,6 +12,7 @@ import { useRef } from 'react';
 import type { DoorEntry } from '../../manifest/runtime.ts';
 import { TopBarSaveState } from './status-bar.tsx';
 import { chordCap } from '../input/keymap.ts';
+import { CloudBar } from '../cloud/cloud-bar.tsx';
 
 const BREAKS = breaksIn('top-bar');
 
@@ -119,6 +120,8 @@ export function TopBar() {
           return BREAKS.includes(slot.order) ? [...saved, <span key={`break-${slot.order}`} className="separator" />, control] : control;
         }}
       />
+      {/* in cloud mode only: the cloud save, Publish and the dashboard (src/editor/cloud/cloud-bar.tsx) */}
+      <CloudBar />
     </header>
   );
 }

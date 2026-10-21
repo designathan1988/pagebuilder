@@ -15,6 +15,7 @@ import { manifest, numberConstant } from '../../manifest/runtime.ts';
 import { DoorControl } from '../doors/door.tsx';
 import { MODEL_RULES, useEditorState } from '../store.ts';
 import { canvasFrame, nodeBox } from './coordinates.ts';
+import { pageChanged } from './page-clock.ts';
 
 // the tabs: the canvas-handle doors of the anchor-tab gesture, one per edge, in the manifest's order
 const TABS = manifest.doors.filter((d) => d.door.kind === 'canvas-handle' && d.door.gesture === 'anchor-tab');
@@ -78,6 +79,14 @@ export function AnchorTabs({ stage }: { readonly stage: RefObject<HTMLDivElement
     request = requestAnimationFrame(measure);
     return () => cancelAnimationFrame(request);
   }, [built, id, stage]);
+  // the rotation zones keep clear of the tabs where the tabs are drawn (arrangement.ts): the chrome places them again
+  // on the page clock, which a tab moved by this loop never told, so a zone stayed under a tab that came to it
+  // (DEF-0628: Alt+Shift+an arrow anchored the title, and the left tab lay over the north-west zone); and once more
+  // when the tabs go
+  useEffect(() => {
+    if (placed !== null) pageChanged();
+    return pageChanged;
+  }, [placed]);
   if (!built || id === null || placed === null) return null;
   return (
     <>

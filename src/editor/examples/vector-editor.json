@@ -1,0 +1,866 @@
+{
+ "version": 4,
+ "language": "pt-BR",
+ "codeLanguage": "en",
+ "pages": [
+  {
+   "id": "vectorpage",
+   "name": "Editor de vetor",
+   "file": "index.html",
+   "tree": {
+    "id": "vector102",
+    "type": "page",
+    "name": "Body",
+    "tag": "body",
+    "attributes": {},
+    "classes": [],
+    "styles": {
+     "desktop": {
+      "base": {
+       "margin-top": "0",
+       "margin-right": "0",
+       "margin-bottom": "0",
+       "margin-left": "0",
+       "background-color": "#f4f5f9",
+       "color": "#14161f",
+       "font-family": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+       "min-height": "100vh"
+      }
+     }
+    },
+    "text": null,
+    "children": [
+     {
+      "id": "vector101",
+      "type": "main",
+      "name": "App",
+      "tag": "main",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "max-width": "1080px",
+         "margin-left": "auto",
+         "margin-right": "auto",
+         "padding-top": "24px",
+         "padding-bottom": "40px",
+         "padding-left": "20px",
+         "padding-right": "20px",
+         "display": "flex",
+         "flex-direction": "column",
+         "row-gap": "16px"
+        }
+       },
+       "phone": {
+        "base": {
+         "padding-left": "12px",
+         "padding-right": "12px",
+         "padding-top": "12px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "vector86",
+        "type": "header",
+        "name": "Topo",
+        "tag": "header",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "column-gap": "8px",
+           "row-gap": "8px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "vector85",
+          "type": "div",
+          "name": "Titulos",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-right": "auto",
+             "min-width": "0"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "vector83",
+            "type": "heading",
+            "name": "Titulo",
+            "tag": "h1",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "font-size": "24px",
+               "line-height": "1.2",
+               "margin-right": "auto"
+              }
+             }
+            },
+            "text": "Editor de vetor",
+            "children": []
+           },
+           {
+            "id": "vector84",
+            "type": "paragraph",
+            "name": "Descricao",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "color": "#5b6170",
+               "font-size": "14px"
+              }
+             }
+            },
+            "text": "Retângulos, elipses e linhas guardados como dados no estado e desenhados em SVG.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "vector82",
+          "type": "button",
+          "name": "Baixar SVG",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#4f46e5",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#4f46e5",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#4f46e5",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#4f46e5",
+             "background-color": "#4f46e5",
+             "color": "#ffffff",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Baixar SVG",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "app.download('desenho.svg', fn.svg(), 'image/svg+xml')"
+            }
+           ]
+          }
+         }
+        ]
+       },
+       {
+        "id": "vector98",
+        "type": "section",
+        "name": "Ferramentas",
+        "tag": "section",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "column-gap": "8px",
+           "row-gap": "8px",
+           "background-color": "#ffffff",
+           "border-top-width": "1px",
+           "border-right-width": "1px",
+           "border-bottom-width": "1px",
+           "border-left-width": "1px",
+           "border-top-style": "solid",
+           "border-right-style": "solid",
+           "border-bottom-style": "solid",
+           "border-left-style": "solid",
+           "border-top-color": "#dfe3ea",
+           "border-right-color": "#dfe3ea",
+           "border-bottom-color": "#dfe3ea",
+           "border-left-color": "#dfe3ea",
+           "border-top-left-radius": "12px",
+           "border-top-right-radius": "12px",
+           "border-bottom-left-radius": "12px",
+           "border-bottom-right-radius": "12px",
+           "padding-top": "10px",
+           "padding-right": "12px",
+           "padding-bottom": "10px",
+           "padding-left": "12px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "vector87",
+          "type": "button",
+          "name": "Selecionar",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Selecionar",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "state.tool = 'select'"
+            }
+           ],
+           "binds": {
+            "style:border-color": "state.tool === 'select' ? '#4f46e5' : ''",
+            "style:background-color": "state.tool === 'select' ? '#eef0ff' : ''"
+           }
+          }
+         },
+         {
+          "id": "vector88",
+          "type": "button",
+          "name": "Retangulo",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Retângulo",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "state.tool = 'rect'"
+            }
+           ],
+           "binds": {
+            "style:border-color": "state.tool === 'rect' ? '#4f46e5' : ''",
+            "style:background-color": "state.tool === 'rect' ? '#eef0ff' : ''"
+           }
+          }
+         },
+         {
+          "id": "vector89",
+          "type": "button",
+          "name": "Elipse",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Elipse",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "state.tool = 'ellipse'"
+            }
+           ],
+           "binds": {
+            "style:border-color": "state.tool === 'ellipse' ? '#4f46e5' : ''",
+            "style:background-color": "state.tool === 'ellipse' ? '#eef0ff' : ''"
+           }
+          }
+         },
+         {
+          "id": "vector90",
+          "type": "button",
+          "name": "Linha",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Linha",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "state.tool = 'line'"
+            }
+           ],
+           "binds": {
+            "style:border-color": "state.tool === 'line' ? '#4f46e5' : ''",
+            "style:background-color": "state.tool === 'line' ? '#eef0ff' : ''"
+           }
+          }
+         },
+         {
+          "id": "vector91",
+          "type": "paragraph",
+          "name": "Preenchimento",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-top": "0",
+             "margin-bottom": "0",
+             "color": "#5b6170",
+             "font-size": "14px"
+            }
+           }
+          },
+          "text": "Preenchimento",
+          "children": []
+         },
+         {
+          "id": "vector92",
+          "type": "input",
+          "name": "Cor de preenchimento",
+          "tag": "input",
+          "attributes": {
+           "inputType": "color"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "width": "40px",
+             "height": "34px"
+            }
+           }
+          },
+          "text": null,
+          "children": [],
+          "logic": {
+           "model": "state.fill",
+           "on": [
+            {
+             "event": "input",
+             "code": "fn.paint()"
+            }
+           ]
+          }
+         },
+         {
+          "id": "vector93",
+          "type": "paragraph",
+          "name": "Contorno",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-top": "0",
+             "margin-bottom": "0",
+             "color": "#5b6170",
+             "font-size": "14px"
+            }
+           }
+          },
+          "text": "Contorno",
+          "children": []
+         },
+         {
+          "id": "vector94",
+          "type": "input",
+          "name": "Cor do contorno",
+          "tag": "input",
+          "attributes": {
+           "inputType": "color"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "width": "40px",
+             "height": "34px"
+            }
+           }
+          },
+          "text": null,
+          "children": [],
+          "logic": {
+           "model": "state.stroke",
+           "on": [
+            {
+             "event": "input",
+             "code": "fn.paint()"
+            }
+           ]
+          }
+         },
+         {
+          "id": "vector95",
+          "type": "button",
+          "name": "Trazer para frente",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Para frente",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "fn.order(1)"
+            }
+           ],
+           "binds": {
+            "attr:disabled": "!state.selectedId"
+           }
+          }
+         },
+         {
+          "id": "vector96",
+          "type": "button",
+          "name": "Enviar para tras",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Para trás",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "fn.order(-1)"
+            }
+           ],
+           "binds": {
+            "attr:disabled": "!state.selectedId"
+           }
+          }
+         },
+         {
+          "id": "vector97",
+          "type": "button",
+          "name": "Excluir",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Excluir",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "fn.remove()"
+            }
+           ],
+           "binds": {
+            "attr:disabled": "!state.selectedId"
+           }
+          }
+         }
+        ]
+       },
+       {
+        "id": "vector99",
+        "type": "div",
+        "name": "Prancheta",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "background-color": "#ffffff",
+           "border-top-width": "1px",
+           "border-right-width": "1px",
+           "border-bottom-width": "1px",
+           "border-left-width": "1px",
+           "border-top-style": "solid",
+           "border-right-style": "solid",
+           "border-bottom-style": "solid",
+           "border-left-style": "solid",
+           "border-top-color": "#dfe3ea",
+           "border-right-color": "#dfe3ea",
+           "border-bottom-color": "#dfe3ea",
+           "border-left-color": "#dfe3ea",
+           "border-top-left-radius": "12px",
+           "border-top-right-radius": "12px",
+           "border-bottom-left-radius": "12px",
+           "border-bottom-right-radius": "12px",
+           "padding-top": "8px",
+           "padding-right": "8px",
+           "padding-bottom": "8px",
+           "padding-left": "8px"
+          }
+         }
+        },
+        "text": null,
+        "children": [],
+        "logic": {
+         "component": "Prancheta"
+        }
+       },
+       {
+        "id": "vector100",
+        "type": "paragraph",
+        "name": "Ajuda",
+        "tag": "p",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "margin-top": "0",
+           "margin-bottom": "0",
+           "color": "#5b6170",
+           "font-size": "14px"
+          }
+         }
+        },
+        "text": "Escolha uma forma e arraste na prancheta. Com Selecionar, clique para escolher e arraste para mover; Delete apaga.",
+        "children": []
+       }
+      ]
+     }
+    ],
+    "logic": {
+     "on": [
+      {
+       "event": "window:keydown",
+       "code": "if (($event.key === 'Delete' || $event.key === 'Backspace') && state.selectedId && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) fn.remove()"
+      }
+     ]
+    }
+   }
+  }
+ ],
+ "app": {
+  "variables": [
+   {
+    "name": "shapes",
+    "type": "list",
+    "initial": [
+     {
+      "id": "s1",
+      "kind": "rect",
+      "x": 80,
+      "y": 80,
+      "w": 220,
+      "h": 140,
+      "fill": "#c7d2fe",
+      "stroke": "#4f46e5"
+     },
+     {
+      "id": "s2",
+      "kind": "ellipse",
+      "x": 380,
+      "y": 120,
+      "w": 180,
+      "h": 180,
+      "fill": "#fde68a",
+      "stroke": "#d97706"
+     }
+    ],
+    "persist": true
+   },
+   {
+    "name": "tool",
+    "type": "text",
+    "initial": "select"
+   },
+   {
+    "name": "selectedId",
+    "type": "text",
+    "initial": ""
+   },
+   {
+    "name": "fill",
+    "type": "text",
+    "initial": "#a7f3d0"
+   },
+   {
+    "name": "stroke",
+    "type": "text",
+    "initial": "#047857"
+   }
+  ],
+  "scripts": [
+   {
+    "name": "shapes",
+    "code": "// the drawing as data: every shape is an object of state.shapes; these change it\nexport function selected() {\n  return state.shapes.find((shape) => shape.id === state.selectedId) ?? null\n}\n\nexport function remove() {\n  state.shapes = state.shapes.filter((shape) => shape.id !== state.selectedId)\n  state.selectedId = ''\n}\n\nexport function paint() {\n  const shape = selected()\n  if (shape) { shape.fill = state.fill; shape.stroke = state.stroke }\n}\n\nexport function order(step) {\n  const at = state.shapes.findIndex((shape) => shape.id === state.selectedId)\n  const to = at + step\n  if (at < 0 || to < 0 || to >= state.shapes.length) return\n  const [shape] = state.shapes.splice(at, 1)\n  state.shapes.splice(to, 0, shape)\n}\n\nexport function svg() {\n  const body = state.shapes.map((s) => {\n    if (s.kind === 'rect') return `<rect x=\"${s.x}\" y=\"${s.y}\" width=\"${s.w}\" height=\"${s.h}\" rx=\"6\" fill=\"${s.fill}\" stroke=\"${s.stroke}\" stroke-width=\"3\"/>`\n    if (s.kind === 'ellipse') return `<ellipse cx=\"${s.x + s.w / 2}\" cy=\"${s.y + s.h / 2}\" rx=\"${s.w / 2}\" ry=\"${s.h / 2}\" fill=\"${s.fill}\" stroke=\"${s.stroke}\" stroke-width=\"3\"/>`\n    return `<line x1=\"${s.x}\" y1=\"${s.y}\" x2=\"${s.x + s.w}\" y2=\"${s.y + s.h}\" stroke=\"${s.stroke}\" stroke-width=\"4\" stroke-linecap=\"round\"/>`\n  })\n  return `<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 960 600\" width=\"960\" height=\"600\">${body.join('')}</svg>`\n}\n"
+   }
+  ],
+  "components": [
+   {
+    "name": "Prancheta",
+    "code": "// the board: an SVG drawn from state.shapes; with the selection tool a press picks and drags a shape, with a shape\n// tool a drag draws a new one\nconst NS = 'http://www.w3.org/2000/svg'\n\nexport default {\n  mount(el, props, ctx) {\n    const { state } = ctx\n    const svg = document.createElementNS(NS, 'svg')\n    svg.setAttribute('viewBox', '0 0 960 600')\n    svg.style.cssText = 'width:100%;height:auto;display:block;background:#fff;border-radius:8px;touch-action:none;' +\n      'background-image:radial-gradient(#dfe3ea 1px, transparent 1px);background-size:24px 24px'\n    el.appendChild(svg)\n    const at = (event) => {\n      const point = svg.createSVGPoint(); point.x = event.clientX; point.y = event.clientY\n      const p = point.matrixTransform(svg.getScreenCTM().inverse())\n      return [Math.round(p.x), Math.round(p.y)]\n    }\n    const draw = () => {\n      svg.replaceChildren()\n      for (const s of state.shapes) {\n        const kind = s.kind === 'line' ? 'line' : s.kind\n        const shape = document.createElementNS(NS, kind)\n        if (kind === 'rect') { shape.setAttribute('x', s.w < 0 ? s.x + s.w : s.x); shape.setAttribute('y', s.h < 0 ? s.y + s.h : s.y); shape.setAttribute('width', Math.abs(s.w)); shape.setAttribute('height', Math.abs(s.h)); shape.setAttribute('rx', 6) }\n        if (kind === 'ellipse') { shape.setAttribute('cx', s.x + s.w / 2); shape.setAttribute('cy', s.y + s.h / 2); shape.setAttribute('rx', Math.abs(s.w / 2)); shape.setAttribute('ry', Math.abs(s.h / 2)) }\n        if (kind === 'line') { shape.setAttribute('x1', s.x); shape.setAttribute('y1', s.y); shape.setAttribute('x2', s.x + s.w); shape.setAttribute('y2', s.y + s.h); shape.setAttribute('stroke-linecap', 'round') }\n        shape.setAttribute('fill', kind === 'line' ? 'none' : s.fill)\n        shape.setAttribute('stroke', s.stroke)\n        shape.setAttribute('stroke-width', kind === 'line' ? 4 : 3)\n        shape.dataset.id = s.id\n        shape.style.cursor = state.tool === 'select' ? 'move' : 'crosshair'\n        if (s.id === state.selectedId) { shape.setAttribute('stroke-dasharray', '8 5'); shape.style.filter = 'drop-shadow(0 0 4px #4f46e5)' }\n        svg.appendChild(shape)\n      }\n    }\n    ctx.effect(draw)\n    let drag = null\n    svg.addEventListener('pointerdown', (event) => {\n      svg.setPointerCapture(event.pointerId)\n      const [x, y] = at(event)\n      if (state.tool === 'select') {\n        const id = event.target.dataset?.id ?? ''\n        state.selectedId = id\n        const shape = state.shapes.find((s) => s.id === id)\n        drag = shape ? { shape, dx: x - shape.x, dy: y - shape.y } : null\n        return\n      }\n      const shape = { id: ctx.app.uid(), kind: state.tool, x, y, w: 0, h: 0, fill: state.fill, stroke: state.stroke }\n      state.shapes.push(shape)\n      state.selectedId = shape.id\n      drag = { shape: state.shapes[state.shapes.length - 1], create: true, x, y }\n    })\n    svg.addEventListener('pointermove', (event) => {\n      if (!drag) return\n      const [x, y] = at(event)\n      if (drag.create) { drag.shape.w = x - drag.x; drag.shape.h = y - drag.y }\n      else { drag.shape.x = x - drag.dx; drag.shape.y = y - drag.dy }\n    })\n    const end = () => {\n      if (drag?.create) {\n        const s = drag.shape\n        if (Math.abs(s.w) < 4 && Math.abs(s.h) < 4) { state.shapes.pop(); state.selectedId = '' }\n        else if (s.kind !== 'line') { if (s.w < 0) { s.x += s.w; s.w = -s.w } if (s.h < 0) { s.y += s.h; s.h = -s.h } }\n        state.tool = 'select'\n      }\n      drag = null\n    }\n    svg.addEventListener('pointerup', end)\n    svg.addEventListener('pointercancel', end)\n    return { destroy() { svg.remove() } }\n  },\n}\n"
+   }
+  ]
+ }
+}

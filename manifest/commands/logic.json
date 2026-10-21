@@ -1,0 +1,1274 @@
+{
+  "domain": "logic",
+  "commands": [
+    {
+      "id": "app.setVariable",
+      "labelKey": "command.app.setVariable",
+      "owner": "src/core/logic/commands.ts",
+      "introducedBy": "app-logic",
+      "args": {
+        "name": {
+          "type": "string",
+          "values": [],
+          "optional": true
+        },
+        "type": {
+          "type": "enum",
+          "values": [
+            "text",
+            "number",
+            "boolean",
+            "list",
+            "object"
+          ],
+          "optional": true
+        },
+        "initial": {
+          "type": "json",
+          "values": [],
+          "optional": true
+        },
+        "persist": {
+          "type": "boolean",
+          "values": [],
+          "optional": true
+        },
+        "previous": {
+          "type": "string",
+          "values": [],
+          "optional": true
+        }
+      },
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [
+        "status.app.badName",
+        "status.app.reserved",
+        "status.app.taken",
+        "status.app.badValue",
+        "status.app.invalid"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "app-new-variable",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "new-variable",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.app.newVariable",
+          "faceLabelKey": null,
+          "icon": "plus",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 1
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "app-variable-name",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "variable-name",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "app.variable.name",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 2
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "app-variable-type",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "variable-type",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "app.variable.type",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 3
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "app-variable-initial",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "variable-initial",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "app.variable.initial",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 4
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "app-variable-persist",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": true,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "variable-persist",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "app.variable.persist",
+          "faceLabelKey": null,
+          "icon": "hard-drive",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 5
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "persist": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "app.removeVariable",
+      "labelKey": "command.app.removeVariable",
+      "owner": "src/core/logic/commands.ts",
+      "introducedBy": "app-logic",
+      "args": {
+        "name": {
+          "type": "string",
+          "values": [],
+          "optional": false
+        }
+      },
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "app-variable-remove",
+          "kind": "panel-control",
+          "drawnAs": "icon-button",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "variable-remove",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.app.removeVariable",
+          "faceLabelKey": null,
+          "icon": "trash",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 6
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        }
+      ]
+    },
+    {
+      "id": "app.setModule",
+      "labelKey": "command.app.setModule",
+      "owner": "src/core/logic/commands.ts",
+      "introducedBy": "app-logic",
+      "args": {
+        "kind": {
+          "type": "enum",
+          "values": [
+            "script",
+            "component"
+          ],
+          "optional": false
+        },
+        "name": {
+          "type": "string",
+          "values": [],
+          "optional": true
+        },
+        "code": {
+          "type": "string",
+          "values": [],
+          "optional": true
+        },
+        "previous": {
+          "type": "string",
+          "values": [],
+          "optional": true
+        }
+      },
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [
+        "status.app.badName",
+        "status.app.reserved",
+        "status.app.taken",
+        "status.app.badValue",
+        "status.app.invalid"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "app-new-script",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "new-script",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.app.newScript",
+          "faceLabelKey": null,
+          "icon": "file-code",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 7
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "kind": "script"
+          }
+        },
+        {
+          "id": "app-new-component",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "new-component",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.app.newComponent",
+          "faceLabelKey": null,
+          "icon": "puzzle",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 8
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "kind": "component"
+          }
+        },
+        {
+          "id": "app-module-name",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "module-name",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "app.module.name",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 9
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "app-module-code",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "module-code",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "app.module.code",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 10
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        }
+      ]
+    },
+    {
+      "id": "app.removeModule",
+      "labelKey": "command.app.removeModule",
+      "owner": "src/core/logic/commands.ts",
+      "introducedBy": "app-logic",
+      "args": {
+        "kind": {
+          "type": "enum",
+          "values": [
+            "script",
+            "component"
+          ],
+          "optional": false
+        },
+        "name": {
+          "type": "string",
+          "values": [],
+          "optional": false
+        }
+      },
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [
+        "status.app.componentInUse"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "app-module-remove",
+          "kind": "panel-control",
+          "drawnAs": "icon-button",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "module-remove",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.app.removeModule",
+          "faceLabelKey": null,
+          "icon": "trash",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 11
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        }
+      ]
+    },
+    {
+      "id": "app.setLibrary",
+      "labelKey": "command.app.setLibrary",
+      "owner": "src/core/logic/commands.ts",
+      "introducedBy": "app-logic",
+      "args": {
+        "name": {
+          "type": "string",
+          "values": [],
+          "optional": false
+        },
+        "url": {
+          "type": "string",
+          "values": [],
+          "optional": false
+        },
+        "previous": {
+          "type": "string",
+          "values": [],
+          "optional": true
+        }
+      },
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [
+        "status.app.badName",
+        "status.app.reserved",
+        "status.app.taken",
+        "status.app.badValue",
+        "status.app.invalid"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "app-library-add",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "library-add",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.app.addLibrary",
+          "faceLabelKey": null,
+          "icon": "package-plus",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 12
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        }
+      ]
+    },
+    {
+      "id": "app.removeLibrary",
+      "labelKey": "command.app.removeLibrary",
+      "owner": "src/core/logic/commands.ts",
+      "introducedBy": "app-logic",
+      "args": {
+        "name": {
+          "type": "string",
+          "values": [],
+          "optional": false
+        }
+      },
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "app-library-remove",
+          "kind": "panel-control",
+          "drawnAs": "icon-button",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "library-remove",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.app.removeLibrary",
+          "faceLabelKey": null,
+          "icon": "trash",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 13
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        }
+      ]
+    },
+    {
+      "id": "app.setTable",
+      "labelKey": "command.app.setTable",
+      "owner": "src/core/logic/commands.ts",
+      "introducedBy": "app-logic",
+      "args": {
+        "name": {
+          "type": "string",
+          "values": [],
+          "optional": true
+        },
+        "read": {
+          "type": "enum",
+          "values": [
+            "public",
+            "members",
+            "owner",
+            "admin"
+          ],
+          "optional": true
+        },
+        "write": {
+          "type": "enum",
+          "values": [
+            "public",
+            "members",
+            "admin"
+          ],
+          "optional": true
+        },
+        "previous": {
+          "type": "string",
+          "values": [],
+          "optional": true
+        }
+      },
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [
+        "status.app.taken",
+        "status.app.invalid"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "app-new-table",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "new-table",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.app.newTable",
+          "faceLabelKey": null,
+          "icon": "database",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 15
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "app-table-name",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "table-name",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "app.table.name",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 16
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "app-table-read",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "table-read",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "app.table.read",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 17
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "app-table-write",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "table-write",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "app.table.write",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 18
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        }
+      ]
+    },
+    {
+      "id": "app.removeTable",
+      "labelKey": "command.app.removeTable",
+      "owner": "src/core/logic/commands.ts",
+      "introducedBy": "app-logic",
+      "args": {
+        "name": {
+          "type": "string",
+          "values": [],
+          "optional": false
+        }
+      },
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "app-table-remove",
+          "kind": "panel-control",
+          "drawnAs": "icon-button",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "table-remove",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.app.removeTable",
+          "faceLabelKey": null,
+          "icon": "trash",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 19
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        }
+      ]
+    },
+    {
+      "id": "logic.set",
+      "labelKey": "command.logic.set",
+      "owner": "src/core/logic/commands.ts",
+      "introducedBy": "app-logic",
+      "args": {
+        "field": {
+          "type": "enum",
+          "values": [
+            "text",
+            "html",
+            "show",
+            "each",
+            "as",
+            "key",
+            "model",
+            "component"
+          ],
+          "optional": false
+        },
+        "value": {
+          "type": "string",
+          "values": [],
+          "optional": false
+        }
+      },
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [
+        "status.app.noElement",
+        "status.locked.edit",
+        "status.app.invalid"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "inspector-logic-field",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "inspector",
+          "control": "logic-field",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.logic.set",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-logic",
+            "order": 1
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "app-use-component",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "app",
+          "control": "use-component",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.app.useComponent",
+          "faceLabelKey": null,
+          "icon": "square-dashed-mouse-pointer",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "app-panel",
+            "order": 14
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "field": "component"
+          }
+        }
+      ]
+    },
+    {
+      "id": "logic.setBinding",
+      "labelKey": "command.logic.setBinding",
+      "owner": "src/core/logic/commands.ts",
+      "introducedBy": "app-logic",
+      "args": {
+        "binding": {
+          "type": "string",
+          "values": [],
+          "optional": false
+        },
+        "value": {
+          "type": "string",
+          "values": [],
+          "optional": false
+        },
+        "previous": {
+          "type": "string",
+          "values": [],
+          "optional": true
+        }
+      },
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [
+        "status.app.noElement",
+        "status.locked.edit",
+        "status.app.invalid",
+        "status.app.badBinding"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "inspector-logic-binding",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "inspector",
+          "control": "logic-binding",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.logic.setBinding",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-logic",
+            "order": 2
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "inspector-logic-add-binding",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "inspector",
+          "control": "logic-add-binding",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.logic.addBinding",
+          "faceLabelKey": null,
+          "icon": "plus",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-logic",
+            "order": 3
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        }
+      ]
+    },
+    {
+      "id": "logic.addHandler",
+      "labelKey": "command.logic.addHandler",
+      "owner": "src/core/logic/commands.ts",
+      "introducedBy": "app-logic",
+      "args": {
+        "event": {
+          "type": "string",
+          "values": [],
+          "optional": true
+        },
+        "code": {
+          "type": "string",
+          "values": [],
+          "optional": true
+        }
+      },
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [
+        "status.app.noElement",
+        "status.locked.edit",
+        "status.app.invalid"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "inspector-logic-add-handler",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "inspector",
+          "control": "logic-add-handler",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.logic.addHandler",
+          "faceLabelKey": null,
+          "icon": "plus",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-logic",
+            "order": 4
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        }
+      ]
+    },
+    {
+      "id": "logic.updateHandler",
+      "labelKey": "command.logic.updateHandler",
+      "owner": "src/core/logic/commands.ts",
+      "introducedBy": "app-logic",
+      "args": {
+        "handler": {
+          "type": "integer",
+          "values": [],
+          "optional": false
+        },
+        "event": {
+          "type": "string",
+          "values": [],
+          "optional": true
+        },
+        "code": {
+          "type": "string",
+          "values": [],
+          "optional": true
+        }
+      },
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [
+        "status.app.noElement",
+        "status.locked.edit",
+        "status.app.invalid"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "inspector-logic-handler-event",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "inspector",
+          "control": "logic-handler-event",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "logic.handler.event",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-logic",
+            "order": 5
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "inspector-logic-handler-code",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "inspector",
+          "control": "logic-handler-code",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "logic.handler.code",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-logic",
+            "order": 6
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        }
+      ]
+    },
+    {
+      "id": "logic.removeHandler",
+      "labelKey": "command.logic.removeHandler",
+      "owner": "src/core/logic/commands.ts",
+      "introducedBy": "app-logic",
+      "args": {
+        "handler": {
+          "type": "integer",
+          "values": [],
+          "optional": false
+        }
+      },
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [
+        "status.app.noElement",
+        "status.locked.edit",
+        "status.app.invalid"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "inspector-logic-handler-remove",
+          "kind": "panel-control",
+          "drawnAs": "icon-button",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "inspector",
+          "control": "logic-handler-remove",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.logic.removeHandler",
+          "faceLabelKey": null,
+          "icon": "trash",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-logic",
+            "order": 7
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        }
+      ]
+    },
+    {
+      "id": "logic.clear",
+      "labelKey": "command.logic.clear",
+      "owner": "src/core/logic/commands.ts",
+      "introducedBy": "app-logic",
+      "args": {},
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [
+        "status.app.noElement",
+        "status.locked.edit",
+        "status.app.invalid"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "inspector-logic-clear",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "app-logic",
+          "panel": "inspector",
+          "control": "logic-clear",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.logic.clear",
+          "faceLabelKey": null,
+          "icon": "eraser",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-logic",
+            "order": 8
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        }
+      ]
+    }
+  ]
+}

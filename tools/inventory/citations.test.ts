@@ -25,7 +25,7 @@ function sources(folder: string): string[] {
 }
 
 const resolves = (file: string, name: string): boolean =>
-  !name.startsWith('.memory/') && [name, path.join('docs', name), path.join(path.dirname(file), name)].some((candidate) => fs.existsSync(candidate));
+  !name.startsWith('.memory/') && [name, path.join('docs', name), path.join('auditoria', name), path.join('manifest', 'generated', name), path.join(path.dirname(file), name)].some((candidate) => fs.existsSync(candidate));
 
 describe('the documents the sources cite', () => {
   it('exist where a reader looks for them', () => {

@@ -1,0 +1,3972 @@
+{
+ "version": 4,
+ "language": "pt-BR",
+ "codeLanguage": "en",
+ "pages": [
+  {
+   "id": "agency165",
+   "name": "Início",
+   "file": "index.html",
+   "tree": {
+    "id": "agency164",
+    "type": "page",
+    "name": "Body",
+    "tag": "body",
+    "attributes": {
+     "pageTitle": "Norte — Agência de marketing digital",
+     "pageDescription": "Sites, tráfego pago e conteúdo para empresas que querem crescer com previsibilidade.",
+     "pageLanguage": "pt-BR"
+    },
+    "classes": [],
+    "styles": {
+     "desktop": {
+      "base": {
+       "margin-top": "0",
+       "margin-right": "0",
+       "margin-bottom": "0",
+       "margin-left": "0",
+       "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+       "color": "#0f172a",
+       "background-color": "#ffffff"
+      }
+     }
+    },
+    "text": null,
+    "children": [
+     {
+      "id": "agency1",
+      "type": "header",
+      "name": "Menu que recolhe no celular",
+      "tag": "header",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "14px",
+         "padding-right": "24px",
+         "padding-bottom": "14px",
+         "padding-left": "24px",
+         "background-color": "#ffffff",
+         "border-bottom-width": "1px",
+         "border-bottom-style": "solid",
+         "border-bottom-color": "#e2e8f0",
+         "position": "sticky",
+         "top": "0px",
+         "z-index": "50"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "agency2",
+        "type": "div",
+        "name": "Contêiner",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "justify-content": "space-between",
+           "column-gap": "24px",
+           "row-gap": "12px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "agency3",
+          "type": "link",
+          "name": "Link",
+          "tag": "a",
+          "attributes": {
+           "href": "/"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "20px",
+             "font-weight": "700",
+             "color": "#0f172a",
+             "text-decoration-line": "none"
+            }
+           }
+          },
+          "text": "Norte",
+          "children": []
+         },
+         {
+          "id": "agency4",
+          "type": "button",
+          "name": "Botão",
+          "tag": "button",
+          "attributes": {
+           "ariaLabel": "Menu"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "width": "44px",
+             "height": "44px",
+             "border-top-left-radius": "999px",
+             "border-top-right-radius": "999px",
+             "border-bottom-right-radius": "999px",
+             "border-bottom-left-radius": "999px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#e2e8f0",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#e2e8f0",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#e2e8f0",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#e2e8f0",
+             "background-color": "#ffffff",
+             "color": "#0f172a",
+             "font-size": "20px",
+             "cursor": "pointer",
+             "display": "none",
+             "align-items": "center",
+             "justify-content": "center",
+             "padding-top": "0px",
+             "padding-bottom": "0px",
+             "padding-left": "0px",
+             "padding-right": "0px"
+            }
+           }
+          },
+          "text": "☰",
+          "children": [],
+          "customAttributes": {
+           "data-wc-toggle": ""
+          }
+         },
+         {
+          "id": "agency5",
+          "type": "nav",
+          "name": "Navegação",
+          "tag": "nav",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "0px",
+             "padding-right": "0px",
+             "padding-bottom": "0px",
+             "padding-left": "0px",
+             "display": "flex",
+             "flex-wrap": "wrap",
+             "align-items": "center",
+             "column-gap": "20px",
+             "row-gap": "8px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "agency6",
+            "type": "link",
+            "name": "Link 2",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#0f172a",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Início",
+            "children": []
+           },
+           {
+            "id": "agency7",
+            "type": "link",
+            "name": "Link 3",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#cases"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#0f172a",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Cases",
+            "children": []
+           },
+           {
+            "id": "agency8",
+            "type": "link",
+            "name": "Link 4",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#servicos"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#0f172a",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Serviços",
+            "children": []
+           },
+           {
+            "id": "agency9",
+            "type": "link",
+            "name": "Link 5",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#contato"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#0f172a",
+               "text-decoration-line": "none",
+               "font-weight": "500",
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "4px",
+               "padding-right": "4px"
+              }
+             }
+            },
+            "text": "Contato",
+            "children": []
+           },
+           {
+            "id": "agency10",
+            "type": "link",
+            "name": "Link 6",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#contato"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "12px",
+               "padding-bottom": "12px",
+               "padding-left": "22px",
+               "padding-right": "22px",
+               "background-color": "#2563eb",
+               "color": "#ffffff",
+               "font-weight": "600",
+               "font-size": "15px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#2563eb",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#2563eb",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#2563eb",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#2563eb",
+               "border-top-left-radius": "10px",
+               "border-top-right-radius": "10px",
+               "border-bottom-right-radius": "10px",
+               "border-bottom-left-radius": "10px",
+               "cursor": "pointer",
+               "text-decoration-line": "none"
+              }
+             }
+            },
+            "text": "Pedir orçamento",
+            "children": []
+           }
+          ],
+          "customAttributes": {
+           "data-wc-menu": ""
+          }
+         }
+        ]
+       }
+      ],
+      "customAttributes": {
+       "data-wc": "menu"
+      }
+     },
+     {
+      "id": "agency11",
+      "type": "section",
+      "name": "Destaque com imagem",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px",
+         "background-color": "#eff6ff"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "agency12",
+        "type": "div",
+        "name": "Contêiner 2",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(300px, 1fr))",
+           "column-gap": "56px",
+           "row-gap": "40px",
+           "align-items": "center"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "agency13",
+          "type": "div",
+          "name": "Texto",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "agency14",
+            "type": "paragraph",
+            "name": "Parágrafo",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#2563eb",
+               "font-size": "14px",
+               "font-weight": "600",
+               "letter-spacing": "0.08em",
+               "text-transform": "uppercase",
+               "margin-bottom": "12px"
+              }
+             }
+            },
+            "text": "Agência de marketing digital",
+            "children": []
+           },
+           {
+            "id": "agency15",
+            "type": "heading",
+            "name": "Título",
+            "tag": "h1",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(2.25rem, 5vw, 3.5rem)",
+               "line-height": "1.1",
+               "color": "#0f172a",
+               "letter-spacing": "-0.02em",
+               "margin-bottom": "20px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "Mais clientes todo mês, com estratégia e números claros",
+            "children": []
+           },
+           {
+            "id": "agency16",
+            "type": "paragraph",
+            "name": "Parágrafo 2",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-bottom": "32px"
+              }
+             }
+            },
+            "text": "Criamos o site, cuidamos dos anúncios e medimos tudo. Você acompanha os resultados num painel simples.",
+            "children": []
+           },
+           {
+            "id": "agency17",
+            "type": "div",
+            "name": "Ações",
+            "tag": "div",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-wrap": "wrap",
+               "column-gap": "12px",
+               "row-gap": "12px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency18",
+              "type": "button",
+              "name": "Botão 2",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "14px",
+                 "padding-bottom": "14px",
+                 "padding-left": "24px",
+                 "padding-right": "24px",
+                 "background-color": "#2563eb",
+                 "color": "#ffffff",
+                 "font-weight": "600",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#2563eb",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#2563eb",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#2563eb",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#2563eb",
+                 "border-top-left-radius": "10px",
+                 "border-top-right-radius": "10px",
+                 "border-bottom-right-radius": "10px",
+                 "border-bottom-left-radius": "10px"
+                }
+               }
+              },
+              "text": "Pedir orçamento",
+              "children": []
+             },
+             {
+              "id": "agency19",
+              "type": "button",
+              "name": "Botão 3",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "14px",
+                 "padding-bottom": "14px",
+                 "padding-left": "24px",
+                 "padding-right": "24px",
+                 "background-color": "#ffffff",
+                 "color": "#0f172a",
+                 "font-weight": "600",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#e2e8f0",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#e2e8f0",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#e2e8f0",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#e2e8f0",
+                 "border-top-left-radius": "10px",
+                 "border-top-right-radius": "10px",
+                 "border-bottom-right-radius": "10px",
+                 "border-bottom-left-radius": "10px"
+                }
+               }
+              },
+              "text": "Ver cases",
+              "children": []
+             }
+            ]
+           }
+          ]
+         },
+         {
+          "id": "agency20",
+          "type": "image",
+          "name": "Imagem",
+          "tag": "img",
+          "attributes": {
+           "src": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&h=900&q=80",
+           "alt": "Mais clientes todo mês, com estratégia e números claros"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "max-width": "100%",
+             "width": "100%",
+             "aspect-ratio": "4 / 3",
+             "object-fit": "cover",
+             "border-top-left-radius": "20px",
+             "border-top-right-radius": "20px",
+             "border-bottom-right-radius": "20px",
+             "border-bottom-left-radius": "20px",
+             "background-color": "#e2e8f0"
+            }
+           }
+          },
+          "text": null,
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "agency21",
+      "type": "section",
+      "name": "Logos de clientes",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "48px",
+         "padding-right": "24px",
+         "padding-bottom": "48px",
+         "padding-left": "24px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "agency22",
+        "type": "div",
+        "name": "Contêiner 3",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "text-align": "center"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "agency23",
+          "type": "paragraph",
+          "name": "Parágrafo 3",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "14px",
+             "line-height": "1.5",
+             "color": "#475569",
+             "margin-top": "0px",
+             "margin-bottom": "24px",
+             "text-transform": "uppercase",
+             "letter-spacing": "0.08em"
+            }
+           }
+          },
+          "text": "Empresas que crescem com a Norte",
+          "children": []
+         },
+         {
+          "id": "agency24",
+          "type": "div",
+          "name": "Logos",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-wrap": "wrap",
+             "justify-content": "center",
+             "align-items": "center",
+             "column-gap": "48px",
+             "row-gap": "24px",
+             "opacity": "0.7"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "agency25",
+            "type": "paragraph",
+            "name": "Parágrafo 4",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "22px",
+               "font-weight": "800",
+               "color": "#0f172a",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Aroma",
+            "children": []
+           },
+           {
+            "id": "agency26",
+            "type": "paragraph",
+            "name": "Parágrafo 5",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "22px",
+               "font-weight": "800",
+               "color": "#0f172a",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Lima Móveis",
+            "children": []
+           },
+           {
+            "id": "agency27",
+            "type": "paragraph",
+            "name": "Parágrafo 6",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "22px",
+               "font-weight": "800",
+               "color": "#0f172a",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Cantina Reis",
+            "children": []
+           },
+           {
+            "id": "agency28",
+            "type": "paragraph",
+            "name": "Parágrafo 7",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "22px",
+               "font-weight": "800",
+               "color": "#0f172a",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Nordeste Tech",
+            "children": []
+           },
+           {
+            "id": "agency29",
+            "type": "paragraph",
+            "name": "Parágrafo 8",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "22px",
+               "font-weight": "800",
+               "color": "#0f172a",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Verde Vivo",
+            "children": []
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "agency30",
+      "type": "section",
+      "name": "Recursos",
+      "tag": "section",
+      "attributes": {
+       "id": "servicos"
+      },
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "agency31",
+        "type": "div",
+        "name": "Contêiner 4",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "agency32",
+          "type": "div",
+          "name": "Introdução",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center",
+             "max-width": "720px",
+             "margin-left": "auto",
+             "margin-right": "auto",
+             "margin-bottom": "48px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "agency33",
+            "type": "paragraph",
+            "name": "Parágrafo 9",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#2563eb",
+               "font-size": "14px",
+               "font-weight": "600",
+               "letter-spacing": "0.08em",
+               "text-transform": "uppercase",
+               "margin-bottom": "12px"
+              }
+             }
+            },
+            "text": "Serviços",
+            "children": []
+           },
+           {
+            "id": "agency34",
+            "type": "heading",
+            "name": "Título 2",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#0f172a",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "16px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "Do primeiro clique à venda",
+            "children": []
+           },
+           {
+            "id": "agency35",
+            "type": "paragraph",
+            "name": "Parágrafo 10",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Um time só cuidando de todo o caminho do seu cliente.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "agency36",
+          "type": "div",
+          "name": "Grade",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "grid",
+             "grid-template-columns": "repeat(auto-fit, minmax(260px, 1fr))",
+             "column-gap": "24px",
+             "row-gap": "24px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "agency37",
+            "type": "article",
+            "name": "Artigo",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency38",
+              "type": "heading",
+              "name": "Título 3",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "color": "#0f172a",
+                 "margin-bottom": "8px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Sites que vendem",
+              "children": []
+             },
+             {
+              "id": "agency39",
+              "type": "paragraph",
+              "name": "Parágrafo 11",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Rápidos, bonitos e feitos para converter visitas em contatos.",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "agency40",
+            "type": "article",
+            "name": "Artigo 2",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency41",
+              "type": "heading",
+              "name": "Título 4",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "color": "#0f172a",
+                 "margin-bottom": "8px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Tráfego pago",
+              "children": []
+             },
+             {
+              "id": "agency42",
+              "type": "paragraph",
+              "name": "Parágrafo 12",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Google e Meta Ads com metas semanais e relatórios claros.",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "agency43",
+            "type": "article",
+            "name": "Artigo 3",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency44",
+              "type": "heading",
+              "name": "Título 5",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "color": "#0f172a",
+                 "margin-bottom": "8px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Conteúdo e redes",
+              "children": []
+             },
+             {
+              "id": "agency45",
+              "type": "paragraph",
+              "name": "Parágrafo 13",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Calendário editorial, design e vídeos curtos para sua marca.",
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "agency46",
+      "type": "section",
+      "name": "Como funciona (passos)",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "80px",
+         "padding-right": "24px",
+         "padding-bottom": "80px",
+         "padding-left": "24px",
+         "background-color": "#eff6ff"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "agency47",
+        "type": "div",
+        "name": "Contêiner 5",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "agency48",
+          "type": "div",
+          "name": "Introdução 2",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center",
+             "max-width": "720px",
+             "margin-left": "auto",
+             "margin-right": "auto",
+             "margin-bottom": "40px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "agency49",
+            "type": "heading",
+            "name": "Título 6",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#0f172a",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "12px",
+               "margin-top": "0px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "Como trabalhamos",
+            "children": []
+           },
+           {
+            "id": "agency50",
+            "type": "paragraph",
+            "name": "Parágrafo 14",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Três passos do diagnóstico aos resultados.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "agency51",
+          "type": "div",
+          "name": "Passos",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "grid",
+             "grid-template-columns": "repeat(auto-fit, minmax(240px, 1fr))",
+             "column-gap": "24px",
+             "row-gap": "24px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "agency52",
+            "type": "article",
+            "name": "Artigo 4",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "24px",
+               "padding-right": "24px",
+               "padding-bottom": "24px",
+               "padding-left": "24px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px",
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "10px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency53",
+              "type": "paragraph",
+              "name": "Parágrafo 15",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "40px",
+                 "height": "40px",
+                 "border-top-left-radius": "999px",
+                 "border-top-right-radius": "999px",
+                 "border-bottom-right-radius": "999px",
+                 "border-bottom-left-radius": "999px",
+                 "background-color": "#2563eb",
+                 "color": "#ffffff",
+                 "font-weight": "700",
+                 "display": "flex",
+                 "align-items": "center",
+                 "justify-content": "center",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "1",
+              "children": []
+             },
+             {
+              "id": "agency54",
+              "type": "heading",
+              "name": "Título 7",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "line-height": "1.3",
+                 "color": "#0f172a",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Diagnóstico gratuito",
+              "children": []
+             },
+             {
+              "id": "agency55",
+              "type": "paragraph",
+              "name": "Parágrafo 16",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Analisamos seu site, anúncios e concorrentes.",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "agency56",
+            "type": "article",
+            "name": "Artigo 5",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "24px",
+               "padding-right": "24px",
+               "padding-bottom": "24px",
+               "padding-left": "24px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px",
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "10px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency57",
+              "type": "paragraph",
+              "name": "Parágrafo 17",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "40px",
+                 "height": "40px",
+                 "border-top-left-radius": "999px",
+                 "border-top-right-radius": "999px",
+                 "border-bottom-right-radius": "999px",
+                 "border-bottom-left-radius": "999px",
+                 "background-color": "#2563eb",
+                 "color": "#ffffff",
+                 "font-weight": "700",
+                 "display": "flex",
+                 "align-items": "center",
+                 "justify-content": "center",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "2",
+              "children": []
+             },
+             {
+              "id": "agency58",
+              "type": "heading",
+              "name": "Título 8",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "line-height": "1.3",
+                 "color": "#0f172a",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Plano de 90 dias",
+              "children": []
+             },
+             {
+              "id": "agency59",
+              "type": "paragraph",
+              "name": "Parágrafo 18",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Metas, investimento e cronograma num só documento.",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "agency60",
+            "type": "article",
+            "name": "Artigo 6",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "24px",
+               "padding-right": "24px",
+               "padding-bottom": "24px",
+               "padding-left": "24px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px",
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "10px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency61",
+              "type": "paragraph",
+              "name": "Parágrafo 19",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "40px",
+                 "height": "40px",
+                 "border-top-left-radius": "999px",
+                 "border-top-right-radius": "999px",
+                 "border-bottom-right-radius": "999px",
+                 "border-bottom-left-radius": "999px",
+                 "background-color": "#2563eb",
+                 "color": "#ffffff",
+                 "font-weight": "700",
+                 "display": "flex",
+                 "align-items": "center",
+                 "justify-content": "center",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "3",
+              "children": []
+             },
+             {
+              "id": "agency62",
+              "type": "heading",
+              "name": "Título 9",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "line-height": "1.3",
+                 "color": "#0f172a",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Execução e relatório",
+              "children": []
+             },
+             {
+              "id": "agency63",
+              "type": "paragraph",
+              "name": "Parágrafo 20",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Toda semana você vê o que foi feito e o que veio de retorno.",
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "agency64",
+      "type": "section",
+      "name": "Números que contam",
+      "tag": "section",
+      "attributes": {
+       "id": "cases"
+      },
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "80px",
+         "padding-right": "24px",
+         "padding-bottom": "80px",
+         "padding-left": "24px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "agency65",
+        "type": "div",
+        "name": "Contêiner 6",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(200px, 1fr))",
+           "column-gap": "32px",
+           "row-gap": "32px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "agency66",
+          "type": "div",
+          "name": "Contêiner 7",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "agency67",
+            "type": "paragraph",
+            "name": "Parágrafo 21",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "48px",
+               "font-weight": "800",
+               "color": "#2563eb",
+               "line-height": "1.1",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "+180%",
+            "children": [],
+            "customAttributes": {
+             "data-wc": "counter",
+             "data-wc-to": "1200",
+             "data-wc-suffix": "+"
+            }
+           },
+           {
+            "id": "agency68",
+            "type": "paragraph",
+            "name": "Parágrafo 22",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "16px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "8px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "leads em 6 meses (Clínica Vita)",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "agency69",
+          "type": "div",
+          "name": "Contêiner 8",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "agency70",
+            "type": "paragraph",
+            "name": "Parágrafo 23",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "48px",
+               "font-weight": "800",
+               "color": "#2563eb",
+               "line-height": "1.1",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "R$ 2,4 mi",
+            "children": [],
+            "customAttributes": {
+             "data-wc": "counter",
+             "data-wc-to": "15",
+             "data-wc-suffix": " anos"
+            }
+           },
+           {
+            "id": "agency71",
+            "type": "paragraph",
+            "name": "Parágrafo 24",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "16px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "8px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "em vendas geridas por mês",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "agency72",
+          "type": "div",
+          "name": "Contêiner 9",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "agency73",
+            "type": "paragraph",
+            "name": "Parágrafo 25",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "48px",
+               "font-weight": "800",
+               "color": "#2563eb",
+               "line-height": "1.1",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "120+",
+            "children": [],
+            "customAttributes": {
+             "data-wc": "counter",
+             "data-wc-to": "98",
+             "data-wc-suffix": "%"
+            }
+           },
+           {
+            "id": "agency74",
+            "type": "paragraph",
+            "name": "Parágrafo 26",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "16px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "8px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "sites entregues",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "agency75",
+          "type": "div",
+          "name": "Contêiner 10",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "agency76",
+            "type": "paragraph",
+            "name": "Parágrafo 27",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "48px",
+               "font-weight": "800",
+               "color": "#2563eb",
+               "line-height": "1.1",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "9,6",
+            "children": [],
+            "customAttributes": {
+             "data-wc": "counter",
+             "data-wc-to": "24",
+             "data-wc-suffix": "h"
+            }
+           },
+           {
+            "id": "agency77",
+            "type": "paragraph",
+            "name": "Parágrafo 28",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "16px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "8px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "nota média dos clientes",
+            "children": []
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "agency78",
+      "type": "section",
+      "name": "Equipe",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "80px",
+         "padding-right": "24px",
+         "padding-bottom": "80px",
+         "padding-left": "24px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "agency79",
+        "type": "div",
+        "name": "Contêiner 11",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "agency80",
+          "type": "div",
+          "name": "Introdução 3",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center",
+             "max-width": "720px",
+             "margin-left": "auto",
+             "margin-right": "auto",
+             "margin-bottom": "40px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "agency81",
+            "type": "heading",
+            "name": "Título 10",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#0f172a",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "12px",
+               "margin-top": "0px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "O time",
+            "children": []
+           },
+           {
+            "id": "agency82",
+            "type": "paragraph",
+            "name": "Parágrafo 29",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Especialistas que você conhece pelo nome.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "agency83",
+          "type": "div",
+          "name": "Pessoas",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "grid",
+             "grid-template-columns": "repeat(auto-fit, minmax(200px, 1fr))",
+             "column-gap": "32px",
+             "row-gap": "32px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "agency84",
+            "type": "article",
+            "name": "Artigo 7",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "56px",
+               "padding-right": "40px",
+               "padding-bottom": "56px",
+               "padding-left": "40px",
+               "text-align": "center",
+               "display": "flex",
+               "flex-direction": "column",
+               "align-items": "center",
+               "row-gap": "8px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency85",
+              "type": "image",
+              "name": "Imagem 2",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=400&h=400&q=80",
+               "alt": "Lara Mendes",
+               "loading": "lazy"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "140px",
+                 "height": "140px",
+                 "object-fit": "cover",
+                 "border-top-left-radius": "999px",
+                 "border-top-right-radius": "999px",
+                 "border-bottom-right-radius": "999px",
+                 "border-bottom-left-radius": "999px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             },
+             {
+              "id": "agency86",
+              "type": "heading",
+              "name": "Título 11",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "line-height": "1.3",
+                 "color": "#0f172a",
+                 "margin-top": "8px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Lara Mendes",
+              "children": []
+             },
+             {
+              "id": "agency87",
+              "type": "paragraph",
+              "name": "Parágrafo 30",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "line-height": "1.5",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Estratégia",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "agency88",
+            "type": "article",
+            "name": "Artigo 8",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "56px",
+               "padding-right": "40px",
+               "padding-bottom": "56px",
+               "padding-left": "40px",
+               "text-align": "center",
+               "display": "flex",
+               "flex-direction": "column",
+               "align-items": "center",
+               "row-gap": "8px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency89",
+              "type": "image",
+              "name": "Imagem 3",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&h=400&q=80",
+               "alt": "Caio Ramos",
+               "loading": "lazy"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "140px",
+                 "height": "140px",
+                 "object-fit": "cover",
+                 "border-top-left-radius": "999px",
+                 "border-top-right-radius": "999px",
+                 "border-bottom-right-radius": "999px",
+                 "border-bottom-left-radius": "999px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             },
+             {
+              "id": "agency90",
+              "type": "heading",
+              "name": "Título 12",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "line-height": "1.3",
+                 "color": "#0f172a",
+                 "margin-top": "8px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Caio Ramos",
+              "children": []
+             },
+             {
+              "id": "agency91",
+              "type": "paragraph",
+              "name": "Parágrafo 31",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "line-height": "1.5",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Mídia paga",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "agency92",
+            "type": "article",
+            "name": "Artigo 9",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "56px",
+               "padding-right": "40px",
+               "padding-bottom": "56px",
+               "padding-left": "40px",
+               "text-align": "center",
+               "display": "flex",
+               "flex-direction": "column",
+               "align-items": "center",
+               "row-gap": "8px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency93",
+              "type": "image",
+              "name": "Imagem 4",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&h=400&q=80",
+               "alt": "Bianca Faria",
+               "loading": "lazy"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "140px",
+                 "height": "140px",
+                 "object-fit": "cover",
+                 "border-top-left-radius": "999px",
+                 "border-top-right-radius": "999px",
+                 "border-bottom-right-radius": "999px",
+                 "border-bottom-left-radius": "999px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             },
+             {
+              "id": "agency94",
+              "type": "heading",
+              "name": "Título 13",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "line-height": "1.3",
+                 "color": "#0f172a",
+                 "margin-top": "8px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Bianca Faria",
+              "children": []
+             },
+             {
+              "id": "agency95",
+              "type": "paragraph",
+              "name": "Parágrafo 32",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "line-height": "1.5",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Design",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "agency96",
+            "type": "article",
+            "name": "Artigo 10",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "56px",
+               "padding-right": "40px",
+               "padding-bottom": "56px",
+               "padding-left": "40px",
+               "text-align": "center",
+               "display": "flex",
+               "flex-direction": "column",
+               "align-items": "center",
+               "row-gap": "8px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency97",
+              "type": "image",
+              "name": "Imagem 5",
+              "tag": "img",
+              "attributes": {
+               "src": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&h=400&q=80",
+               "alt": "Otávio Leal",
+               "loading": "lazy"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "max-width": "100%",
+                 "width": "140px",
+                 "height": "140px",
+                 "object-fit": "cover",
+                 "border-top-left-radius": "999px",
+                 "border-top-right-radius": "999px",
+                 "border-bottom-right-radius": "999px",
+                 "border-bottom-left-radius": "999px",
+                 "background-color": "#e2e8f0"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             },
+             {
+              "id": "agency98",
+              "type": "heading",
+              "name": "Título 14",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "20px",
+                 "line-height": "1.3",
+                 "color": "#0f172a",
+                 "margin-top": "8px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Otávio Leal",
+              "children": []
+             },
+             {
+              "id": "agency99",
+              "type": "paragraph",
+              "name": "Parágrafo 33",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "14px",
+                 "line-height": "1.5",
+                 "color": "#475569",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Desenvolvimento",
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "agency100",
+      "type": "section",
+      "name": "Preços",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px",
+         "background-color": "#eff6ff"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "agency101",
+        "type": "div",
+        "name": "Contêiner 12",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "agency102",
+          "type": "div",
+          "name": "Introdução 4",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center",
+             "max-width": "720px",
+             "margin-left": "auto",
+             "margin-right": "auto",
+             "margin-bottom": "48px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "agency103",
+            "type": "paragraph",
+            "name": "Parágrafo 34",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#2563eb",
+               "font-size": "14px",
+               "font-weight": "600",
+               "letter-spacing": "0.08em",
+               "text-transform": "uppercase",
+               "margin-bottom": "12px"
+              }
+             }
+            },
+            "text": "Planos",
+            "children": []
+           },
+           {
+            "id": "agency104",
+            "type": "heading",
+            "name": "Título 15",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#0f172a",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "16px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "Escolha o ritmo do seu crescimento",
+            "children": []
+           },
+           {
+            "id": "agency105",
+            "type": "paragraph",
+            "name": "Parágrafo 35",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Sem fidelidade. Troque de plano quando quiser.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "agency106",
+          "type": "div",
+          "name": "Grade 2",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "grid",
+             "grid-template-columns": "repeat(auto-fit, minmax(260px, 1fr))",
+             "column-gap": "24px",
+             "row-gap": "24px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "agency107",
+            "type": "article",
+            "name": "Artigo 11",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px",
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "12px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency108",
+              "type": "heading",
+              "name": "Título 16",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "18px",
+                 "color": "#0f172a",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Essencial",
+              "children": []
+             },
+             {
+              "id": "agency109",
+              "type": "paragraph",
+              "name": "Parágrafo 36",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "40px",
+                 "font-weight": "700",
+                 "color": "#0f172a",
+                 "line-height": "1.1",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "R$ 1.490/mês",
+              "children": []
+             },
+             {
+              "id": "agency110",
+              "type": "paragraph",
+              "name": "Parágrafo 37",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-bottom": "8px"
+                }
+               }
+              },
+              "text": "Site + Google Ads.",
+              "children": []
+             },
+             {
+              "id": "agency111",
+              "type": "button",
+              "name": "Botão 4",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "14px",
+                 "padding-bottom": "14px",
+                 "padding-left": "24px",
+                 "padding-right": "24px",
+                 "background-color": "#ffffff",
+                 "color": "#0f172a",
+                 "font-weight": "600",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#e2e8f0",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#e2e8f0",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#e2e8f0",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#e2e8f0",
+                 "border-top-left-radius": "10px",
+                 "border-top-right-radius": "10px",
+                 "border-bottom-right-radius": "10px",
+                 "border-bottom-left-radius": "10px"
+                }
+               }
+              },
+              "text": "Quero este",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "agency112",
+            "type": "article",
+            "name": "Artigo 12",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "2px",
+               "border-top-style": "solid",
+               "border-top-color": "#2563eb",
+               "border-right-width": "2px",
+               "border-right-style": "solid",
+               "border-right-color": "#2563eb",
+               "border-bottom-width": "2px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#2563eb",
+               "border-left-width": "2px",
+               "border-left-style": "solid",
+               "border-left-color": "#2563eb",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px",
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "12px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency113",
+              "type": "heading",
+              "name": "Título 17",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "18px",
+                 "color": "#0f172a",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Crescimento",
+              "children": []
+             },
+             {
+              "id": "agency114",
+              "type": "paragraph",
+              "name": "Parágrafo 38",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "40px",
+                 "font-weight": "700",
+                 "color": "#0f172a",
+                 "line-height": "1.1",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "R$ 2.990/mês",
+              "children": []
+             },
+             {
+              "id": "agency115",
+              "type": "paragraph",
+              "name": "Parágrafo 39",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-bottom": "8px"
+                }
+               }
+              },
+              "text": "Google, Meta e conteúdo.",
+              "children": []
+             },
+             {
+              "id": "agency116",
+              "type": "button",
+              "name": "Botão 5",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "14px",
+                 "padding-bottom": "14px",
+                 "padding-left": "24px",
+                 "padding-right": "24px",
+                 "background-color": "#2563eb",
+                 "color": "#ffffff",
+                 "font-weight": "600",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#2563eb",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#2563eb",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#2563eb",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#2563eb",
+                 "border-top-left-radius": "10px",
+                 "border-top-right-radius": "10px",
+                 "border-bottom-right-radius": "10px",
+                 "border-bottom-left-radius": "10px"
+                }
+               }
+              },
+              "text": "Quero este",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "agency117",
+            "type": "article",
+            "name": "Artigo 13",
+            "tag": "article",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "28px",
+               "padding-right": "28px",
+               "padding-bottom": "28px",
+               "padding-left": "28px",
+               "background-color": "#ffffff",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "16px",
+               "border-top-right-radius": "16px",
+               "border-bottom-right-radius": "16px",
+               "border-bottom-left-radius": "16px",
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "12px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency118",
+              "type": "heading",
+              "name": "Título 18",
+              "tag": "h3",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "18px",
+                 "color": "#0f172a",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px",
+                 "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+                }
+               }
+              },
+              "text": "Completo",
+              "children": []
+             },
+             {
+              "id": "agency119",
+              "type": "paragraph",
+              "name": "Parágrafo 40",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "40px",
+                 "font-weight": "700",
+                 "color": "#0f172a",
+                 "line-height": "1.1",
+                 "margin-top": "0px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Sob consulta",
+              "children": []
+             },
+             {
+              "id": "agency120",
+              "type": "paragraph",
+              "name": "Parágrafo 41",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-bottom": "8px"
+                }
+               }
+              },
+              "text": "Time dedicado.",
+              "children": []
+             },
+             {
+              "id": "agency121",
+              "type": "button",
+              "name": "Botão 6",
+              "tag": "button",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "14px",
+                 "padding-bottom": "14px",
+                 "padding-left": "24px",
+                 "padding-right": "24px",
+                 "background-color": "#ffffff",
+                 "color": "#0f172a",
+                 "font-weight": "600",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#e2e8f0",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#e2e8f0",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#e2e8f0",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#e2e8f0",
+                 "border-top-left-radius": "10px",
+                 "border-top-right-radius": "10px",
+                 "border-bottom-right-radius": "10px",
+                 "border-bottom-left-radius": "10px"
+                }
+               }
+              },
+              "text": "Falar com a gente",
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "agency122",
+      "type": "section",
+      "name": "Perguntas frequentes",
+      "tag": "section",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px",
+         "background-color": "#eff6ff"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "agency123",
+        "type": "div",
+        "name": "Contêiner 13",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "760px",
+           "margin-left": "auto",
+           "margin-right": "auto"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "agency124",
+          "type": "div",
+          "name": "Introdução 5",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "text-align": "center",
+             "max-width": "720px",
+             "margin-left": "auto",
+             "margin-right": "auto",
+             "margin-bottom": "48px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "agency125",
+            "type": "paragraph",
+            "name": "Parágrafo 42",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#2563eb",
+               "font-size": "14px",
+               "font-weight": "600",
+               "letter-spacing": "0.08em",
+               "text-transform": "uppercase",
+               "margin-bottom": "12px"
+              }
+             }
+            },
+            "text": "Dúvidas",
+            "children": []
+           },
+           {
+            "id": "agency126",
+            "type": "heading",
+            "name": "Título 19",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#0f172a",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "16px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "Perguntas frequentes",
+            "children": []
+           },
+           {
+            "id": "agency127",
+            "type": "paragraph",
+            "name": "Parágrafo 43",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "O que perguntam antes de fechar.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "agency128",
+          "type": "div",
+          "name": "Perguntas",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "12px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "agency129",
+            "type": "details",
+            "name": "Detalhes",
+            "tag": "details",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "20px",
+               "padding-bottom": "20px",
+               "padding-left": "24px",
+               "padding-right": "24px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "12px",
+               "border-top-right-radius": "12px",
+               "border-bottom-right-radius": "12px",
+               "border-bottom-left-radius": "12px",
+               "background-color": "#ffffff"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency130",
+              "type": "summary",
+              "name": "Resumo",
+              "tag": "summary",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a",
+                 "cursor": "pointer"
+                }
+               }
+              },
+              "text": null,
+              "children": [
+               {
+                "id": "agency131",
+                "type": "paragraph",
+                "name": "Parágrafo 44",
+                "tag": "span",
+                "attributes": {},
+                "classes": [],
+                "styles": {},
+                "text": "Em quanto tempo vejo resultado?",
+                "children": []
+               }
+              ]
+             },
+             {
+              "id": "agency132",
+              "type": "paragraph",
+              "name": "Parágrafo 45",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "12px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Anúncios trazem contatos na primeira semana; SEO e conteúdo, a partir do terceiro mês.",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "agency133",
+            "type": "details",
+            "name": "Detalhes 2",
+            "tag": "details",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "20px",
+               "padding-bottom": "20px",
+               "padding-left": "24px",
+               "padding-right": "24px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "12px",
+               "border-top-right-radius": "12px",
+               "border-bottom-right-radius": "12px",
+               "border-bottom-left-radius": "12px",
+               "background-color": "#ffffff"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency134",
+              "type": "summary",
+              "name": "Resumo 2",
+              "tag": "summary",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a",
+                 "cursor": "pointer"
+                }
+               }
+              },
+              "text": null,
+              "children": [
+               {
+                "id": "agency135",
+                "type": "paragraph",
+                "name": "Parágrafo 46",
+                "tag": "span",
+                "attributes": {},
+                "classes": [],
+                "styles": {},
+                "text": "Preciso de contrato longo?",
+                "children": []
+               }
+              ]
+             },
+             {
+              "id": "agency136",
+              "type": "paragraph",
+              "name": "Parágrafo 47",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "12px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Não. Os planos são mensais e você cancela com 30 dias de aviso.",
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "agency137",
+            "type": "details",
+            "name": "Detalhes 3",
+            "tag": "details",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "20px",
+               "padding-bottom": "20px",
+               "padding-left": "24px",
+               "padding-right": "24px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#e2e8f0",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#e2e8f0",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#e2e8f0",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#e2e8f0",
+               "border-top-left-radius": "12px",
+               "border-top-right-radius": "12px",
+               "border-bottom-right-radius": "12px",
+               "border-bottom-left-radius": "12px",
+               "background-color": "#ffffff"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency138",
+              "type": "summary",
+              "name": "Resumo 3",
+              "tag": "summary",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a",
+                 "cursor": "pointer"
+                }
+               }
+              },
+              "text": null,
+              "children": [
+               {
+                "id": "agency139",
+                "type": "paragraph",
+                "name": "Parágrafo 48",
+                "tag": "span",
+                "attributes": {},
+                "classes": [],
+                "styles": {},
+                "text": "O investimento em anúncios está incluso?",
+                "children": []
+               }
+              ]
+             },
+             {
+              "id": "agency140",
+              "type": "paragraph",
+              "name": "Parágrafo 49",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-size": "16px",
+                 "line-height": "1.6",
+                 "color": "#475569",
+                 "margin-top": "12px",
+                 "margin-bottom": "0px"
+                }
+               }
+              },
+              "text": "Não: a verba vai direto para o Google e a Meta, no seu cartão.",
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "agency141",
+      "type": "section",
+      "name": "Contato",
+      "tag": "section",
+      "attributes": {
+       "id": "contato"
+      },
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "96px",
+         "padding-right": "40px",
+         "padding-bottom": "96px",
+         "padding-left": "40px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "agency142",
+        "type": "div",
+        "name": "Contêiner 14",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(300px, 1fr))",
+           "column-gap": "56px",
+           "row-gap": "32px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "agency143",
+          "type": "div",
+          "name": "Texto 2",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "agency144",
+            "type": "heading",
+            "name": "Título 20",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "clamp(1.75rem, 3.5vw, 2.5rem)",
+               "line-height": "1.2",
+               "color": "#0f172a",
+               "letter-spacing": "-0.01em",
+               "margin-bottom": "16px",
+               "font-family": "Inter, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+              }
+             }
+            },
+            "text": "Peça seu diagnóstico gratuito",
+            "children": []
+           },
+           {
+            "id": "agency145",
+            "type": "paragraph",
+            "name": "Parágrafo 50",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "18px",
+               "line-height": "1.6",
+               "color": "#475569"
+              }
+             }
+            },
+            "text": "Conte sobre sua empresa. Em até 24 horas mandamos uma análise com 3 oportunidades.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "agency146",
+          "type": "form",
+          "name": "Formulário",
+          "tag": "form",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "16px",
+             "padding-top": "28px",
+             "padding-bottom": "28px",
+             "padding-left": "28px",
+             "padding-right": "28px",
+             "background-color": "#ffffff",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#e2e8f0",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#e2e8f0",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#e2e8f0",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#e2e8f0",
+             "border-top-left-radius": "16px",
+             "border-top-right-radius": "16px",
+             "border-bottom-right-radius": "16px",
+             "border-bottom-left-radius": "16px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "agency147",
+            "type": "label",
+            "name": "Rótulo",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency148",
+              "type": "paragraph",
+              "name": "Parágrafo 51",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a"
+                }
+               }
+              },
+              "text": "Nome",
+              "children": []
+             },
+             {
+              "id": "agency149",
+              "type": "input",
+              "name": "Campo",
+              "tag": "input",
+              "attributes": {
+               "inputType": "text",
+               "name": "name"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "agency150",
+            "type": "label",
+            "name": "Rótulo 2",
+            "tag": "label",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-direction": "column",
+               "row-gap": "6px"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "agency151",
+              "type": "paragraph",
+              "name": "Parágrafo 52",
+              "tag": "span",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "font-weight": "600",
+                 "color": "#0f172a"
+                }
+               }
+              },
+              "text": "E-mail",
+              "children": []
+             },
+             {
+              "id": "agency152",
+              "type": "input",
+              "name": "Campo 2",
+              "tag": "input",
+              "attributes": {
+               "inputType": "email",
+               "name": "email"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "100%"
+                }
+               }
+              },
+              "text": null,
+              "children": []
+             }
+            ]
+           },
+           {
+            "id": "agency153",
+            "type": "button",
+            "name": "Botão 7",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "submit"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "14px",
+               "padding-bottom": "14px",
+               "padding-left": "24px",
+               "padding-right": "24px",
+               "background-color": "#2563eb",
+               "color": "#ffffff",
+               "font-weight": "600",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#2563eb",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#2563eb",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#2563eb",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#2563eb",
+               "border-top-left-radius": "10px",
+               "border-top-right-radius": "10px",
+               "border-bottom-right-radius": "10px",
+               "border-bottom-left-radius": "10px",
+               "align-self": "flex-start"
+              }
+             }
+            },
+            "text": "Quero o diagnóstico",
+            "children": []
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "agency154",
+      "type": "footer",
+      "name": "Rodapé com colunas",
+      "tag": "footer",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "padding-top": "56px",
+         "padding-right": "40px",
+         "padding-bottom": "56px",
+         "padding-left": "40px",
+         "background-color": "#0f172a",
+         "color": "#cbd5e1"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "agency155",
+        "type": "div",
+        "name": "Contêiner 15",
+        "tag": "div",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "max-width": "1120px",
+           "margin-left": "auto",
+           "margin-right": "auto",
+           "display": "grid",
+           "grid-template-columns": "repeat(auto-fit, minmax(200px, 1fr))",
+           "column-gap": "32px",
+           "row-gap": "24px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "agency156",
+          "type": "div",
+          "name": "Marca",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {},
+          "text": null,
+          "children": [
+           {
+            "id": "agency157",
+            "type": "paragraph",
+            "name": "Parágrafo 53",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "20px",
+               "font-weight": "700",
+               "color": "#ffffff",
+               "margin-bottom": "8px"
+              }
+             }
+            },
+            "text": "Norte",
+            "children": []
+           },
+           {
+            "id": "agency158",
+            "type": "paragraph",
+            "name": "Parágrafo 54",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "font-size": "14px",
+               "line-height": "1.6",
+               "margin-top": "0px",
+               "margin-bottom": "0px"
+              }
+             }
+            },
+            "text": "Agência Norte — Florianópolis, SC. Atendemos todo o Brasil.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "agency159",
+          "type": "nav",
+          "name": "Navegação 2",
+          "tag": "nav",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "0px",
+             "padding-right": "0px",
+             "padding-bottom": "0px",
+             "padding-left": "0px",
+             "display": "flex",
+             "flex-direction": "column",
+             "row-gap": "8px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "agency160",
+            "type": "link",
+            "name": "Link 7",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "Início",
+            "children": []
+           },
+           {
+            "id": "agency161",
+            "type": "link",
+            "name": "Link 8",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#cases"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "Cases",
+            "children": []
+           },
+           {
+            "id": "agency162",
+            "type": "link",
+            "name": "Link 9",
+            "tag": "a",
+            "attributes": {
+             "href": "index.html#contato"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "color": "#cbd5e1"
+              }
+             }
+            },
+            "text": "Contato",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "agency163",
+          "type": "paragraph",
+          "name": "Parágrafo 55",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "font-size": "14px",
+             "margin-top": "0px",
+             "margin-bottom": "0px"
+            }
+           }
+          },
+          "text": "© 2026 Norte Marketing Digital.",
+          "children": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}

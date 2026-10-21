@@ -30,8 +30,9 @@ export const RUN_INPUTS: readonly string[] = [
 ];
 
 // the root paths no test executes: documentation, the editor's and the agents' local configuration, the lint's own
-// configuration (lint runs as its own step), and what the tools write (OUTPUTS)
-export const NOT_INPUTS: readonly string[] = ['.claude', '.vscode', 'docs', 'README.md', 'CLAUDE.md', 'AGENTS.md', '.mcp.json', '.gitignore', '.gitattributes', '.git', 'eslint.config.js', '.dependency-cruiser.cjs'];
+// configuration (lint runs as its own step), the SaaS backend (saas/: its own tests and type checks, saas/README.md),
+// and what the tools write (OUTPUTS)
+export const NOT_INPUTS: readonly string[] = ['.claude', '.vscode', 'docs', 'README.md', 'CLAUDE.md', 'AGENTS.md', '.mcp.json', '.gitignore', '.gitattributes', '.git', 'eslint.config.js', '.dependency-cruiser.cjs', 'auditoria', 'PROMPT.md', 'claude-tarefa.md', 'deepseek-tarefa.md', 'deepseek-tarefa-1-feita.md', 'deepseek.ps1', 'prompt-teste-uso-real.md', 'saas'];
 
 // folders the tools and the package manager write, at any depth: never an input
 export const OUTPUTS: ReadonlySet<string> = new Set(['node_modules', 'dist', '.cache', '.playwright-mcp', 'test-results', 'playwright-report', 'coverage']);

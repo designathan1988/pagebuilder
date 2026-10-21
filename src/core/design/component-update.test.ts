@@ -18,3 +18,32 @@ describe('Update component keeps values of the same element only (CS1)', () => {
     expect(ran.problems).toEqual([]);
   });
 });
+
+// DEF-0615: a shared header edited on one page (its brand text, its menu link given an address) and updated: the other
+// instances follow the texts and attributes they never changed, and keep the ones they did.
+describe('Update component carries texts and links the other instances never changed (DEF-0615)', () => {
+  it('a brand renamed and a link given an address reach the other pages; an overridden text stays', () => {
+    const header = (id: string, brand: string, href: string | undefined, about: string) =>
+      node(id, 'header', 'header', {
+        component: 'Site header',
+        componentPart: [],
+        children: [
+          node(`${id}-brand`, 'link', 'a', { text: brand, componentPart: [0], attributes: href === undefined ? {} : { href } }),
+          node(`${id}-about`, 'link', 'a', { text: about, componentPart: [1] }),
+        ],
+      });
+    const document = documentOf({
+      pages: [
+        { id: 'home', name: 'Home', file: 'index.html', tree: node('Page', 'page', 'body', { children: [header('A', 'Torra Fresca', 'index.html', 'Sobre')] }) },
+        { id: 'about', name: 'About', file: 'about.html', tree: node('Page2', 'page', 'body', { children: [header('B', 'Marca', undefined, 'Quem somos')] }) },
+      ],
+      components: [{ name: 'Site header', tree: node('Def', 'header', 'header', { children: [node('Def-brand', 'link', 'a', { text: 'Marca' }), node('Def-about', 'link', 'a', { text: 'Sobre' })] }) }],
+    });
+    const ran = runHandler(updateFromInstanceCommand, document, {}, { selection: ['A'] });
+    expect(ran.problems).toEqual([]);
+    const other = ran.document.pages[1]?.tree.children[0];
+    expect(other?.children[0]?.text).toBe('Torra Fresca');
+    expect(other?.children[0]?.attributes).toEqual({ href: 'index.html' });
+    expect(other?.children[1]?.text).toBe('Quem somos');
+  });
+});

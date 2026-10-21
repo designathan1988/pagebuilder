@@ -9,6 +9,7 @@ import {
   canonicalQuery,
   cellText,
   createCollection,
+  decimalsOf,
   deleteItems,
   guessType,
   importRows,
@@ -265,5 +266,25 @@ describe('the query', () => {
   it('writes a query in one canonical form', () => {
     expect(canonicalQuery({ filters: [], order: [], offset: 0, match: 'all' })).toEqual({});
     expect(canonicalQuery({ filters: [{ field: 'preco', operator: 'empty', value: 'x' }], limit: 3 })).toEqual({ filters: [{ field: 'preco', operator: 'empty' }], limit: 3 });
+  });
+});
+
+describe('a number as the site shows it (DEF-0620)', () => {
+  const words = { yes: 'sim', no: 'não' };
+  it('keeps the decimal places of the file and the separator of the site language', () => {
+    expect(decimalsOf(['6,50', '5,00', '9,9', '', 'x'])).toBe(2);
+    expect(decimalsOf(['12', '7'])).toBe(0);
+    expect(cellText(6.5, words, { language: 'pt-BR', decimals: 2 })).toBe('6,50');
+    expect(cellText(5, words, { language: 'pt-BR', decimals: 2 })).toBe('5,00');
+    expect(cellText(1234.5, words, { language: 'pt-BR', decimals: 2 })).toBe('1234,50');
+    expect(cellText(6.5, words, { language: 'en', decimals: 2 })).toBe('6.50');
+    expect(cellText(0.125, words, { language: 'pt-BR' })).toBe('0,125');
+    expect(cellText(6.5, words)).toBe('6.5');
+  });
+  it('holds the decimal places only on a number field, within bounds', () => {
+    const fields = [{ key: 'preco', label: 'Preço', type: 'number' as const, decimals: 2 }];
+    expect(createCollection([], 'Cardápio', fields).fields[0]?.decimals).toBe(2);
+    expect(() => createCollection([], 'Cardápio', [{ key: 'nome', label: 'Nome', type: 'text', decimals: 2 }])).toThrow(DataRefusal);
+    expect(() => createCollection([], 'Cardápio', [{ key: 'preco', label: 'Preço', type: 'number', decimals: 11 }])).toThrow(DataRefusal);
   });
 });

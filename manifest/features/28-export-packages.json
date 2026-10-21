@@ -1,0 +1,288 @@
+{
+  "group": "export-packages",
+  "titleKey": "featureGroup.exportPackages",
+  "features": [
+    {
+      "id": "export-packages",
+      "titleKey": "feature.exportPackages",
+      "commands": [
+        "project.export"
+      ],
+      "dependsOn": [
+        "export-zip"
+      ],
+      "intent": {
+        "title": "The site exported as an installable web app, an Android and iOS project or a desktop project",
+        "steps": [
+          "File › Export as installable app (PWA): the site with a web app manifest, icons and a service worker.",
+          "File › Export for Android and iPhone: a Capacitor project whose www/ is the site.",
+          "File › Export for Windows, Mac and Linux: an Electron Forge project whose app/ is the site."
+        ],
+        "expected": [
+          "Every page links the manifest and registers the service worker; the manifest names a 192px and a 512px icon, a start_url and a display.",
+          "Each project holds a LEIA-ME.md with the commands that build it."
+        ]
+      },
+      "scenarios": [
+        {
+          "id": "the-site-exports-as-pwa",
+          "setup": {
+            "fixture": "aurora",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "project.export#menu-file-pwa",
+              "args": {
+                "format": "pwa"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "project.export#menu-file-pwa"
+          ],
+          "expect": {
+            "document": [],
+            "selection": [],
+            "history": {
+              "undoSteps": 0,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.export.done",
+                  "params": {
+                    "file": "site-pwa.zip"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": {
+              "files": [
+                {
+                  "path": "manifest.webmanifest",
+                  "present": [
+                    "\"display\": \"standalone\"",
+                    "\"start_url\": \"./index.html\"",
+                    "\"src\": \"icons/icon-512.png\""
+                  ],
+                  "absent": []
+                },
+                {
+                  "path": "index.html",
+                  "present": [
+                    "<link rel=\"manifest\" href=\"manifest.webmanifest\">",
+                    "navigator.serviceWorker.register('sw.js')"
+                  ],
+                  "absent": []
+                },
+                {
+                  "path": "sw.js",
+                  "present": [
+                    "self.addEventListener('install'",
+                    "\"./index.html\"",
+                    "\"./css/styles.css\""
+                  ],
+                  "absent": []
+                }
+              ]
+            }
+          },
+          "refusals": []
+        },
+        {
+          "id": "the-site-exports-as-android",
+          "setup": {
+            "fixture": "aurora",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "project.export#menu-file-android",
+              "args": {
+                "format": "android"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "project.export#menu-file-android"
+          ],
+          "expect": {
+            "document": [],
+            "selection": [],
+            "history": {
+              "undoSteps": 0,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.export.done",
+                  "params": {
+                    "file": "app-android.zip"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": {
+              "files": [
+                {
+                  "path": "capacitor.config.json",
+                  "present": [
+                    "\"webDir\": \"www\"",
+                    "\"appId\": \"com.webconstructor.home\""
+                  ],
+                  "absent": []
+                },
+                {
+                  "path": "package.json",
+                  "present": [
+                    "\"@capacitor/android\"",
+                    "\"@capacitor/cli\""
+                  ],
+                  "absent": []
+                },
+                {
+                  "path": "www/index.html",
+                  "present": [
+                    "<h1>Welcome to Aurora</h1>"
+                  ],
+                  "absent": []
+                },
+                {
+                  "path": "LEIA-ME.md",
+                  "present": [
+                    "npx cap add android"
+                  ],
+                  "absent": []
+                }
+              ]
+            }
+          },
+          "refusals": []
+        },
+        {
+          "id": "the-site-exports-as-desktop",
+          "setup": {
+            "fixture": "aurora",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "project.export#menu-file-desktop",
+              "args": {
+                "format": "desktop"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "project.export#menu-file-desktop"
+          ],
+          "expect": {
+            "document": [],
+            "selection": [],
+            "history": {
+              "undoSteps": 0,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.export.done",
+                  "params": {
+                    "file": "app-desktop.zip"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": {
+              "files": [
+                {
+                  "path": "package.json",
+                  "present": [
+                    "\"@electron-forge/maker-squirrel\"",
+                    "\"make\": \"electron-forge make\"",
+                    "\"main\": \"main.js\""
+                  ],
+                  "absent": []
+                },
+                {
+                  "path": "main.js",
+                  "present": [
+                    "protocol.registerSchemesAsPrivileged",
+                    "app://bundle/index.html"
+                  ],
+                  "absent": []
+                },
+                {
+                  "path": "app/index.html",
+                  "present": [
+                    "<h1>Welcome to Aurora</h1>"
+                  ],
+                  "absent": []
+                },
+                {
+                  "path": "LEIA-ME.md",
+                  "present": [
+                    "npm run make"
+                  ],
+                  "absent": []
+                }
+              ]
+            }
+          },
+          "refusals": []
+        }
+      ]
+    }
+  ]
+}

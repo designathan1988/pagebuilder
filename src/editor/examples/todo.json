@@ -1,0 +1,817 @@
+{
+ "version": 4,
+ "language": "pt-BR",
+ "codeLanguage": "en",
+ "pages": [
+  {
+   "id": "todopage",
+   "name": "Tarefas",
+   "file": "index.html",
+   "tree": {
+    "id": "todo23",
+    "type": "page",
+    "name": "Body",
+    "tag": "body",
+    "attributes": {},
+    "classes": [],
+    "styles": {
+     "desktop": {
+      "base": {
+       "margin-top": "0",
+       "margin-right": "0",
+       "margin-bottom": "0",
+       "margin-left": "0",
+       "background-color": "#f4f5f9",
+       "color": "#14161f",
+       "font-family": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+       "min-height": "100vh"
+      }
+     }
+    },
+    "text": null,
+    "children": [
+     {
+      "id": "todo22",
+      "type": "main",
+      "name": "App",
+      "tag": "main",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "max-width": "1080px",
+         "margin-left": "auto",
+         "margin-right": "auto",
+         "padding-top": "24px",
+         "padding-bottom": "40px",
+         "padding-left": "20px",
+         "padding-right": "20px",
+         "display": "flex",
+         "flex-direction": "column",
+         "row-gap": "16px"
+        }
+       },
+       "phone": {
+        "base": {
+         "padding-left": "12px",
+         "padding-right": "12px",
+         "padding-top": "12px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "todo4",
+        "type": "header",
+        "name": "Topo",
+        "tag": "header",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "column-gap": "8px",
+           "row-gap": "8px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "todo3",
+          "type": "div",
+          "name": "Titulos",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-right": "auto",
+             "min-width": "0"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "todo1",
+            "type": "heading",
+            "name": "Titulo",
+            "tag": "h1",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "font-size": "24px",
+               "line-height": "1.2",
+               "margin-right": "auto"
+              }
+             }
+            },
+            "text": "Tarefas",
+            "children": []
+           },
+           {
+            "id": "todo2",
+            "type": "paragraph",
+            "name": "Descricao",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "color": "#5b6170",
+               "font-size": "14px"
+              }
+             }
+            },
+            "text": "Uma lista guardada no navegador: tudo feito com variáveis, lógica e um script.",
+            "children": []
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "id": "todo21",
+        "type": "section",
+        "name": "Cartao",
+        "tag": "section",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "background-color": "#ffffff",
+           "border-top-width": "1px",
+           "border-right-width": "1px",
+           "border-bottom-width": "1px",
+           "border-left-width": "1px",
+           "border-top-style": "solid",
+           "border-right-style": "solid",
+           "border-bottom-style": "solid",
+           "border-left-style": "solid",
+           "border-top-color": "#dfe3ea",
+           "border-right-color": "#dfe3ea",
+           "border-bottom-color": "#dfe3ea",
+           "border-left-color": "#dfe3ea",
+           "border-top-left-radius": "12px",
+           "border-top-right-radius": "12px",
+           "border-bottom-left-radius": "12px",
+           "border-bottom-right-radius": "12px",
+           "padding-top": "16px",
+           "padding-right": "16px",
+           "padding-bottom": "16px",
+           "padding-left": "16px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "todo7",
+          "type": "form",
+          "name": "Nova",
+          "tag": "form",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-wrap": "wrap",
+             "align-items": "center",
+             "column-gap": "8px",
+             "row-gap": "8px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "todo5",
+            "type": "input",
+            "name": "Texto",
+            "tag": "input",
+            "attributes": {
+             "inputType": "text",
+             "placeholder": "O que precisa ser feito?"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "10px",
+               "padding-right": "10px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#dfe3ea",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#dfe3ea",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#dfe3ea",
+               "font-size": "14px",
+               "font-family": "inherit",
+               "background-color": "#ffffff",
+               "color": "#14161f",
+               "flex-grow": "1"
+              }
+             }
+            },
+            "text": null,
+            "children": [],
+            "logic": {
+             "model": "state.draft"
+            }
+           },
+           {
+            "id": "todo6",
+            "type": "button",
+            "name": "Adicionar",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "submit"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "14px",
+               "padding-right": "14px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#4f46e5",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#4f46e5",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#4f46e5",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#4f46e5",
+               "background-color": "#4f46e5",
+               "color": "#ffffff",
+               "font-size": "14px",
+               "font-weight": "600",
+               "cursor": "pointer",
+               "font-family": "inherit"
+              }
+             }
+            },
+            "text": "Adicionar",
+            "children": []
+           }
+          ],
+          "logic": {
+           "on": [
+            {
+             "event": "submit",
+             "code": "$event.preventDefault()\nfn.add()"
+            }
+           ]
+          }
+         },
+         {
+          "id": "todo12",
+          "type": "div",
+          "name": "Filtros",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-wrap": "wrap",
+             "align-items": "center",
+             "column-gap": "8px",
+             "row-gap": "8px",
+             "margin-top": "12px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "todo8",
+            "type": "button",
+            "name": "Filtro Todas",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "button"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "14px",
+               "padding-right": "14px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#dfe3ea",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#dfe3ea",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#dfe3ea",
+               "background-color": "#ffffff",
+               "color": "#14161f",
+               "font-size": "14px",
+               "font-weight": "600",
+               "cursor": "pointer",
+               "font-family": "inherit"
+              }
+             }
+            },
+            "text": "Todas",
+            "children": [],
+            "logic": {
+             "on": [
+              {
+               "event": "click",
+               "code": "state.filter = 'all'"
+              }
+             ],
+             "binds": {
+              "style:background-color": "state.filter === 'all' ? '#eef0ff' : ''",
+              "style:border-color": "state.filter === 'all' ? '#4f46e5' : ''"
+             }
+            }
+           },
+           {
+            "id": "todo9",
+            "type": "button",
+            "name": "Filtro Abertas",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "button"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "14px",
+               "padding-right": "14px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#dfe3ea",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#dfe3ea",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#dfe3ea",
+               "background-color": "#ffffff",
+               "color": "#14161f",
+               "font-size": "14px",
+               "font-weight": "600",
+               "cursor": "pointer",
+               "font-family": "inherit"
+              }
+             }
+            },
+            "text": "Abertas",
+            "children": [],
+            "logic": {
+             "on": [
+              {
+               "event": "click",
+               "code": "state.filter = 'open'"
+              }
+             ],
+             "binds": {
+              "style:background-color": "state.filter === 'open' ? '#eef0ff' : ''",
+              "style:border-color": "state.filter === 'open' ? '#4f46e5' : ''"
+             }
+            }
+           },
+           {
+            "id": "todo10",
+            "type": "button",
+            "name": "Filtro Feitas",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "button"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "14px",
+               "padding-right": "14px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#dfe3ea",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#dfe3ea",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#dfe3ea",
+               "background-color": "#ffffff",
+               "color": "#14161f",
+               "font-size": "14px",
+               "font-weight": "600",
+               "cursor": "pointer",
+               "font-family": "inherit"
+              }
+             }
+            },
+            "text": "Feitas",
+            "children": [],
+            "logic": {
+             "on": [
+              {
+               "event": "click",
+               "code": "state.filter = 'done'"
+              }
+             ],
+             "binds": {
+              "style:background-color": "state.filter === 'done' ? '#eef0ff' : ''",
+              "style:border-color": "state.filter === 'done' ? '#4f46e5' : ''"
+             }
+            }
+           },
+           {
+            "id": "todo11",
+            "type": "paragraph",
+            "name": "Contagem",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "color": "#5b6170",
+               "font-size": "14px",
+               "margin-left": "auto"
+              }
+             }
+            },
+            "text": "1 abertas de 2",
+            "children": [],
+            "logic": {
+             "text": "state.tasks.filter((task) => !task.done).length + ' abertas de ' + state.tasks.length"
+            }
+           }
+          ]
+         },
+         {
+          "id": "todo17",
+          "type": "list",
+          "name": "Lista",
+          "tag": "ul",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "list-style-type": "none",
+             "padding-left": "0",
+             "margin-top": "8px",
+             "margin-bottom": "0"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "todo16",
+            "type": "listItem",
+            "name": "Tarefa",
+            "tag": "li",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "display": "flex",
+               "flex-wrap": "wrap",
+               "align-items": "center",
+               "column-gap": "8px",
+               "row-gap": "8px",
+               "padding-top": "10px",
+               "padding-bottom": "10px",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea"
+              }
+             }
+            },
+            "text": null,
+            "children": [
+             {
+              "id": "todo13",
+              "type": "input",
+              "name": "Feita",
+              "tag": "input",
+              "attributes": {
+               "inputType": "checkbox"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "width": "18px",
+                 "height": "18px"
+                }
+               }
+              },
+              "text": null,
+              "children": [],
+              "logic": {
+               "model": "task.done"
+              }
+             },
+             {
+              "id": "todo14",
+              "type": "paragraph",
+              "name": "Texto",
+              "tag": "p",
+              "attributes": {},
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "margin-top": "0",
+                 "margin-bottom": "0",
+                 "flex-grow": "1"
+                }
+               }
+              },
+              "text": "Tarefa",
+              "children": [],
+              "logic": {
+               "text": "task.text",
+               "binds": {
+                "style:text-decoration": "task.done ? 'line-through' : ''",
+                "style:color": "task.done ? '#5b6170' : ''"
+               }
+              }
+             },
+             {
+              "id": "todo15",
+              "type": "button",
+              "name": "Remover",
+              "tag": "button",
+              "attributes": {
+               "buttonType": "button"
+              },
+              "classes": [],
+              "styles": {
+               "desktop": {
+                "base": {
+                 "padding-top": "8px",
+                 "padding-bottom": "8px",
+                 "padding-left": "14px",
+                 "padding-right": "14px",
+                 "border-top-left-radius": "8px",
+                 "border-top-right-radius": "8px",
+                 "border-bottom-left-radius": "8px",
+                 "border-bottom-right-radius": "8px",
+                 "border-top-width": "1px",
+                 "border-top-style": "solid",
+                 "border-top-color": "#dfe3ea",
+                 "border-right-width": "1px",
+                 "border-right-style": "solid",
+                 "border-right-color": "#dfe3ea",
+                 "border-bottom-width": "1px",
+                 "border-bottom-style": "solid",
+                 "border-bottom-color": "#dfe3ea",
+                 "border-left-width": "1px",
+                 "border-left-style": "solid",
+                 "border-left-color": "#dfe3ea",
+                 "background-color": "#ffffff",
+                 "color": "#14161f",
+                 "font-size": "14px",
+                 "font-weight": "600",
+                 "cursor": "pointer",
+                 "font-family": "inherit"
+                }
+               }
+              },
+              "text": "Remover",
+              "children": [],
+              "logic": {
+               "on": [
+                {
+                 "event": "click",
+                 "code": "state.tasks = state.tasks.filter((one) => one.id !== task.id)"
+                }
+               ]
+              }
+             }
+            ],
+            "logic": {
+             "each": "fn.visible()",
+             "as": "task",
+             "key": "task.id"
+            }
+           }
+          ]
+         },
+         {
+          "id": "todo18",
+          "type": "paragraph",
+          "name": "Vazio",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-top": "0",
+             "margin-bottom": "0",
+             "color": "#5b6170",
+             "font-size": "14px",
+             "padding-top": "12px"
+            }
+           }
+          },
+          "text": "Nada por aqui.",
+          "children": [],
+          "logic": {
+           "show": "fn.visible().length === 0"
+          }
+         },
+         {
+          "id": "todo20",
+          "type": "div",
+          "name": "Rodape",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-wrap": "wrap",
+             "align-items": "center",
+             "column-gap": "8px",
+             "row-gap": "8px",
+             "margin-top": "12px"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "todo19",
+            "type": "button",
+            "name": "Limpar feitas",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "button"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "8px",
+               "padding-bottom": "8px",
+               "padding-left": "14px",
+               "padding-right": "14px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#dfe3ea",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#dfe3ea",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#dfe3ea",
+               "background-color": "#ffffff",
+               "color": "#14161f",
+               "font-size": "14px",
+               "font-weight": "600",
+               "cursor": "pointer",
+               "font-family": "inherit"
+              }
+             }
+            },
+            "text": "Limpar feitas",
+            "children": [],
+            "logic": {
+             "on": [
+              {
+               "event": "click",
+               "code": "fn.clearDone()"
+              }
+             ]
+            }
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "app": {
+  "variables": [
+   {
+    "name": "tasks",
+    "type": "list",
+    "initial": [
+     {
+      "id": "t1",
+      "text": "Experimentar o painel App",
+      "done": true
+     },
+     {
+      "id": "t2",
+      "text": "Criar meu primeiro app",
+      "done": false
+     }
+    ],
+    "persist": true
+   },
+   {
+    "name": "draft",
+    "type": "text",
+    "initial": ""
+   },
+   {
+    "name": "filter",
+    "type": "text",
+    "initial": "all"
+   }
+  ],
+  "scripts": [
+   {
+    "name": "tasks",
+    "code": "// what the page does with its tasks: every expression calls these as fn.add(), fn.visible()...\nexport function add() {\n  const text = state.draft.trim()\n  if (text === '') return\n  state.tasks.push({ id: app.uid(), text, done: false })\n  state.draft = ''\n}\n\nexport function visible() {\n  if (state.filter === 'open') return state.tasks.filter((task) => !task.done)\n  if (state.filter === 'done') return state.tasks.filter((task) => task.done)\n  return state.tasks\n}\n\nexport function clearDone() {\n  state.tasks = state.tasks.filter((task) => !task.done)\n}\n"
+   }
+  ]
+ }
+}

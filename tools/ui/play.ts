@@ -90,7 +90,10 @@ async function runStep(play: Play, step: Step): Promise<string> {
   const label = 'photo' in step ? step.photo : Object.keys(step)[0] ?? 'step';
   if ('door' in step) {
     const selector = `[data-door="${step.door}"]`;
-    const control = step.labelled === undefined ? page.locator(selector).first() : page.locator(selector, { hasText: step.labelled }).first();
+    // a door labelled so is the control whose whole text is that label: "Button" is not "WhatsApp button", nor "Image"
+    // "Hero with image" (the Insert panel's ready sections and the start card draw tiles whose names hold others)
+    const whole = step.labelled === undefined ? null : new RegExp(`^\\s*${step.labelled.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`);
+    const control = whole === null ? page.locator(selector).first() : page.locator(selector, { hasText: whole }).first();
     await control.waitFor({ state: 'visible', timeout: 5_000 });
     await control.click();
   } else if ('click' in step) {

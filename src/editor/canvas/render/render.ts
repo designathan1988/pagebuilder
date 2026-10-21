@@ -71,6 +71,9 @@ export const HIDDEN_ATTRIBUTE = 'data-hidden';
 // editor-only: a text element whose text is empty (the audit's A3.38)
 export const EMPTY_TEXT_ATTRIBUTE = 'data-empty-text';
 const EDITOR_STYLE_ATTRIBUTE = 'data-editor-style';
+// an element a code component draws into (core/render/output.ts, spec app-logic): the canvas, which runs no code, marks
+// its place with the component's name while it is empty
+const COMPONENT_ATTRIBUTE = 'data-app-component';
 // the project's base style element (core/render/base.ts): written first in the page's head, before every other rule, as
 // the exported stylesheet carries it (the user's real-use audit, item 2.4)
 const BASE_STYLE_ATTRIBUTE = 'data-base-style';
@@ -168,7 +171,7 @@ export function editorCss(model: RenderModel, screenHeight?: number): string {
   // A phone's or a tablet's browser draws its scrollbar over the page, taking no width, so a screen narrower than
   // OVERLAY_SCROLLBAR_BELOW keeps its whole width: the phone breakpoint measured 375 px for its 390 (the user's audit
   // order of 2026-10-05). The media query reads the frame's own width, the breakpoint's.
-  return `html { padding-right: ${scrollbarWidth()}px; scrollbar-width: none; }\n@media (max-width: ${OVERLAY_SCROLLBAR_BELOW - 0.02}px) { html { padding-right: 0; } }\n:where(body:empty) { min-height: ${screenHeight === undefined ? '100vh' : `min(${screenHeight}px, 100vh)`}; }\n:where([${CONTAINER_ATTRIBUTE}]:empty) { min-height: ${model.emptyContainerMinHeight}px; }\n:where([${EMPTY_TEXT_ATTRIBUTE}]) { min-height: ${model.emptyTextMinHeight}px; outline: 1px dashed currentColor; outline-offset: -1px; }\n[${HIDDEN_ATTRIBUTE}] { display: none !important; }\n[${EMBED_FRAME_ATTRIBUTE}] { display: block; width: 100%; min-height: ${model.emptyContainerMinHeight}px; border: 0; pointer-events: none; }`;
+  return `html { padding-right: ${scrollbarWidth()}px; scrollbar-width: none; }\n@media (max-width: ${OVERLAY_SCROLLBAR_BELOW - 0.02}px) { html { padding-right: 0; } }\n:where(body:empty) { min-height: ${screenHeight === undefined ? '100vh' : `min(${screenHeight}px, 100vh)`}; }\n:where([${CONTAINER_ATTRIBUTE}]:empty) { min-height: ${model.emptyContainerMinHeight}px; }\n:where([${EMPTY_TEXT_ATTRIBUTE}]) { min-height: ${model.emptyTextMinHeight}px; outline: 1px dashed currentColor; outline-offset: -1px; }\n[${HIDDEN_ATTRIBUTE}] { display: none !important; }\n[${EMBED_FRAME_ATTRIBUTE}] { display: block; width: 100%; min-height: ${model.emptyContainerMinHeight}px; border: 0; pointer-events: none; }\n:where([${COMPONENT_ATTRIBUTE}]:empty)::before { content: '{ } ' attr(${COMPONENT_ATTRIBUTE}); display: flex; align-items: center; justify-content: center; min-height: ${model.emptyContainerMinHeight * 2}px; border: 1px dashed currentColor; opacity: 0.55; font: 13px/1.4 ui-monospace, monospace; }`;
 }
 
 // The selector of a node's element: its id quoted as a CSS string.

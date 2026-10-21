@@ -125,7 +125,9 @@
         "status.locked.edit",
         "status.forms.invalid",
         "status.forms.requiresText",
-        "status.refused.interactiveInside"
+        "status.refused.interactiveInside",
+        "status.refused.onlyAccepts",
+        "status.refused.notInside"
       ],
       "confirmation": null,
       "history": {

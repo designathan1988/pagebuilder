@@ -12,7 +12,7 @@ import { locate, type Location, type StoredValue } from '../document/model.ts';
 import type { ModelRules } from '../document/validate.ts';
 import type { Patch } from '../history/transaction.ts';
 import { commandOf, numberConstant } from '../../manifest/runtime.ts';
-import { firstLockRefusal } from '../nodes/flags.ts';
+import { firstLockRefusal, stateRefusal } from '../nodes/flags.ts';
 import { writeDeclarations } from './set.ts';
 import { storedValue } from './stored.ts';
 
@@ -52,7 +52,7 @@ export const setDividerCommand = registerHandler('element.setDivider', (context,
   const before = at.node.children[index];
   const after = at.node.children[index + 1];
   if (before === undefined || after === undefined) return { kind: 'refused', message: message('status.divider.unavailable', { name: at.node.name }) };
-  const locked = firstLockRefusal(state.document, [at.node.id as NodeId, before.id as NodeId, after.id as NodeId], 'status.locked.edit');
+  const locked = firstLockRefusal(state.document, [at.node.id as NodeId, before.id as NodeId, after.id as NodeId], 'status.locked.edit') ?? stateRefusal(state.document, [at.node.id as NodeId, before.id as NodeId, after.id as NodeId], rules);
   if (locked !== null) return { kind: 'refused', message: locked };
   const left = layout.box(before.id as NodeId);
   const right = layout.box(after.id as NodeId);

@@ -1,0 +1,924 @@
+{
+ "version": 4,
+ "language": "pt-BR",
+ "codeLanguage": "en",
+ "pages": [
+  {
+   "id": "textpage",
+   "name": "Editor de texto",
+   "file": "index.html",
+   "tree": {
+    "id": "text45",
+    "type": "page",
+    "name": "Body",
+    "tag": "body",
+    "attributes": {},
+    "classes": [],
+    "styles": {
+     "desktop": {
+      "base": {
+       "margin-top": "0",
+       "margin-right": "0",
+       "margin-bottom": "0",
+       "margin-left": "0",
+       "background-color": "#f4f5f9",
+       "color": "#14161f",
+       "font-family": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+       "min-height": "100vh"
+      }
+     }
+    },
+    "text": null,
+    "children": [
+     {
+      "id": "text44",
+      "type": "main",
+      "name": "App",
+      "tag": "main",
+      "attributes": {},
+      "classes": [],
+      "styles": {
+       "desktop": {
+        "base": {
+         "max-width": "1080px",
+         "margin-left": "auto",
+         "margin-right": "auto",
+         "padding-top": "24px",
+         "padding-bottom": "40px",
+         "padding-left": "20px",
+         "padding-right": "20px",
+         "display": "flex",
+         "flex-direction": "column",
+         "row-gap": "16px"
+        }
+       },
+       "phone": {
+        "base": {
+         "padding-left": "12px",
+         "padding-right": "12px",
+         "padding-top": "12px"
+        }
+       }
+      },
+      "text": null,
+      "children": [
+       {
+        "id": "text31",
+        "type": "header",
+        "name": "Topo",
+        "tag": "header",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "display": "flex",
+           "flex-wrap": "wrap",
+           "align-items": "center",
+           "column-gap": "8px",
+           "row-gap": "8px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "text30",
+          "type": "div",
+          "name": "Titulos",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-right": "auto",
+             "min-width": "0"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "text28",
+            "type": "heading",
+            "name": "Titulo",
+            "tag": "h1",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "font-size": "24px",
+               "line-height": "1.2",
+               "margin-right": "auto"
+              }
+             }
+            },
+            "text": "Editor de texto",
+            "children": []
+           },
+           {
+            "id": "text29",
+            "type": "paragraph",
+            "name": "Descricao",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "margin-top": "0",
+               "margin-bottom": "0",
+               "color": "#5b6170",
+               "font-size": "14px"
+              }
+             }
+            },
+            "text": "Um editor de documentos: área editável, barra de formatação e arquivos — só com a camada de app.",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "text24",
+          "type": "input",
+          "name": "Nome do arquivo",
+          "tag": "input",
+          "attributes": {
+           "inputType": "text",
+           "placeholder": "Nome do arquivo"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "10px",
+             "padding-right": "10px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "font-size": "14px",
+             "font-family": "inherit",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "width": "180px"
+            }
+           }
+          },
+          "text": null,
+          "children": [],
+          "logic": {
+           "model": "state.fileName"
+          }
+         },
+         {
+          "id": "text25",
+          "type": "button",
+          "name": "Abrir",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Abrir…",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "await fn.open()"
+            }
+           ]
+          }
+         },
+         {
+          "id": "text26",
+          "type": "button",
+          "name": "Baixar HTML",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#dfe3ea",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#dfe3ea",
+             "background-color": "#ffffff",
+             "color": "#14161f",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Baixar .html",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "fn.download('html')"
+            }
+           ]
+          }
+         },
+         {
+          "id": "text27",
+          "type": "button",
+          "name": "Baixar texto",
+          "tag": "button",
+          "attributes": {
+           "buttonType": "button"
+          },
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "padding-top": "8px",
+             "padding-bottom": "8px",
+             "padding-left": "14px",
+             "padding-right": "14px",
+             "border-top-left-radius": "8px",
+             "border-top-right-radius": "8px",
+             "border-bottom-left-radius": "8px",
+             "border-bottom-right-radius": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#4f46e5",
+             "border-right-width": "1px",
+             "border-right-style": "solid",
+             "border-right-color": "#4f46e5",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#4f46e5",
+             "border-left-width": "1px",
+             "border-left-style": "solid",
+             "border-left-color": "#4f46e5",
+             "background-color": "#4f46e5",
+             "color": "#ffffff",
+             "font-size": "14px",
+             "font-weight": "600",
+             "cursor": "pointer",
+             "font-family": "inherit"
+            }
+           }
+          },
+          "text": "Baixar .txt",
+          "children": [],
+          "logic": {
+           "on": [
+            {
+             "event": "click",
+             "code": "fn.download('txt')"
+            }
+           ]
+          }
+         }
+        ]
+       },
+       {
+        "id": "text43",
+        "type": "section",
+        "name": "Documento",
+        "tag": "section",
+        "attributes": {},
+        "classes": [],
+        "styles": {
+         "desktop": {
+          "base": {
+           "background-color": "#ffffff",
+           "border-top-width": "1px",
+           "border-right-width": "1px",
+           "border-bottom-width": "1px",
+           "border-left-width": "1px",
+           "border-top-style": "solid",
+           "border-right-style": "solid",
+           "border-bottom-style": "solid",
+           "border-left-style": "solid",
+           "border-top-color": "#dfe3ea",
+           "border-right-color": "#dfe3ea",
+           "border-bottom-color": "#dfe3ea",
+           "border-left-color": "#dfe3ea",
+           "border-top-left-radius": "12px",
+           "border-top-right-radius": "12px",
+           "border-bottom-left-radius": "12px",
+           "border-bottom-right-radius": "12px",
+           "padding-top": "16px",
+           "padding-right": "16px",
+           "padding-bottom": "16px",
+           "padding-left": "16px"
+          }
+         }
+        },
+        "text": null,
+        "children": [
+         {
+          "id": "text40",
+          "type": "div",
+          "name": "Barra",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "display": "flex",
+             "flex-wrap": "wrap",
+             "align-items": "center",
+             "column-gap": "8px",
+             "row-gap": "8px",
+             "padding-bottom": "12px",
+             "border-bottom-width": "1px",
+             "border-bottom-style": "solid",
+             "border-bottom-color": "#dfe3ea"
+            }
+           }
+          },
+          "text": null,
+          "children": [
+           {
+            "id": "text32",
+            "type": "button",
+            "name": "Negrito",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "button"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "6px",
+               "padding-bottom": "6px",
+               "padding-left": "10px",
+               "padding-right": "10px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#dfe3ea",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#dfe3ea",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#dfe3ea",
+               "background-color": "#ffffff",
+               "color": "#14161f",
+               "font-size": "14px",
+               "font-weight": "600",
+               "cursor": "pointer",
+               "font-family": "inherit"
+              }
+             }
+            },
+            "text": "B",
+            "children": [],
+            "logic": {
+             "on": [
+              {
+               "event": "mousedown",
+               "code": "$event.preventDefault()\ndocument.execCommand('bold')"
+              }
+             ]
+            }
+           },
+           {
+            "id": "text33",
+            "type": "button",
+            "name": "Italico",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "button"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "6px",
+               "padding-bottom": "6px",
+               "padding-left": "10px",
+               "padding-right": "10px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#dfe3ea",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#dfe3ea",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#dfe3ea",
+               "background-color": "#ffffff",
+               "color": "#14161f",
+               "font-size": "14px",
+               "font-weight": "600",
+               "cursor": "pointer",
+               "font-family": "inherit"
+              }
+             }
+            },
+            "text": "I",
+            "children": [],
+            "logic": {
+             "on": [
+              {
+               "event": "mousedown",
+               "code": "$event.preventDefault()\ndocument.execCommand('italic')"
+              }
+             ]
+            }
+           },
+           {
+            "id": "text34",
+            "type": "button",
+            "name": "Sublinhado",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "button"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "6px",
+               "padding-bottom": "6px",
+               "padding-left": "10px",
+               "padding-right": "10px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#dfe3ea",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#dfe3ea",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#dfe3ea",
+               "background-color": "#ffffff",
+               "color": "#14161f",
+               "font-size": "14px",
+               "font-weight": "600",
+               "cursor": "pointer",
+               "font-family": "inherit"
+              }
+             }
+            },
+            "text": "U",
+            "children": [],
+            "logic": {
+             "on": [
+              {
+               "event": "mousedown",
+               "code": "$event.preventDefault()\ndocument.execCommand('underline')"
+              }
+             ]
+            }
+           },
+           {
+            "id": "text35",
+            "type": "button",
+            "name": "Titulo",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "button"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "6px",
+               "padding-bottom": "6px",
+               "padding-left": "10px",
+               "padding-right": "10px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#dfe3ea",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#dfe3ea",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#dfe3ea",
+               "background-color": "#ffffff",
+               "color": "#14161f",
+               "font-size": "14px",
+               "font-weight": "600",
+               "cursor": "pointer",
+               "font-family": "inherit"
+              }
+             }
+            },
+            "text": "H1",
+            "children": [],
+            "logic": {
+             "on": [
+              {
+               "event": "mousedown",
+               "code": "$event.preventDefault()\ndocument.execCommand('formatBlock', false, 'h2')"
+              }
+             ]
+            }
+           },
+           {
+            "id": "text36",
+            "type": "button",
+            "name": "Paragrafo",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "button"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "6px",
+               "padding-bottom": "6px",
+               "padding-left": "10px",
+               "padding-right": "10px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#dfe3ea",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#dfe3ea",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#dfe3ea",
+               "background-color": "#ffffff",
+               "color": "#14161f",
+               "font-size": "14px",
+               "font-weight": "600",
+               "cursor": "pointer",
+               "font-family": "inherit"
+              }
+             }
+            },
+            "text": "¶",
+            "children": [],
+            "logic": {
+             "on": [
+              {
+               "event": "mousedown",
+               "code": "$event.preventDefault()\ndocument.execCommand('formatBlock', false, 'p')"
+              }
+             ]
+            }
+           },
+           {
+            "id": "text37",
+            "type": "button",
+            "name": "Lista",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "button"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "6px",
+               "padding-bottom": "6px",
+               "padding-left": "10px",
+               "padding-right": "10px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#dfe3ea",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#dfe3ea",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#dfe3ea",
+               "background-color": "#ffffff",
+               "color": "#14161f",
+               "font-size": "14px",
+               "font-weight": "600",
+               "cursor": "pointer",
+               "font-family": "inherit"
+              }
+             }
+            },
+            "text": "• Lista",
+            "children": [],
+            "logic": {
+             "on": [
+              {
+               "event": "mousedown",
+               "code": "$event.preventDefault()\ndocument.execCommand('insertUnorderedList')"
+              }
+             ]
+            }
+           },
+           {
+            "id": "text38",
+            "type": "button",
+            "name": "Numerada",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "button"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "6px",
+               "padding-bottom": "6px",
+               "padding-left": "10px",
+               "padding-right": "10px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#dfe3ea",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#dfe3ea",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#dfe3ea",
+               "background-color": "#ffffff",
+               "color": "#14161f",
+               "font-size": "14px",
+               "font-weight": "600",
+               "cursor": "pointer",
+               "font-family": "inherit"
+              }
+             }
+            },
+            "text": "1. Lista",
+            "children": [],
+            "logic": {
+             "on": [
+              {
+               "event": "mousedown",
+               "code": "$event.preventDefault()\ndocument.execCommand('insertOrderedList')"
+              }
+             ]
+            }
+           },
+           {
+            "id": "text39",
+            "type": "button",
+            "name": "Limpar formato",
+            "tag": "button",
+            "attributes": {
+             "buttonType": "button"
+            },
+            "classes": [],
+            "styles": {
+             "desktop": {
+              "base": {
+               "padding-top": "6px",
+               "padding-bottom": "6px",
+               "padding-left": "10px",
+               "padding-right": "10px",
+               "border-top-left-radius": "8px",
+               "border-top-right-radius": "8px",
+               "border-bottom-left-radius": "8px",
+               "border-bottom-right-radius": "8px",
+               "border-top-width": "1px",
+               "border-top-style": "solid",
+               "border-top-color": "#dfe3ea",
+               "border-right-width": "1px",
+               "border-right-style": "solid",
+               "border-right-color": "#dfe3ea",
+               "border-bottom-width": "1px",
+               "border-bottom-style": "solid",
+               "border-bottom-color": "#dfe3ea",
+               "border-left-width": "1px",
+               "border-left-style": "solid",
+               "border-left-color": "#dfe3ea",
+               "background-color": "#ffffff",
+               "color": "#14161f",
+               "font-size": "14px",
+               "font-weight": "600",
+               "cursor": "pointer",
+               "font-family": "inherit"
+              }
+             }
+            },
+            "text": "Limpar",
+            "children": [],
+            "logic": {
+             "on": [
+              {
+               "event": "mousedown",
+               "code": "$event.preventDefault()\ndocument.execCommand('removeFormat')"
+              }
+             ]
+            }
+           }
+          ]
+         },
+         {
+          "id": "text41",
+          "type": "div",
+          "name": "Pagina",
+          "tag": "div",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "min-height": "420px",
+             "padding-top": "24px",
+             "padding-bottom": "24px",
+             "padding-left": "28px",
+             "padding-right": "28px",
+             "font-size": "17px",
+             "line-height": "1.6",
+             "outline-style": "none"
+            }
+           },
+           "phone": {
+            "base": {
+             "padding-top": "16px",
+             "padding-bottom": "16px",
+             "padding-left": "4px",
+             "padding-right": "4px"
+            }
+           }
+          },
+          "text": null,
+          "children": [],
+          "logic": {
+           "binds": {
+            "attr:contenteditable": "'true'",
+            "attr:spellcheck": "'true'"
+           },
+           "model": "state.html"
+          }
+         },
+         {
+          "id": "text42",
+          "type": "paragraph",
+          "name": "Contagem",
+          "tag": "p",
+          "attributes": {},
+          "classes": [],
+          "styles": {
+           "desktop": {
+            "base": {
+             "margin-top": "0",
+             "margin-bottom": "0",
+             "color": "#5b6170",
+             "font-size": "14px",
+             "padding-top": "8px",
+             "border-top-width": "1px",
+             "border-top-style": "solid",
+             "border-top-color": "#dfe3ea"
+            }
+           }
+          },
+          "text": "14 palavras · salvo neste navegador",
+          "children": [],
+          "logic": {
+           "text": "fn.words(state.html) + ' palavras · salvo neste navegador'"
+          }
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "app": {
+  "variables": [
+   {
+    "name": "html",
+    "type": "text",
+    "initial": "<h2>Meu documento</h2><p>Escreva aqui. Selecione um trecho e use a barra acima.</p>",
+    "persist": true
+   },
+   {
+    "name": "fileName",
+    "type": "text",
+    "initial": "documento",
+    "persist": true
+   }
+  ],
+  "scripts": [
+   {
+    "name": "document",
+    "code": "// the editor's files: counting words, saving and opening documents\nexport function words(html) {\n  const text = new DOMParser().parseFromString(html, 'text/html').body.textContent || ''\n  return text.trim() === '' ? 0 : text.trim().split(/\\s+/).length\n}\n\nexport function download(kind) {\n  const name = (state.fileName.trim() || 'documento') + '.' + kind\n  if (kind === 'txt') app.download(name, new DOMParser().parseFromString(state.html, 'text/html').body.innerText, 'text/plain')\n  else app.download(name, '<!DOCTYPE html><meta charset=\"utf-8\"><title>' + state.fileName + '</title>' + state.html, 'text/html')\n}\n\nexport async function open() {\n  const file = await app.pick('.html,.htm,.txt,.md')\n  if (!file) return\n  state.fileName = file.name.replace(/\\.[^.]+$/, '')\n  const html = /\\.html?$/i.test(file.name) ? new DOMParser().parseFromString(file.text, 'text/html').body.innerHTML : file.text.split('\\n').map((line) => '<p>' + line.replace(/</g, '&lt;') + '</p>').join('')\n  state.html = html\n}\n"
+   }
+  ]
+ }
+}

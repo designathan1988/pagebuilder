@@ -13,10 +13,14 @@ export interface NodeMaker {
   readonly ids: IdGenerator;
   readonly words: (key: MessageId) => string;
   readonly taken: Set<string>;
+  // the HTML ids the document's nodes already hold: a template's own ids are renamed off them (paletteNode)
+  readonly htmlIds: ReadonlySet<string>;
 }
 
 export function nodeMaker(document: DocumentJson, rules: ModelRules, ids: IdGenerator, words: (key: MessageId) => string): NodeMaker {
-  return { rules, ids, words, taken: new Set([...allNodes(document)].map((n) => n.name)) };
+  const nodes = [...allNodes(document)];
+  const htmlIds = new Set(nodes.map((n) => n.attributes.id).filter((id): id is string => typeof id === 'string' && id !== ''));
+  return { rules, ids, words, taken: new Set(nodes.map((n) => n.name)), htmlIds };
 }
 
 export function freshName(make: NodeMaker, base: string): string {
