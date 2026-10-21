@@ -58,7 +58,7 @@ const LEAVE_MODE = manifest.doors.find((d) => d.door.kind === 'shortcut' && d.do
 import { ViewOverlays } from './view-overlays.tsx';
 import { GridOverlay } from './grid-overlay.tsx';
 // where a label and a resize handle may be drawn (canvas/placement.ts): the rules moved out of this file, which draws
-import { clearedLabel, controlBoxes, handleHitBox, heldInStage, labelRoom, overlaps as overlapsBox, placeLabel, selectionLabelBox, turnedFrame, visibleCanvas, type Box, type Placement } from './placement.ts';
+import { clearedLabel, controlBoxes, handleHitBox, heldInStage, labelRoom, overlaps as overlapsBox, placeLabel, selectionLabelBox, shownWords, turnedFrame, visibleCanvas, type Box, type Placement } from './placement.ts';
 import { ARRANGED, ARRANGED_SELECTOR, ROTATION_SIDES, placeRotationZones, yieldingAt, type Arranged } from './arrangement.ts';
 import { distancesOf, type Distance } from './distances.ts';
 import { altDistances, hoverSizeOf, type HoverSize } from './hover-measure.ts';
@@ -75,8 +75,10 @@ export type { Box,  } from './placement.ts';
 // (the resize gesture: the one whose Shift keeps the aspect ratio, interactions.json)
 const RESIZE_GESTURE = manifest.interactions.gestures.find((g) => g.modifiers.some((m) => m.meaning === 'toggle-aspect-ratio'))?.id;
 // the editor's own controls about the page that the selection's label never lies over: the breakpoint tabs attached to
-// the page's top (canvas.tsx BreakpointTabs, D-1)
+// the page's top (canvas.tsx BreakpointTabs, D-1), and the words of the bands under them, the breakpoint's and the
+// state's (canvas.tsx BreakpointBadge, StateBadge; DCS-064), each cut to what its band shows (shownWords)
 const EDITOR_CONTROLS = '[data-region="canvas-breakpoints"] button, [data-region="canvas-breakpoints"] [role="tab"]';
+const BAND_WORDS = '[data-canvas-badge] > *';
 const RESIZE_DOORS = manifest.doors.filter((d) => d.door.kind === 'canvas-handle' && d.door.gesture === RESIZE_GESTURE);
 // the handle of an edge's whole length (resize-edge-n, -e, -s, -w): each side of the selected element is a grip
 // (interactions.json resize.edgeGrip screen px inside its border, over the padding band there), so a person who takes
@@ -763,8 +765,14 @@ function useChromeLayout({ layer, label, bar, selection, targets, hovered, node,
         const chipRise = Math.max(0, (chipBox?.offsetHeight ?? 0) - (size?.height ?? 0));
         // the breakpoint tabs attached to the page's top (D-1) are the editor's own: the label, the toolbar above it
         // and the chip beside it never lie over them (clearedLabel; CLAUDE.md, rule G5). Part of the key: tabs that
-        // grow (their names in another language, DEF-0575) place the label again
-        const tabs = [...document.querySelectorAll(EDITOR_CONTROLS)].map((el) => local(el.getBoundingClientRect())).filter((b): b is Box => b !== null && b.width > 0 && b.height > 0);
+        // grow (their names in another language, DEF-0575) place the label again. The words of the bands under the tabs
+        // count as the tabs (DCS-064): a narrow element at the page's top right had its label over them (DCS-036)
+        const words = [...document.querySelectorAll(BAND_WORDS)].flatMap((el) => {
+          const word = local(el.getBoundingClientRect());
+          const band = el.parentElement === null ? null : local(el.parentElement.getBoundingClientRect());
+          return word === null || band === null ? [] : shownWords([word], band);
+        });
+        const tabs = [...[...document.querySelectorAll(EDITOR_CONTROLS)].map((el) => local(el.getBoundingClientRect())).filter((b): b is Box => b !== null && b.width > 0 && b.height > 0), ...words];
         const placedTabs = tabs.map((b) => [Math.round(b.x), Math.round(b.y), Math.round(b.width)]);
         const key = JSON.stringify([first, size, tools, mode, edge, turn, chipWidth, chipRise, Math.round(origin.x), Math.round(origin.y), Math.round(origin.width), Math.round(origin.height), placedTabs]);
         if (first === undefined || size === null) {

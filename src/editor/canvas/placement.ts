@@ -11,7 +11,8 @@
 // the page's top (D-1), where the one place of an element at the page's top falls (clearedLabel; the owner's choice of
 // 2026-10-07): there it moves along the frame's top line just past the tabs, while it still stands whole over its
 // element, else it stands under its element, the mirror of its one place, so the tabs stay seen and pressed (CLAUDE.md,
-// rule G5).
+// rule G5). The words of the bands under the tabs (the breakpoint's, the state's) count as the tabs do (shownWords; the
+// owner's extension of 2026-10-21, DCS-064), so they stay read.
 //
 // A drop label (placeLabel) never covers page content, nor a control the chrome draws (a
 // resize handle or an edit band under it would lose the press to the label): it sits above its element when that space
@@ -178,6 +179,21 @@ export function clearedLabel(
   const box = { ...placed.box, y: frame.y + frame.height + edge };
   const inner = { x: box.x + SLACK, y: box.y + SLACK, width: box.width - 2 * SLACK, height: box.height - 2 * SLACK };
   return { box, placement: 'below', covers: content.some((c) => overlaps(inner, c)) };
+}
+
+// The words of a band about the page (the breakpoint's band and the state's, under the breakpoint tabs; canvas.tsx) as
+// the selection's label keeps clear of them (the owner's extension of DEC-70's exception, 2026-10-21, DCS-064): each
+// word's box cut to what its band shows of it. Words the band wraps under its height are out of sight (overflow
+// hidden) and no obstacle; the band itself is not one either, only its words, so the label of an element at the
+// page's top keeps its one place on the band wherever the words are not.
+export function shownWords(words: readonly Box[], band: Box): Box[] {
+  return words.flatMap((word) => {
+    const x = Math.max(word.x, band.x);
+    const y = Math.max(word.y, band.y);
+    const width = Math.min(word.x + word.width, band.x + band.width) - x;
+    const height = Math.min(word.y + word.height, band.y + band.height) - y;
+    return width > 0 && height > 0 ? [{ x, y, width, height }] : [];
+  });
 }
 
 // The selection's label kept in what the person sees of the canvas (`stage`), above its element still (DEC-70): where

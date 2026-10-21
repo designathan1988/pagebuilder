@@ -274,7 +274,8 @@ function StateBadge() {
   if (state.pseudo === null) return null;
   return (
     <div className="canvas-state-badge" data-canvas-badge="state">
-      {t('canvas.badge.editingState', { state: t(state.labelKey as MessageId) })}
+      {/* its words in a box of their own: the selection's label keeps clear of them (BAND_WORDS, DCS-064) */}
+      <span>{t('canvas.badge.editingState', { state: t(state.labelKey as MessageId) })}</span>
     </div>
   );
 }

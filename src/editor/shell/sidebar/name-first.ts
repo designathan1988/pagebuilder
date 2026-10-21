@@ -27,23 +27,30 @@ function freeRoom(row: HTMLElement, gap: number): number {
 }
 
 export function fitNames(list: HTMLElement): void {
-  for (const row of list.querySelectorAll<HTMLElement>(ROWS)) {
-    const name = row.querySelector<HTMLElement>(NAME);
-    const chip = row.querySelector<HTMLElement>(CHIP);
-    // the name is cut, or the chip's own words are (asked only while the chip shows them)
-    const chipName = chip?.querySelector<HTMLElement>(CHIP_NAME) ?? null;
-    const cut = () =>
-      (name !== null && name.scrollWidth > name.clientWidth + TOLERANCE) || (chipName !== null && chipName.scrollWidth > chipName.clientWidth + TOLERANCE);
-    // an instance's component chip gives way first: it keeps only its icon while the name does not fit beside it
-    if (chip === null || name === null) delete row.dataset.componentCompact;
-    else if (!('componentCompact' in row.dataset) && cut()) row.dataset.componentCompact = '';
-    fitDetails(row, name);
-    // and comes back last, once the details are back: tried whole, and kept to its icon again if the name is then cut
-    // (the same frame's layout, never painted)
-    if (chip !== null && 'componentCompact' in row.dataset && !('nameFirst' in row.dataset)) {
-      delete row.dataset.componentCompact;
-      if (cut()) row.dataset.componentCompact = '';
-    }
+  // measured at rest: a Layers row keeps its actions' room only while they show (hovered, focused or selected;
+  // sidebar.css .row--tree, DCS-065), and judged there the selected row's tag and chip left as it was selected and came
+  // back as it was left. The mark is taken off before the frame paints.
+  list.dataset.atRest = '';
+  for (const row of list.querySelectorAll<HTMLElement>(ROWS)) fitRow(row);
+  delete list.dataset.atRest;
+}
+
+function fitRow(row: HTMLElement): void {
+  const name = row.querySelector<HTMLElement>(NAME);
+  const chip = row.querySelector<HTMLElement>(CHIP);
+  // the name is cut, or the chip's own words are (asked only while the chip shows them)
+  const chipName = chip?.querySelector<HTMLElement>(CHIP_NAME) ?? null;
+  const cut = () =>
+    (name !== null && name.scrollWidth > name.clientWidth + TOLERANCE) || (chipName !== null && chipName.scrollWidth > chipName.clientWidth + TOLERANCE);
+  // an instance's component chip gives way first: it keeps only its icon while the name does not fit beside it
+  if (chip === null || name === null) delete row.dataset.componentCompact;
+  else if (!('componentCompact' in row.dataset) && cut()) row.dataset.componentCompact = '';
+  fitDetails(row, name);
+  // and comes back last, once the details are back: tried whole, and kept to its icon again if the name is then cut
+  // (the same frame's layout, never painted)
+  if (chip !== null && 'componentCompact' in row.dataset && !('nameFirst' in row.dataset)) {
+    delete row.dataset.componentCompact;
+    if (cut()) row.dataset.componentCompact = '';
   }
 }
 
@@ -57,10 +64,9 @@ function fitDetails(row: HTMLElement, name: HTMLElement | null): void {
   }
   const gap = parseFloat(getComputedStyle(row).columnGap) || 0;
   if (!('nameFirst' in row.dataset)) {
-    // the room the details take from the name: their width, their margins and the gaps before them. A Layers row's
-    // tag stands in the room its actions keep (its right margin is negative, sidebar.css .row--tree .row__meta):
-    // there it takes none, and its leaving gave the name nothing — "Form…" lost its "form" beside an empty end
-    // (DEF-0599)
+    // the room the details take from the name: their width, their margins and the gaps before them. A tag that took
+    // none (a negative margin into the room of a row's actions) gave the name nothing by leaving: it stays (DEF-0599:
+    // "Form…" lost its "form" beside an empty end); a Layers row at rest keeps no such room (DCS-065)
     const taken = details.filter((one) => one.offsetWidth > 0).reduce((sum, one) => {
       const style = getComputedStyle(one);
       return sum + one.offsetWidth + Math.max(0, parseFloat(style.marginLeft) || 0) + (parseFloat(style.marginRight) || 0) + gap;

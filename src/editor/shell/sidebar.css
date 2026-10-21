@@ -642,8 +642,8 @@
 
 /* A tree row keeps the room its actions strip takes at its end (the strip lies over the row: .row__actions), so the name
    ends before it — a long name ran under the strip's buttons, transparent until hovered, and a press on its end took
-   one of them (the screen guard, the conditions sweep of 2026-10-06). The row's details (its tag, .row__meta) still
-   stand in that room, under the strip, as before. An Explorer file row keeps the same room for its own strip (move,
+   one of them (the screen guard, the conditions sweep of 2026-10-06). A Layers row keeps it only while its actions
+   show (DCS-065, below). An Explorer file row keeps the same room for its own strip (move,
    fill, rename, delete), its folder and size ending before it. */
 .row--tree,
 [data-region='explorer-file-rows'] .row {
@@ -653,8 +653,39 @@
   padding-right: calc(var(--space-3) + var(--row-actions-room));
 }
 
-.row--tree .row__meta {
-  margin-right: calc(-1 * var(--row-actions-room));
+/* A Layers row's actions show only while the row is hovered, holds the keyboard's focus or is selected (DCS-065, as a
+   design tool's layers show their eye and lock): at rest the row keeps no room for them, so its name, its component
+   chip and its tag have the whole row ("Cabeçalho do site 2" at depth 1 in pt-BR ended in "…" beside three transparent
+   buttons). A row with an action shown at rest (a pressed Hide or Lock, a pick button) keeps the room as before.
+   While the actions show, the row keeps their room and its tag leaves it: the strip lies over the row's end on the
+   row's own face (--row-face), and the name and the chip end before it (the strip drew over the chip's icon where the
+   tag, with less width than the strip, let the chip run into it). The names are measured at rest
+   (name-first.ts sets data-at-rest on the list while it measures), so showing the actions never moves a tag or a chip. */
+.row--tree {
+  --row-face: var(--color-surface);
+  --row-actions-shown: visible;
+}
+
+.row--tree.is-receiving {
+  --row-face: color-mix(in srgb, var(--color-canvas-target) 12%, var(--color-surface));
+}
+
+.row--tree:hover {
+  --row-face: var(--color-surface-hover);
+}
+
+.row--tree.is-selected {
+  --row-face: var(--color-surface-selected);
+}
+
+.row--tree:not(.row--hidden, .row--locked, :has(.row__actions .door--button, .row__actions .row__button)):is(:not(:hover, :focus-within, .is-selected), [data-at-rest] *) {
+  --row-actions-room: var(--space-0);
+  --row-actions-shown: hidden;
+}
+
+.row--tree:is(.row--hidden, .row--locked, :has(.row__actions .door--button, .row__actions .row__button)) > .row__meta,
+.row--tree:is(:hover, :focus-within, .is-selected):not([data-at-rest] *) > .row__meta {
+  display: none;
 }
 
 /* the row wears the colour it holds: a line on its left, never a filled background, so the name stays readable */
@@ -688,6 +719,17 @@
 
 .row:hover .row__actions .door,
 .row__actions .door:focus-visible {
+  opacity: 1;
+}
+
+/* a Layers row's strip: seen while the row shows its actions, on the row's own face, its buttons opaque while the row
+   is hovered, focused or selected (DCS-065) */
+.row.row--tree .row__actions {
+  visibility: var(--row-actions-shown);
+  background: var(--row-face);
+}
+
+.row--tree:is(:focus-within, .is-selected) .row__actions .door {
   opacity: 1;
 }
 

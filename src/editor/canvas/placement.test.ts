@@ -4,7 +4,7 @@
 // button's label over a card's price selected the button). A drop label takes the first free place around its element,
 // and where none is free it covers the least it can and says so.
 import { describe, expect, it } from 'vitest';
-import { clearedLabel, heldInStage, labelRoom, placeLabel, selectionLabelBox, turnedFrame, type Box } from './placement.ts';
+import { clearedLabel, heldInStage, labelRoom, placeLabel, selectionLabelBox, shownWords, turnedFrame, type Box } from './placement.ts';
 
 const box = (x: number, y: number, width: number, height: number): Box => ({ x, y, width, height });
 const CANVAS = box(0, 0, 1000, 1000);
@@ -69,6 +69,37 @@ describe("the selection's label", () => {
       expect(clearedLabel(one, element, 2, { above: 0, width: SIZE.width }, [box(184, -30, 90, 26)], [])).toEqual(one);
       expect(clearedLabel(one, element, 2, { above: 0, width: SIZE.width + 40 }, [box(170, 0, 90, 20)], []).box.x).toBe(262);
       expect(clearedLabel(one, element, 2, { above: 30, width: SIZE.width }, TABS, []).box.x).toBe(276);
+    });
+    // the words of the bands under the tabs (the breakpoint's, the state's) count as the tabs (DCS-064; DCS-036)
+    describe('and the words of the bands under the tabs', () => {
+      const BAND = box(0, 0, 600, 32);
+      const WORDS = shownWords([box(420, 6, 170, 20)], BAND);
+      const PAGE_TOP = 32;
+      it('keeps its one place on the band where the words are not', () => {
+        const wide = box(0, PAGE_TOP, 600, 80);
+        const one = selectionLabelBox(wide, SIZE, 2, []);
+        expect(clearedLabel(one, wide, 2, { above: 0, width: SIZE.width + 40 }, [...TABS, ...WORDS], [])).toEqual(one);
+      });
+      it('moves along the top just past the words while it still stands over its element', () => {
+        // words held at the band's start (`safe`: wider than a narrow frame's band)
+        const atStart = shownWords([box(16, 6, 200, 20)], BAND);
+        const wide = box(0, PAGE_TOP, 600, 80);
+        const one = selectionLabelBox(wide, SIZE, 2, []);
+        const cleared = clearedLabel(one, wide, 2, { above: 0, width: SIZE.width + 40 }, [...TABS, ...atStart], []);
+        expect(cleared.placement).toBe('above');
+        expect(cleared.box).toEqual(box(218, one.box.y, 80, 16));
+      });
+      it('stands right under a narrow element at the top right, the words above it kept read', () => {
+        const narrow = box(500, PAGE_TOP, 100, 40);
+        const one = selectionLabelBox(narrow, SIZE, 2, []);
+        const cleared = clearedLabel(one, narrow, 2, { above: 0, width: SIZE.width + 40 }, [...TABS, ...WORDS], []);
+        expect(cleared.placement).toBe('below');
+        expect(cleared.box).toEqual(box(498, PAGE_TOP + 40 + 2, 80, 16));
+      });
+      it('counts only what the band shows of its words: words wrapped under its height are out of sight', () => {
+        expect(shownWords([box(10, 40, 100, 20)], BAND)).toEqual([]);
+        expect(shownWords([box(-20, 6, 100, 20)], BAND)).toEqual([box(0, 6, 80, 20)]);
+      });
     });
     it('says it covers page text where it lands on it', () => {
       const one = selectionLabelBox(TOP, SIZE, 2, []);

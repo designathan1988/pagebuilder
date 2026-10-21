@@ -110,7 +110,7 @@ Após toda escrita: esquema de cada bloco válido; IDs únicos; nenhum bloco ór
 ## 6. Decisões do dono (só ele muda)
 - **D-1:** as abas de breakpoint ficam coladas no topo da moldura.
 - **DEC-70:** o rótulo da seleção fica sempre acima do elemento, encostado na moldura. O chip do painel rápido fica à direita do rótulo.
-  - **Exceção (2026-10-07):** quando esse lugar cai sobre as abas de breakpoint (elemento no topo da página), rótulo e chip seguem pela linha de cima da moldura até passar a última aba, enquanto couberem sobre o elemento; num elemento estreito sob as abas, ficam logo abaixo dele.
+  - **Exceção (2026-10-07):** quando esse lugar cai sobre as abas de breakpoint (elemento no topo da página), rótulo e chip seguem pela linha de cima da moldura até passar a última aba, enquanto couberem sobre o elemento; num elemento estreito sob as abas, ficam logo abaixo dele. As palavras da faixa do breakpoint (e da faixa do estado) contam como as abas (DCS-064, 2026-10-21).
   - **Onde vive:** `clearedLabel` em `src/editor/canvas/placement.ts`.
 
 ## 7. Mapa do código

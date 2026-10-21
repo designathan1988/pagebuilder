@@ -2448,3 +2448,21 @@
 - Sintoma: no exemplo Membros em português o campo se chamava "Email", e a interface diz "E-mail".
 - Causa: `tools/gen/content/app-examples.py` usava o mesmo nome nos dois idiomas.
 - Prova: "E-mail" no pt-BR, "Email" no inglês; gerador idempotente; foto `last-fix/F09`.
+
+## DEF-0789 — rótulo e chip de um elemento estreito no topo à direita cobriam as palavras da faixa
+- Status: corrigido (não commitado, 2026-10-21)
+- Sintoma: no Tablet e no Celular, selecionar o botão "Entrar" no topo à direita punha rótulo e chip sobre "— as edições valem para esta tela…" (DCS-036).
+- Causa: `src/editor/canvas/chrome.tsx:79` `EDITOR_CONTROLS` só listava as abas; as palavras das faixas não eram obstáculo de `clearedLabel`.
+- Prova: as palavras (`[data-canvas-badge] > *`, cortadas por `shownWords`) entram na lista de obstáculos no único ponto que posiciona o rótulo; fotos `final-two/P05`, `P06`, `P07` (pt 1280), `P11`, `P12` (en 1440), `P13`; 4 casos novos em `placement.test.ts`.
+
+## DEF-0790 — nome longo de instância em Camadas terminava em "…" por causa dos botões transparentes
+- Status: corrigido (não commitado, 2026-10-21)
+- Sintoma: "Cabeçalho do site 2" na profundidade 1, pt-BR a 1280×720, aparecia "Cabeçalho do…"; com o ponteiro, a faixa de ações cobria o ícone do chip.
+- Causa: `src/editor/shell/sidebar.css` `.row--tree` reservava sempre o espaço das ações, e a margem negativa da tag deixava o chip correr para baixo da faixa.
+- Prova: em repouso a linha não reserva espaço (nome 97/97 px, fotos `final-two/P01`, `P08`); com ponteiro, foco ou seleção a tag sai e o chip fica inteiro antes da faixa opaca (chip 171–185, faixa 189–261; `P02`–`P04`, `P09`, `P10`); `fitNames` mede em repouso (`data-at-rest`).
+
+## DEF-0791 — no Celular, o cabeçalho da Landing page cola "Marca" em "Início"
+- Status: aberto (a correção no manifesto foi barrada pela permissão desta sessão)
+- Sintoma: Landing page completa em pt-BR, aba Celular: "Marca", a navegação e "Entrar" ficam na mesma linha com 3 px entre eles (foto `final-two/P06`); em inglês os textos maiores quebram a linha.
+- Causa: `manifest/elements.json:2378` (cabeçalho da Landing) e `:12372` (modelo de barra de navegação) têm `row-gap` sem `column-gap`.
+- Prova: medido no iframe: `gap: 12px normal`, filhos em x 40, 87 e 274 numa área de 310 px. Correção proposta: `"column-gap": "24px"`, como o menu de `components.py:156`.
