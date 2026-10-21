@@ -348,3 +348,8 @@
 
 ## DCS-065 — as ações da linha de Camadas aparecem com o ponteiro, o foco ou a seleção
 - **Decidido (autorização do dono, 2026-10-21):** como nas camadas do Figma, os botões da linha (ocultar, travar, cor, escolher alvo) só aparecem enquanto a linha está sob o ponteiro, tem o foco do teclado (`:focus-within`) ou está selecionada; em repouso nome, chip do componente e tag têm a linha inteira. Quando aparecem, ficam no fim da linha sobre o fundo da própria linha (`--row-face`), a tag sai e nome e chip terminam antes deles. Linha oculta, travada ou com botão de escolha visível mantém o espaço como antes. Os nomes são medidos em repouso (`data-at-rest`, `src/editor/shell/sidebar/name-first.ts`; `src/editor/shell/sidebar.css` `.row--tree`).
+
+## DCS-066 — idioma de um projeto novo e do texto inserido
+- **Origem:** na conferência do DEF-0791, um cabeçalho inserido com a interface em inglês saiu em português; a dúvida era se isso é defeito.
+- **Decidido (2026-10-21), confirmado no uso:** um projeto novo (primeira abertura ou Arquivo › Nova página em branco) nasce no idioma da interface naquele momento (`src/editor/store.ts:121-122`, `src/core/project/project.ts:8-12`); o texto que se insere segue o idioma da página ou do site (`pageWordsAt`, `src/core/structure/insert.ts`), não o da interface; o nome da camada (Camadas) fica no idioma de quem edita.
+- **Prova (`lang-proof`, contextos novos, feed e console vazios):** navegador en-US → projeto `en`, barra com Brand/Home/About/Contact/Sign in; pt-BR → `pt-BR`, Marca/Início/Sobre/Contato/Entrar; pt-BR trocado para inglês e Nova página em branco → `en`, textos em inglês; pt-BR trocado para inglês sem projeto novo → o site segue `pt-BR` e a barra inserida sai em português, com a camada "Navbar".
