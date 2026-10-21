@@ -353,3 +353,7 @@
 - **Origem:** na conferência do DEF-0791, um cabeçalho inserido com a interface em inglês saiu em português; a dúvida era se isso é defeito.
 - **Decidido (2026-10-21), confirmado no uso:** um projeto novo (primeira abertura ou Arquivo › Nova página em branco) nasce no idioma da interface naquele momento (`src/editor/store.ts:121-122`, `src/core/project/project.ts:8-12`); o texto que se insere segue o idioma da página ou do site (`pageWordsAt`, `src/core/structure/insert.ts`), não o da interface; o nome da camada (Camadas) fica no idioma de quem edita.
 - **Prova (`lang-proof`, contextos novos, feed e console vazios):** navegador en-US → projeto `en`, barra com Brand/Home/About/Contact/Sign in; pt-BR → `pt-BR`, Marca/Início/Sobre/Contato/Entrar; pt-BR trocado para inglês e Nova página em branco → `en`, textos em inglês; pt-BR trocado para inglês sem projeto novo → o site segue `pt-BR` e a barra inserida sai em português, com a camada "Navbar".
+
+## DCS-067 — os avisos de Verificações da barra de navegação inserida ficam
+- **Origem:** na passada final (P-6), inserir "Barra de navegação" num projeto vazio mostra "Verificações: 4 problemas", um "Link sem destino" por link do modelo.
+- **Decidido (2026-10-21):** os avisos ficam de propósito: lembram de ligar o menu antes de publicar. Nada muda no código nem no modelo (`manifest/elements.json`).

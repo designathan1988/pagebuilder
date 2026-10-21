@@ -38,8 +38,10 @@
 
 /* an action whose name is longer than the panel's room (A page per item of Cardapio, named by name) keeps within the
    panel by breaking its name over lines, the button growing in height: never cut (G5; the final use's photo C06 read
-   "Uma página por item de Cole…"), never wider than the panel (it scrolled 19 to 51 px sideways) */
-.data-panel__actions > .door {
+   "Uma página por item de Cole…"), never wider than the panel (it scrolled 19 to 51 px sideways); a collection's tab
+   too, whose name is the person's ("Cardápio completo de pratos…" was cut at both ends and scrolled the view 24 px) */
+.data-panel__actions > .door,
+.data-panel__tabs > .door {
   max-width: 100%;
   min-width: 0;
   height: auto;
@@ -47,7 +49,8 @@
   padding-block: var(--space-2);
 }
 
-.data-panel__actions > .door .door__label {
+.data-panel__actions > .door .door__label,
+.data-panel__tabs > .door .door__label {
   min-width: 0;
   overflow-wrap: anywhere;
   text-align: start;
@@ -173,7 +176,12 @@
   white-space: nowrap;
 }
 
+/* a cell's field as wide as the value it holds (MDN field-sizing: content), never narrower than a short value's: the
+   table scrolls sideways within the panel, so a value is read whole ("Picanha s" was cut at the cell's edge, with no
+   sign that more followed); it grows from that width to its column's and never shrinks under it */
 .data-grid__table td .input {
+  flex: 1 0 auto;
+  field-sizing: content;
   min-width: var(--size-tag-field);
 }
 

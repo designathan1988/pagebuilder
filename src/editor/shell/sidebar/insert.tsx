@@ -201,10 +201,11 @@ function ComponentTiles({ names, density }: { readonly names: readonly string[];
         <span className="palette-group__count">{names.length}</span>
       </div>
       {/* a component tile is a button of its own: Enter and Space press it (the palette key context inserts
-         elements) */}
+         elements); its icon is drawn once, at an element tile's size, so the door draws none of its own (the final
+         pass's P-2: two stacked icons) */}
       <div className="tiles" data-region="palette-tiles">
         {names.map((name) => (
-          <DoorControl key={name} entry={COMPONENT_TILE} args={{ component: name }} className="tile" label={t(COMPONENT_TILE.door.labelKey as MessageId, { component: name })}>
+          <DoorControl key={name} entry={COMPONENT_TILE} args={{ component: name }} className="tile" label={t(COMPONENT_TILE.door.labelKey as MessageId, { component: name })} icon={null}>
             {COMPONENT_TILE.door.icon !== null ? <Icon name={COMPONENT_TILE.door.icon} /> : null}
             <span className="tile__label">{name}</span>
             {density === 'list' ? <span className="tile__tag">{t('palette.group.components')}</span> : null}

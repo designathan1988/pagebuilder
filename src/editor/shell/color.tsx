@@ -34,8 +34,8 @@ import { dispatchInSession } from '../input/pointer.ts';
 import { MODEL_RULES, layeredRules, useEditorState, useStore, type EditorStore } from '../store.ts';
 import { useOutsideLayer } from './outside-layer.ts';
 import { useT } from '../text.ts';
-import { swatchColour } from '../../core/style/swatch.ts';
-import { COLOR_SWATCH, propertyWord, usePageValues, useTokenSuggestions } from './field.tsx';
+import { namesCurrentColour, swatchColour } from '../../core/style/swatch.ts';
+import { COLOR_SWATCH, propertyWord, TEXT_COLOUR_PARTS, usePageValues, useTokenSuggestions } from './field.tsx';
 import { tokensOf } from '../../core/design/tokens.ts';
 import { contrast, CONTRAST_MINIMUM } from '../../core/a11y/checks.ts';
 import { locate } from '../../core/document/model.ts';
@@ -375,6 +375,8 @@ function Picker({ property, previous }: { readonly property: string; readonly pr
   // any part writes)
   const [opened, setOpened] = useState(() => (previous !== '' ? previous : primary === null ? '' : (computedValues(primary, properties, lineStyles(MODEL_RULES))?.[property] ?? current)));
   if (opened === '' && current !== '') setOpened(current);
+  // the Previous swatch of currentcolor wears the element's text colour, computed by the page, as the field's (P-1)
+  const textColour = usePageValues(namesCurrentColour(opened) ? primary : null, TEXT_COLOUR_PARTS)?.[TEXT_COLOUR_PARTS[0]];
   // what the title names (A3.29): the property it edits and the element it edits it on (or how many are selected)
   const named = useEditorState((s) => {
     const node = styleSource(s);
@@ -421,7 +423,7 @@ function Picker({ property, previous }: { readonly property: string; readonly pr
               data-args={JSON.stringify({ property, value: previousValue })}
               title={t('colorPicker.previous')}
               aria-label={t('colorPicker.previous')}
-              style={{ '--swatch-colour': swatchColour(opened, tokens) } as CSSProperties}
+              style={{ '--swatch-colour': swatchColour(opened, tokens, textColour) } as CSSProperties}
               onClick={() => (previousValue !== null ? run(store, previousPart, { property, value: previousValue }) : undefined)}
             />
           ) : null}

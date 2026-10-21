@@ -69,8 +69,8 @@ describe('the i18n runtime', () => {
     expect(translate('pt-BR', 'status.style.reset', { property: 'Largura', name: 'Seção' })).toBe('Valor de Largura em Seção voltou ao padrão.');
     expect(translate('pt-BR', 'status.style.resetMany', { property: 'Largura', count: 2 })).toBe('Valor de Largura voltou ao padrão em 2 elementos.');
     expect(translate('pt-BR', 'status.regions.stopped', { name: 'Menu' })).toBe('Compartilhamento de Menu encerrado; cada página mantém sua cópia.');
-    expect(translate('en', 'palette.search.matchCount', { count: 1, total: 1 })).toBe('Element matches: 1 / 1');
-    expect(translate('pt-BR', 'palette.search.matchCount', { count: 1, total: 1 })).toBe('Elementos encontrados: 1 / 1');
+    expect(translate('en', 'palette.search.matchCount', { count: 1, total: 1 })).toBe('Matches: 1 / 1');
+    expect(translate('pt-BR', 'palette.search.matchCount', { count: 1, total: 1 })).toBe('Resultados: 1 / 1');
     expect(translate('en', 'data.previewRows', { count: 1, columns: 1 })).toBe("Rows: 1; columns: 1. Check each column's type before importing.");
     expect(translate('pt-BR', 'data.previewRows', { count: 1, columns: 1 })).toBe('Linhas: 1; colunas: 1. Confira o tipo de cada coluna antes de importar.');
     expect(translate('en', 'dialog.deleteCollection.message', { name: 'Menu', count: 1 })).toBe('Delete the Menu collection? Connected pages and lists: 1. Their current content stays as it is.');

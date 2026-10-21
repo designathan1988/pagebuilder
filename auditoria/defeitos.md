@@ -2466,3 +2466,39 @@
 - Sintoma: Landing page completa em pt-BR, aba Celular: "Marca", a navegação e "Entrar" ficam na mesma linha com 3 px entre eles (foto `final-two/P06`); em inglês os textos maiores quebram a linha.
 - Causa: `manifest/elements.json:2378` (cabeçalho da Landing) e `:12372` (modelo de barra de navegação) têm `row-gap` sem `column-gap`.
 - Prova: antes, `gap: 12px normal` com filhos a 3 px; com `"column-gap": "24px"` nos dois cabeçalhos (como o menu de `components.py:156`), no Celular: Marca → navegação 82,7 px, entre os links 24,0 px, "Entrar" na segunda linha 12 px abaixo, em pt-BR e en (fotos `def0791/*`); cenário `the-navbar-template-inserts-its-tree` atualizado.
+
+## DEF-0792 — nome longo de coleção vazava da aba em Dados, cortado nas duas pontas
+- Status: corrigido (não commitado, 2026-10-21)
+- Sintoma: Dados › Nova, renomear para "Cardápio completo de pratos da estação e sobremesas": a aba mostrava "ápio completo … sobrem" e a vista rolava 24 px para o lado (pt-BR, 1280×720; foto `final-pass/F35`).
+- Causa: `src/editor/data/panel.css:44-58` não incluía `.data-panel__tabs > .door`: o rótulo `nowrap` sem `min-width: 0` saía da aba centrada.
+- Prova: as abas seguem a regra das ações do painel (`max-width: 100%`, `min-width: 0`, rótulo que quebra); no uso, pt-BR e en, nome inteiro em duas linhas, aba 52–251 e rótulo 61–242 px, vista 223/223 sem rolagem lateral (`final-fix/X02`, `X10`).
+
+## DEF-0793 — cor da borda `currentcolor` mostrava a cor do texto do editor na amostra
+- Status: corrigido (não commitado, 2026-10-21)
+- Sintoma: título com texto #b45309, Borda › Médio: a borda no canvas é laranja e a amostra de "Cor da borda" era cinza-claro (`final-pass/F11`).
+- Causa: `src/editor/shell/field.tsx:1096` passava `currentcolor` à amostra, que o documento do editor resolve pela própria cor de texto.
+- Prova: `swatchColour` (`src/core/style/swatch.ts:14-20`) troca `currentcolor` pela cor de texto que o campo lê da página (`usePageValues` com a propriedade de cor do manifesto, `field.tsx:94`); todo campo de cor passa por ele. Uso: amostra rgb(180, 83, 9) e, ao trocar o texto para #1d4ed8, rgb(29, 78, 216) (`final-fix/X05`, `X08`).
+
+## DEF-0794 — o bloco de um componente salvo em Inserir desenhava dois ícones
+- Status: corrigido (não commitado, 2026-10-21)
+- Sintoma: criar o componente "Cabeçalho do site" e buscá-lo em Inserir: dois ícones empilhados, de 14 e 16 px (`final-pass/F23`).
+- Causa: `src/editor/shell/sidebar/insert.tsx:208` punha um `<Icon>` filho, e `DoorControl` (`src/editor/doors/door.tsx`) já desenha o ícone da porta.
+- Prova: o bloco passa `icon={null}`, como os blocos de elemento, cuja porta não tem ícone; fica só o filho, no tamanho dos outros. Uso: 1 ícone, pt-BR e en (`final-fix/X06`, `X09`).
+
+## DEF-0795 — células da tabela da coleção cortavam o valor sem indicação
+- Status: corrigido (não commitado, 2026-10-21)
+- Sintoma: Dados › importar `dishes.csv`: "Picanha s", "Roasted v", "Burnt che" cortados na borda da célula (`final-pass/F26`).
+- Causa: `src/editor/data/panel.css` `.data-grid__table td .input` tinha largura mínima fixa e o campo `flex: 1` com base zero.
+- Prova: o campo da célula tem `field-sizing: content` e `flex: 1 0 auto` (`panel.css:182-186`): fica da largura do valor e a tabela rola dentro do painel. Uso: as 9 células com o texto inteiro (largura do texto ≤ espaço do campo), pt-BR e en (`final-fix/X03`, `X04`, `X11`).
+
+## DEF-0796 — o cartão inicial mandava escolher no painel Inserir, fechado na janela estreita
+- Status: corrigido (não commitado, 2026-10-21)
+- Sintoma: pt-BR, 1280×720, primeira visita: "Escolha qualquer elemento no painel Inserir, à esquerda", com a barra lateral fechada.
+- Causa: `start.blank` em `src/i18n/locales/pt-BR.json` e `en.json` supunha o painel aberto (`src/editor/workspace/narrow.ts` o fecha na janela estreita).
+- Prova: o texto diz como abrir: "Clique no ícone + da barra à esquerda para abrir Inserir e escolha qualquer elemento" / "Click the + icon on the bar at the left to open Insert, then pick any element"; o primeiro ícone da barra é o de Inserir (`square-plus`), visível nas duas janelas (`final-fix/X01`, `X07`).
+
+## DEF-0797 — textos menores: verbo de busca, coleção criada e contagem de resultados
+- Status: corrigido (não commitado, 2026-10-21)
+- Sintoma: pt-BR misturava "Buscar", "Pesquisar", "Procurar" e "Encontrar" nos campos de busca; criar coleção dizia "Coleção Coleção criada."; "Element matches: 1 / 105" sob um resultado que é componente.
+- Causa: mensagens `layers.search`, `inspector.searchProperty`, `assetPicker.search`, `feature.*Search*`, `status.layers.searchCleared`, `status.data.created` e `palette.search.matchCount` nos catálogos.
+- Prova: pt-BR usa "Buscar"/"Busca" (o verbo mais usado) em todos; "Coleção criada com o nome Coleção." / "Created a collection named Collection."; "Resultados: 1 / 105" / "Matches: 1 / 105" (o total já conta os componentes, `insert.tsx:184`); vistos no uso.

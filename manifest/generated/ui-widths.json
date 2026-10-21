@@ -1,7 +1,7 @@
 {
   "$generated": {
     "by": "tools/ui-fit/measure.spec.ts",
-    "css": "aeb0e9872188b25f172f241a3f4bede868201a87c21ccc61b84d547b4da052fd"
+    "css": "e8d4c7b0e600eb1b6eb56b3af3f933672b4b2559e547c96e6d5924eca3d8e9af"
   },
   "regions": {
     "activity-bar": {
@@ -9019,7 +9019,7 @@
         "text": "system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
       },
       "windows": {
-        "width": 64.25,
+        "width": 171.484375,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,

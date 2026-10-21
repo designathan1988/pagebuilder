@@ -25,7 +25,7 @@ import { DEFAULT_UNIT, codecOf } from '../../core/style/codecs.ts';
 import { borderArgs } from '../../core/style/border.ts';
 import { composedText, composesNot, lineStyles, propertyName, shownText } from '../../core/style/set.ts';
 import { storedLayers, storedValue } from '../../core/style/stored.ts';
-import { swatchColour } from '../../core/style/swatch.ts';
+import { namesCurrentColour, swatchColour } from '../../core/style/swatch.ts';
 import type { AttributeId, CommandId, FeatureId, KeyContextId, MessageId, StyleTargetId } from '../../generated/ids.ts';
 import type { CommandArgs } from '../../generated/commands.ts';
 import { isFeatureBuilt } from '../../core/commands/registry.ts';
@@ -90,6 +90,8 @@ const PARTS = doorSlots('field').filter((p) => p.door.kind === 'panel-control' &
 const SCRUB = manifest.doors.find((d) => d.door.kind === 'panel-drag' && d.door.source === 'field-label') ?? null;
 // the codec of a list of font families (properties.json: the font menu's property)
 const FAMILY_CODEC = 'font-family-list';
+// the property of an element's text colour (the manifest's), which a swatch of currentcolor wears
+export const TEXT_COLOUR_PARTS: readonly [string] = [manifest.interactions.checks.colourProperty];
 
 // A field's values menu (the audit's J15: drawn inside the inspector, a long font list was cut by the panel's edge):
 // a layer on the body, under the field's value cell (float.ts, as every floating layer), inside the window.
@@ -1090,7 +1092,9 @@ export function TextStyleField({
   const { effective, held, mixed, appearance, shown, placeholder, set, anyStored } = useStyleFieldValue(property, parts, part);
   // the colour its swatch wears: a variable's value, not var(--name), which the editor's document cannot draw (UI-4)
   const tokens = useEditorState((s) => tokensOf(s.document));
-  const swatch = swatchColour(shown || effective, tokens);
+  // and currentcolor the element's text colour as the page computes it, not the editor's (the final pass's P-1)
+  const textColour = usePageValues(namesCurrentColour(shown || effective) ? primary : null, TEXT_COLOUR_PARTS)?.[TEXT_COLOUR_PARTS[0]];
+  const swatch = swatchColour(shown || effective, tokens, textColour);
   const said = useMessagesWhileTyping(draft);
   // Enter in a field of its own form (a command of its own, or a part) and leaving any field keep the text the same way
   const own = ownCommand || part !== null;
