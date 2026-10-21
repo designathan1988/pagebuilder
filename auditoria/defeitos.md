@@ -1992,3 +1992,255 @@
 - Sintoma: exportar como Android ou desktop um projeto sem idioma definido gerava LEIA-ME em português, embora o site saísse com `lang="en"`.
 - Causa: `src/core/export/packages.ts` `appIdentity` caía em `'pt-BR'`.
 - Prova: usa `pageLanguage`, como o `<html lang>`; caso em `packages.test.ts`; os cenários de `28-export-packages.json` esperam README.md para o Aurora (site em inglês).
+
+## DEF-0713 — um trecho de código frouxo derrubava a aplicação do site inteiro (LOGIC-1)
+- Status: corrigido (c03f9818)
+- Sintoma: um manipulador `with (state) {…}`, `let package`, `delete x`, `010` ou `<!--` passava sem erro no campo e no validador; no preview e no site, `main.js` não carregava e nenhuma ligação, manipulador ou repetição funcionava.
+- Causa: `src/editor/app-runtime/script.ts:33-34` conferia a sintaxe como script em modo frouxo, mas o código roda num módulo estrito.
+- Prova: `checkAppSyntax` (`script.ts:38-58`) usa a gramática do módulo (`'use strict'`, `await` recusado, `htmlCommentIn` em `compile.ts:52-147`); compilação e linter do campo chamam o mesmo ponto; o trecho recusado vira `failing(why)` e falha sozinho. Caso em `logic.test.ts` com os sete casos; `node --check` no main.js passa.
+
+## DEF-0714 — nome do item da repetição ou caminho do campo quebravam o main.js (LOGIC-2)
+- Status: corrigido (c03f9818)
+- Sintoma: item chamado `class`, `arguments`, `eval`, `$v` ou `$l`, ou campo (model) `state.a[(]`, eram aceitos e o main.js inteiro deixava de carregar.
+- Causa: `src/core/logic/validate.ts:121` aceitava qualquer identificador; `src/core/logic/compile.ts:59-65` nunca conferia a função gerada em volta do código (cabeça e setter).
+- Prova: `fnOf` (`compile.ts:229-246`) confere a função gerada inteira e a falha vira `failing`; `itemNameRefusal` (`validate.ts:41-56`) recusa palavras reservadas, `arguments`, `eval`, `$l` e `$v`. Casos `as=$v` e `state.a[(]` em `logic.test.ts`.
+
+## DEF-0715 — código digitado na aba Lógica gravado em outro elemento (LOGIC-3)
+- Status: corrigido (c03f9818)
+- Sintoma: digitar `state.title` no Texto do elemento A e tocar o elemento B gravava a expressão em B; trocar o idioma ou a porta ficar indisponível descartava o texto ainda não gravado.
+- Causa: `src/editor/app-panel/code-editor.tsx:125-129,144` gravava só no blur, fora do registro de digitação, e `src/core/logic/commands.ts:265-271` lia a seleção do momento da gravação.
+- Prova: o campo entra no registro único por `heldDraft` na primeira tecla (`code-editor.tsx:162`), com o `target` capturado; `logic.set/setBinding/updateHandler/removeHandler` escrevem no `target` (`commands.ts:309-312`); a vista só se recria quando muda o tipo; os campos de texto da aba usam `LogicTextField` (`logic-field.tsx`). Caso em `commands.test.ts`.
+
+## DEF-0716 — Ctrl+Z num campo de código trazia o código do elemento anterior (LOGIC-4)
+- Status: corrigido (c03f9818)
+- Sintoma: selecionar A (Texto `state.a`), depois B, e apertar Ctrl+Z no campo de B mostrava `state.a`, gravado em B no blur.
+- Causa: `src/editor/app-panel/code-editor.tsx:169-174` trocava o texto mostrado com uma transação que entrava no histórico do CodeMirror, e a mesma vista servia a todos os elementos.
+- Prova: a sincronização usa `Transaction.addToHistory.of(false)` e troca só o trecho diferente (`code-editor.tsx:236-251`); `key={node.id}` em `logic-tab.tsx:88` dá a cada elemento uma vista com histórico vazio.
+
+## DEF-0717 — ligações escreviam dados de visitantes em destinos que rodam código (LOGIC-5)
+- Status: corrigido (c03f9818)
+- Sintoma: `attr:href` ligado a um dado salvo por um membro aceitava `javascript:…`; `srcdoc` era escrito; um campo editável lia e escrevia o valor como HTML.
+- Causa: `src/editor/app-runtime/runtime.js:622-627` `setAttribute` sem conferência de esquema; `runtime.js:630,640` usavam `innerHTML` nos editáveis.
+- Prova: `unsafeAttribute`/`setAttribute` (`runtime.js:744-776`) são o destino único: recusam `javascript:`, `vbscript:`, `data:` fora de imagem/áudio/vídeo, `srcdoc` e `on*`; `plaintext-only` usa `textContent` e o editável rico passa por `safeHtml` (DCS-054). Caso em `runtime.test.ts`.
+
+## DEF-0718 — ligação a uma posição da lista não redesenhava após sort/shift (LOGIC-6)
+- Status: corrigido (c03f9818)
+- Sintoma: Texto `state.scores[0]` continuava mostrando o primeiro antigo depois de `sort`, `reverse`, `shift`, `unshift`, `splice` ou `fill`.
+- Causa: `src/editor/app-runtime/runtime.js:80-91`: o mutador disparava só `ITERATE` e `length`, e a leitura de índice assinava só a chave do índice.
+- Prova: a leitura de índice também assina `ITERATE` (`runtime.js:93-96`), que todo mutador dispara. Caso em `runtime.test.ts` (sort → 9, shift → 5).
+
+## DEF-0719 — `mount` de linhas adicionadas depois do início nunca rodava (LOGIC-7)
+- Status: corrigido (c03f9818)
+- Sintoma: numa lista de tarefas, o manipulador `mount` da linha rodava só para as linhas da carga; a fila `mounts` crescia a cada linha nova.
+- Causa: `src/editor/app-runtime/runtime.js:660` empurrava em `mounts`, esvaziada uma vez só em `start()` (`runtime.js:864`).
+- Prova: com `started` verdadeiro, `mount` roda numa microtarefa se o escopo da linha não foi descartado e o elemento está no documento (`runtime.js:838-857`); a fila só existe durante o início. Caso em `runtime.test.ts` (`['a','b']`).
+
+## DEF-0720 — escopos de linhas descartadas ficavam presos: memória crescia a cada redesenho (LOGIC-8)
+- Status: corrigido (c03f9818)
+- Sintoma: lista redesenhada a cada quadro fazia a memória crescer sem limite; numa lista sem chave, um campo `state.list[i]` perdia o foco a cada tecla.
+- Causa: `src/editor/app-runtime/runtime.js:807-815`: `scope.children.push(child)` sem remoção no descarte; escrever um índice recriava todas as linhas.
+- Prova: `wireRepeat` (`runtime.js:1013-1036`) tira os escopos descartados de `children` e reaproveita a linha no mesmo lugar nas listas sem chave. Caso em `runtime.test.ts`: o primeiro `li` é o mesmo elemento depois de um push e de `todos[0] = 'c'`.
+
+## DEF-0721 — select com campo e opções repetidas mostrava a primeira opção (LOGIC-9)
+- Status: corrigido (c03f9818)
+- Sintoma: select com model `state.category = "b"` e opções vindas de uma repetição mostrava a primeira categoria.
+- Causa: `src/editor/app-runtime/runtime.js:828-835`: `wireTree` ligava o model do select antes de existirem as opções.
+- Prova: `wireTree` liga os filhos antes do próprio elemento com model (`runtime.js:1047-1056`), e um MutationObserver reaplica o valor quando as opções mudam (`runtime.js:952-965`). Caso em `runtime.test.ts`: o select mostra `b`.
+
+## DEF-0722 — uma falha do `/_api/ping` passava a visita inteira ao banco local do navegador (LOGIC-10)
+- Status: corrigido (c03f9818)
+- Sintoma: no site publicado, um 5xx ou falha de rede na primeira chamada fazia `app.db.add` salvar só no localStorage e `signup` criar conta local (a primeira, admin), sem aviso; a sessão sem prazo travava o início.
+- Causa: `src/editor/app-runtime/runtime.js:352-367` `cloud()` guardava `false` para qualquer resposta não ok ou erro de rede.
+- Prova: só uma resposta definitiva (não http, preview, 404/página/outro JSON) vale modo navegador; rede, prazo de 10 s, 5xx e 429 dão `unavailable` e não ficam guardados; a sessão espera no máximo 3 s (`runtime.js:403-500`). Caso em `runtime.test.ts` com ping 503.
+
+## DEF-0723 — o import oculto `{ state, app, fn }` colidia com nomes do próprio módulo (LOGIC-11)
+- Status: corrigido (c03f9818)
+- Sintoma: `const app = new PIXI.Application()` num componente de código falhava com "Identifier 'app' has already been declared", sem erro no editor; linhas reportadas desalinhadas em um.
+- Causa: `src/core/logic/compile.ts:45-46` `moduleCode` prefixava o import completo numa linha própria.
+- Prova: `ownNames`/`moduleCode` (`compile.ts:149-219`) importam só os nomes que o módulo não declara no topo, na primeira linha. Quatro casos em `logic.test.ts`.
+
+## DEF-0724 — renomear deixava referências para trás (LOGIC-12)
+- Status: corrigido (c03f9818)
+- Sintoma: renomear script, componente, tabela ou variável deixava `@app/script/<antigo>`, `app.db.list('<antiga>')`, `state['x']` e `{ x } = state`, mexia em `history.state.x` e perdia os valores guardados pelos visitantes.
+- Causa: `src/core/logic/commands.ts:92` `renameIn` com fronteiras `\b`; `commands.ts:185-188,239-253` não reescreviam especificadores nem tabelas; `runtime.js:847-849` guardava pelo nome atual.
+- Prova: leitor único `src/core/logic/references.ts` usado pelos três renomeadores (`commands.ts:163,217-221,291-295`); variável persistida renomeada ganha `kept` (nome de armazenamento), lido pelo runtime; colisão recusada com `status.app.keptTaken`. Casos em `commands.test.ts`, `logic.test.ts` e `runtime.test.ts`.
+
+## DEF-0725 — remover variável ou script ainda usado era aceito (LOGIC-13)
+- Status: corrigido (c03f9818)
+- Sintoma: excluir `todos` com `state.todos.map(...)` em uso dizia "removido"; no site as ligações quebravam.
+- Causa: `src/core/logic/commands.ts:142-147,193-212`: `app.removeVariable` e `app.removeModule` não procuravam referências.
+- Prova: `codeOf`/`firstUse` (`commands.ts:83-121`) acham o primeiro uso e as duas remoções recusam com `status.app.inUse {name, where}`; cenário `a-variable-the-code-still-reads-is-not-removed` em `27-app-logic.json`; dois casos em `commands.test.ts`.
+
+## DEF-0726 — renomear uma ligação para o nome de outra apagava a outra (LOGIC-14)
+- Status: corrigido (c03f9818)
+- Sintoma: renomear `class:active` para `class:big` num elemento que já tinha `class:big` deixava uma só ligação, sem recusa.
+- Causa: `src/core/logic/commands.ts:311-314`: `gone(key)` tirava a chave de mesmo nome.
+- Prova: `logic.setBinding` recusa com `status.app.taken` quando o nome novo já existe (`commands.ts:354-357`), declarado em `manifest/commands/logic.json`. Caso em `commands.test.ts`.
+
+## DEF-0727 — dados guardados no navegador sem escopo por site nem conferência de tipo (LOGIC-15)
+- Status: corrigido (c03f9818)
+- Sintoma: dois sites na mesma origem dividiam variáveis, banco local, membros e sessão (admin de um era admin do outro); `app.store.set('auth')` sobrescrevia a sessão; valor guardado de tipo antigo quebrava ligações.
+- Causa: `src/editor/app-runtime/runtime.js:188,311-313,847-848` prefixo fixo `app:` e sem conferir o tipo; `widgets.js:327` `'wc-cart:' + location.host`.
+- Prova: toda chave é `app:<host><pasta>|<parte>`, com `store:` próprio (`runtime.js:218-285`), e os widgets idem (`widgets.js:31-56`); valor fora do tipo é descartado (`fits`). Caso em `runtime.test.ts`. Consequência aceita na DCS-056.
+
+## DEF-0728 — o widget da loja lia "R$ 1.299" como R$ 1,30 (LOGIC-16)
+- Status: corrigido (c03f9818)
+- Sintoma: preço "R$ 1.299" virava R$ 1,30 na página, no carrinho e no pedido do WhatsApp; "R$ 12.500" virava 12,50; "$1,299.00" virava 1.299.
+- Causa: `src/editor/widgets/widgets.js:36-42` `number()` tomava sempre o ponto ou a vírgula como decimal.
+- Prova: `number()` (`widgets.js:61-93`) segue `readNumber` de `core/data/collections.ts`, com a marca de milhar do idioma da página por Intl. Caso em `runtime.test.ts` numa página pt-BR: R$ 1.299,00 e R$ 12.500,00.
+
+## DEF-0729 — widgets não iniciavam em elementos criados pelo runtime da aplicação (LOGIC-17)
+- Status: corrigido (c03f9818)
+- Sintoma: cartões de produto repetidos de uma coleção ou variável não tinham "Adicionar ao carrinho", lightbox nem abas funcionando no site.
+- Causa: `src/editor/widgets/widgets.js:18-24` varria o documento uma vez só.
+- Prova: cada tipo fica registrado com guarda `__wc` (`widgets.js:18-30`) e um MutationObserver inicia raízes `[data-wc]`, botões do carrinho, popups e diálogos adicionados (`widgets.js:563-578`). Caso em `runtime.test.ts`: produto anexado depois reescreve o preço e o botão atualiza o contador.
+
+## DEF-0730 — erros do runtime sem origem, enxurrada de erros e rótulos em português (LOGIC-18)
+- Status: corrigido (c03f9818)
+- Sintoma: todo erro dizia "binding: …" sem o elemento; um manipulador `frame` com erro somava 60 linhas por segundo; laço de efeitos cortado em silêncio; "(texto)", "(repetir)" mesmo com a interface em inglês.
+- Causa: `src/editor/app-runtime/runtime.js:54-59,137,169-183,665` (`where` nunca definido, sem agrupamento nem aviso) e `src/core/logic/compile.ts:78-84` com rótulos fixos.
+- Prova: `effect(fn, scope, where)` com `fieldOf` no idioma da página; `report` agrupa repetições (×N) e limita a 50 linhas; `flush` avisa o laço (`loop`); compile.ts sem rótulos. Casos em `runtime.test.ts` (`Title (text): boom`) e `logic.test.ts`.
+
+## DEF-0731 — ligações de estilo punham "px" em propriedades sem unidade (LOGIC-19)
+- Status: corrigido (c03f9818)
+- Sintoma: `style:grid-column = item.x + 1`, `aspect-ratio`, `column-count` ou `flex` ganhavam `px` e a declaração caía.
+- Causa: `src/editor/app-runtime/runtime.js:751`: lista de propriedades sem unidade curta demais.
+- Prova: `UNITLESS` (`runtime.js:929`) completa grid, aspect-ratio, column-count, columns, flex, zoom, tab-size, orphans, widows e as opacidades. Caso em `runtime.test.ts`: grid-column 2 sem px, width 10 → 10px.
+
+## DEF-0732 — `app.fetch` estragava corpos URLSearchParams e perdia cabeçalhos Headers (LOGIC-20)
+- Status: corrigido (c03f9818)
+- Sintoma: `body: new URLSearchParams({a: 1})` saía como `{}` em JSON; `headers: new Headers({Authorization})` com corpo objeto perdia a autorização.
+- Causa: `src/editor/app-runtime/runtime.js:206-208`: todo objeto virava JSON e os cabeçalhos eram espalhados como objeto.
+- Prova: só objetos simples e listas viram JSON; cabeçalhos passam por `new Headers(init.headers)` e content-type só entra se faltar (`runtime.js:289-295,315-322`). Caso em `runtime.test.ts`.
+
+## DEF-0733 — `app.db` punha tabela e id no caminho da API sem codificar (LOGIC-21)
+- Status: corrigido (c03f9818)
+- Sintoma: `app.db.remove('posts', '../../auth/me')` enviava `DELETE /_api/auth/me` com o token do membro; ids com `#` davam not_found.
+- Causa: `src/editor/app-runtime/runtime.js:512-528`: `` `db/${table}/${id}` `` sem codificação.
+- Prova: `segment`/`rowPath` (`runtime.js:617-627`) usam `encodeURIComponent` e recusam `.`/`..`. Caso em `runtime.test.ts`: o pedido vai a `/_api/db/posts/..%2F..%2Fauth%2Fme`.
+
+## DEF-0734 — `app.go('pagina.html')` no preview carregava o endereço do editor (LOGIC-22)
+- Status: corrigido (c03f9818)
+- Sintoma: um botão com `app.go('contato.html')` funcionava no site, mas no preview a moldura ia para `<origem do editor>/contato.html`.
+- Causa: `src/editor/app-runtime/runtime.js:199-202`: `location.href` relativo à base de um documento `about:srcdoc` (`src/editor/shell/preview.tsx:53`).
+- Prova: no preview o runtime envia `{ builderPreviewPage }` ao editor (`runtime.js:285,300-312`); `preview.tsx` aceita só a janela do preview, resolve com `pageAt` e abre a página pela porta do Explorer; endereço desconhecido dá `status.preview.noPage`. Caso em `runtime.test.ts` (a mensagem chega).
+
+## DEF-0735 — links "/" da paleta quebravam logo e menu nos sites e apps exportados (TPL-1)
+- Status: corrigido (c03f9818)
+- Sintoma: no app de desktop exportado de um modelo, clicar no logo mostrava "Not found" sem volta; no ZIP aberto do disco ou num subcaminho, "/" ia à raiz; o Menu da paleta trazia "/#sobre" para seções inexistentes.
+- Causa: `tools/gen/content/components.py:90-94` reescrevia `#` como `/` e `#id` como `/#id`; `src/core/export/packages.ts:423-429` dava 404 para `app://bundle/`.
+- Prova: o gerador escreve `index.html` e `index.html#id` (`components.py:98-105`); elements.json e os 16 modelos regenerados; `site-templates.test.ts` confere que nenhum link começa com "/"; o protocolo do desktop serve `index.html` para pasta (`packages.ts:543-546`).
+
+## DEF-0736 — modelos de site e exemplos abriam em português com a interface em inglês (TPL-2)
+- Status: corrigido (c03f9818)
+- Sintoma: com a interface em inglês, "Restaurant" ou "To-do list" abriam com todo texto, alt, título e `lang` em português.
+- Causa: `tools/gen/content/site-templates.test.ts:322-338` e `app-examples.py` geravam um arquivo só, em pt-BR; `templates.tsx:12-16` e `examples.tsx` carregavam `./${id}.json`.
+- Prova: os geradores escrevem `<id>.pt-BR.json` e `<id>.en.json` a partir de tabelas escritas à mão (o build para em texto faltando); `project-texts.ts` carrega o arquivo do idioma da interface, ponto único dos botões. `site-templates.test.ts` (8 sites × 2 idiomas) falha se sobrar português num site inglês.
+
+## DEF-0737 — a paleta escrevia alt, aria-label, placeholder e títulos em português em páginas inglesas (TPL-3)
+- Status: corrigido (c03f9818)
+- Sintoma: "Blog with search" numa página inglesa trazia "Buscar…", "seu@email.com", "Anterior"/"Próximo", "Mapa" e alts em português.
+- Causa: `tools/gen/content/components.py:117,171-432` gravava os atributos em pt como literais; `src/core/structure/insert.ts:59` traduzia só `textKey`.
+- Prova: `attributeKeys` no esquema (`src/manifest/schema.ts:130-135`) resolvidos em `insert.ts:61`, o mesmo ponto do `textKey`; textos e atributos saem no idioma da página por `pageWordsAt` (`HandlerContext.pageWords`, DCS-052). Caso em `insert.test.ts` com comp-newsletter.
+
+## DEF-0738 — id do app Android/iOS inválido no iOS, igual para todos e mudando com o título (TPL-4)
+- Status: corrigido (c03f9818)
+- Sintoma: "Clinic" exportado dava `com.webconstructor.clinica_viva_saude_da_familia`: `_` recusado pela Apple, mesmo id para todo cliente do modelo, id novo a cada troca de título, `do`/`new`/`class` inválidos.
+- Causa: `src/core/export/packages.ts:70,77`: id derivado do título SEO, com `_`.
+- Prova: `appIdentity` (`packages.ts:98-117`) usa `site<crc32 do id interno da página inicial>`, só letras e dígitos, estável e diferente por projeto (modelos ganham ids novos ao abrir); o README diz como trocar. Caso em `packages.test.ts`.
+
+## DEF-0739 — contagem regressiva vencendo em 2026-12-31 e modelo Evento contraditório (TPL-5)
+- Status: corrigido (c03f9818)
+- Sintoma: a partir de 2027 todo Evento e toda Contagem nova mostrariam 00 00 00 00; o Evento anunciava março passado e dizia "O evento começou!" no fim de um lote.
+- Causa: `tools/gen/content/components.py:388` data fixa; `site-templates.test.ts:217-223` textos incoerentes.
+- Prova: `customDaysAhead` carimba agora + 30 dias pelo relógio na inserção (`insert.ts:64-74`, `element.insert` e `wrapBeside`); o Evento guarda `P30D`, convertido ao abrir (`freshProject`); textos do Evento coerentes nas duas edições.
+
+## DEF-0740 — os formulários dos modelos não enviavam nada (TPL-6)
+- Status: corrigido (c03f9818)
+- Sintoma: "Pedir reserva" no Restaurante recarregava a página com `?name=…&email=…` no endereço; os 9 formulários dos modelos faziam o mesmo e pediam dados sem campo.
+- Causa: `tools/gen/content/site-templates.test.ts:102,157,176,243`: formulários sem `formSubmit` e campos sem `formField`; `export.ts:63` `pageUsesForms` falso.
+- Prova: `withForms`/`fieldNode` (`site-templates.test.ts:409-439`) dão `method="post"`, `formSubmit` nativo POST e regras aos campos, e acrescentam os campos que o texto pede (data, hora, pessoas, especialidade…). Destino na DCS-053.
+
+## DEF-0741 — o service worker do PWA podia fixar CSS e JS antigos (TPL-7)
+- Status: corrigido (c03f9818)
+- Sintoma: depois de republicar, o visitante via o HTML novo com o estilo antigo; o precache podia guardar a cópia velha do cache HTTP até a próxima exportação; dois sites na mesma origem apagavam o cache um do outro.
+- Causa: `src/core/export/packages.ts:246,252,276-283`: `addAll` sem `cache: 'reload'`, tudo cache-first e prefixo `site-` comum.
+- Prova: `serviceWorker` (`packages.ts:317-375`) pré-carrega com `cache: 'reload'`; documentos, scripts e estilos vêm da rede primeiro, mídia do cache; o cache leva o escopo no nome. Caso "keeps no stale copy…" em `packages.test.ts`.
+
+## DEF-0742 — no app de desktop, um link externo trocava o app pelo site (TPL-8)
+- Status: corrigido (c03f9818)
+- Sintoma: um link para instagram.com sem nova aba substituía a única janela do app, sem volta; `mailto:`/`tel:` em nova aba sumiam.
+- Causa: `src/core/export/packages.ts:390-441` `electronMain` sem `will-navigate`.
+- Prova: `will-navigate` mantém `app://bundle/` e abre o resto fora com `shell.openExternal`; o abridor de janela também passa mailto/tel (`packages.ts:527-538`). Caso "opens every address outside the desktop app…" e cenário em `28-export-packages.json`.
+
+## DEF-0743 — apps exportados sem o ícone gerado nem a cor do site; README enganoso (TPL-9)
+- Status: corrigido (c03f9818)
+- Sintoma: Android e desktop com o ícone padrão do Capacitor/Electron; cor #2563eb em todo modelo; o README dizia que trocar `www/icons` mudava o ícone; o nome no lançador era o título SEO inteiro.
+- Causa: `src/core/export/packages.ts:66,71,335,374`: nome do título, cor só dos tokens, sem ícones nativos nem `packagerConfig.icon`.
+- Prova: `appName` (marca antes do separador); cor do primeiro token ou do primeiro fundo saturado da página; `assets/icon-only.png` com `@capacitor/assets`, `build/icon.png/.ico/.icns` e `packagerConfig.icon`; README reescrito nos dois catálogos. Casos em `packages.test.ts`.
+
+## DEF-0744 — exemplos de app sem título nem descrição de página (TPL-10)
+- Status: corrigido (c03f9818)
+- Sintoma: exportar ou instalar um exemplo (Lista de tarefas, Planilha…) dava página sem título nem descrição próprios.
+- Causa: `tools/gen/content/app-examples.py` não escrevia `pageTitle`/`pageDescription`.
+- Prova: `described` (`app-examples.py:1213`) dá `pageTitle`, `pageDescription` e `pageLanguage` a cada exemplo nos dois idiomas; `tpl-check` confere os 16 arquivos.
+
+## DEF-0745 — rodar export-packages.py voltava a "LEIA-ME.md" e quebrava os próprios cenários (TPL-11)
+- Status: corrigido (c03f9818)
+- Sintoma: o gerador reescrevia `28-export-packages.json` esperando LEIA-ME.md para o Aurora em inglês, e os cenários Android e desktop falhavam.
+- Causa: `tools/gen/content/export-packages.py:31,37,115`: o JSON tinha sido corrigido à mão, sem o gerador.
+- Prova: o gerador escreve README.md e a frase atual, mais as expectativas novas (ícones, will-navigate); rodar de novo não muda nenhum byte.
+
+## DEF-0746 — rodar components.py voltava os painéis das Abas a "Painel one/two/three" (TPL-12)
+- Status: corrigido (c03f9818)
+- Sintoma: depois do gerador, Camadas mostrava "Painel one" no componente Abas em pt-BR.
+- Causa: `tools/gen/content/components.py:223`: o ordinal inglês entrava no texto português.
+- Prova: `tab_panel` recebe o ordinal pt e o en (`components.py:233-238,249-251`); rodar de novo é idêntico aos catálogos. De passagem, `app-examples.py` deixou de gravar CRLF no Windows (`newline=''`).
+
+## DEF-0747 — carrinhos dos modelos mandavam pedidos a um número de WhatsApp de exemplo (TPL-13)
+- Status: corrigido (c03f9818)
+- Sintoma: Loja e Restaurante publicados mandavam o pedido para wa.me/5511999999999, número escondido num atributo personalizado.
+- Causa: o carrinho da paleta vinha com `data-wc-whatsapp: "5511999999999"`, copiado aos modelos por `tools/gen/content/site-templates.test.ts`.
+- Prova: carrinho sem número e botão `https://wa.me/?text=…`; Verificações ganham `checks.whatsappLink` e `checks.cartDestination` (`src/core/a11y/checks.ts:102-138`); campo "WhatsApp que recebe os pedidos" em Configurações › Carrinho da loja, com a regra no tratador (`whatsappNumber`, 10 a 15 dígitos). Casos em `cart-whatsapp.test.ts` e cenário `the-cart-takes-its-whatsapp-number-as-digits`.
+
+## DEF-0748 — uma falha ao carregar modelos deixava os botões da tela inicial desligados (TPL-14)
+- Status: corrigido (c03f9818)
+- Sintoma: se o pedaço dos modelos ou exemplos falhava uma vez, os 8 botões ficavam desligados sem mensagem até recarregar.
+- Causa: `src/editor/site-templates/templates.tsx:14-16` e `examples.tsx` guardavam a promessa rejeitada sem tratar a falha.
+- Prova: `project-texts.ts:50-90` esquece a carga falha, mostra "…não carregou. Tentando de novo…" (`start.templatesFailed`/`start.examplesFailed`) e tenta a cada 4 s; os botões ligam quando dá certo.
+
+## DEF-0749 — o selo de salvamento na nuvem anunciava cada edição duas vezes (TPL-15)
+- Status: corrigido (c03f9818)
+- Sintoma: com leitor de tela no modo nuvem, cada edição anunciava "Salvando…" e "Salvo na nuvem", interrompendo a digitação.
+- Causa: `src/editor/cloud/cloud-bar.tsx`: o selo inteiro tinha `role="status"`.
+- Prova: o selo visível ficou sem papel vivo; uma região `role="alert"` oculta, sempre presente, recebe texto só em falha, conflito e tamanho excedido (`cloud-bar.tsx:44-56`).
+
+## DEF-0750 — abas do breakpoint desenhadas sobre o cartão de início (DCS-035)
+- Status: corrigido (c03f9818)
+- Sintoma: numa página vazia com zoom, as abas do breakpoint cobriam o canto de cima à esquerda do cartão de início (foto 00b-start-zoom).
+- Causa: `src/editor/shell/canvas.css`: o cabeçalho da moldura tinha o `z-index` da borda do canvas sempre, mesmo na linha de cima da moldura.
+- Prova: `z-index` e fundo do canvas valem só em `.frame__header.is-pinned`; na linha de cima o cabeçalho não cobre nada da página e o cartão de `start-screen.tsx` fica por cima. Fotos 00-start-1440 e a01 conferidas: cartão inteiro, abas inteiras.
+
+## DEF-0751 — incidente "ResizeObserver loop" no canvas (DCS-035)
+- Status: corrigido (c03f9818)
+- Sintoma: o feed de incidentes recebia "ResizeObserver loop" durante o uso do canvas como prancheta.
+- Causa: `src/editor/canvas/frame.tsx`: o observador do body da página era criado na janela do editor, não na do iframe.
+- Prova: o observador é criado na janela da própria página (`new pageWindow.ResizeObserver`, `frame.tsx:118`); nas sessões seguintes (fotos a01–a25, b01–b13) o feed e o console ficaram vazios.
+
+## DEF-0752 — incidente de crescimento da página ao dar zoom (DCS-035)
+- Status: corrigido (c03f9818)
+- Sintoma: dar zoom disparava o incidente "the canvas page grew with no change of the document" sem que a página crescesse de fato.
+- Causa: `src/editor/canvas/frame.tsx`: a sonda contava como crescimento o pixel que o arredondamento do layout move a cada zoom.
+- Prova: a sonda só conta crescimento acima de 1 px (`measured > shownExtent.current + 1`, `frame.tsx:101`), em 3 sondas seguidas sem mudança do documento; zoom de 10 % a 800 % (fotos a04, a05, a16) com o feed vazio.
+
+## DEF-0753 — o limite de baixo do pan ignorava as abas presas (DCS-035)
+- Status: corrigido (c03f9818)
+- Sintoma: no limite de baixo, dos 64 px de página que devem ficar à vista só 36 apareciam: 28 ficavam sob as abas presas no topo (foto a11-bound-bottom).
+- Causa: `src/editor/view/camera.ts`: o limite contava os 64 px a partir do topo da área, sem a altura do cabeçalho preso.
+- Prova: o limite de baixo soma a altura do cabeçalho, medida e informada por `reportFrame({extent, header})`; medidos 92 px (28 + 64) em 1440×900 e na foto b11 (1280×720, pt-BR); limites de cima e da esquerda com 64 px (a12, a13).
+
+## DEF-0754 — a alça da borda da moldura cortada no Encaixar (DCS-035)
+- Status: corrigido (c03f9818)
+- Sintoma: no zoom Encaixar, a alça da borda direita da moldura ficava 12 a 24 px além da borda e a área do canvas a cortava; não dava para arrastar a largura (foto a15-frame-edge-drag; igual antes da DCS-035).
+- Causa: `src/editor/shell/canvas.css` `.frame__edge`: `right: calc(var(--space-6) * -2)` punha a alça inteira fora da moldura.
+- Prova: `right: calc(var(--space-6) / -2)` centra a alça na borda, metade sobre a página e metade na margem do Encaixar (8 px), então a área não a corta; em 46 % a borda arrasta com a seleção à vista (foto a20).

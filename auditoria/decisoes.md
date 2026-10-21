@@ -287,3 +287,37 @@
 
 ## DCS-045 — opacidade digitada é porcentagem (implementa a DCS-039)
 - **Decidido (2026-10-21):** no campo Opacidade, no comando "definir propriedade" e no `style_set` do assistente, um número sem unidade é porcentagem ("1" = 1 %, "50" = 50 %); o CSS gravado continua um número de 0 a 1. Predefinições em `manifest/properties.json` passaram a `25%`…`100%`; o guia do assistente diz "50%, nunca 0.5".
+
+## DCS-046 — limites do pan e o Encaixar no canvas como prancheta (implementa a DCS-035)
+- **Decidido (2026-10-21):** o pan é livre nos dois eixos até restarem 64 px da página dentro da área (`zoom.panKeep` em `manifest/interactions.json`; a página inteira, se for menor); no limite de baixo os 64 px contam abaixo das abas presas. Encaixar volta a página ao centro, com o topo na margem do Encaixar (8 px). A trava antiga sem folga saiu (Shift+roda funciona no Encaixar).
+
+## DCS-047 — leitura de D-1 na prancheta
+- **Decidido (2026-10-21):** as abas do breakpoint e as faixas ficam na linha de cima da moldura (D-1); enquanto essa linha está acima do topo da área, elas ficam presas ao topo da área, sobre a página, numa faixa com o fundo do canvas. DEC-70 não muda: `clearedLabel` leva o rótulo e o chip para além das abas presas (fotos a07, b07, a10).
+
+## DCS-048 — elementos fixos, 100vh e sticky no canvas
+- **Decidido (2026-10-21):** a raiz da página fica presa à tela do breakpoint: elementos fixos e `100vh` medem a primeira tela do site, no topo da página (o botão do WhatsApp no pé da primeira tela; a gaveta do carrinho com a altura da tela). Sticky nunca gruda no canvas, porque a página não rola por dentro. A conferência fica no Preview.
+
+## DCS-049 — movimento por rolagem no canvas
+- **Decidido (2026-10-21):** a página do canvas nunca rola, então gatilhos e progresso por rolagem e a ação `scroll` ficam na rolagem 0 no canvas (e `innerHeight` lá é a altura da página). O movimento por rolagem se confere no Preview, que não mudou.
+
+## DCS-050 — cada página guarda a própria posição da câmera
+- **Decidido (2026-10-21):** a câmera guarda o topo por página (`forPage`): abrir outra página começa no topo dela; voltar restaura o pan feito lá só se ela foi a última página com pan.
+
+## DCS-051 — a raiz da página presa com `transform: translate(0)`
+- **Medido:** `html { height: <tela>; contain: layout }` prendia os fixos, mas o `scrollHeight` da raiz ficava na altura da tela (a contenção tira o transbordo), o que quebra a sonda da altura da página.
+- **Decidido (2026-10-21):** `html { transform: translate(0) !important }` (`artboardCss` em `src/editor/canvas/render/render.ts`, só no canvas): os fixos ficam na primeira tela e o `scrollHeight` é o do conteúdo. Efeitos aceitos: imagens preguiçosas carregam todas; `content-visibility` desenha a página inteira; as molduras laterais também ganham a conversão de vh e das media de altura em todas as folhas.
+
+## DCS-052 — paleta numa página em idioma sem catálogo
+- **Decidido (2026-10-21):** textos e atributos da paleta saem no idioma da página (TPL-3, DEF-0737); uma página em idioma sem catálogo (es, fr…) recebe os textos no idioma do editor, o que preserva o comportamento anterior. Variantes regionais seguem a língua (pt-PT lê pt-BR, en-GB lê en). Os nomes em Camadas ficam no idioma do editor.
+
+## DCS-053 — formulários dos modelos enviam para o endereço da própria página
+- **Decidido (2026-10-21):** os formulários dos modelos usam POST nativo sem `action`, então enviam para o endereço da própria página, que o worker do site publicado recebe. Nenhum destino vem pré-configurado (não há endpoint do produto no escopo); quem quiser outro destino configura em Inspector › Envio do formulário.
+
+## DCS-054 — campo editável rico guarda HTML limpo
+- **Decidido (2026-10-21):** um campo (model) num elemento `contenteditable="true"` continua lendo e escrevendo HTML, limpo por `safeHtml` (sem script, iframe, objeto, estilo, formulário e atributos recusados), porque o exemplo do editor de texto (`text-editor.json`, negrito e itálico) depende disso. `plaintext-only` lê e escreve texto. O campo `html` continua o destino explícito de HTML.
+
+## DCS-055 — token de acesso do app no localStorage
+- **Decidido (2026-10-21):** o token de portador da sessão dos apps continua no localStorage. Não há lugar mais seguro sem mudar o backend (o login da plataforma devolve um token, não um cookie HttpOnly), e o backend é fronteira fixa. O limite está documentado em `src/editor/app-runtime/runtime.js:410-416`; os destinos que rodam código foram fechados (DEF-0717).
+
+## DCS-056 — dados guardados por site: visitantes perdem os valores antigos uma vez
+- **Decidido (2026-10-21):** com as chaves por site (`app:<host><pasta>|…`, `wc:<host><pasta>|…`, DEF-0727), carrinhos, variáveis guardadas e sessões gravados com as chaves antigas não são lidos de novo: cada visitante perde esses valores uma vez. Não há migração das chaves antigas.

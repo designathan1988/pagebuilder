@@ -287,3 +287,12 @@ Os mecanismos de verificação construídos a partir de `auditoria/investigacao/
 
 ## MEC-30 — id HTML repetido numa página
 - `documentFindings` (`src/core/document/self-checks.ts`) roda em DEV a cada publicação e manda ao feed um incidente `self-check` quando dois elementos da mesma página têm o mesmo id HTML.
+
+## MEC-31 — página do canvas rolada dentro da moldura
+- Em DEV, o ouvinte de rolagem da página em `src/editor/canvas/frame.tsx` manda ao feed um incidente `canvas` (`reportCanvas` em `src/core/incidents.ts`), "the canvas page scrolled inside its frame", quando a janela do iframe sai da rolagem 0 (DCS-035: a página nunca rola por dentro).
+
+## MEC-32 — página do canvas crescendo sem mudança do documento
+- Em DEV, a sonda da altura em `src/editor/canvas/frame.tsx` manda ao feed o incidente `canvas` "the canvas page grew with no change of the document" quando a altura cresce mais de 1 px em 3 sondas seguidas pedidas só por redimensionamento: uma folha mede a altura da própria moldura (vh ou media de altura não resolvida).
+
+## MEC-33 — moldura do canvas mais baixa que a tela
+- Em DEV, a mesma sonda manda ao feed o incidente `canvas` "the canvas frame is shorter than the screen" quando o `innerHeight` do iframe fica abaixo da altura da tela do breakpoint.
