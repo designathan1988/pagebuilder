@@ -638,7 +638,8 @@
         "refusalKey": null
       },
       "refusals": [
-        "status.locked.edit"
+        "status.locked.edit",
+        "status.classes.inUseByInteractions"
       ],
       "confirmation": {
         "messageKey": "dialog.classes.delete",
@@ -972,7 +973,7 @@
         "status.refused.singleChild",
         "status.refused.noChildren",
         "status.locked.insert",
-        "status.components.inInstance"
+        "status.instance.nested"
       ],
       "confirmation": null,
       "history": {

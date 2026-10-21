@@ -333,3 +333,14 @@ describe('what a field hands', () => {
     expect(readTime('soon')).toBeNull();
   });
 });
+
+describe('a keyframe value the browser does not take is refused (the audit\'s STYLE-13)', () => {
+  const refusing = (handler: Handler): Handler => ({ run: (context, args) => handler.run({ ...context, css: { supports: (_property, value) => value !== 'banana' } }, args) });
+  it('setting or editing opacity to "banana" is refused; a transform part and a variable are the runtime\'s', () => {
+    const added = chain(page(), [[addMotionCommand, {}]]).document;
+    expect(said(runHandler(refusing(setKeyframeCommand), added, { timeline: 'Hero click', at: 0, property: 'opacity', value: 'banana' }))).toBe('status.motion.invalid');
+    expect(said(runHandler(refusing(setKeyframeCommand), added, { timeline: 'Hero click', at: 0, property: 'opacity', value: 'var(--fade)' }))).toBe('status.motion.keyframeSet');
+    const keyed = runHandler(refusing(setKeyframeCommand), added, { timeline: 'Hero click', at: 0, property: 'opacity', value: '0' }).document;
+    expect(said(runHandler(refusing(editKeyframeCommand), keyed, { timeline: 'Hero click', at: 0, property: 'opacity', keyframeAt: 0, field: 'value', value: 'banana' }))).toBe('status.motion.invalid');
+  });
+});

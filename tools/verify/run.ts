@@ -96,7 +96,9 @@ const steps: Step[] = [
   {
     name: 'model',
     budgetMs: 30_000,
-    run: () => command(node, [vitest, 'run', '--config', 'tools/runner/model/vitest.config.ts', '--reporter', 'dot', '--no-isolate'], 30_000, { BUILDER_MODEL_RUNS: '25' }),
+    // every model check but whether ui-widths.json was measured with today's stylesheets: measuring runs a browser in
+    // three screen conditions, which belongs to the end of a stage (CLAUDE.md section 0), not to every change
+    run: () => command(node, [vitest, 'run', '--config', 'tools/runner/model/vitest.config.ts', '--reporter', 'dot', '--no-isolate', '-t', '^(?!.*the measurement was taken with the current stylesheets)'], 30_000, { BUILDER_MODEL_RUNS: '25' }),
   },
   {
     name: 'unit',

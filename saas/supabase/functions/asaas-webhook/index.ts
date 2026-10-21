@@ -1,6 +1,6 @@
-// Webhook do Asaas (docs.asaas.com, "Receba eventos do Asaas no seu endpoint de webhook"):
-// o token cadastrado chega no cabeçalho asaas-access-token; a entrega é "pelo menos uma vez", então o id do
-// evento é deduplicado; a resposta é sempre 200 depois de autenticado, ou a fila do Asaas trava (envio sequencial).
+// Asaas webhook (docs.asaas.com, the page on receiving Asaas events at your webhook endpoint):
+// the registered token arrives in the asaas-access-token header; delivery is "at least once", so the event id is
+// deduplicated; the response is always 200 once authenticated, or the Asaas queue stalls (sequential delivery).
 import { addMonth } from '../_shared/asaas.ts';
 import { adminClient, env } from '../_shared/env.ts';
 import { sameSecret } from '../_shared/http.ts';
@@ -25,7 +25,7 @@ async function apply(evt: AsaasEvent): Promise<void> {
     case 'PAYMENT_UPDATED':
       if (evt.payment?.invoiceUrl) await update({ invoice_url: evt.payment.invoiceUrl });
       break;
-    // CONFIRMED (cartão) ou RECEIVED (Pix e boleto): qualquer um dos dois pode chegar primeiro, ou sozinho
+    // CONFIRMED (card) or RECEIVED (Pix and boleto): either one may arrive first, or alone
     case 'PAYMENT_CONFIRMED':
     case 'PAYMENT_RECEIVED': {
       const due = evt.payment?.dueDate ?? now.slice(0, 10);
@@ -67,7 +67,7 @@ export default {
       { id: evt.id, event: evt.event, payload: evt },
       { onConflict: 'id', ignoreDuplicates: true },
     ).select('id');
-    // repetido: já tratado
+    // repeated: already handled
     if (!error && (!inserted || inserted.length === 0)) return new Response('ok', { status: 200 });
     try {
       await apply(evt);

@@ -3,10 +3,11 @@
 // go — a new collection named as typed (the file's name when nothing is), or into the collection the panel shows,
 // after its items, in place of them, or updating the items whose first column matches.
 import type { ReactNode } from 'react';
-import { cellText } from '../../core/data/collections.ts';
+import { cellText, decimalsOf, readCell } from '../../core/data/collections.ts';
 import { FIELD_TYPES, type Collection } from '../../core/data/model.ts';
 import type { MessageId } from '../../generated/ids.ts';
 import { DoorControl } from '../doors/door.tsx';
+import { useEditorState } from '../store.ts';
 import { useT } from '../text.ts';
 import { DoorField, DoorForm, doorOf } from './controls.tsx';
 import { columnFields, previewSheet, type DataPreview } from './state.ts';
@@ -26,6 +27,15 @@ export function PreviewView({ preview, into }: { readonly preview: DataPreview; 
   const t = useT();
   const sheet = previewSheet(preview);
   const words = { yes: t('data.yes'), no: t('data.no') };
+  // a cell shows what the import will store, as the site writes it (DATA-1: "1.500" on a pt-BR site is 1500, and a
+  // number keeps its column's decimal places); a value its type refuses shows as the file writes it
+  const language = useEditorState((state) => state.document.language);
+  const shown = (column: string, raw: string | number | boolean | undefined): string => {
+    const type = preview.types[column] ?? 'text';
+    const read = readCell(type, raw, language);
+    if (read === null) return cellText(raw, words);
+    return cellText(read, words, { language, decimals: type === 'number' ? decimalsOf(sheet?.rows.map((row) => row[column]) ?? [], language) : undefined });
+  };
   const matched = into === undefined || sheet === undefined ? null : columnFields(sheet.columns, into.fields);
   return (
     <section className="data-preview" data-region="data-preview" aria-label={t('data.previewTitle')}>
@@ -65,7 +75,7 @@ export function PreviewView({ preview, into }: { readonly preview: DataPreview; 
                 {sheet.rows.slice(0, SHOWN_ROWS).map((row, i) => (
                   <tr key={i}>
                     {sheet.columns.map((column) => (
-                      <td key={column}>{cellText(row[column], words)}</td>
+                      <td key={column}>{shown(column, row[column])}</td>
                     ))}
                   </tr>
                 ))}

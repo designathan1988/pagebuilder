@@ -4,20 +4,20 @@
 // kinds: each item makes a variable of its kind with the next free name (the kind, a dash and a number) and its kind's
 // first value. A field keeps its text on Enter or when it is left, as the inspector's text fields do, for the variable
 // it was drawn for.
-import { useEffect, useRef, type CSSProperties, type FormEvent } from 'react';
+import { useRef, type CSSProperties } from 'react';
 import { isFeatureBuilt } from '../../core/commands/registry.ts';
 import { tokensOf, type Token } from '../../core/design/tokens.ts';
 import { siteColoursOf } from '../../core/design/site-colours.ts';
 import { suggestedName, suggestionsOf } from '../../core/design/suggest.ts';
 import { pluralForm } from '../../i18n/index.ts';
-import type { DispatchResult } from '../../core/store/store.ts';
+import type { DispatchResult, EditContext } from '../../core/store/store.ts';
 import type { CommandId, FeatureId, KeyContextId, MessageId } from '../../generated/ids.ts';
 import type { DoorEntry } from '../../manifest/runtime.ts';
 import { DoorControl, Icon, useDoor } from '../doors/door.tsx';
 import { doorSlots } from '../doors/placement.ts';
-import { afterGesture } from '../input/pointer.ts';
 import { useEditorState, useStore } from '../store.ts';
 import { useLocale, useT } from '../text.ts';
+import { swatchColour, useKeptField, type KeptField } from './field.tsx';
 import { Popover, usePopover } from './popover.tsx';
 
 const DOORS = doorSlots('styles');
@@ -122,28 +122,27 @@ function NewVariable({ entry, tokens }: { readonly entry: DoorEntry; readonly to
 // A field of a variable's row: its text kept with its door's command for the variable it was drawn for, on Enter or
 // when it is left, whenever it differs from what the variable holds.
 function VariableField({ entry, token, filled, held, label }: { readonly entry: DoorEntry; readonly token: string; readonly filled: string; readonly held: string; readonly label: string }) {
-  const store = useStore();
   const args = { token };
   const door = useDoor(entry, args, label, isFeatureBuilt(entry.door.feature as FeatureId));
-  const input = useRef<HTMLInputElement>(null);
-  const said = useEditorState((s) => s.message);
-  useEffect(() => {
-    if (input.current !== null) input.current.value = held;
-  }, [held, said]);
-  const keep = () => {
-    const text = input.current?.value ?? '';
-    if (text === held) return;
-    afterGesture(store, () => (store.dispatch as (id: CommandId, a: unknown) => DispatchResult)(entry.command.id as CommandId, { ...entry.door.args, ...args, [filled]: text }));
-  };
-  const submit = (event: FormEvent) => {
-    event.preventDefault();
-    keep();
-  };
+  const { input, region, onInput, onBlur, onSubmit } = useKeptCommandField(entry, args, filled, held);
   return (
-    <form className={`variables__field${door.available ? '' : ' is-unavailable'}`} data-door={entry.ref} data-args={JSON.stringify(args)} title={door.title} onSubmit={submit}>
-      <input ref={input} className="input" aria-label={label} spellCheck={false} disabled={!door.available} onBlur={keep} />
+    <form ref={region} className={`variables__field${door.available ? '' : ' is-unavailable'}`} data-door={entry.ref} data-args={JSON.stringify(args)} title={door.title} onSubmit={onSubmit}>
+      <input ref={input} className="input" aria-label={label} spellCheck={false} disabled={!door.available} onInput={onInput} onBlur={onBlur} />
     </form>
   );
+}
+
+// The typing of a field of this view, held in the one registry of typing (useKeptField, rules G1 and G2) and kept with
+// its door's command for the arguments it was drawn for, its text in the argument it fills, whenever it differs from
+// what the field showed; a status message that is not the field's own leaves it alone (DEF-0565; the input audit's
+// INPUT-5: every message put the held value back and the typing was gone).
+function useKeptCommandField(entry: DoorEntry, args: Readonly<Record<string, string>>, filled: string, held: string): KeptField {
+  const store = useStore();
+  const command = entry.command.id as CommandId;
+  return useKeptField(held, command, null, (text, context) => {
+    if (text === held) return;
+    (store.dispatch as (id: CommandId, a: unknown, c?: EditContext) => DispatchResult)(command, { ...entry.door.args, ...args, [filled]: text }, context);
+  });
 }
 
 export function Variables() {
@@ -168,7 +167,7 @@ export function Variables() {
             {group.map((token) => (
               <div key={`token-${tokens.indexOf(token)}`} className={`variables__row variables__row--token${kind === COLOUR_KIND ? ' variables__row--colour' : ''}`}>
                 {/* a colour variable wears its colour (the canonical Styles view's 14 px swatch) */}
-                {kind === COLOUR_KIND ? <span className="variables__swatch" style={{ '--swatch-colour': token.value } as CSSProperties} aria-hidden /> : null}
+                {kind === COLOUR_KIND ? <span className="variables__swatch" style={{ '--swatch-colour': swatchColour(token.value, tokens) } as CSSProperties} aria-hidden /> : null}
                 {RENAME !== undefined ? <VariableField key="name" entry={RENAME} token={token.name} filled="name" held={token.name} label={t('styles.variableName')} /> : null}
                 {/* the value and its delete go together: where the name leaves them no room they go under it, whole */}
                 <span className="variables__end">
@@ -186,24 +185,12 @@ export function Variables() {
 
 // A field kept with its door's command on Enter or when it is left, standing for the arguments given (a colour of the
 // site's), whenever its text differs from what it showed.
-function KeptField({ entry, args, filled, held, label }: { readonly entry: DoorEntry; readonly args: Readonly<Record<string, string>>; readonly filled: string; readonly held: string; readonly label: string }) {
-  const store = useStore();
+function SiteColourField({ entry, args, filled, held, label }: { readonly entry: DoorEntry; readonly args: Readonly<Record<string, string>>; readonly filled: string; readonly held: string; readonly label: string }) {
   const door = useDoor(entry, args, label, isFeatureBuilt(entry.door.feature as FeatureId));
-  const input = useRef<HTMLInputElement>(null);
-  const said = useEditorState((s) => s.message);
-  useEffect(() => {
-    if (input.current !== null) input.current.value = held;
-  }, [held, said]);
-  const keep = () => {
-    const text = input.current?.value ?? '';
-    if (text === held) return;
-    afterGesture(store, () => (store.dispatch as (id: CommandId, a: unknown) => DispatchResult)(entry.command.id as CommandId, { ...entry.door.args, ...args, [filled]: text }));
-  };
+  const { input, region, onInput, onBlur, onSubmit } = useKeptCommandField(entry, args, filled, held);
   return (
-    <form className={`variables__field${door.available ? '' : ' is-unavailable'}`} data-door={entry.ref} data-args={JSON.stringify(args)} title={door.title} onSubmit={(event: FormEvent) => { event.preventDefault();
-      keep();
-    }}>
-      <input ref={input} className="input" aria-label={label} spellCheck={false} disabled={!door.available} onBlur={keep} />
+    <form ref={region} className={`variables__field${door.available ? '' : ' is-unavailable'}`} data-door={entry.ref} data-args={JSON.stringify(args)} title={door.title} onSubmit={onSubmit}>
+      <input ref={input} className="input" aria-label={label} spellCheck={false} disabled={!door.available} onInput={onInput} onBlur={onBlur} />
     </form>
   );
 }
@@ -223,10 +210,12 @@ export function SiteColours() {
       <div className="section-title">
         <span className="section-title__text">{t('styles.siteColours')}</span>
       </div>
-      {colours.map(({ colour, uses }) => (
-        <div key={colour} className="variables__row variables__row--colour site-colours__row">
+      {/* a row keeps its place, not its colour, as its key: a colour replaced in its field gave the row a new key, React
+          drew it again and the focus in it fell to the page (DEF-0618) */}
+      {colours.map(({ colour, uses }, at) => (
+        <div key={`colour-${at}`} className="variables__row variables__row--colour site-colours__row">
           <span className="variables__swatch" style={{ '--swatch-colour': colour } as CSSProperties} aria-hidden />
-          <KeptField entry={REPLACE_COLOUR} args={{ colour }} filled="value" held={colour} label={t('command.design.replaceColour')} />
+          <SiteColourField entry={REPLACE_COLOUR} args={{ colour }} filled="value" held={colour} label={t('command.design.replaceColour')} />
           <span className="site-colours__uses">{t(`styles.siteColours.uses.${pluralForm(locale, uses)}` as MessageId, { count: uses })}</span>
           {COLOUR_VARIABLE !== undefined ? <DoorControl entry={COLOUR_VARIABLE} args={{ colour, name }} ready={isFeatureBuilt(COLOUR_VARIABLE.door.feature as FeatureId)} /> : null}
         </div>

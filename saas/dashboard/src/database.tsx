@@ -1,5 +1,5 @@
-// O banco de dados dos apps publicados: por site, as tabelas que o editor declarou (sites.data_rules), as linhas de
-// cada uma (ver, exportar CSV, excluir) e os membros que se cadastraram no site (tornar administrador, remover).
+// The published apps' database: per site, the tables the editor declared (sites.data_rules), the rows of each one
+// (view, export CSV, delete) and the members who signed up on the site (make administrator, remove).
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { canAdmin, canEdit, errorText, supabase, when, type Workspace } from './supabase.ts';
 
@@ -18,7 +18,7 @@ function csv(rows: RecordRow[], members: Map<string, string>): string {
   const keys = [...new Set(rows.flatMap((row) => Object.keys(row.data)))];
   const cell = (value: unknown) => {
     const text = cellText(value);
-    // uma célula que começa com = + - @ vira texto, para a planilha não executá-la como fórmula
+    // a cell starting with = + - @ becomes text, so the spreadsheet does not run it as a formula
     return `"${(/^[=+\-@]/.test(text) ? `'${text}` : text).replaceAll('"', '""')}"`;
   };
   const head = ['Criado em', 'Membro', ...keys].map(cell).join(';');

@@ -1,5 +1,5 @@
-// Cliente mínimo da API v3 do Asaas (docs.asaas.com, lido em 2026-10-21):
-// base sandbox/produção, chave no cabeçalho access_token (sem Bearer) e User-Agent obrigatório.
+// Minimal client for the Asaas API v3 (docs.asaas.com, read on 2026-10-21):
+// sandbox/production base URL, key in the access_token header (no Bearer) and a required User-Agent.
 import { env } from './env.ts';
 
 const BASE = () => (env.optional('ASAAS_ENV') === 'production' ? 'https://api.asaas.com/v3' : 'https://api-sandbox.asaas.com/v3');
@@ -38,7 +38,7 @@ export interface AsaasList<T> {
   readonly data: readonly T[];
 }
 
-// YYYY-MM-DD no fuso de São Paulo
+// YYYY-MM-DD in the São Paulo time zone
 export function today(): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(new Date());
 }

@@ -17,7 +17,12 @@ import type { EditorUi } from '../state.ts';
 export const playCommand = registerHandler<'timeline.play', EditorUi>('timeline.play', ({ state }) => {
   const shown = shownAnimation(state);
   if (shown === null) return { kind: 'change' };
-  return { kind: 'change', ui: { ...state.ui, timeline: { ...timelineOf(state.ui), live: true, playing: true } }, message: message('status.timeline.playing', { name: shown.animation.name }) };
+  // a playhead at the animation's end plays it again from the start (the audit's STYLE-10: the loop's first tick saw
+  // the end and paused, so Play did nothing until Stop)
+  const timeline = timelineOf(state.ui);
+  const duration = durationMs(shown.animation);
+  const time = duration > 0 && timeline.time >= duration ? 0 : timeline.time;
+  return { kind: 'change', ui: { ...state.ui, timeline: { ...timeline, time, live: true, playing: true } }, message: message('status.timeline.playing', { name: shown.animation.name }) };
 });
 
 export const pauseCommand = registerHandler<'timeline.pause', EditorUi>('timeline.pause', ({ state }) => {

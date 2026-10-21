@@ -4,11 +4,13 @@
 // stop sharing.
 import type { ReactNode } from 'react';
 import type { NodeId } from '../../generated/commands.ts';
+import { siteYesNo } from '../../core/data/bindings.ts';
 import { cellText } from '../../core/data/collections.ts';
 import type { Collection } from '../../core/data/model.ts';
 import { NEW_PAGES } from '../../core/data/regions.ts';
 import { locate, walk, type DocumentJson, type Page } from '../../core/document/model.ts';
 import { DoorControl } from '../doors/door.tsx';
+import { useEditorState } from '../store.ts';
 import { useT } from '../text.ts';
 import { DoorForm, doorOf } from './controls.tsx';
 
@@ -23,6 +25,8 @@ const STOP = doorOf(SHARED, 'shared-stop');
 export function PagesView({ page, collection }: { readonly page: Page; readonly collection: Collection | undefined }): ReactNode {
   const t = useT();
   const nameField = collection?.fields.find((field) => field.type === 'text') ?? collection?.fields[0];
+  // the examples are the names the pages will take: the value as the site writes it (pages.fromCollection)
+  const language = useEditorState((state) => state.document.language);
   return (
     <section className="data-pages" data-region="data-pages" aria-label={t('data.pagesTitle')}>
       <p className="data-panel__note">{t('data.pagesFromHelp', { name: page.name })}</p>
@@ -34,7 +38,7 @@ export function PagesView({ page, collection }: { readonly page: Page; readonly 
           <DoorControl entry={FROM_COLLECTION} args={{ collection: collection.name, nameField: nameField.key }} label={t('data.pagePerItem', { collection: collection.name, field: nameField.label })}>
             <span className="door__label">{t('data.pagePerItem', { collection: collection.name, field: nameField.label })}</span>
           </DoorControl>
-          <span className="data-panel__note">{t('data.itemPagesCount', { count: collection.items.length, examples: collection.items.slice(0, 2).map((item) => cellText(item.values[nameField.key], { yes: t('data.yes'), no: t('data.no') })).join(', ') })}</span>
+          <span className="data-panel__note">{t('data.itemPagesCount', { count: collection.items.length, examples: collection.items.slice(0, 2).map((item) => cellText(item.values[nameField.key], siteYesNo(language), { language, decimals: nameField.decimals })).join(', ') })}</span>
         </div>
       )}
     </section>

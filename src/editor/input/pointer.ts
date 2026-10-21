@@ -58,7 +58,7 @@ import { pointerViews } from './pointer/views.ts';
 // the entries this module published before the machine moved out stay published here: consumers need not change
 export { DRAG_THRESHOLD, IDLE, step } from './pointer/machine.ts';
 export type {  Machine,  Press } from './pointer/machine.ts';
-export { clickDoor, editEndDoor, modifierOf } from './pointer/press.ts';
+export { clickDoor, editEndDoor, modifierOf, modifiersHeld, stepModifier } from './pointer/press.ts';
 ;
 ;
 export type {  DragView,  GhostReturn, Inserting,   SideView } from './pointer/views.ts';

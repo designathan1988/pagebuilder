@@ -60,5 +60,7 @@ export interface ValidationContext {
   readonly files?: readonly { readonly name: string; readonly type: string; readonly size: number }[];
   readonly today?: string;
   readonly locale?: string;
+  // the value is a number as HTML writes it (an input of type number: "6.5" whatever the page's language)
+  readonly numeric?: boolean;
 }
 export interface Violation { readonly code: RuleCode; readonly message: string }

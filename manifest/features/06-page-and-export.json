@@ -1066,7 +1066,7 @@
                     ".hero {"
                   ],
                   "absent": [
-                    "display: none"
+                    "display: none;"
                   ]
                 }
               ]

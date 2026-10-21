@@ -7,7 +7,7 @@
 import type { ReactNode } from 'react';
 import type { NodeId } from '../../generated/commands.ts';
 import { DataRefusal, queryItems } from '../../core/data/collections.ts';
-import { reached, targetsOf, fieldFits, itemPagesOf, valueFor, type DataContext } from '../../core/data/bindings.ts';
+import { reached, targetsOf, fieldFits, itemPagesOf, valueFor } from '../../core/data/bindings.ts';
 import { ITEM_PAGE, type BindTarget, type Collection, type Query } from '../../core/data/model.ts';
 import { lineage, type DocNode, type DocumentJson } from '../../core/document/model.ts';
 import { fileAt, objectUrl } from '../../core/files/files.ts';
@@ -78,10 +78,6 @@ export function MappingView({ collection, query, selected }: { readonly collecti
     ...collection.fields.filter((field) => fieldFits(to, field)).map((field) => ({ value: field.key, label: field.label })),
     ...(fieldFits(to, ITEM_PAGE) ? [{ value: ITEM_PAGE, label: t('data.itemPage') }] : []),
   ];
-  // the preview makes nothing: it reads values, so it needs no id
-  const context: DataContext = { ids: { next: () => {
-    throw new Error('the preview makes no node');
-  } }, rules: MODEL_RULES, words: (key) => t(key) };
   const pages = itemPagesOf(document);
   const rows = queryItems(collection, query).slice(0, PREVIEWED);
   const bound = targets.flatMap(({ node, to }) => (node.bind ?? []).filter((b) => b.to === to).map((b) => ({ node, bound: b })));
@@ -123,7 +119,7 @@ export function MappingView({ collection, query, selected }: { readonly collecti
                       try {
                         return (
                           <td key={`${node.id}:${b.to}`}>
-                            <Shown document={document} value={valueFor(document, b, place, pages, context)} to={b.to} />
+                            <Shown document={document} value={valueFor(document, b, place, pages)} to={b.to} />
                           </td>
                         );
                       } catch (error) {

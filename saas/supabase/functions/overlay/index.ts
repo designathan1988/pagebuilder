@@ -1,8 +1,8 @@
-// O projeto publicado de uma personalização do Site Editor, para o wc-runtime.js dos sites dos clientes.
-// GET /overlay?key=<chave pública>  ->  { project, updatedAt }
-// Público de propósito (os sites dos clientes não têm login): só devolve o que foi publicado, achado pela chave, e
-// nunca lista nada. CORS aberto, porque o script roda em qualquer domínio. A tabela continua fechada pelo RLS: a
-// leitura aqui usa a chave secreta.
+// The published project of a Site Editor customization, for the wc-runtime.js on customers' sites.
+// GET /overlay?key=<public key>  ->  { project, updatedAt }
+// Public on purpose (customers' sites have no login): it only returns what was published, found by the key, and
+// never lists anything. Open CORS, because the script runs on any domain. The table stays closed by RLS: the
+// read here uses the secret key.
 import { adminClient } from '../_shared/env.ts';
 
 const KEY = /^[A-Za-z0-9_-]{20,64}$/;

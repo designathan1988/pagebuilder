@@ -279,6 +279,7 @@ function SelectionSize() {
 
 // The save state, last in the bar (autosave: Not saved, Saving…, Saved, Save failed). A read-only display.
 const SAVE_STATE_KEYS: Readonly<Record<SaveState, MessageId>> = { notSaved: 'status.save.notSaved', saving: 'status.save.saving', saved: 'status.save.saved', recoveryRequired: 'status.save.recoveryRequired' };
+const SAVE_STATES = Object.keys(SAVE_STATE_KEYS) as readonly SaveState[];
 function SaveStateLabel() {
   const t = useT();
   const current = useSyncExternalStore(saveState.subscribe, saveState.get);
@@ -308,9 +309,17 @@ export function TopBarSaveState() {
   // in cloud mode the cloud bar says it (src/editor/cloud/cloud-bar.tsx)
   const cloud = useSyncExternalStore(cloudState.subscribe, cloudState.get);
   if (cloud.project !== null) return null;
+  // every state's words stacked in one cell, the current one shown: the group takes the width of the widest words in
+  // the interface's language, so "Saving…" after "Saved" no longer moves the centred search and what follows it
   return (
     <span className={`top-bar__saved is-${current}`} data-top-save-state={current}>
-      {t(SAVE_STATE_KEYS[current])}
+      <span className="top-bar__saved-words">
+        {SAVE_STATES.map((state) => (
+          <span key={state} className={state === current ? 'is-current' : undefined} aria-hidden={state === current ? undefined : true}>
+            {t(SAVE_STATE_KEYS[state])}
+          </span>
+        ))}
+      </span>
     </span>
   );
 }

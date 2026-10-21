@@ -1,8 +1,8 @@
--- O banco de dados dos apps publicados (app.db e app.auth do runtime, js/app-layer/runtime.js): cada site tem as
--- próprias tabelas (linhas de site_records com o nome da tabela em "collection") e os próprios membros (site_members,
--- quem se cadastra no site, separado das contas da plataforma). Os visitantes nunca falam com o Postgres: o Worker dos
--- sites repassa /_api/* para a função site-data, que confere as regras de acesso que o editor publicou
--- (sites.data_rules) e usa a chave secreta. Membros do workspace leem e apagam pelo painel.
+-- The published apps' database (the runtime's app.db and app.auth, js/app-layer/runtime.js): each site has its
+-- own tables (site_records rows with the table name in "collection") and its own members (site_members, the people
+-- who sign up on the site, separate from the platform accounts). Visitors never talk to Postgres: the sites Worker
+-- forwards /_api/* to the site-data function, which checks the access rules the editor published
+-- (sites.data_rules) and uses the secret key. Workspace members read and delete through the dashboard.
 
 alter table public.sites add column data_rules jsonb not null default '[]'::jsonb
   check (jsonb_typeof(data_rules) = 'array' and pg_column_size(data_rules) <= 16384);
@@ -13,7 +13,7 @@ create table public.site_members (
   workspace_id  uuid not null references public.workspaces(id) on delete cascade,
   email         text not null check (email = lower(email) and char_length(email) between 3 and 254 and email like '%_@_%'),
   name          text not null default '' check (char_length(name) <= 120),
-  -- PBKDF2-HMAC-SHA256, 600 000 iterações (OWASP Password Storage Cheat Sheet): pbkdf2$<iterações>$<sal>$<hash>
+  -- PBKDF2-HMAC-SHA256, 600 000 iterations (OWASP Password Storage Cheat Sheet): pbkdf2$<iterations>$<salt>$<hash>
   password_hash text not null,
   role          text not null default 'member' check (role in ('member', 'admin')),
   created_at    timestamptz not null default now(),
@@ -27,7 +27,7 @@ create table public.site_records (
   workspace_id uuid not null references public.workspaces(id) on delete cascade,
   collection   text not null check (collection ~ '^[a-z][a-z0-9_]{0,39}$'),
   data         jsonb not null check (jsonb_typeof(data) = 'object' and pg_column_size(data) <= 65536),
-  -- o membro que criou a linha (as regras "owner" leem por ele); nulo quando quem criou não estava logado
+  -- the member who created the row ("owner" rules read by it); null when the creator was not signed in
   owner_id     uuid references public.site_members(id) on delete set null,
   created_at   timestamptz not null default now(),
   updated_at   timestamptz not null default now()
@@ -43,7 +43,7 @@ create trigger site_records_touch before update on public.site_records
 alter table public.site_members enable row level security;
 alter table public.site_records enable row level security;
 
--- o painel: membros do workspace leem; admins mudam o papel de um membro do site e apagam
+-- the dashboard: workspace members read; admins change a site member's role and delete
 create policy "smem: members read" on public.site_members for select to authenticated
   using (workspace_id in (select private.my_workspace_ids()));
 create policy "smem: admins update" on public.site_members for update to authenticated
@@ -57,7 +57,7 @@ create policy "srec: members read" on public.site_records for select to authenti
 create policy "srec: editors delete" on public.site_records for delete to authenticated
   using (private.has_role(workspace_id, array['owner', 'admin', 'editor']::public.workspace_role[]));
 
--- a senha nunca sai do banco pelo painel: a coluna fica fora do que "authenticated" pode ler
+-- the password never leaves the database through the dashboard: the column stays outside what "authenticated" can read
 revoke select on public.site_members from authenticated;
 grant select (id, site_id, workspace_id, email, name, role, created_at) on public.site_members to authenticated;
 revoke update on public.site_members from authenticated;

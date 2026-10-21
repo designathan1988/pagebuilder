@@ -20,11 +20,12 @@ import { TEXT_EDITING, editArgs } from '../canvas/text-edit.ts';
 import { readClipboard } from '../clipboard.ts';
 import { afterRead } from './after-read.ts';
 import type { EditorStore } from '../store.ts';
-import { cancelPan, holdSpace, modifierOf, openGesture } from './pointer.ts';
+import { cancelPan, holdSpace, modifierOf, modifiersHeld, openGesture, stepModifier } from './pointer.ts';
 import { holdLetter, releaseLetters, toolKeyContext } from './pointer-tools.ts';
 import { pointerViews } from './pointer/views.ts';
 import { shortcutRuns } from './shortcut-rule.ts';
 import { keyContextIn } from '../canvas/edit-mode.ts';
+import { dismissInnerLayer } from './inner-layer.ts';
 
 // The key of an event as the manifest writes it: a letter or a digit by its physical key (so Ctrl+Alt+B is B on any
 // layout), the other printable keys by the character they type, named keys by name.
@@ -202,17 +203,19 @@ function focusedArgs(target: EventTarget | null, entry: DoorEntry): Readonly<Rec
 
 // A shortcut door whose gesture says what a held key means (a number field's arrows: Shift ×10, Alt ×0.1, the gesture
 // number-field-keys of interactions.json) runs with that key held too, when no door binds the chord itself: its door,
-// and the key, which the command takes as its `modifier`.
-function heldKeyBindingIn(chain: readonly KeyContextId[], event: KeyboardEvent): { readonly entry: DoorEntry; readonly modifier: string } | null {
-  const modifier = modifierOf(event);
-  if (modifier === null || modifier === 'several') return null;
+// and the key, which the command takes as its `modifier`. Several keys the gesture gives a meaning held at once
+// (Shift+Alt) run the door with none, as the step's other doors read them (stepModifier, rule G3: INPUT-8).
+function heldKeyBindingIn(chain: readonly KeyContextId[], event: KeyboardEvent): { readonly entry: DoorEntry; readonly modifier: string | null } | null {
+  const held = modifiersHeld(event);
+  if (held.length === 0) return null;
   const entry = bindingIn(chain, keyOf(event));
   if (!entry || entry.door.kind !== 'shortcut' || entry.door.gesture === null) return null;
   const gesture = manifest.interactions.gestures.find((g) => entry.door.kind === 'shortcut' && g.id === entry.door.gesture);
-  return gesture?.modifiers.some((m) => m.key === modifier) === true ? { entry, modifier } : null;
+  const offered: readonly string[] = gesture?.modifiers.map((m) => m.key) ?? [];
+  return held.every((key) => offered.includes(key)) ? { entry, modifier: stepModifier(modifierOf(event), offered) } : null;
 }
 
-export function heldKeyBinding(context: KeyContextId, event: KeyboardEvent): { readonly entry: DoorEntry; readonly modifier: string } | null {
+export function heldKeyBinding(context: KeyContextId, event: KeyboardEvent): { readonly entry: DoorEntry; readonly modifier: string | null } | null {
   return heldKeyBindingIn(keyContextChain(context), event);
 }
 
@@ -246,6 +249,21 @@ const TYPING_BURST = numberConstant('keys.typingBurst');
 const CANVAS_CONTEXT = 'canvas' as KeyContextId;
 const LAYERS_CONTEXT = 'layers-tree' as KeyContextId;
 const CHOSEN_CONTEXTS: ReadonlySet<string> = new Set([CANVAS_CONTEXT, LAYERS_CONTEXT]);
+// The keys that wait for that choice when the focus was lost to the page body (a row drawn again under it, a panel or
+// a picker closed under it), besides the letters: every key of the canvas and the Layers (Backspace and Delete delete,
+// Ctrl+A selects, Enter edits the text, the arrows walk) and every key of the editor that changes the document
+// (Ctrl+D, Ctrl+X, Ctrl+V…). The person who believes they are still in a field corrects a letter with Backspace and
+// the selected element went (the input audit's INPUT-4). Escape is never one: it chooses the canvas again.
+const ESCAPE = 'Escape';
+export function waitsForChoice(entry: DoorEntry, key: string): boolean {
+  if (entry.door.kind !== 'shortcut' || key === ESCAPE) return false;
+  return CHOSEN_CONTEXTS.has(entry.door.context) || entry.command.history.undoable;
+}
+// whether the focus rests on the page body: where no control holds it
+const onBody = (target: EventTarget | null): boolean => {
+  const element = htmlElement(target);
+  return element !== null && element === element.ownerDocument.body;
+};
 const FIELD_CONTEXT: KeyContextId = 'field';
 const GLOBAL_CONTEXT: KeyContextId = 'global';
 const TOOLBAR_CONTEXT: KeyContextId = 'toolbar';
@@ -398,6 +416,12 @@ export function installKeymap(store: EditorStore, target: Window = window): () =
     // A modal owns Escape even when a press on its shield has left focus on the page body. Resolve its manifest door
     // before the canvas/global context can clear the selection, and do not let another key listener see that Escape.
     if (event.key === 'Escape' && store.getState().ui.dialog !== undefined && store.getState().confirmation === null) {
+      // a layer inside the dialog that holds the focus (a menu, a field opened in it) closes first, alone (INPUT-6)
+      if (chordOf(event) === 'Escape' && dismissInnerLayer(event.target)) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
       const modal = bindingFor('dialog', chordOf(event));
       if (modal !== null) {
         event.preventDefault();
@@ -498,6 +522,21 @@ export function installKeymap(store: EditorStore, target: Window = window): () =
         return;
       }
     }
+    // any other key of the canvas, the Layers or one that changes the document, on a focus lost to the page body, acts
+    // only where the person chose the canvas too (waitsForChoice); it is the editor's still (Ctrl+D is no bookmark)
+    if (!typedKey && gesture === null && hand === null && onBody(event.target) && waitsForChoice(binding, event.key)) {
+      readChoice();
+      if (!lettersChosen) {
+        event.preventDefault();
+        // a letter says why once per burst, as the canvas's own letters do
+        if (!told) store.notice(message(letter ? 'status.keys.notChosen' : 'status.keys.notChosenKey'));
+        if (letter) {
+          typing = true;
+          told = true;
+        }
+        return;
+      }
+    }
     // a bound chord is the editor's whether or not its door runs yet
     event.preventDefault();
     // a letter inside a burst of letters is typing: its single-letter shortcut does not run (outside a field and the
@@ -515,7 +554,7 @@ export function installKeymap(store: EditorStore, target: Window = window): () =
           : focusedArgs(event.target, binding);
     if (own === null) return;
     // the key held with a door whose gesture gives it a meaning, for a command that takes it
-    const modifier = held !== null && 'modifier' in binding.command.args ? { modifier: held.modifier } : {};
+    const modifier = held !== null && held.modifier !== null && 'modifier' in binding.command.args ? { modifier: held.modifier } : {};
     if (typedKey) {
       if (burstSequence?.active() !== true) {
         burstSequence = store.sequence();

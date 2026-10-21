@@ -653,7 +653,9 @@
   opacity: 1;
 }
 
-.row:has(.row__actions .door--button) .row__meta {
+/* and so does a pick button while a target is being picked (layers.tsx RowPickTarget): opaque at rest, it was drawn
+   over the tag ("butto◎n") */
+.row:has(.row__actions .door--button, .row__actions .row__button) .row__meta {
   visibility: hidden;
 }
 

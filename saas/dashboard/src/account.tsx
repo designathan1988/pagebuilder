@@ -1,5 +1,5 @@
-// Conta e espaços: o nome da pessoa, o nome do espaço atual, um novo espaço (uma agência separa os clientes por espaço)
-// e sair.
+// Account and workspaces: the person's name, the current workspace's name, a new workspace (an agency separates its
+// clients by workspace) and signing out.
 import { useEffect, useState, type FormEvent } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { canAdmin, errorText, supabase, type Workspace } from './supabase.ts';

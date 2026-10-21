@@ -1,7 +1,7 @@
 // Group 11 beyond its scenarios:
 //  - the breakpoint shown is kept after a reload, the page drawn at its width;
 //  - at Tablet a field whose value is set there says so, and one it inherits names Desktop;
-//  - while Hover is edited the canvas badge reads "Editing Hover"; in the exported page, hovering the element changes
+//  - while Hover is edited the canvas badge reads "Editing: Hover"; in the exported page, hovering the element changes
 //    its computed colour (the page and its stylesheet, as the ZIP holds them, loaded in the browser).
 import fs from 'node:fs';
 import { expect, test, type Page } from '../support/test.ts';
@@ -92,7 +92,7 @@ test('while Hover is edited the canvas says so, and the exported page changes on
   await openAurora(page);
   await control(page, ROW, { args: { target: 'n-intro' } }).click();
   await runDoor(page, HOVER);
-  await expect(page.locator('[data-canvas-badge="state"]')).toHaveText('Editing Hover');
+  await expect(page.locator('[data-canvas-badge="state"]')).toHaveText('Editing: Hover');
   await expect(page.locator('.state-picker__value')).toHaveText('Hover');
   await typeInto(page, COLOR, '#aa0000');
   const downloaded = page.waitForEvent('download');

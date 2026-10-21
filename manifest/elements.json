@@ -12539,34 +12539,82 @@
           "feature": "templates-components",
           "template": {
             "element": "div",
+            "customAttributes": {
+              "data-wc": "tabs"
+            },
             "children": [
               {
                 "element": "nav",
                 "wrapper": "row",
                 "styles": {
-                  "column-gap": "8px"
+                  "column-gap": "8px",
+                  "flex-wrap": "wrap",
+                  "row-gap": "8px",
+                  "padding-top": "0px",
+                  "padding-right": "0px",
+                  "padding-bottom": "0px",
+                  "padding-left": "0px"
                 },
                 "children": [
                   {
                     "element": "button",
-                    "textKey": "template.tabs.one"
+                    "textKey": "template.tabs.one",
+                    "customAttributes": {
+                      "data-wc-tab": ""
+                    }
                   },
                   {
                     "element": "button",
-                    "textKey": "template.tabs.two"
+                    "textKey": "template.tabs.two",
+                    "customAttributes": {
+                      "data-wc-tab": ""
+                    }
                   },
                   {
                     "element": "button",
-                    "textKey": "template.tabs.three"
+                    "textKey": "template.tabs.three",
+                    "customAttributes": {
+                      "data-wc-tab": ""
+                    }
                   }
                 ]
               },
               {
                 "element": "div",
+                "nameKey": "comp.tabs.one.panel",
+                "customAttributes": {
+                  "data-wc-panel": ""
+                },
                 "children": [
                   {
                     "element": "paragraph",
-                    "textKey": "template.tabs.panel"
+                    "textKey": "template.tabs.panelOne"
+                  }
+                ]
+              },
+              {
+                "element": "div",
+                "nameKey": "comp.tabs.two.panel",
+                "customAttributes": {
+                  "data-wc-panel": ""
+                },
+                "children": [
+                  {
+                    "element": "paragraph",
+                    "textKey": "template.tabs.panelTwo"
+                  }
+                ]
+              },
+              {
+                "element": "div",
+                "nameKey": "comp.tabs.three.panel",
+                "customAttributes": {
+                  "data-wc-panel": ""
+                },
+                "children": [
+                  {
+                    "element": "paragraph",
+                    "textKey": "template.tabs.panelThree"
                   }
                 ]
               }
@@ -12627,25 +12675,44 @@
         {
           "id": "template-modal",
           "labelKey": "palette.entry.templateModal",
-          "element": "dialog",
+          "element": "div",
           "kind": "template",
           "inputType": null,
           "feature": "templates-components",
+          "icon": "message-square",
           "template": {
-            "element": "dialog",
+            "element": "div",
             "children": [
               {
-                "element": "heading",
-                "tag": "h2",
-                "textKey": "template.modal.title"
-              },
-              {
-                "element": "paragraph",
-                "textKey": "template.modal.text"
-              },
-              {
                 "element": "button",
-                "textKey": "template.modal.close"
+                "textKey": "template.modal.open",
+                "customAttributes": {
+                  "data-wc-open": "modal"
+                }
+              },
+              {
+                "element": "dialog",
+                "attributes": {
+                  "id": "modal"
+                },
+                "children": [
+                  {
+                    "element": "heading",
+                    "tag": "h2",
+                    "textKey": "template.modal.title"
+                  },
+                  {
+                    "element": "paragraph",
+                    "textKey": "template.modal.text"
+                  },
+                  {
+                    "element": "button",
+                    "textKey": "template.modal.close",
+                    "customAttributes": {
+                      "data-wc-close": ""
+                    }
+                  }
+                ]
               }
             ]
           }

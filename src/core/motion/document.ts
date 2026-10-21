@@ -97,6 +97,23 @@ export function renameTimelinePatches(document: DocumentJson, from: string, to: 
   return patches;
 }
 
+// The patches that make the timeline actions playing a CSS animation (core/animation) follow it: renamed to `to`, or,
+// with `to` null (the animation deleted), gone, as a legacy interaction that played it goes (core/animation
+// animation.ts). An animation's name is unique in the document, so the name alone says which actions play it (the
+// audit's STYLE-7: a rename left them playing a name nothing holds). Empty when no action plays it.
+export function cssAnimationFollowPatches(document: DocumentJson, from: string, to: string | null): Patch[] {
+  const plays = (action: TimelineAction): boolean => action.effect.kind === 'css-animation' && action.effect.animation === from;
+  const timelines = timelinesOf(document);
+  if (!timelines.some((timeline) => timeline.actions.some(plays))) return [];
+  return writeTimelines(
+    document,
+    timelines.map((timeline) => ({
+      ...timeline,
+      actions: to === null ? timeline.actions.filter((action) => !plays(action)) : timeline.actions.map((action) => (plays(action) && action.effect.kind === 'css-animation' ? { ...action, effect: { ...action.effect, animation: to } } : action)),
+    })),
+  );
+}
+
 // The patches that release every picked element that is leaving (tree.ts releaseReferencesPatch adds them): an action
 // whose target is a leaving node leaves its timeline.
 export function releaseMotionTargets(document: DocumentJson, leaving: ReadonlySet<NodeId>): Patch[] {

@@ -12,6 +12,7 @@ import { paletteNode } from '../structure/insert.ts';
 import { nodeMaker } from '../structure/node-maker.ts';
 import { interactionsJs } from '../events/script.ts';
 import { noLayout } from '../ports/layout.ts';
+import type { SiteScripts } from '../ports/site-scripts.ts';
 import { exportPage, exportProject, previewPage, siteFiles } from './export.ts';
 
 const RULES = rulesFromManifest(manifest.elements, manifest.properties, manifest.html);
@@ -84,38 +85,101 @@ describe('the whitespace between inline neighbours (the journey "site")', () => 
   });
 });
 
-describe('the modal template runtime', () => {
-  it('keeps the authored dialog tree and runs the same native dialog script in export and Preview', () => {
-    const modal = paletteNode(nodeMaker(page([]), RULES, sequentialIds('modal'), (key) => key), 'template-modal');
-    const document = page([modal]);
-    expect(modal.tag).toBe('dialog');
-    expect(modal.children).toHaveLength(3);
-    const site = siteFiles(document, RULES);
-    expect(site.pages[0]?.html).toContain('src="js/interactions.js"');
-    expect(site.interactions).toContain('dialog.showModal()');
-    expect(site.interactions).toContain('dialog.close()');
-    expect(previewPage(document, RULES)).toContain('dialog.showModal()');
+// The audit's RENDER-4: the export once made an opener of its own before every dialog holding a button ("Open dialog",
+// in English on a pt-BR site); the Modal template now inserts its opener as a Button the person sees and edits, and the
+// web components' script (js/widgets.js) opens the dialog its data-wc-open names.
+describe('the modal template', () => {
+  it('inserts its opener before the dialog, and the export adds no element of its own', () => {
+    const make = nodeMaker(page([]), RULES, sequentialIds('modal'), (key) => key);
+    const modal = paletteNode(make, 'template-modal');
+    const [opener, dialog] = modal.children;
+    expect(opener?.tag).toBe('button');
+    expect(dialog?.tag).toBe('dialog');
+    expect(opener?.customAttributes?.['data-wc-open']).toBe(dialog?.attributes.id);
+    const scripts: SiteScripts = { forms: () => '', widgets: () => '/* widgets */' };
+    const site = siteFiles(page([modal]), RULES, true, scripts);
+    expect(site.widgets).toBe('/* widgets */');
+    expect(site.interactions).toBeNull();
+    expect(site.pages[0]?.html).toContain('src="js/widgets.js"');
+    expect(site.pages[0]?.html.match(/<button/g)).toHaveLength(2);
+  });
+
+  it('a second Modal opens its own dialog', () => {
+    const make = nodeMaker(page([]), RULES, sequentialIds('modal'), (key) => key);
+    const first = paletteNode(make, 'template-modal');
+    const second = paletteNode(nodeMaker(page([first]), RULES, sequentialIds('again'), (key) => key), 'template-modal');
+    expect(second.children[1]?.attributes.id).not.toBe(first.children[1]?.attributes.id);
+    expect(second.children[0]?.customAttributes?.['data-wc-open']).toBe(second.children[1]?.attributes.id);
   });
 });
 
-describe('the tabs template runtime', () => {
-  it('keeps the authored tree and runs independent panels in export and Preview', () => {
+// The audit's RENDER-3: the export once recognised tabs by their shape and made panels 2 and 3 of its own; the Tabs
+// template now inserts one panel per tab, marked for js/widgets.js, and a person's own nav of buttons stays as built.
+describe('the tabs template', () => {
+  it('inserts one marked panel per tab, and the export makes no panel of its own', () => {
     const tabs = paletteNode(nodeMaker(page([]), RULES, sequentialIds('tabs'), (key) => key), 'template-tabs');
-    const document = page([tabs]);
-    expect(tabs.children[1]?.children).toHaveLength(1);
-    const site = siteFiles(document, RULES);
-    expect(site.pages[0]?.html).toContain('src="js/interactions.js"');
-    expect(site.interactions).toContain("panel.setAttribute('role', 'tabpanel')");
-    expect(site.interactions).toContain('panels[j].hidden = !active');
-    expect(site.interactions).toContain("event.key === 'ArrowRight'");
-    expect(previewPage(document, RULES)).toContain('panels[j].hidden = !active');
+    expect(tabs.customAttributes?.['data-wc']).toBe('tabs');
+    const [nav, ...panels] = tabs.children;
+    expect(nav?.children.every((tab) => tab.customAttributes?.['data-wc-tab'] === '')).toBe(true);
+    expect(panels).toHaveLength(nav?.children.length ?? 0);
+    expect(panels.every((panel) => panel.customAttributes?.['data-wc-panel'] === '' && panel.children.length === 1)).toBe(true);
+    const site = siteFiles(page([tabs]), RULES);
+    expect(site.interactions).toBeNull();
+    expect(site.pages[0]?.html).toContain('src="js/widgets.js"');
   });
 
-  it('wires a shared component class once while addressing all matching instances', () => {
-    const make = nodeMaker(page([]), RULES, sequentialIds('tabs'), (key) => key);
-    const document = page([paletteNode(make, 'template-tabs'), paletteNode(make, 'template-tabs')]);
-    const script = interactionsJs(document, () => '.shared-tabs') ?? '';
-    expect(script.match(/each\('\.shared-tabs'/g)).toHaveLength(1);
+  it('leaves a person\'s own nav of buttons above a box alone', () => {
+    const toolbar = node('bar', 'Bar', 'div', 'div', {
+      children: [
+        node('nav', 'Tools', 'nav', 'nav', { children: [node('b1', 'One', 'button', 'button', { text: 'One' }), node('b2', 'Two', 'button', 'button', { text: 'Two' })] }),
+        node('box', 'Box', 'div', 'div', { children: [node('p', 'Text', 'paragraph', 'p', { text: 'x' })] }),
+      ],
+    });
+    const document = page([toolbar]);
+    expect(interactionsJs(document, () => '.any')).toBeNull();
+    expect(siteFiles(document, RULES).pages[0]?.html).not.toContain('<script');
+  });
+});
+
+describe('what the canvas shows is what the site shows (G7)', () => {
+  // RENDER-1: the browser's own [hidden] rule loses to an author display, so a hidden Row showed on the site
+  it('keeps a hidden element with a display of its own hidden', () => {
+    const row = node('row', 'Row', 'div', 'div', { hidden: true, styles: styled({ display: 'flex' }) });
+    const site = siteFiles(page([row]), RULES);
+    expect(site.pages[0]?.html).toContain(' hidden>');
+    expect(site.css).toContain('display: flex;');
+    expect(site.css).toContain('[hidden] { display: none !important; }');
+  });
+
+  // RENDER-2: two inline-block boxes the canvas draws side by side were parted by the line break the export wrote
+  it('writes inline-block children on one line, by their own display or by a class', () => {
+    const card = (id: string, fields: Partial<DocNode>) => node(id, 'Card', 'div', 'div', { text: null, ...fields });
+    const own = node('own', 'Own', 'div', 'div', { children: [card('c1', { styles: styled({ display: 'inline-block' }) }), card('c2', { styles: styled({ display: 'inline-block' }) })] });
+    const byClass = node('cls', 'Cls', 'div', 'div', { children: [card('c3', { classes: ['chip'] }), card('c4', { classes: ['chip'] })] });
+    const document: DocumentJson = { ...page([own, byClass]), classes: [{ name: 'chip', styles: styled({ display: 'inline-flex' }) }] };
+    const { html } = exportPage(document, 0, RULES);
+    expect(html).toContain('  <div><div class="card"></div><div class="card"></div></div>');
+    expect(html).toContain('  <div><div class="chip"></div><div class="chip"></div></div>');
+  });
+});
+
+describe('the preview of a page (spec preview-mode)', () => {
+  // RENDER-5: a page in a folder looked its script tags up from its own file and inlined none of them
+  it('runs the scripts of a page in a folder', () => {
+    const button = node('go', 'Go', 'button', 'button', { text: 'Go', interactions: [{ trigger: 'click', action: 'scroll-to', target: 'go' as NodeId }] } as Partial<DocNode>);
+    const document: DocumentJson = { version: 4, pages: [{ id: 'p', name: 'Post', file: 'blog/post.html', tree: node('root', 'Page', 'page', 'body', { children: [button] }) }] };
+    const html = previewPage(document, RULES);
+    expect(html).not.toContain('<script defer src=');
+    expect(html).toContain("document.addEventListener('DOMContentLoaded'");
+  });
+
+  // RENDER-6: the stylesheet went to String.replace as a string, so "$'" pasted the rest of the page into it
+  it('writes the stylesheet as it is, with $ patterns and "</style"', () => {
+    const price = node('price', 'Price', 'paragraph', 'p', { text: 'x', styles: styled({ 'font-family': '"Cost $\' Sans", serif', 'content': '"</style>"' }) });
+    const html = previewPage(page([price]), RULES);
+    expect(html).toContain('font-family: "Cost $\' Sans", serif;');
+    expect(html).toContain('<\\/style>');
+    expect(html.match(/<\/style>/g)).toHaveLength(1);
   });
 });
 

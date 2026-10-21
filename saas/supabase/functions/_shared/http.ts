@@ -1,4 +1,4 @@
-// CORS, respostas JSON e a identificação de quem chama.
+// CORS, JSON responses and identifying the caller.
 import type { SupabaseClient, User } from 'npm:@supabase/supabase-js@2.118.0';
 import { env, userClient } from './env.ts';
 
@@ -24,8 +24,8 @@ export interface Caller {
   readonly db: SupabaseClient;
 }
 
-// O token vem em Authorization: Bearer, ou em x-api-key (o assistente do editor manda a chave nesse cabeçalho).
-// getUser confere o token no servidor de Auth; getSession não serve para isso (docs: auth-getsession).
+// The token comes in Authorization: Bearer, or in x-api-key (the editor's assistant sends the key in that header).
+// getUser checks the token with the Auth server; getSession is not fit for that (docs: auth-getsession).
 export async function caller(req: Request): Promise<Caller | null> {
   const bearer = req.headers.get('authorization')?.replace(/^Bearer\s+/i, '') ?? '';
   const token = bearer || req.headers.get('x-api-key') || '';
@@ -36,7 +36,7 @@ export async function caller(req: Request): Promise<Caller | null> {
   return { user: data.user, db };
 }
 
-// O papel de quem chama no workspace, lido com o RLS dele (só vê as próprias linhas de membro).
+// The caller's role in the workspace, read under the caller's RLS (it only sees its own member rows).
 export async function roleIn(who: Caller, workspaceId: string): Promise<string | null> {
   const { data } = await who.db.from('workspace_members').select('role').eq('workspace_id', workspaceId).eq('user_id', who.user.id).maybeSingle();
   return (data?.role as string | undefined) ?? null;
@@ -45,7 +45,7 @@ export async function roleIn(who: Caller, workspaceId: string): Promise<string |
 export const EDITORS = ['owner', 'admin', 'editor'];
 export const ADMINS = ['owner', 'admin'];
 
-// Comparação em tempo constante para segredos compartilhados (webhooks, chamadas entre serviços).
+// Constant-time comparison for shared secrets (webhooks, service-to-service calls).
 export function sameSecret(given: string, expected: string): boolean {
   const a = new TextEncoder().encode(given);
   const b = new TextEncoder().encode(expected);

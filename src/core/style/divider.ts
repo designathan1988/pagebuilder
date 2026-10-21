@@ -13,7 +13,7 @@ import type { ModelRules } from '../document/validate.ts';
 import type { Patch } from '../history/transaction.ts';
 import { commandOf, numberConstant } from '../../manifest/runtime.ts';
 import { firstLockRefusal, stateRefusal } from '../nodes/flags.ts';
-import { writeDeclarations } from './set.ts';
+import { propertyName, writeDeclarations } from './set.ts';
 import { storedValue } from './stored.ts';
 
 // the arguments a command's own doors carry, as text (the manifest's data)
@@ -61,7 +61,8 @@ export const setDividerCommand = registerHandler('element.setDivider', (context,
   const room = left.width + right.width;
   if (room <= 0) return { kind: 'refused', message: message('status.divider.unmeasured', { name: at.node.name }) };
   const asked = Number.parseFloat(value);
-  if (!Number.isFinite(asked)) return { kind: 'refused', message: message('status.value.invalid', { value }) };
+  // the refusal names the property the divider writes (its text needs it: without it the status bar failed to draw)
+  if (!Number.isFinite(asked)) return { kind: 'refused', message: message('status.value.invalid', { property: propertyName(ARGS.basis ?? '', rules), value }) };
   const wanted = Math.min(Math.max(asked, MIN_WIDTH), Math.max(MIN_WIDTH, room - MIN_WIDTH));
   const fraction = round(wanted / room);
   const patches: Patch[] = [];

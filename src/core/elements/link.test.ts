@@ -91,6 +91,13 @@ describe('element.setLink (src/core/elements/link.ts)', () => {
     expect(run(docWith('https://a.co'), { target: 'Card', href: ' javascript:alert(1) ' })).toEqual({ refused: { key: 'status.url.unsafe', params: { url: 'javascript:alert(1)' } } });
     expect(run(docWith(undefined), { target: 'Card', href: 'data:text/html,x' })).toEqual({ refused: { key: 'status.url.unsafe', params: { url: 'data:text/html,x' } } });
     expect(run(docWith(undefined), { target: 'Card', href: 'nope' })).toEqual({ refused: { key: 'status.url.malformed', params: { url: 'nope' } } });
+    // a control character the URL parser strips hides javascript: from the scheme check (DATA-8): refused as unsafe
+    expect(run(docWith(undefined), { target: 'Card', href: '\u0001javascript:alert(1)' })).toEqual({ refused: { key: 'status.url.unsafe', params: { url: '\u0001javascript:alert(1)' } } });
+    expect(run(docWith(undefined), { target: 'Card', href: 'a\u0007b.html' })).toEqual({ refused: { key: 'status.url.malformed', params: { url: 'a\u0007b.html' } } });
+    // a file of the site typed by its name is a relative address, never a domain (DATA-9)
+    expect(run(docWith(undefined), { target: 'Card', href: 'sobre.html' }).attributes).toEqual({ href: 'sobre.html' });
+    expect(run(docWith(undefined), { target: 'Card', href: 'contato.html#form' }).attributes).toEqual({ href: 'contato.html#form' });
+    expect(run(docWith(undefined), { target: 'Card', href: 'example.com/manual.pdf' }).attributes).toEqual({ href: 'https://example.com/manual.pdf' });
     // refused means refused: the link the Card had is still there, and no patch was recorded
     expect(run(docWith('https://a.co'), { target: 'Card', href: 'javascript:alert(1)' })).toEqual({ refused: { key: 'status.url.unsafe', params: { url: 'javascript:alert(1)' } } });
   });

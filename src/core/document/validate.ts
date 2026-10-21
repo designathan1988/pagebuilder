@@ -125,6 +125,10 @@ export interface ModelRules {
   readonly contentModel: ContentModel;
   // what the page's output needs (render.ts): the canvas and the export write elements and CSS from it
   readonly output: OutputModel;
+  // on rules made for a project's own breakpoint table (breakpoint-rules.ts rulesForDocument): the manifest's rules
+  // they were made from. The validator reads every document against these, never against another project's table, so a
+  // file opened while the project has its own table is checked by its own breakpoints (CORE-1).
+  readonly manifest?: ModelRules;
 }
 
 export type WrapperId = ElementsFile['wrappers'][number]['id'];
@@ -336,9 +340,12 @@ function validateStyles(styles: unknown, at: string, rules: ModelRules, bad: (pa
 // the default breakpoints' ids: only those go without a name of the person's
 const defaultIds = (rules: ModelRules): readonly string[] => rules.breakpointTable.map((b) => b.id);
 
-export function validateDocument(doc: DocumentJson, selection: Selection, manifestRules: ModelRules): Invalid[] {
+export function validateDocument(doc: DocumentJson, selection: Selection, given: ModelRules): Invalid[] {
   const problems: Invalid[] = [];
   const bad = (path: string, message: string) => problems.push({ path, message });
+  // the document is read by its own breakpoints alone: rules made for another project's table (a handler's, while the
+  // open project has one) give way to the manifest's they came from (CORE-1)
+  const manifestRules = given.manifest ?? given;
   // the project's breakpoints, when it has its own table: the styles are checked against those (breakpoints.ts)
   if (doc.breakpoints !== undefined) for (const problem of breakpointProblems(doc.breakpoints, defaultIds(manifestRules))) bad(problem.path, problem.message);
   const rules = doc.breakpoints !== undefined && breakpointProblems(doc.breakpoints, defaultIds(manifestRules)).length === 0 ? rulesForDocument(manifestRules, doc) : manifestRules;
@@ -428,10 +435,10 @@ export function validateDocument(doc: DocumentJson, selection: Selection, manife
   if (doc.folders !== undefined && (!Array.isArray(doc.folders) || doc.folders.some((one) => typeof one !== 'string' || one.trim() === '' || projectPathProblem(one) !== null))) bad('/folders', 'the folders are a list of paths');
   // the project's files (spec explorer-file-system): each a path of the one rule of a project path (the audit's FP1:
   // the export writes it as a ZIP entry), a type and its bytes as base64 text, once each
+  const paths = new Set<string>();
   if (doc.files !== undefined) {
     if (!Array.isArray(doc.files)) bad('/files', 'the files are a list');
     else {
-      const paths = new Set<string>();
       doc.files.forEach((file: unknown, i) => {
         const at = `/files/${i}`;
         if (!isRecord(file)) return bad(at, 'a file is an object');
@@ -446,12 +453,18 @@ export function validateDocument(doc: DocumentJson, selection: Selection, manife
     }
   }
   const files = new Set<string>();
+  // the folders a path stands under ("a/b/c.html": "a", "a/b"), and the folders the project's files stand under
+  const folderPrefixes = (path: string): string[] => path.split('/').slice(0, -1).map((_, i, parts) => parts.slice(0, i + 1).join('/'));
+  const fileFolders = new Set([...paths].flatMap(folderPrefixes));
   (doc.pages ?? []).forEach((page, i) => {
     const at = `/pages/${i}`;
     claim(page.id, `${at}/id`);
     if (typeof page.name !== 'string' || page.name.trim() === '') bad(`${at}/name`, 'a page has a name');
     if (typeof page.file !== 'string' || !PAGE_FILE.test(page.file) || projectPathProblem(page.file) !== null) bad(`${at}/file`, `"${String(page.file)}" is not a page file path such as index.html`);
     else if (files.has(page.file)) bad(`${at}/file`, `two pages are ${page.file}`);
+    // a page's file and a project file share the one tree of paths, which the export writes as ZIP entries: a page
+    // never stands at a file's path, under a file as if it were a folder, or over one as a folder (CORE-4)
+    else if (paths.has(page.file) || fileFolders.has(page.file) || folderPrefixes(page.file).some((folder) => paths.has(folder))) bad(`${at}/file`, `${page.file} is also the path of a project file`);
     else files.add(page.file);
     if (page.tree.type !== rules.root.type) bad(`${at}/tree/type`, `a page's root is a ${rules.root.type} element`);
     validateNode(page.tree, `${at}/tree`, rules, claim, bad, true);

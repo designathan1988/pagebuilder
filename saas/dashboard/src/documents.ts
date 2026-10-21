@@ -1,4 +1,4 @@
-// CPF e CNPJ: o painel confere os dígitos verificadores antes de mandar para a cobrança, para a pessoa corrigir na hora.
+// CPF and CNPJ: the dashboard checks the check digits before sending to billing, so the person can fix it right away.
 const digits = (value: string) => value.replace(/\D/g, '');
 
 function cpfValid(cpf: string): boolean {
@@ -28,7 +28,7 @@ export const documentValid = (value: string): boolean => {
   return only.length === 11 ? cpfValid(only) : cnpjValid(only);
 };
 
-// a máscara enquanto a pessoa digita: 000.000.000-00 ou 00.000.000/0000-00
+// the mask while the person types: 000.000.000-00 or 00.000.000/0000-00
 export function documentMask(value: string): string {
   const d = digits(value).slice(0, 14);
   if (d.length <= 11) return d.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');

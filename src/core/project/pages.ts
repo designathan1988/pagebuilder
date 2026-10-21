@@ -22,7 +22,7 @@ import type { Patch } from '../history/transaction.ts';
 import { walk, type NodeId } from '../document/model.ts';
 import { releaseReferencesPatch } from '../document/tree.ts';
 import { addressAttributes } from '../files/references.ts';
-import { copiedCaptureSheet, pathMovePatches, pathTaken } from '../files/files.ts';
+import { copiedCaptureSheet, pathGenerated, pathMovePatches, pathTaken } from '../files/files.ts';
 import type { ModelRules } from '../document/validate.ts';
 import { slug } from '../text/fold.ts';
 import { registerReferenceKind } from '../store/references.ts';
@@ -37,12 +37,15 @@ function pageFile(name: string): string {
 // The home page: a page the project cannot lose, and the file a rename never hands to another page.
 const HOME = 'index.html';
 
-// The first free name and file for a base: "About", "About 2", "About 3"…
-function fresh(names: readonly string[], files: readonly string[], base: string): { readonly name: string; readonly file: string } {
+// The first free name and file for a base: "About", "About 2", "About 3"…. The file is free by the one rule of the
+// project's paths (files.ts pathTaken, which files.createFile, files.rename and pages.rename ask too): no page, project
+// file or folder holds it, and the export does not write a file of its own there (CORE-4).
+function fresh(document: DocumentJson, base: string): { readonly name: string; readonly file: string } {
+  const names = document.pages.map((p) => p.name);
   for (let n = 1; ; n += 1) {
     const name = n === 1 ? base : `${base} ${n}`;
     const file = pageFile(name);
-    if (!names.includes(name) && !files.includes(file)) return { name, file };
+    if (!names.includes(name) && !pathTaken(document, file) && !pathGenerated(file)) return { name, file };
   }
 }
 
@@ -91,7 +94,7 @@ export function addPageCommand<Ui extends WithPage>() {
   const typed = given ? name.trim() : words('pages.defaultName');
   // a name the person gave is theirs, refused when taken; the default name takes the next free one ("Page 2")
   if (given && document.pages.some((p) => p.name === typed)) return { kind: 'refused' as const, message: message('status.pages.nameTaken', { name: typed }) };
-  const { name: chosen, file } = fresh(document.pages.map((p) => p.name), document.pages.map((p) => p.file), typed);
+  const { name: chosen, file } = fresh(document, typed);
   const root: DocNode = { id: ids.next(), type: rules.root.type, name: rootName(document.pages, chosen), tag: rules.root.tag, attributes: {}, classes: [], styles: {}, text: null, children: [] };
   const made: Page = { id: ids.next(), name: chosen, file, tree: root };
   return { kind: 'change' as const, patches: [{ op: 'add', path: ['pages', document.pages.length], value: made }], ui: { ...state.ui, page: made.id }, selection: [], message: message('status.pages.added', { name: chosen, file }) };
@@ -132,7 +135,7 @@ export const renamePageCommand = registerHandler('pages.rename', ({ state, rules
 export function copyPage(document: DocumentJson, source: Page, base: string, next: () => NodeId): Page {
   // every node of the copy gets an id of its own and its own styles record; the rest of the node is data
   const copy = (node: DocNode): DocNode => ({ ...node, id: next(), classes: [...node.classes], styles: structuredClone(node.styles), children: node.children.map(copy) });
-  const { name, file } = fresh(document.pages.map((p) => p.name), document.pages.map((p) => p.file), base);
+  const { name, file } = fresh(document, base);
   const plainCopy = copy(source.tree);
   const tree = refreshCopiedIdentities(document, [{ source: source.tree, copy: plainCopy }])[0];
   if (tree === undefined) throw new Error('pages: the copied tree is missing');

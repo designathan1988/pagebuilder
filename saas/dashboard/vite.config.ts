@@ -1,5 +1,5 @@
-// O painel do cliente é servido em /painel/, ao lado do editor (servido em /): os dois na mesma origem dividem a
-// sessão do Supabase, guardada no localStorage. O build vai para dist/painel do editor (rode o build do editor antes).
+// The customer dashboard is served at /painel/, next to the editor (served at /): both on the same origin share the
+// Supabase session, kept in localStorage. The build goes to the editor's dist/painel (run the editor build first).
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 

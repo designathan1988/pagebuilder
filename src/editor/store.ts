@@ -41,6 +41,7 @@ import { restoreEditContext } from './view/edit-context.ts';
 import { reportError } from '../core/incidents.ts';
 import { modeBreaches, modesOf, modesWith } from './input/modes.ts';
 import { capturedFollowsSelection } from './capture/selection.ts';
+import { releaseObjectUrls } from '../core/files/files.ts';
 
 export type EditorStore = Store<EditorUi>;
 export type EditorState = StoreState<EditorUi>;
@@ -171,7 +172,21 @@ export function createEditorStore(options: EditorStoreOptions = {}): EditorStore
   });
   persistPreferences(store, storage);
   persistWorkspace(store, options.workspace ?? browserWorkspace);
+  releaseUnheldFiles(store);
   return gestureSafe(store);
+}
+
+// The object URLs of the project's files (core/files/files.ts objectUrl) live while the document the editor shows holds
+// their content: once its files change, a content none of them holds any more (a file deleted, its bytes replaced, the
+// project replaced) is released, so the tab's memory does not keep every image the session ever showed (CORE-6).
+function releaseUnheldFiles(store: Store<EditorUi>): void {
+  let files = store.getState().document.files;
+  store.subscribe(() => {
+    const now = store.getState().document.files;
+    if (now === files) return;
+    files = now;
+    releaseObjectUrls(now ?? []);
+  });
 }
 
 // The store the editor hands its parts: the one way every command of the editor runs (a door, a key, a gesture, a

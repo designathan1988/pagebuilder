@@ -1,9 +1,9 @@
-// Os projetos do espaço: criar (e abrir no editor), renomear, excluir, e ver o site publicado.
+// The workspace's projects: create (and open in the editor), rename, delete, and view the published site.
 import { useCallback, useEffect, useState, type CSSProperties, type FormEvent } from 'react';
 import { go } from './app.tsx';
 import { callFunction, canAdmin, canEdit, editorLink, errorText, siteUrl, supabase, when, type Project, type Workspace } from './supabase.ts';
 
-// uma cor por projeto, tirada do nome, para os cartões não serem iguais
+// one color per project, derived from its name, so the cards are not all alike
 const hueOf = (name: string) => [...name].reduce((sum, c) => (sum * 31 + c.charCodeAt(0)) % 360, 7);
 
 export function Projects({ workspace }: { workspace: Workspace }) {

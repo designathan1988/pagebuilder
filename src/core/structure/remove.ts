@@ -65,9 +65,13 @@ export const deleteCommand = registerHandler('element.delete', ({ state }): Outc
   // what pointed at what goes (the audit's A3.4): the delete says so, and the references it takes away go with it in
   // the same undo step, so no label or link is left pointing at nothing (the toast under the message offers Undo)
   const cited = roots.reduce((sum, root) => sum + referencesTo(state.document, root.node.id), 0);
+  // the references' number goes in as the count, so the text takes its singular or plural form ("the reference",
+  // not "1 references"); several elements are counted, never put where a name goes
   const said =
     cited > 0
-      ? message('status.deleted.cited', { name: roots.length === 1 ? primary.node.name : String(roots.length), references: String(cited) })
+      ? roots.length === 1
+        ? message('status.deleted.cited', { name: primary.node.name, count: cited })
+        : message('status.deletedMany.cited', { elements: roots.length, count: cited })
       : roots.length === 1
         ? message('status.deleted', { name: primary.node.name })
         : message('status.deletedMany', { count: roots.length });
@@ -87,5 +91,5 @@ export const deleteCommand = registerHandler('element.delete', ({ state }): Outc
 // undo, a selection, a refusal) takes it away.
 export function followsDelete(state: StoreState<unknown>): boolean {
   const key = state.message?.key;
-  return state.history.past.at(-1)?.command === deleteCommand.command && (key === 'status.deleted' || key === 'status.deletedMany' || key === 'status.deleted.cited');
+  return state.history.past.at(-1)?.command === deleteCommand.command && (key === 'status.deleted' || key === 'status.deletedMany' || key === 'status.deleted.cited' || key === 'status.deletedMany.cited');
 }

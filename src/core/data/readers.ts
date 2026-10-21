@@ -44,6 +44,9 @@ const DATA_EXTENSIONS = ['csv', 'tsv', 'json', 'xlsx'] as const;
 const extension = (name: string): string => name.slice(name.lastIndexOf('.') + 1).toLowerCase();
 const isDataName = (name: string): boolean => (DATA_EXTENSIONS as readonly string[]).includes(extension(name));
 const decoder = new TextDecoder('utf-8', { fatal: true });
+// Excel's "CSV" on a Windows in Portuguese or English writes the system's ANSI code page, Windows-1252 ("Pão" with
+// 0xE3): a decoder that reads every byte (DATA-5)
+const ansiDecoder = new TextDecoder('windows-1252');
 
 // The columns of a table from its header row: every one named, no name twice (accents and case aside, as a person
 // reads them), none of the names an object cannot hold.
@@ -95,19 +98,66 @@ function attempt(name: string, read: () => Sheet): Sheet {
 
 // ---------------------------------------------------------------- CSV, TSV, JSON
 
+// A file's text: UTF-8 when its bytes are UTF-8, else Windows-1252 (DATA-5); refused when that text holds a control
+// character no table holds (a binary file named .csv), a tab and a line break aside.
 function textOf(file: string, bytes: Uint8Array): string {
   try {
     // the decoder drops a byte-order mark at the start (its ignoreBOM is false)
     return decoder.decode(bytes);
-  } catch {
-    return refuse('status.data.fileEncoding', { name: file });
+  } catch (error) {
+    // a fatal decoder says bytes that are no UTF-8 with a TypeError
+    if (!(error instanceof TypeError)) throw error;
   }
+  const text = ansiDecoder.decode(bytes);
+  for (let i = 0; i < text.length; i += 1) {
+    const code = text.charCodeAt(i);
+    // a tab (9), a line feed (10) and a carriage return (13) are a table's own
+    if ((code < 0x20 && code !== 9 && code !== 10 && code !== 13) || code === 0x7f) return refuse('status.data.fileEncoding', { name: file });
+  }
+  return text;
 }
 
-export function readDelimited(file: string, source: string, delimiter: ',' | '\t'): Sheet {
+// The marks a delimited file may put between its cells: a comma, a semicolon (Excel's "CSV" where the comma is the
+// decimal mark: pt-BR, DATA-4), a tab.
+type Delimiter = ',' | ';' | '\t';
+// The mark a file's header line puts between its cells, outside quotes: the most frequent one; a semicolon against as
+// many commas wins; a comma when none is there.
+export function delimiterOf(source: string): Delimiter {
+  let comma = 0;
+  let semicolon = 0;
+  let tab = 0;
+  let quoted = false;
+  for (const char of source) {
+    if (char === '"') quoted = !quoted;
+    else if (quoted) continue;
+    else if (char === '\n' || char === '\r') break;
+    else if (char === ',') comma += 1;
+    else if (char === ';') semicolon += 1;
+    else if (char === '\t') tab += 1;
+  }
+  if (tab > comma && tab > semicolon) return '\t';
+  return semicolon > 0 && semicolon >= comma ? ';' : ',';
+}
+
+// A file whose cells a semicolon separates, as the same file with tabs (the CSV reader's other delimiter, core/design
+// /data.ts csvLines): outside quotes each semicolon becomes a tab and a tab of a cell is quoted, so every cell reads as
+// it was written.
+function semicolonsAsTabs(source: string): string {
+  let quoted = false;
+  let out = '';
+  for (const char of source) {
+    if (char === '"') quoted = !quoted;
+    out += quoted ? char : char === ';' ? '\t' : char === '\t' ? '"\t"' : char;
+  }
+  return out;
+}
+
+// A delimited file's sheet: its delimiter the one its name says (a .tsv is tab separated), else the one its header
+// uses.
+export function readDelimited(file: string, source: string, delimiter: Delimiter = delimiterOf(source)): Sheet {
   // a quote opened and never closed swallows the rest of the file into one cell: an odd count of quotes says so
   if (((source.match(/"/g) ?? []).length & 1) === 1) refuse('status.data.fileQuote', { name: file });
-  return sheetOf(file, file, csvLines(source, delimiter));
+  return sheetOf(file, file, delimiter === ';' ? csvLines(semicolonsAsTabs(source), '\t') : csvLines(source, delimiter));
 }
 
 // A JSON list of objects (or an object holding one, as Fill from data reads it): its keys are the columns, in the
@@ -264,7 +314,7 @@ export async function readDataFile(name: string, bytes: Uint8Array, xml: XmlRead
     case 'json':
       return { name, sheets: [readJson(name, textOf(name, bytes))] };
     default:
-      return { name, sheets: [readDelimited(name, textOf(name, bytes), extension(name) === 'tsv' ? '\t' : ',')] };
+      return { name, sheets: [extension(name) === 'tsv' ? readDelimited(name, textOf(name, bytes), '\t') : readDelimited(name, textOf(name, bytes))] };
   }
 }
 

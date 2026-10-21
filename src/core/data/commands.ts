@@ -15,7 +15,7 @@ import { lockRefusal } from '../nodes/flags.ts';
 import { copyPage, openedPage, type WithPage } from '../project/pages.ts';
 import { copiedCaptureSheet } from '../files/files.ts';
 import type { Patch } from '../history/transaction.ts';
-import { boundIn, targetsOf, type DataContext } from './bindings.ts';
+import { boundIn, siteYesNo, targetsOf, type DataContext } from './bindings.ts';
 import {
   DataRefusal,
   addField,
@@ -260,7 +260,7 @@ export const addItemCommand = registerHandler('data.addItem', (context, { collec
 export const setCellCommand = registerHandler('data.setCell', (context, { collection, item, field, value }) =>
   contentChange(context, (document) => {
     const held = named(document, collection);
-    const next = setCell(held, item, field, value);
+    const next = setCell(held, item, field, value, document.language);
     const row = held.items.findIndex((one) => one.id === item) + 1;
     const label = held.fields.find((f) => f.key === field)?.label ?? field;
     return { document: withCollection(document, held.name, next), message: message('status.data.cellSet', { collection: held.name, row, column: label }) };
@@ -445,7 +445,8 @@ export function pagesFromCollectionCommand<Ui extends WithPage>() {
       const made: Page[] = [];
       held.items.forEach((item, index) => {
         if (existing.has(item.id)) return;
-        const name = cellText(item.values[field.key], { yes: context.words('data.yes'), no: context.words('data.no') }).trim();
+        // the page's name as the site writes the value (its language, its decimal places)
+        const name = cellText(item.values[field.key], siteYesNo(document.language), { language: document.language, decimals: field.decimals }).trim();
         if (name === '') refuse('status.data.emptyName', { collection: held.name, row: index + 1, column: field.label });
         const copy = copyPage(withPageAfter(document, at, made), source, name, () => data.ids.next() as NodeId);
         made.push({ ...copy, tree: { ...copy.tree, dataItem: { collection: held.name, item: item.id } } });

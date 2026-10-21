@@ -1,4 +1,4 @@
-// The cloud capture (Arquivo › Abrir um endereço da web… no editor na nuvem): the Builder Companion's capture
+// The cloud capture (File › Open a web address… in the cloud editor): the Builder Companion's capture
 // (tools/companion/capture.ts), as a service, so a person opens any site without installing anything.
 //   POST /capture { url, pages? } with Authorization: Bearer <the person's Supabase session>
 //     → { title, files: [{ path, type, base64 }] }, or { error, errorCode? }

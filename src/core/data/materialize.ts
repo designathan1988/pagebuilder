@@ -40,7 +40,7 @@ function listChildren(document: DocumentJson, node: DocNode, list: DataList, col
     if (item === undefined) return instance;
     // the row a person sees: the item's place in the collection, as the Data grid numbers it
     const place = { collection, item, row: collection.items.indexOf(item) + 1 };
-    return fillTree(document, instance, place, pages, context);
+    return fillTree(document, instance, place, pages);
   };
   const kept: DocNode[] = [];
   let index = 0;
@@ -113,7 +113,7 @@ export function materialize(document: DocumentJson, context: DataContext): Docum
           void _gone;
           tree = plain;
         } else {
-          tree = fillTree(document, tree, { collection, item, row: index + 1 }, pages, context);
+          tree = fillTree(document, tree, { collection, item, row: index + 1 }, pages);
         }
       }
       if (tree === page.tree) return page;

@@ -1,6 +1,6 @@
-// O Worker que serve os sites publicados (developers.cloudflare.com/workers/wrangler/configuration, 2026-10-21).
-// Rota "*/*" na zona dos sites: cobre <slug>.seusites.com.br e todo domínio próprio (Cloudflare for SaaS).
-// Segredos (nunca aqui): npx wrangler secret put PLATFORM_SECRET
+// The Worker that serves the published sites (developers.cloudflare.com/workers/wrangler/configuration, 2026-10-21).
+// Route "*/*" on the sites zone: covers <slug>.seusites.com.br and every custom domain (Cloudflare for SaaS).
+// Secrets (never here): npx wrangler secret put PLATFORM_SECRET
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "webconstructor-sites",
@@ -10,15 +10,15 @@
   "observability": { "enabled": true },
   "r2_buckets": [{ "binding": "SITES", "bucket_name": "webconstructor-sites" }],
   "vars": {
-    // o domínio dos sites, com o ponto: <slug>.seusites.com.br
+    // the sites domain, with the dot: <slug>.seusites.com.br
     "SITES_SUFFIX": ".seusites.com.br",
-    // o único host que aceita publicação e mapeamento de domínios (com o segredo)
+    // the only host that accepts publishing and domain mapping (with the secret)
     "PLATFORM_HOST": "publish.seusites.com.br",
-    // a Edge Function que grava formulários enviados
+    // the Edge Function that stores submitted forms
     "FORMS_ENDPOINT": "https://SEU-PROJETO.supabase.co/functions/v1/form-submit",
-    // a Edge Function do banco de dados dos apps (app.db, app.auth): o Worker repassa /_api/* para ela
+    // the Edge Function of the apps' database (app.db, app.auth): the Worker forwards /_api/* to it
     "DATA_ENDPOINT": "https://SEU-PROJETO.supabase.co/functions/v1/site-data",
-    // de onde vem o selo do plano grátis
+    // where the free plan badge links to
     "BADGE_URL": "https://app.seudominio.com.br/?ref=selo"
   },
   "routes": [{ "pattern": "*/*", "zone_name": "seusites.com.br" }]

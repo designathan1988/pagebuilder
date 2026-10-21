@@ -33,6 +33,8 @@ import { installBrowserPorts } from './core/ports/browser.ts';
 import { browserPorts } from './editor/browser-ports.ts';
 import { installWiring } from './editor/wiring.ts';
 import { EDITOR_WIRING } from './app/wiring.ts';
+import { browserLocale } from './editor/preferences/preferences.ts';
+import { translate } from './i18n/index.ts';
 
 // the cloud project's document as the autosave's record, or null for a project created empty
 function cloudWork(project: CloudProject): SavedWork | null {
@@ -49,12 +51,14 @@ function stopWith(reason: string): never {
     const box = document.createElement('div');
     box.className = 'cloud-failure';
     const title = document.createElement('h1');
-    title.textContent = 'Não foi possível abrir este projeto';
+    // the editor's preferences are not read yet: the browser's language chooses the words
+    const locale = browserLocale(navigator.languages);
+    title.textContent = translate(locale, 'cloud.open.failed');
     const detail = document.createElement('p');
     detail.textContent = reason;
     const back = document.createElement('a');
     back.href = '/painel/';
-    back.textContent = 'Voltar ao painel';
+    back.textContent = translate(locale, 'cloud.open.back');
     box.append(title, detail, back);
     root.append(box);
   }

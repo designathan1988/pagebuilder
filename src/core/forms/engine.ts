@@ -159,11 +159,28 @@ export function createFormsEngine(now: () => number) {
     }
     return { ...masked, raw: normalized ?? masked.raw, valid: normalized !== null };
   }
-  function numeric(text: string, config: MaskConfig): MaskResult {
-    const locale = config.locale ?? 'pt-BR';
+  // The marks a language writes a number with: its decimal mark, and its group mark read from a number long enough that
+  // every language groups it (es and pt-PT group four digits only from five on), never the decimal mark (DATA-11).
+  function marksOf(locale: string): { readonly decimal: string; readonly group: string } {
     const decimal = new Intl.NumberFormat(locale).formatToParts(1.1).find((part) => part.type === 'decimal')?.value ?? '.';
-    const group = new Intl.NumberFormat(locale).formatToParts(1000).find((part) => part.type === 'group')?.value ?? ',';
-    let input = text.replaceAll(group, '').replace(decimal, '.').replace(/[^\d.-]/g, '');
+    const group = new Intl.NumberFormat(locale, { useGrouping: true }).formatToParts(1234567).find((part) => part.type === 'group')?.value ?? '';
+    return { decimal, group: group === decimal ? '' : group };
+  }
+  // A number as a person writes it in a language ("1.234,5" in pt-BR, "1,234.5" in en) as the digits a number reads:
+  // its group marks dropped and its decimal mark a dot.
+  function plainNumber(text: string, locale: string): string {
+    const { decimal, group } = marksOf(locale);
+    return (group === '' ? text : text.replaceAll(group, '')).replace(decimal, '.');
+  }
+  // The mask's language: its own, else the page's (DATA-10: an English page read "2.5" as 25 with pt-BR's marks).
+  function numeric(text: string, config: MaskConfig, pageLocale?: string): MaskResult {
+    const locale = config.locale ?? pageLocale ?? 'en';
+    const { decimal } = marksOf(locale);
+    // what the mask wrote after the number is no part of it: a unit's digits ("m2") would be read again (DATA-12)
+    let source = text.trimEnd();
+    if (config.suffix && source.endsWith(config.suffix)) source = source.slice(0, -config.suffix.length);
+    if (config.kind === 'percent') source = source.replace(/%\s*$/, '');
+    let input = plainNumber(source, locale).replace(/[^\d.-]/g, '');
     const negative = input.startsWith('-') && config.negative !== false;
     input = input.replaceAll('-', '');
     const [whole = '', fraction, ...extra] = input.split('.');
@@ -214,7 +231,7 @@ export function createFormsEngine(now: () => number) {
       case 'currency': case 'measurement': return text !== '';
     }
   }
-  function mask(text: string, config: MaskConfig = { kind: 'none' }): MaskResult {
+  function mask(text: string, config: MaskConfig = { kind: 'none' }, locale?: string): MaskResult {
     if (config.kind === 'none') return { formatted: text, raw: text, complete: true, valid: true };
     if (config.kind === 'uppercase' || config.kind === 'lowercase') {
       const value = config.kind === 'uppercase' ? text.toLocaleUpperCase(config.locale) : text.toLocaleLowerCase(config.locale);
@@ -227,7 +244,7 @@ export function createFormsEngine(now: () => number) {
       const choice = choices.find((one) => count <= one.maxLength) ?? choices.at(-1);
       return fixed(text, choice?.pattern ?? '');
     }
-    if (config.kind === 'number' || config.kind === 'currency' || config.kind === 'percent') return numeric(text, config);
+    if (config.kind === 'number' || config.kind === 'currency' || config.kind === 'percent') return numeric(text, config, locale);
     if (config.kind === 'date' || config.kind === 'time') return calendar(text, config);
     if (config.kind === 'regex') {
       const valid = new RegExp(`^(?:${config.pattern ?? ''})$`, 'u').test(text);
@@ -236,7 +253,7 @@ export function createFormsEngine(now: () => number) {
     const preset = config.preset ?? 'cpf';
     let result: MaskResult;
     const patterns: Partial<Record<Preset, string>> = { cpf: '000.000.000-00', cnpj: '**.***.***/****-00', cep: '00000-000', pis: '000.00000.00-0', voter: '0000 0000 0000', rg: '*{5,14}', expiry: '00/00', cvv: '0{3,4}' };
-    if (preset === 'cpf-cnpj') return mask(text, { ...config, preset: /[A-Za-z]/.test(text) || digits(text).length > 11 ? 'cnpj' : 'cpf' });
+    if (preset === 'cpf-cnpj') return mask(text, { ...config, preset: /[A-Za-z]/.test(text) || digits(text).length > 11 ? 'cnpj' : 'cpf' }, locale);
     if (preset === 'phone-br') result = fixed(text, digits(text).length > 10 ? '(00) 00000-0000' : '(00) 0000-0000');
     else if (preset === 'phone-international') result = fixed(text, '+0{7,15}');
     else if (preset === 'plate') result = fixed(text.toUpperCase(), /[A-Za-z]/.test(cleanId(text)[4] ?? '') ? 'AAA0A00' : 'AAA-0000');
@@ -245,7 +262,7 @@ export function createFormsEngine(now: () => number) {
       result = { ...fixed(text, brand === 'amex' ? '0000 000000 00000' : '0000 0000 0000 0{1,7}'), brand };
     }
     else if (preset === 'date-br' || preset === 'time') result = calendar(text, { ...config, kind: preset === 'time' ? 'time' : 'date' });
-    else if (preset === 'currency' || preset === 'measurement') return numeric(text, { ...config, kind: preset === 'currency' ? 'currency' : 'number' });
+    else if (preset === 'currency' || preset === 'measurement') return numeric(text, { ...config, kind: preset === 'currency' ? 'currency' : 'number' }, locale);
     else if (patterns[preset]) result = fixed(text.toUpperCase(), patterns[preset]);
     else result = { formatted: text, raw: text, complete: true, valid: true };
     return { ...result, valid: result.valid && checkPreset(preset, result.formatted) };
@@ -262,7 +279,7 @@ export function createFormsEngine(now: () => number) {
     if (!text && !context.files?.length) return violations;
     let result: MaskResult;
     try {
-      result = mask(text, config.mask);
+      result = mask(text, config.mask, context.locale);
     } catch {
       add('configuration');
       return violations;
@@ -272,7 +289,12 @@ export function createFormsEngine(now: () => number) {
       if (!violations.some((one) => one.code === 'preset')) add('preset');
     }
     const raw = result.raw;
-    if (rules.type === 'email' && !checkPreset('email', text) || rules.type === 'url' && !checkPreset('url', text) || rules.type === 'number' && !Number.isFinite(Number(raw))) add('type');
+    // the number a rule compares: a numeric mask's raw value, else the text read with the page's marks ("6,50" on a
+    // pt-BR page is 6.5, DATA-13); a text with no digits, or with more than a number holds, is none
+    const numericMask = ['number', 'currency', 'percent'].includes(config.mask?.kind ?? 'none') || config.mask?.kind === 'preset' && ['currency', 'measurement'].includes(config.mask.preset ?? '');
+    const written = numericMask || context.numeric === true ? raw.trim() : plainNumber(raw.trim(), config.mask?.locale ?? context.locale ?? 'en');
+    const number = /^[+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?$/i.test(written) ? Number(written) : Number.NaN;
+    if (rules.type === 'email' && !checkPreset('email', text) || rules.type === 'url' && !checkPreset('url', text) || rules.type === 'number' && !Number.isFinite(number)) add('type');
     if (rules.pattern) {
       try {
         if (!new RegExp(`^(?:${rules.pattern})$`, 'u').test(text)) add('pattern');
@@ -282,7 +304,6 @@ export function createFormsEngine(now: () => number) {
     }
     if (rules.minLength !== undefined && text.length < rules.minLength) add('tooShort');
     if (rules.maxLength !== undefined && text.length > rules.maxLength) add('tooLong');
-    const number = Number(raw);
     if (rules.minimum !== undefined && (!Number.isFinite(number) || number < rules.minimum)) add('minimum');
     if (rules.maximum !== undefined && (!Number.isFinite(number) || number > rules.maximum)) add('maximum');
     if (rules.step !== undefined) {

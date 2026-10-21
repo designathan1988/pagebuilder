@@ -6,14 +6,14 @@
 // What an address may be:
 //  - empty, which removes it (the caller decides; `readAddress` says ok with an empty value);
 //  - a fragment of the page itself ("#inicio");
-//  - a relative address inside the site ("/about", "about.html", "../img/a.png"), or a path of the project
+//  - a relative address inside the site ("/about", "about.html", "../img/a.png", "foto.jpg"), or a path of the project
 //    ("img/logo.png");
 //  - a web address ("https://example.com/a"?x=1", "http://…");
 //  - an email or a phone address ("mailto:ana@example.com", "tel:+55 11 99999-0000");
 //  - a domain typed without a scheme ("example.com/about"), which is normalised to https://example.com/about — the one
 //    normalisation: what a person types is what a browser would open.
 // Refused, each with its reason: an address that runs code (javascript:, vbscript:) or carries a document inline
-// (data:, blob:) — `status.url.unsafe` — and one with a space or with a scheme the rule does not know
+// (data:, blob:) — `status.url.unsafe` — and one with a space, a control character or a scheme the rule does not know
 // (`status.url.malformed`). A space inside a mailto: or tel: body is allowed (a phone number is written with them).
 import type { Message } from '../commands/registry.ts';
 import { message } from '../commands/registry.ts';
@@ -34,6 +34,14 @@ const filePath = (value: string): boolean => {
   const path = value.replace(/[?#].*$/, '');
   return path.includes('/') || FILE_EXTENSION.test(path);
 };
+// A file of the site typed by its name ("about.html", "foto.jpg", "contato.html#form"): its first segment ends in a
+// site file's extension, so it is a relative address, never a domain ("example.com/about.html" stays a web address).
+const fileName = (value: string): boolean => FILE_EXTENSION.test(value.replace(/[/?#].*$/, ''));
+// A C0 control character or DEL. The URL parser strips them before it reads the scheme (WHATWG URL: "remove any
+// leading C0 control or space", "remove all ASCII tab or newline"), so "\u0001javascript:…" would run code although
+// SCHEME does not see it there. No address holds one; one that hides an unsafe scheme is named unsafe.
+const control = (character: string): boolean => character.charCodeAt(0) < 0x20 || character.charCodeAt(0) === 0x7f;
+export const holdsControl = (value: string): boolean => [...value].some(control);
 
 export type Address =
   | { readonly ok: true; readonly value: string }
@@ -44,6 +52,11 @@ const refused = (value: string, refusal: Message): Address => ({ ok: false, valu
 export function readAddress(typed: string): Address {
   const value = typed.trim();
   if (value === '') return { ok: true, value: '' };
+  if (holdsControl(value)) {
+    const hidden = SCHEME.exec([...value].filter((character) => !control(character)).join('').trim())?.[1]?.toLowerCase();
+    const unsafe = hidden !== undefined && UNSAFE_SCHEMES.includes(`${hidden}:`);
+    return refused(value, message(unsafe ? 'status.url.unsafe' : 'status.url.malformed', { url: value }));
+  }
   if (value.startsWith('#')) return { ok: true, value };
   const scheme = SCHEME.exec(value)?.[1]?.toLowerCase();
   if (scheme !== undefined) {
@@ -60,7 +73,7 @@ export function readAddress(typed: string): Address {
   // renames keeps its own name (the audit's AD1: such a file was refused once placed). Anywhere else a space is a typo
   // ("example .com"), and a tab or a line break never belongs to an address.
   if (/\s/.test(value) && (/[^\S ]/.test(value) || !filePath(value))) return refused(value, message('status.url.malformed', { url: value }));
-  if (BARE_DOMAIN.test(value)) {
+  if (BARE_DOMAIN.test(value) && !fileName(value)) {
     // a web address holds no space (its host and its path are typed as one: "example.com/a b" is a typo)
     if (/\s/.test(value)) return refused(value, message('status.url.malformed', { url: value }));
     const normalized = `https://${value}`;

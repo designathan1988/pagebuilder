@@ -7,7 +7,9 @@
 //    Options say whether it fires only the first time and how long its action waits (readOptions).
 //  - The triggers and actions are the manifest's own lists (the enums of interactions.add's arguments), never re-listed
 //    here. What applies is read from the element: a form's submit only on a <form>, playing an animation only where
-//    the element holds one. Anything else is refused with status.interactions.notApplicable naming what.
+//    the element holds one. Anything else is refused with a sentence of its own that names what was refused and where:
+//    a trigger or an action that does not apply to the element, an animation it does not hold, a value an action does
+//    not take, a field an interaction does not have, a target no longer on the page.
 //  - An interaction is named by its place in the element's list (as a shadow's layer is by its index), so a door drawn
 //    per interaction stands for exactly one. A field's text is read by the `field` argument its door fixes
 //    (manifest: adapter.fields). The editing canvas never runs an interaction; the preview and the exported page do,
@@ -138,7 +140,7 @@ function optionsFrom(node: DocNode, action: string, text: string): { readonly ch
     return { change: { className: typed } };
   }
   if (needsAnimation(action)) {
-    if (!animationsOf(node).some((animation) => animation.name === typed)) return { refused: message('status.interactions.notApplicable', { name: typed }) };
+    if (!animationsOf(node).some((animation) => animation.name === typed)) return { refused: message('status.interactions.noAnimation', { name: typed, element: node.name }) };
     return { change: { animation: typed } };
   }
   if (needsAddress(action)) {
@@ -146,7 +148,7 @@ function optionsFrom(node: DocNode, action: string, text: string): { readonly ch
     if (!read.ok) return { refused: read.refusal };
     return { change: { address: read.value } };
   }
-  return { refused: message('status.interactions.notApplicable', { name: { key: actionLabel(action) } }) };
+  return { refused: message('status.interactions.noValue', { name: { key: actionLabel(action) } }) };
 }
 
 // The Options of an interaction (the canonical card's "Once · no delay"; Webflow's trigger settings hold the same
@@ -239,7 +241,7 @@ export const addInteractionCommand = registerHandler('interactions.add', (contex
   const nodeIds = new Set([...allNodes(context.state.document)].map((one) => one.id as string));
   const problem = interactionProblems(interaction, nodeIds)[0];
   if (problem !== undefined) return { kind: 'refused', message: message('status.interactions.badOptions', { text: problem.field }) };
-  if (interaction.animation !== undefined && !animationsOf(found.node).some((one) => one.name === interaction.animation)) return { kind: 'refused', message: message('status.interactions.notApplicable', { name: interaction.animation }) };
+  if (interaction.animation !== undefined && !animationsOf(found.node).some((one) => one.name === interaction.animation)) return { kind: 'refused', message: message('status.interactions.noAnimation', { name: interaction.animation, element: found.node.name }) };
   return {
     kind: 'change',
     patches: writeInteractions(found, [...interactionsOf(found.node), interaction]),
@@ -251,11 +253,11 @@ export const addInteractionCommand = registerHandler('interactions.add', (contex
 function changedByText(node: DocNode, interaction: Interaction, field: string, text: string): { readonly next: Interaction } | { readonly refused: Message } {
   const typed = text.trim();
   if (field === 'trigger') {
-    if (!applicableTriggers(node).includes(typed)) return { refused: message('status.interactions.notApplicable', { name: { key: triggerLabel(typed) } }) };
+    if (!applicableTriggers(node).includes(typed)) return { refused: message('status.interactions.notApplicable', { name: { key: triggerLabel(typed) }, element: node.name }) };
     return { next: { ...interaction, trigger: typed } };
   }
   if (field === 'action') {
-    if (!applicableActions(node).includes(typed)) return { refused: message('status.interactions.notApplicable', { name: { key: actionLabel(typed) } }) };
+    if (!applicableActions(node).includes(typed)) return { refused: message('status.interactions.notApplicable', { name: { key: actionLabel(typed) }, element: node.name }) };
     // a new action takes the values it needs with it: what the old one held goes
     const { className: _c, animation: _a, address: _ad, newTab: _n, ...rest } = interaction;
     void _c;
@@ -285,7 +287,7 @@ function changedByText(node: DocNode, interaction: Interaction, field: string, t
     if (!CLASS_NAME.test(typed)) return { refused: message('status.classes.badName', { name: typed }) };
     return { next: { ...interaction, scope: typed } };
   }
-  return { refused: message('status.interactions.notApplicable', { name: { key: fieldLabel(field) } }) };
+  return { refused: message('status.interactions.noField', { name: { key: fieldLabel(field) } }) };
 }
 
 // The editor's maker of the picking state (spec events-actions: the Target field starts picking on the canvas or on a
@@ -321,7 +323,7 @@ export function updateInteractionCommand<Ui>(make: PickMaking<Ui>): RegisteredHa
     const wanted = changes as Record<string, unknown>;
     // the pick of a target: the element named on the canvas or on a Layers row (never a typed id)
     if (typeof wanted.target === 'string') {
-      if (locate(context.state.document, wanted.target as NodeId) === null) return { kind: 'refused', message: message('status.interactions.notApplicable', { name: wanted.target }) };
+      if (locate(context.state.document, wanted.target as NodeId) === null) return { kind: 'refused', message: message('status.interactions.targetMissing') };
       next = { ...next, target: wanted.target as NodeId };
     }
     if (typeof wanted.scope === 'string') {
@@ -329,11 +331,11 @@ export function updateInteractionCommand<Ui>(make: PickMaking<Ui>): RegisteredHa
       next = { ...next, scope: wanted.scope };
     }
     if (typeof wanted.trigger === 'string') {
-      if (!applicableTriggers(found.node).includes(wanted.trigger)) return { kind: 'refused', message: message('status.interactions.notApplicable', { name: { key: triggerLabel(wanted.trigger) } }) };
+      if (!applicableTriggers(found.node).includes(wanted.trigger)) return { kind: 'refused', message: message('status.interactions.notApplicable', { name: { key: triggerLabel(wanted.trigger) }, element: found.node.name }) };
       next = { ...next, trigger: wanted.trigger };
     }
     if (typeof wanted.action === 'string') {
-      if (!applicableActions(found.node).includes(wanted.action)) return { kind: 'refused', message: message('status.interactions.notApplicable', { name: { key: actionLabel(wanted.action) } }) };
+      if (!applicableActions(found.node).includes(wanted.action)) return { kind: 'refused', message: message('status.interactions.notApplicable', { name: { key: actionLabel(wanted.action) }, element: found.node.name }) };
       next = { ...next, action: wanted.action };
     }
     // the Options as values (once, a delay in ms), as a door that stands for them writes them

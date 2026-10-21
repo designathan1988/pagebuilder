@@ -4,6 +4,8 @@
 // the n-th repeated item of a bound list shows the n-th item of the list's query, and every element of a page made
 // for an item shows that item.
 import type { MessageId } from '../../generated/ids.ts';
+import en from '../../i18n/locales/en.json' with { type: 'json' };
+import ptBR from '../../i18n/locales/pt-BR.json' with { type: 'json' };
 import type { DocNode, DocumentJson } from '../document/model.ts';
 import type { ModelRules } from '../document/validate.ts';
 import type { IdGenerator } from '../ports/ids.ts';
@@ -60,19 +62,25 @@ export interface Place {
   readonly row: number;
 }
 
-const yesNo = (words: DataContext['words']) => ({ yes: words('data.yes'), no: words('data.no') });
+// The words a yes/no value is written with on the site: the site's language (a Portuguese site says "Sim"/"Não"),
+// English for any other, never the language the person reads the editor in (DATA-2: what the page said depended on
+// who edited it last).
+export function siteYesNo(language: string | undefined): { readonly yes: string; readonly no: string } {
+  const catalogue = (language ?? 'en').toLowerCase().startsWith('pt') ? ptBR : en;
+  return { yes: catalogue['data.yes'], no: catalogue['data.no'] };
+}
 
 // What a binding makes an element show for its item: the value as text, the image the value names (a project path, a
 // project image by its file name, a web address), the address of a link, or of the item's page. Undefined when the item
 // holds no value there: the element keeps what it shows (a template's own text stays until the item has one). A value
 // the target cannot show is refused, naming the row, the column and the value.
-export function valueFor(document: DocumentJson, bound: Bound, place: Place, pages: ItemPages, context: DataContext): string | readonly InlineRun[] | undefined {
+export function valueFor(document: DocumentJson, bound: Bound, place: Place, pages: ItemPages): string | readonly InlineRun[] | undefined {
   if (bound.field === ITEM_PAGE) return pages.get(itemPageKey(place.collection.name, place.item.id));
   const field = place.collection.fields.find((f) => f.key === bound.field);
   if (field === undefined) return undefined;
   const value: Cell | undefined = place.item.values[field.key];
   if (value === undefined) return undefined;
-  const text = cellText(value, yesNo(context.words), { language: document.language, decimals: field.decimals });
+  const text = cellText(value, siteYesNo(document.language), { language: document.language, decimals: field.decimals });
   switch (bound.to) {
     case 'text':
       return Array.isArray(value) ? canonical(value as readonly InlineRun[]) : text;
@@ -93,10 +101,10 @@ export function valueFor(document: DocumentJson, bound: Bound, place: Place, pag
 
 // The element showing its own bindings' values for an item (its children untouched). A text written by a binding takes
 // the rich text's marks when the field holds some, and loses any marks it had otherwise.
-function fillNode(document: DocumentJson, node: DocNode, place: Place, pages: ItemPages, context: DataContext): DocNode {
+function fillNode(document: DocumentJson, node: DocNode, place: Place, pages: ItemPages): DocNode {
   let next = node;
   for (const bound of node.bind ?? []) {
-    const value = valueFor(document, bound, place, pages, context);
+    const value = valueFor(document, bound, place, pages);
     if (bound.field === ITEM_PAGE && bound.to === 'link' && value === undefined) {
       // an item with no page yet: its link goes nowhere rather than somewhere wrong
       const { href: _href, ...attributes } = next.attributes as Readonly<Record<string, unknown>>;
@@ -130,9 +138,9 @@ export function* reached(root: DocNode): Generator<DocNode> {
 }
 
 // A subtree showing an item: every element it reaches filled by its own bindings.
-export function fillTree(document: DocumentJson, root: DocNode, place: Place, pages: ItemPages, context: DataContext): DocNode {
+export function fillTree(document: DocumentJson, root: DocNode, place: Place, pages: ItemPages): DocNode {
   const visit = (node: DocNode): DocNode => {
-    const filled = node.bind === undefined ? node : fillNode(document, node, place, pages, context);
+    const filled = node.bind === undefined ? node : fillNode(document, node, place, pages);
     const list = node.dataList;
     const children = node.children.map((child) => (list !== undefined && child.component === list.component ? child : visit(child)));
     return children.every((child, i) => child === node.children[i]) ? filled : { ...filled, children };

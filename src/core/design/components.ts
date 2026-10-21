@@ -26,7 +26,7 @@ import type { NodeId } from '../../generated/commands.ts';
 import { message, registerHandler, registerPredicate, type Message, type Outcome } from '../commands/registry.ts';
 import { locate, walk, type ComponentDefinition, type DocNode, type DocumentJson } from '../document/model.ts';
 import type { ModelRules } from '../document/validate.ts';
-import { refreshCopiedIdentities } from '../document/clone.ts';
+import { refreshCopiedIdentities, withFreshAnimationNames } from '../document/clone.ts';
 import { placementRefusal } from '../elements/content-model.ts';
 import type { Patch } from '../history/transaction.ts';
 import { deepEqual } from '../history/transaction.ts';
@@ -133,8 +133,16 @@ export const insertInstanceCommand = registerHandler('components.insertInstance'
   const definition = componentsOf(state.document).find((c) => c.name === component);
   // every tile stands for a component of the project, so an unknown one is a defect of the door
   if (definition === undefined) throw new Error(`components.insertInstance: the project has no component ${component}`);
-  const at = placement(state, state.selection, rules, parent, index);
-  if (at === null) throw new Error(`components.insertInstance: the document has no node ${String(parent)}`);
+  const placed = placement(state, state.selection, rules, parent, index);
+  if (placed === null) throw new Error(`components.insertInstance: the document has no node ${String(parent)}`);
+  // an instance lies inside no other instance: placed by the selection (no parent given) inside an instance, the new
+  // one goes right after that instance, in its parent, as an element follows a selected element of its own kind (the
+  // audit's STRUCT-8: a second click on the Card tile, the first Card selected, was refused with the words of
+  // components.create)
+  const hostOfPlace = parent === undefined ? instanceRootOf(state.document, placed.parent.node.id) : null;
+  const hostAt = hostOfPlace === null ? null : locate(state.document, hostOfPlace.id as NodeId);
+  const hostParent = hostAt?.parent === null || hostAt === null ? null : locate(state.document, hostAt.parent.id as NodeId);
+  const at = hostAt === null || hostParent === null ? placed : { parent: hostParent, index: hostAt.index + 1 };
   const receiver = at.parent.node;
   const locked = lockRefusal(state.document, receiver.id, 'status.locked.insert');
   if (locked !== null) return { kind: 'refused', message: locked };
@@ -146,9 +154,9 @@ export const insertInstanceCommand = registerHandler('components.insertInstance'
   const copiedTree = refreshCopiedIdentities(state.document, [{ source: definition.tree, copy: plainCopy }])[0];
   if (copiedTree === undefined) throw new Error('components.insertInstance: the instance copy is missing');
   const node = marked({ ...copiedTree, name }, [], definition.name);
-  // an instance lies inside no other instance
+  // a parent named inside an instance (a drop, a door that names it) refuses: an instance lies inside no other
   const host = instanceRootOf(state.document, receiver.id);
-  if (host !== null) return { kind: 'refused', message: message('status.components.inInstance', { name: receiver.name }) };
+  if (host !== null) return { kind: 'refused', message: message('status.instance.nested', { name: node.name, instance: host.name }) };
   const refused = placementRefusal(state.document, rules, receiver.id, [node]);
   if (refused !== null) return { kind: 'refused', message: refused };
   return {
@@ -364,22 +372,51 @@ function partOf(tree: DocNode, part: readonly number[]): DocNode | undefined {
   return at;
 }
 
-// What an element of another instance shows after an update: a text or an attribute it never changed (it still holds
-// the definition's own) follows the edited instance; one it changed (an override) stays its own. Without this every
-// instance kept its old texts and links, and a shared header changed only its styles (DEF-0615).
-function inherited(from: DocNode, mine: DocNode, base: DocNode | undefined): Pick<DocNode, 'text' | 'attributes'> {
-  if (base === undefined) return { text: mine.text, attributes: mine.attributes };
-  const text = deepEqual(mine.text, base.text) ? from.text : mine.text;
-  const own = mine.attributes as Readonly<Record<string, unknown>>;
-  const was = base.attributes as Readonly<Record<string, unknown>>;
-  const now = from.attributes as Readonly<Record<string, unknown>>;
-  const attributes: Record<string, unknown> = {};
+// One record of values (attributes, custom attributes) after an update, key by key: a key the instance never changed
+// (it holds what the definition holds, both absent included) follows the edited instance; one it changed stays its own.
+function inheritedKeys(own: Readonly<Record<string, unknown>>, was: Readonly<Record<string, unknown>>, now: Readonly<Record<string, unknown>>): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
   for (const key of new Set([...Object.keys(own), ...Object.keys(was), ...Object.keys(now)])) {
     const untouched = Object.hasOwn(own, key) === Object.hasOwn(was, key) && deepEqual(own[key], was[key]);
     const value = untouched ? now[key] : own[key];
-    if (value !== undefined && (untouched ? Object.hasOwn(now, key) : Object.hasOwn(own, key))) attributes[key] = value;
+    if (value !== undefined && (untouched ? Object.hasOwn(now, key) : Object.hasOwn(own, key))) result[key] = value;
   }
-  return { text, attributes: attributes as DocNode['attributes'] };
+  return result;
+}
+
+type Content = Pick<DocNode, 'text' | 'inline' | 'attributes' | 'customAttributes'>;
+const contentOf = (node: DocNode): Content => ({
+  text: node.text,
+  ...(node.inline === undefined ? {} : { inline: node.inline }),
+  attributes: node.attributes,
+  ...(node.customAttributes === undefined ? {} : { customAttributes: node.customAttributes }),
+});
+// What an element of another instance shows after an update: a text or an attribute it never changed (it still holds
+// the definition's own) follows the edited instance; one it changed (an override) stays its own. Without this every
+// instance kept its old texts and links, and a shared header changed only its styles (DEF-0615). A text and its marks
+// (`inline`) are one value, taken together from one side: the marks of one side with the text of the other broke the
+// model ("the text of inline is the element's text") or dropped the other instance's bold and links.
+function inherited(from: DocNode, mine: DocNode, base: DocNode | undefined): Content {
+  const textSide = base !== undefined && deepEqual(mine.text, base.text) && deepEqual(mine.inline, base.inline) ? from : mine;
+  const attributes = base === undefined ? mine.attributes : (inheritedKeys(mine.attributes, base.attributes, from.attributes) as DocNode['attributes']);
+  const custom = base === undefined ? mine.customAttributes : inheritedKeys(mine.customAttributes ?? {}, base.customAttributes ?? {}, from.customAttributes ?? {});
+  return {
+    text: textSide.text,
+    ...(textSide.inline === undefined ? {} : { inline: textSide.inline }),
+    attributes,
+    ...(custom === undefined || Object.keys(custom).length === 0 ? {} : { customAttributes: custom as NonNullable<DocNode['customAttributes']> }),
+  };
+}
+
+// A component's definition made from an edited instance: no element of it is hidden or locked (those are the person's
+// choice on each instance, as on each page: core/data/regions.ts), and its root lists no variant (a variant is each
+// instance's own choice, listed on its root).
+function definitionOf(node: DocNode, variantPrefix: string | null): DocNode {
+  const { hidden: _h, locked: _l, ...plain } = node;
+  void _h;
+  void _l;
+  const classes = variantPrefix === null ? plain.classes : plain.classes.filter((one) => !one.startsWith(variantPrefix));
+  return { ...plain, classes, children: plain.children.map((child) => definitionOf(child, null)) };
 }
 
 // components.updateFromInstance (the plan's stage 7, "master edit mode"; journey D2): an instance edited in
@@ -396,46 +433,98 @@ export const updateFromInstanceCommand = registerHandler('components.updateFromI
   const before = componentsOf(state.document)[index];
   if (index < 0 || before === undefined) return { kind: 'refused', message: message('status.components.notInstance') };
   const next = () => ids.next() as NodeId;
-  // the new definition: the edited instance, plain, with ids of its own
-  const definitionTree = copied(source, next, null, true);
-  const taken = new Set(state.document.pages.flatMap((page) => [...walk(page.tree)].map((one) => one.name)));
-  // an instance rebuilt on the edited one's structure: each element keeps the id, name, text and attributes of the
-  // instance's element of the part it came from, else a new id
-  // each element of another instance is kept once: two elements of the edited instance with the same part (one
-  // duplicated inside it) would both take its id (the random probe found the ids twice)
-  const kept = new Set<string>();
-  const rebuilt = (from: DocNode, instance: DocNode | null): DocNode => {
-    const ownPart = from.componentPart;
-    // the element of the same part and the same type: a pasted or duplicated part keeps its componentPart, and the
-    // text and attributes of another type are no values of this one (the audit's CS1: the update was refused)
-    const mine = instance === null || ownPart === undefined ? undefined : [...walk(instance)].find((one) => one.componentPart !== undefined && deepEqual(one.componentPart, ownPart) && one.type === from.type && !kept.has(one.id));
-    if (mine !== undefined) kept.add(mine.id);
-    const plain = unmarked({ ...from, children: [] });
-    // an element new to the edited instance reaches the others as a copy does: a new id and a name no element has
-    const element =
-      mine === undefined
-        ? instance === null
-          ? plain
-          : { ...plain, id: next(), name: copyName(plain.name, taken) }
-        : { ...plain, id: mine.id, name: mine.name, ...inherited(from, mine, ownPart === undefined ? undefined : partOf(before.tree, ownPart)) };
-    if (mine === undefined && instance !== null) taken.add(element.name);
-    return { ...element, children: from.children.map((child) => rebuilt(child, instance)) };
+  const variantPrefix = `${variantBase(name)}--`;
+  // the new definition: the edited instance, plain, with ids of its own, what its elements point at among themselves
+  // pointing at the definition's own elements (as components.create makes one: an interaction kept the edited
+  // instance's ids, and every instance placed later acted on that instance's elements), with no per-instance choice
+  const definitionCopy = copied(source, next, null, true);
+  const repaired = (copy: DocNode): DocNode => {
+    const [tree] = refreshCopiedIdentities(state.document, [{ source, copy }], false);
+    if (tree === undefined) throw new Error('components.updateFromInstance: the repaired copy is missing');
+    return tree;
   };
-  const written: { readonly path: readonly (string | number)[]; readonly before: DocNode; readonly tree: DocNode }[] = [];
-  let count = 0;
+  const definitionTree = definitionOf(repaired(definitionCopy), variantPrefix);
+  const taken = new Set(state.document.pages.flatMap((page) => [...walk(page.tree)].map((one) => one.name)));
+  // the instances the update rewrites, in document order
+  const instances: { readonly path: readonly (string | number)[]; readonly node: DocNode }[] = [];
   const visit = (at: DocNode, atPath: (string | number)[]) => {
     if (at.component === name) {
-      const tree = at.id === source.id ? rebuilt(source, null) : rebuilt(source, at);
-      written.push({ path: atPath, before: at, tree: marked({ ...tree, name: at.name }, [], name) });
-      if (at.id !== source.id) count += 1;
+      instances.push({ path: atPath, node: at });
       return;
     }
     at.children.forEach((child, i) => visit(child, [...atPath, 'children', i]));
   };
   state.document.pages.forEach((page, i) => visit(page.tree, ['pages', i, 'tree']));
-  // every instance the update rewrites is changed: a locked one, or one inside a locked element, refuses it (LK1)
+  const others = instances.filter((one) => one.node.id !== source.id);
+  const rewritten = new Set(others.flatMap((one) => [...walk(one.node)].map((inner) => inner.id)));
+  // the HTML ids and the @keyframes names the document keeps beside the rewritten instances: an element or an
+  // animation new to an instance takes one none of them holds (the audit's UQ1: one name, one stylesheet rule)
+  const everyNode = state.document.pages.flatMap((page) => [...walk(page.tree)]);
+  const occupied = new Set(everyNode.map((one) => one.attributes.id).filter((id): id is string => typeof id === 'string' && id !== ''));
+  const animationNames = new Set(everyNode.filter((one) => !rewritten.has(one.id)).flatMap((one) => (one.animations ?? []).map((animation) => animation.name)));
+  const freshHtmlId = (htmlId: string): string => {
+    let candidate = `${htmlId}-copy`;
+    for (let n = 2; occupied.has(candidate); n += 1) candidate = `${htmlId}-copy-${n}`;
+    occupied.add(candidate);
+    return candidate;
+  };
+  // each element of another instance is kept once: two elements of the edited instance with the same part (one
+  // duplicated inside it) would both take its id (the random probe found the ids twice)
+  const kept = new Set<string>();
+  // Another instance rebuilt on the edited one's structure. Each element keeps the id, the name, the HTML id, the
+  // hidden and locked flags of the instance's element of the part it came from (else a new id, a name and an HTML id
+  // no element has, and no flag), and its texts and attributes where it overrode them (`inherited`); its root keeps
+  // its variant.
+  const rebuilt = (from: DocNode, instance: DocNode): DocNode => {
+    const ownPart = from.componentPart;
+    // the element of the same part and the same type: a pasted or duplicated part keeps its componentPart, and the
+    // text and attributes of another type are no values of this one (the audit's CS1: the update was refused)
+    const mine = ownPart === undefined ? undefined : [...walk(instance)].find((one) => one.componentPart !== undefined && deepEqual(one.componentPart, ownPart) && one.type === from.type && !kept.has(one.id));
+    if (mine !== undefined) kept.add(mine.id);
+    const { hidden: _h, locked: _l, inline: _i, customAttributes: _c, ...plain } = unmarked({ ...from, children: [] });
+    void _h;
+    void _l;
+    void _i;
+    void _c;
+    // an element new to the edited instance reaches the others as a copy does: a new id and a name no element has
+    const content = mine === undefined ? contentOf(from) : inherited(from, mine, ownPart === undefined ? undefined : partOf(before.tree, ownPart));
+    const { id: _ownHtmlId, ...attributes } = content.attributes;
+    void _ownHtmlId;
+    const mineHtmlId = mine?.attributes.id;
+    const fromHtmlId = from.attributes.id;
+    const htmlId = typeof mineHtmlId === 'string' && mineHtmlId !== '' ? mineHtmlId : typeof fromHtmlId === 'string' && fromHtmlId !== '' ? freshHtmlId(fromHtmlId) : undefined;
+    const classes = from === source ? [...from.classes.filter((one) => !one.startsWith(variantPrefix)), ...instance.classes.filter((one) => one.startsWith(variantPrefix))] : from.classes;
+    const element: DocNode = {
+      ...plain,
+      ...content,
+      attributes: (htmlId === undefined ? attributes : { ...attributes, id: htmlId }) as DocNode['attributes'],
+      classes,
+      ...(mine === undefined ? { id: next(), name: copyName(plain.name, taken) } : { id: mine.id, name: mine.name }),
+      ...(mine?.hidden === true ? { hidden: true as const } : {}),
+      ...(mine?.locked === true ? { locked: true as const } : {}),
+    };
+    if (mine === undefined) taken.add(element.name);
+    return { ...element, children: from.children.map((child) => rebuilt(child, instance)) };
+  };
+  // what the edited instance's elements point at among themselves (an interaction's target, a label's control, an
+  // anchor link) points, in each other instance, at that instance's own element of the same place, and its animations
+  // take names of their own (the audit's STRUCT-5: every instance acted on the edited one's elements)
+  const ownIdentities = (tree: DocNode): DocNode => withFreshAnimationNames(repaired(tree), animationNames);
+  const written = instances.map((one) => {
+    const tree = one.node.id === source.id ? source : ownIdentities(rebuilt(source, one.node));
+    return { path: one.path, before: one.node, tree: marked({ ...tree, name: one.node.name }, [], name) };
+  });
+  const count = others.length;
+  // every instance the update rewrites is changed: a locked one, or one inside a locked element, refuses it (LK1); so
+  // does a locked element inside another instance the update would change or remove (the audit's STRUCT-4: its lock
+  // was taken off and its content rewritten)
   const locked = firstLockRefusal(state.document, written.map((one) => one.before.id as NodeId), 'status.locked.edit');
   if (locked !== null) return { kind: 'refused', message: locked };
+  for (const one of written) {
+    const now = new Map([...walk(one.tree)].map((inner) => [inner.id, inner] as const));
+    const changed = [...walk(one.before)].find((inner) => inner.locked === true && !deepEqual(now.get(inner.id), inner));
+    if (changed !== undefined) return { kind: 'refused', message: message('status.locked.edit', { name: changed.name }) };
+  }
   // what the edited instance no longer holds leaves the other instances, and whatever pointed at it lets go of it in
   // the same undo step (a link, a label, an interaction, a motion action: the audit's RF1, the update was refused): the
   // instances written whole carry their own release, every other node its own patch

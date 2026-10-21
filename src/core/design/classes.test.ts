@@ -12,7 +12,7 @@ import { manualClock } from '../ports/clock.ts';
 import { anyCss } from '../ports/css.ts';
 import { sequentialIds } from '../ports/ids.ts';
 import { noLayout } from '../ports/layout.ts';
-import { applyToSimilarCommand, moveIntoClassCommand } from './classes.ts';
+import { applyToSimilarCommand, deleteClassCommand, moveIntoClassCommand, renameClassCommand } from './classes.ts';
 
 const RULES = rulesFromManifest(manifest.elements, manifest.properties, manifest.html);
 const node = (id: string, fields: Partial<DocNode> = {}): DocNode => ({ id: id as NodeId, type: 'article' as DocNode['type'], name: id, tag: 'article', attributes: {}, classes: [], styles: {}, text: null, children: [], ...fields });
@@ -55,5 +55,34 @@ describe('class moves', () => {
     const next = applyPatches(document, outcome.patches ?? []).document;
     expect(next.pages[0]?.tree.children.map((child) => child.classes)).toEqual([['card'], ['card'], ['card']]);
     expect(applyToSimilarCommand.run(context(next, ['A']), { className: 'card' }).kind).toBe('refused');
+  });
+});
+
+// The audit of 2026-10-21 (STRUCT-11, STYLE-6): an interaction or a motion that names a class by its name follows the
+// class renamed, and keeps it from being deleted.
+describe('a class an interaction or a motion names', () => {
+  const bound = (): DocumentJson => ({
+    ...project([
+      node('Btn', { classes: ['card'], interactions: [{ trigger: 'click', action: 'toggle-class', target: 'Nav' as NodeId, className: 'card', scope: 'card' }], motions: [{ id: 'm1', trigger: { kind: 'click' }, timeline: 'Intro', control: 'play', scope: 'card' }] }),
+      node('Nav'),
+    ]),
+    motionTimelines: [{ id: 't1', name: 'Intro', markers: [], actions: [{ id: 'a1', target: { kind: 'class', className: 'card' }, start: 0, duration: 0, effect: { kind: 'class', operation: 'toggle', className: 'card' } }] }],
+  });
+  const result = (document: DocumentJson, outcome: ReturnType<typeof renameClassCommand.run>): DocumentJson => {
+    if (outcome.kind !== 'change') throw new Error(JSON.stringify(outcome));
+    const next = applyPatches(document, outcome.patches ?? []).document;
+    expect(validateDocument(next, [], RULES)).toEqual([]);
+    return next;
+  };
+  it('follows the class renamed', () => {
+    const next = result(bound(), renameClassCommand.run(context(bound(), []), { className: 'card', nextName: 'tile' }));
+    const button = next.pages[0]?.tree.children[0];
+    expect(button?.interactions?.[0]).toMatchObject({ scope: 'tile', className: 'tile' });
+    expect(button?.motions?.[0]?.scope).toBe('tile');
+    expect(next.motionTimelines?.[0]?.actions[0]).toMatchObject({ target: { className: 'tile' }, effect: { className: 'tile' } });
+  });
+  it('refuses the class deleted while one names it', () => {
+    const outcome = deleteClassCommand.run({ ...context(bound(), []), confirmed: true }, { className: 'card' });
+    expect(outcome).toMatchObject({ kind: 'refused', message: { key: 'status.classes.inUseByInteractions' } });
   });
 });

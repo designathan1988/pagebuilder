@@ -34,7 +34,8 @@ import { dispatchInSession } from '../input/pointer.ts';
 import { MODEL_RULES, layeredRules, useEditorState, useStore, type EditorStore } from '../store.ts';
 import { useOutsideLayer } from './outside-layer.ts';
 import { useT } from '../text.ts';
-import { COLOR_SWATCH, propertyWord, usePageValues, useTokenSuggestions } from './field.tsx';
+import { COLOR_SWATCH, propertyWord, swatchColour, usePageValues, useTokenSuggestions } from './field.tsx';
+import { tokensOf } from '../../core/design/tokens.ts';
 import { contrast, CONTRAST_MINIMUM } from '../../core/a11y/checks.ts';
 import { locate } from '../../core/document/model.ts';
 import { manifest } from '../../manifest/runtime.ts';
@@ -358,7 +359,9 @@ function Picker({ property, previous }: { readonly property: string; readonly pr
   // the page's value too: a named colour the element holds (rebeccapurple) is read as the rgb() the page computes
   const computed = usePageValues(primary, properties)?.[property];
   const current = stored ?? computed ?? '';
-  const rgba = parseColor(stored ?? '') ?? parseColor(computed ?? '') ?? BLACK;
+  // the project's variables, for the swatch of a colour that names one (Previous opened on var(--brand): swatchColour)
+  const tokens = useEditorState((s) => tokensOf(s.document));
+  const rgba =parseColor(stored ?? '') ?? parseColor(computed ?? '') ?? BLACK;
   // the colour as it is, outside sRGB too (OKLCH and OKLab show it; the area shows the nearest sRGB colour)
   const exact = parseSrgb(stored ?? '') ?? parseSrgb(computed ?? '');
   const hsb = rgbToHsb(rgba);
@@ -417,7 +420,7 @@ function Picker({ property, previous }: { readonly property: string; readonly pr
               data-args={JSON.stringify({ property, value: previousValue })}
               title={t('colorPicker.previous')}
               aria-label={t('colorPicker.previous')}
-              style={{ '--swatch-colour': opened } as CSSProperties}
+              style={{ '--swatch-colour': swatchColour(opened, tokens) } as CSSProperties}
               onClick={() => (previousValue !== null ? run(store, previousPart, { property, value: previousValue }) : undefined)}
             />
           ) : null}

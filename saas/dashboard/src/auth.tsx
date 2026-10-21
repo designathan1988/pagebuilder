@@ -1,4 +1,4 @@
-// Entrar, criar conta, recuperar a senha e definir uma nova (quando a pessoa volta pelo link do e-mail).
+// Signing in, creating an account, recovering the password and setting a new one (when the person returns through the email link).
 import { useState, type FormEvent } from 'react';
 import { errorText, supabase } from './supabase.ts';
 
@@ -29,7 +29,7 @@ export function AuthScreen() {
           options: { emailRedirectTo: back(), data: { full_name: name } },
         });
         if (failed) throw failed;
-        // com a confirmação de e-mail ligada, a conta só entra depois do link
+        // with email confirmation on, the account signs in only after the link
         if (data.session === null) setSent(`Enviamos um link de confirmação para ${email}. Abra-o para entrar.`);
       } else {
         const { error: failed } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: back() });
@@ -106,7 +106,7 @@ export function AuthScreen() {
   );
 }
 
-// A pessoa voltou pelo link de recuperação: já está com sessão, falta a nova senha.
+// The person came back through the recovery link: they already have a session, only the new password is missing.
 export function NewPassword({ onDone }: { onDone: () => void }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);

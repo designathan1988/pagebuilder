@@ -1,4 +1,4 @@
-// O cliente do Supabase do painel, e os tipos das linhas que o painel lê (saas/supabase/migrations).
+// The dashboard's Supabase client, and the types of the rows the dashboard reads (saas/supabase/migrations).
 import { createClient } from '@supabase/supabase-js';
 
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
@@ -58,7 +58,7 @@ export const siteUrl = (slug: string): string => `https://${slug}.${SITES_DOMAIN
 export const canAdmin = (role: Role): boolean => role === 'owner' || role === 'admin';
 export const canEdit = (role: Role): boolean => role !== 'client';
 
-// Chama uma Edge Function com a sessão da pessoa. Devolve o corpo, ou lança o código de erro que a função devolveu.
+// Calls an Edge Function with the person's session. Returns the body, or throws the error code the function returned.
 export async function callFunction<T>(name: string, init: { body?: unknown; method?: string; query?: Record<string, string> } = {}): Promise<T> {
   const { data } = await supabase.auth.getSession();
   const token = data.session?.access_token;
@@ -75,7 +75,7 @@ export async function callFunction<T>(name: string, init: { body?: unknown; meth
   return body;
 }
 
-// As mensagens dos erros que a pessoa pode resolver; qualquer outro vira a mensagem genérica.
+// The messages for errors the person can fix; any other becomes the generic message.
 const ERRORS: Record<string, string> = {
   plan_limit_projects: 'Você chegou ao limite de projetos do seu plano. Mude de plano para criar mais.',
   plan_limit_sites: 'Você chegou ao limite de sites publicados do seu plano.',

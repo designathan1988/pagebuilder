@@ -75,6 +75,18 @@ describe('the app packages', () => {
     expect(desktop.has('app/index.html')).toBe(true);
   });
 
+  it('writes the projects\' README in the site\'s language, English for a language without its own', () => {
+    for (const [language, file, title] of [['pt-BR', 'LEIA-ME.md', 'app Android e iOS'], ['en', 'README.md', 'Android and iOS app'], ['fr', 'README.md', 'Android and iOS app']] as const) {
+      const site = { ...todo, language };
+      const android = new Map(packageEntries('android', siteEntries(site, RULES, scripts), site).map((entry) => [entry.path, new TextDecoder().decode(entry.bytes)]));
+      const desktop = new Map(packageEntries('desktop', siteEntries(site, RULES, scripts), site).map((entry) => [entry.path, new TextDecoder().decode(entry.bytes)]));
+      const identity = appIdentity(site);
+      expect(android.get(file)).toContain(`# ${identity.name}: ${title}`);
+      expect(android.get(file)).toContain(`(\`${identity.id}\`)`);
+      expect(desktop.get(file)).toContain(`${identity.name} Setup.exe`);
+    }
+  });
+
   it('writes archives every unzip tool reads', async () => {
     for (const format of ['site', 'pwa', 'android', 'desktop'] as const) {
       const bytes = packageArchive(format, todo, RULES, scripts);

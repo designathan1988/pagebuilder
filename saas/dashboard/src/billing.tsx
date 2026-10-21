@@ -1,5 +1,5 @@
-// Plano e cobrança: o plano em vigor, o uso (projetos, sites, domínios, créditos de IA), os planos para assinar pelo
-// Asaas (Pix, boleto ou cartão na fatura do Asaas) e o cancelamento.
+// Plan and billing: the plan in force, the usage (projects, sites, domains, AI credits), the plans to subscribe to via
+// Asaas (Pix, boleto or card on the Asaas invoice) and cancellation.
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { documentMask, documentValid } from './documents.ts';
 import { callFunction, canAdmin, errorText, money, supabase, type Plan, type Subscription, type Workspace } from './supabase.ts';

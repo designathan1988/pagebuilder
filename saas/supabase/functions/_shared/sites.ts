@@ -1,4 +1,4 @@
-// Chamadas ao Worker dos sites (saas/worker): só pelo host de publicação, com o segredo compartilhado.
+// Calls to the sites Worker (saas/worker): only through the publishing host, with the shared secret.
 import { env } from './env.ts';
 
 export async function platform(path: string, init: { method: string; body?: BodyInit; contentType?: string }): Promise<Response> {
@@ -15,5 +15,5 @@ export async function platform(path: string, init: { method: string; body?: Body
 }
 
 export const SLUG = /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$/;
-// nomes que não podem ser subdomínio de cliente
+// names that cannot be a customer subdomain
 export const RESERVED = new Set(['www', 'app', 'api', 'admin', 'painel', 'publish', 'customers', 'fallback', 'mail', 'status']);

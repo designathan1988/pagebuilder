@@ -24,7 +24,7 @@ import { pluralForm } from '../../i18n/index.ts';
 import { manifest } from '../../manifest/runtime.ts';
 import type { EditorUi } from '../state.ts';
 import { chosen } from '../preferences/said.ts';
-import { styleClassOf } from './style-target.ts';
+import { cascadeSource, styleClassOf } from './style-target.ts';
 import { withInspectorTab } from '../workspace/layout.ts';
 import { withInspector } from '../workspace/panels.ts';
 import { registerReferenceKind } from '../../core/store/references.ts';
@@ -201,15 +201,13 @@ export function summaryProperties(section: SectionId): readonly string[] {
 // the declarations in force: an element's own layer first, then its classes in stylesheet order. Missing longhands
 // take their CSS initial value, without measuring the page or its zoom.
 export function declaredBorderValues(document: DocumentJson, node: DocNode, rules: ModelRules): Readonly<Record<string, string>> {
+  // the holder and layer the cascade takes it from (style-target.ts cascadeSource: a class's state rule outranks the
+  // element's own base rule)
   const declared = (property: string): string | undefined => {
-    const own = shownText(node, property, rules);
-    if (own !== undefined) return own;
-    for (const styleClass of [...classesOf(document)].reverse()) {
-      if (!node.classes.includes(styleClass.name)) continue;
-      const value = shownText({ ...node, styles: styleClass.styles }, property, rules);
-      if (value !== undefined) return value;
-    }
-    return undefined;
+    const found = cascadeSource(document, node, property, rules);
+    if (found === null) return undefined;
+    const styles = found.className === null ? node.styles : classesOf(document).find((one) => one.name === found.className)?.styles;
+    return shownText({ ...node, styles: styles ?? {} }, property, { ...rules, base: { breakpoint: found.breakpoint, state: found.state } });
   };
   return Object.fromEntries(summaryProperties('border').map((property) => {
     const value = declared(property);

@@ -15,7 +15,7 @@ import { TEXT_TOOLBAR } from '../../canvas/text-edit.ts';
 import { pickingTarget } from '../../inspector/pick-target.ts';
 import { motionPicking } from '../../motion/state.ts';
 import type { Press } from './machine.ts';
-import { modifierOf, type Picking } from './press.ts';
+import { modifierOf, stepModifier, type Picking } from './press.ts';
 import { CONTAINERS, layersDrag, ROW_DROP, ROW_SELECT } from '../drop-proposals.ts';
 import { pointerViews, type Inserting, type PressRegion } from './views.ts';
 import { sharedOf, type PointerShared } from './shared.ts';
@@ -333,7 +333,7 @@ const PANEL_FALLBACK = PANEL_DRAGS.find((d) => d.door.kind === 'panel-drag' && d
 export const EXPLORER_OPEN = manifest.doors.find((d) => d.door.kind === 'panel-control' && d.door.control === 'file-row') ?? null;
 export function scrubModifier(entry: DoorEntry, modifier: string | null): string | null {
   const gesture = manifest.interactions.gestures.find((g) => entry.door.kind === 'panel-drag' && g.id === entry.door.gesture);
-  return modifier !== null && 'modifier' in entry.command.args && gesture?.modifiers.some((m) => m.key === modifier) === true ? modifier : null;
+  return 'modifier' in entry.command.args ? stepModifier(modifier, gesture?.modifiers.map((m) => m.key)) : null;
 }
 
 // Whether the pointer owner runs the presses of a drawn control (a palette tile): its click then comes from here, and

@@ -44,7 +44,7 @@ import { GLYPHS, doorSlots } from '../doors/placement.ts';
 import { quickPanelDismissed } from '../quick-panel/quick-panel.ts';
 import { unitMenu } from '../../core/style/units.ts';
 import { cssFamily, familyOf, isFontFile } from '../../core/files/fonts.ts';
-import { afterGesture, registerRepeat, registerSlider } from '../input/pointer.ts';
+import { afterGesture, modifierOf, registerRepeat, registerSlider, stepModifier } from '../input/pointer.ts';
 import { wheelStep } from '../input/wheel-step.ts';
 import { pointerViews } from '../input/pointer/views.ts';
 import { MODEL_RULES, editContextOf, editedKey, useEditorState, useStore, type EditorState, type EditorStore, layeredRules } from '../store.ts';
@@ -56,6 +56,7 @@ import { compactFieldValue, FieldOriginBadge, FieldValueSlot, useFieldAppearance
 import { restoreFieldDraft } from '../persistence/drafts.ts';
 import { DRAFT_KEPT, markFieldKept, recordFieldInput } from '../input/drafts.ts';
 import { heldTyping, holdTyping, keepTyping, ownCommandRunning, releaseTyping } from '../input/pending.ts';
+import { heldDraft, type HeldDraft } from '../input/held-draft.ts';
 import { floatBelow, type Placed } from './float.ts';
 import { onPageChange } from '../canvas/page-clock.ts';
 import { VariableSuggestions } from './variable-suggestions.tsx';
@@ -72,6 +73,21 @@ export const keptByFieldEnter = (entry: DoorEntry): boolean => entry.command.id 
 // the parts of the field component, in their order (layout.json region `field`): a number field's, and the swatch of
 // a colour field, which opens the colour picker (color.tsx)
 export const COLOR_SWATCH = doorSlots('field').find((p) => p.door.kind === 'panel-control' && p.door.control === 'color-swatch');
+
+// The colour a swatch of the editor wears for a value that names variables (var(--brand)): each var() is the
+// variable's value in the project, its aliases followed, else its fallback, else transparent (the checkerboard). The
+// swatch lives in the editor's document, where the project's variables are not defined (only the canvas's :root has
+// them): var(--brand) there made the swatch's whole background invalid, and it drew neither the colour nor its
+// checkerboard (the shell audit's UI-4). A value that names none is itself.
+const VARIABLE_REFERENCE = /var\(\s*--([^\s,()]+)\s*(?:,\s*((?:[^()]|\([^()]*\))*))?\)/g;
+const ALIAS_DEPTH = 8;
+export function swatchColour(text: string, tokens: readonly { readonly name: string; readonly value: string }[]): string {
+  let out = text;
+  for (let depth = 0; depth < ALIAS_DEPTH && out.includes('var('); depth += 1) {
+    out = out.replace(VARIABLE_REFERENCE, (_whole, name: string, fallback: string | undefined) => tokens.find((token) => token.name === name)?.value ?? fallback?.trim() ?? 'transparent');
+  }
+  return out.includes('var(') ? 'transparent' : out;
+}
 // the part that takes the field's value away (style.reset)
 const RESET = doorSlots('field').find((p) => p.door.kind === 'panel-control' && p.door.control === 'property-reset');
 // The parts a number field draws, in their order (the `field` row is 1 unit menu
@@ -127,8 +143,9 @@ function useWheelSteps(input: RefObject<HTMLInputElement | null>, property: stri
       const door = WHEEL_STEPS.find((d) => d.door.args.direction === direction);
       if (door === undefined) return;
       event.preventDefault();
-      const modifier = event.shiftKey ? 'Shift' : event.altKey ? 'Alt' : undefined;
-      (store.dispatch as Dispatch)(door.command.id as CommandId, { ...door.door.args, property, value: element.value, ...(modifier === undefined ? {} : { modifier }) });
+      // the key held, read as every door of the step reads it (stepModifier, rule G3)
+      const modifier = stepModifier(modifierOf(event), door.command.args.modifier?.values);
+      (store.dispatch as Dispatch)(door.command.id as CommandId, { ...door.door.args, property, value: element.value, ...(modifier === null ? {} : { modifier }) });
     };
     // not passive: the wheel steps the value instead of scrolling the panel
     element.addEventListener('wheel', onWheel, { passive: false });
@@ -186,6 +203,84 @@ function useMessagesWhileTyping(draft: RefObject<{ typed: boolean; message: Edit
     [store, draft],
   );
   return arrived;
+}
+
+export interface KeptField {
+  readonly input: RefObject<HTMLInputElement | null>;
+  readonly region: RefObject<HTMLFormElement | null>;
+  readonly onInput: (event: FormEvent<HTMLInputElement>) => void;
+  readonly onBlur: () => void;
+  readonly onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+}
+
+// A field whose text its own command keeps on Enter or when it is left, outside the inspector's value fields (a side
+// of the box model, a variable's name or value, a site colour, a class's name). Its typing is held in the one registry
+// of typing (input/held-draft.ts): a press elsewhere, a command from outside, the focus leaving or the field going keep
+// it, in the context of its first key and for the elements selected then (rules G1 and G2); Enter keeps it the same
+// way. The field shows `held` (what the document holds) again when that changes, when its own command says its word
+// (its Escape, its step) and once its keep has run; any other word arriving meanwhile (the autosave's, the
+// assistant's, a capture's) leaves the typing alone (DEF-0565; the input audit's INPUT-5: each such word put the
+// document's value back and the typing was gone). `keys` names the key context whose doors are the field's own.
+export function useKeptField(
+  held: string,
+  command: CommandId,
+  keys: KeyContextId | null,
+  keep: (text: string, context: EditContext, targets: readonly string[]) => void,
+): KeptField {
+  const store = useStore();
+  const input = useRef<HTMLInputElement>(null);
+  const region = useRef<HTMLFormElement>(null);
+  const draft = useRef<{ typed: boolean; message: EditorState['message'] }>({ typed: false, message: store.getState().message });
+  // the text typed and the elements selected at its first key, for the keep the registry runs outside a render (the
+  // field's ref is gone by the time a field that goes is kept)
+  const typed = useRef<{ text: string; targets: readonly string[] }>({ text: '', targets: [] });
+  const said = useMessagesWhileTyping(draft);
+  const [kept, setKept] = useState(0);
+  const keepHeld = useRef<(context: EditContext) => void>(() => undefined);
+  useEffect(() => {
+    keepHeld.current = (context) => {
+      if (!draft.current.typed) return;
+      draft.current.typed = false;
+      const { text, targets } = typed.current;
+      afterGesture(store, () => {
+        keep(text, context, targets);
+        setKept((count) => count + 1);
+      });
+    };
+  });
+  const own = useMemo(() => [command, ...(keys === null ? [] : keyCommands(keys))], [command, keys]);
+  const registry = useRef<HeldDraft | null>(null);
+  useEffect(() => {
+    const typing = heldDraft(store, input, region, own, keepHeld);
+    registry.current = typing;
+    return () => {
+      typing.left();
+      registry.current = null;
+    };
+  }, [store, own]);
+  useEffect(() => {
+    if (input.current !== null) input.current.value = held;
+    draft.current.typed = false;
+    registry.current?.done();
+  }, [held, said, kept]);
+  return {
+    input,
+    region,
+    onInput: (event) => {
+      if (!draft.current.typed) {
+        draft.current.typed = true;
+        draft.current.message = store.getState().message;
+        typed.current.targets = store.getState().selection;
+      }
+      typed.current.text = event.currentTarget.value;
+      registry.current?.typed();
+    },
+    onBlur: () => registry.current?.left(),
+    onSubmit: (event) => {
+      event.preventDefault();
+      registry.current?.left();
+    },
+  };
 }
 
 // The refusal of the field's own command, said beside the field (spec inspector-number-fields, Problems in Pager 3):
@@ -341,8 +436,9 @@ function StepButton({ entry, property, shown, input, ready }: { readonly entry: 
   useEffect(() => {
     const element = button.current;
     if (element === null || !available) return;
-    return registerRepeat(element, (modifier) => {
-      const held = modifier !== null && entry.command.args.modifier?.values.includes(modifier) === true ? { modifier } : {};
+    return registerRepeat(element, (pressed) => {
+      const modifier = stepModifier(pressed, entry.command.args.modifier?.values);
+      const held = modifier !== null ? { modifier } : {};
       (store.dispatch as Dispatch)(entry.command.id, { ...entry.door.args, property, value: input.current?.value ?? '', ...held });
     });
   }, [store, entry, property, shown, input, available]);
@@ -1003,6 +1099,9 @@ export function TextStyleField({
   const parts = useMemo(() => longhands ?? [property], [longhands, property]);
   const t = useT();
   const { effective, held, mixed, appearance, shown, placeholder, set, anyStored } = useStyleFieldValue(property, parts, part);
+  // the colour its swatch wears: a variable's value, not var(--name), which the editor's document cannot draw (UI-4)
+  const tokens = useEditorState((s) => tokensOf(s.document));
+  const swatch = swatchColour(shown || effective, tokens);
   const said = useMessagesWhileTyping(draft);
   // Enter in a field of its own form (a command of its own, or a part) and leaving any field keep the text the same way
   const own = ownCommand || part !== null;
@@ -1180,12 +1279,12 @@ export function TextStyleField({
     <span ref={valueScope} className="input-wrap" data-face="" data-origin={appearance.kind}>
         {prefix !== null ? <span className="field__prefix">{prefix}</span> : null}
         {!colour && !sample && (entry.door.kind === 'inspector-field' || entry.door.kind === 'quick-panel') && entry.door.icon !== null ? <Icon name={entry.door.icon} size="sm" /> : null}
-        {sample ? <span className="field__sample swatch" style={{ '--swatch-colour': shown || effective } as CSSProperties} title={shown || effective} /> : null}
+        {sample ? <span className="field__sample swatch" style={{ '--swatch-colour': swatch } as CSSProperties} title={shown || effective} /> : null}
         {colour && COLOR_SWATCH !== undefined ? (
           // each swatch names the field it opens the picker for (three of them read the same, the audit's accessible
           // names)
           <DoorControl entry={COLOR_SWATCH} args={{ property }} ready={door.built && primary !== null} className="field__swatch" label={t('field.swatch.of', { property: label })}>
-            <span className="field__sample swatch" style={{ '--swatch-colour': shown || effective } as CSSProperties} />
+            <span className="field__sample swatch" style={{ '--swatch-colour': swatch } as CSSProperties} />
           </DoorControl>
         ) : null}
         <FieldValueSlot value={face.value}>{own ? (

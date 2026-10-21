@@ -79,32 +79,39 @@ export const organizeCommand = registerHandler('element.organize', (context): Ou
   if (at === null) throw new Error('element.organize: the selection is not one container holding two children');
   const locked = firstLockRefusal(state.document, [at.node.id as NodeId], 'status.locked.edit');
   if (locked !== null) return { kind: 'refused', message: locked };
-  const holder = styleHolders(context, [at])[0];
-  if (holder === undefined) throw new Error('element.organize: the container has no style holder');
-  const boxes = holder.node.children.map((child) => layout.box(child.id as NodeId));
+  // the children measured are the selected container's own, the ones the canvas draws (an instance's part writes into
+  // its component's definition, which is drawn nowhere: the audit's STYLE-8 measured the definition's and was refused)
+  const boxes = at.node.children.map((child) => layout.box(child.id as NodeId));
   // what the canvas does not draw cannot be read: the command says so instead of guessing
-  if (boxes.some((box) => box === null)) return { kind: 'refused', message: message('status.organize.unmeasured', { name: holder.node.name }) };
+  if (boxes.some((box) => box === null)) return { kind: 'refused', message: message('status.organize.unmeasured', { name: at.node.name }) };
   const drawn = boxes as readonly Rect[];
   const line = lineOf(drawn) ?? 'column';
   const gap = gapOf(drawn, line);
   const gaps = rules.compositeFacts.get(ARGS.gaps ?? '')?.longhands[line === 'column' ? ROW_GAP : COLUMN_GAP];
   const sides = (rules.compositeFacts.get(ARGS.margins ?? '')?.longhands ?? []).filter((_, i) => SIDES_OF[line].includes(i));
   const layer = rules.base;
-  const patches: Patch[] = writeDeclarations(holder.node, holder.path, layer, {
-    [ARGS.view ?? '']: 'flex',
-    [ARGS.axis ?? '']: line,
-    [gaps ?? '']: `${gap}px`,
-  });
-  // the children's own margins along the line (the ones they hold at this layer) move into the gap
-  for (const child of holder.node.children) {
+  // the container's values go to every holder of its styles, as every style write's (set.ts styleHolders: the class
+  // that is the style target, an instance's component and its copies, else the element)
+  const patches: Patch[] = styleHolders(context, [at]).flatMap((held) =>
+    writeDeclarations(held.node, held.path, layer, {
+      [ARGS.view ?? '']: 'flex',
+      [ARGS.axis ?? '']: line,
+      [gaps ?? '']: `${gap}px`,
+    }),
+  );
+  // the children's own margins along the line (the ones they hold at this layer) move into the gap: each child's own
+  // holders (a class targeted for the container is not the children's)
+  const ofChildren = { ...context, styleClass: null };
+  const margins = Object.fromEntries(sides.map((property): [string, StoredValue | null] => [property, null]));
+  for (const child of at.node.children) {
     const where = locate(state.document, child.id as NodeId);
     if (where === null) continue;
-    patches.push(...writeDeclarations(where.node, where.path, layer, Object.fromEntries(sides.map((property): [string, StoredValue | null] => [property, null]))));
+    for (const held of styleHolders(ofChildren, [where])) patches.push(...writeDeclarations(held.node, held.path, layer, margins));
   }
   return {
     kind: 'change',
     patches,
-    message: message('status.organized', { name: holder.node.name, direction: line, gap }),
+    message: message('status.organized', { name: at.node.name, direction: line, gap }),
   };
 });
 

@@ -8,10 +8,12 @@ import { siteScripts } from '../forms/script.ts';
 import type { DocumentJson } from '../../core/document/model.ts';
 import { fileAt, fileBytes } from '../../core/files/files.ts';
 import { pageLines, siteFiles, STYLESHEET, type CodeLine } from '../../core/export/export.ts';
-import { locate, type DocNode } from '../../core/document/model.ts';
+import { locate, type DocNode, type Selection } from '../../core/document/model.ts';
 import type { NodeId } from '../../generated/commands.ts';
 import type { ModelRules } from '../../core/document/validate.ts';
+import { declarationTexts, replacedDeclarations } from '../../core/style/set.ts';
 import type { EditorUi } from '../state.ts';
+import { activeLayer } from '../view/style-state.ts';
 import { activeFile } from '../explorer/file-tabs.ts';
 import { generatedScripts, isGenerated, kindOf, type FileKind } from '../explorer/explorer.ts';
 
@@ -35,21 +37,23 @@ function isText(path: string, type: string): boolean {
   return TEXT_EXTENSIONS.includes(path.slice(path.lastIndexOf('.') + 1).toLowerCase());
 }
 
-// The rule the pane edits: the declarations the selected element holds at the active breakpoint and style state, one
-// "property: value;" a line — what the CSS pane shows while one element is selected, and what style.applyCssRule
-// writes back (the manifest's code-panel-edit-css: "edit its rule, then apply"). Null when the selection is not one
-// element: the pane shows the whole stylesheet then.
-export function ruleText(state: { readonly document: DocumentJson; readonly selection: readonly string[] }, rules: ModelRules): string | null {
+// What a whole-rule edit of an element shows, one "property: value;" each: the declarations style.applyCssRule and
+// style.setCustomDeclarations replace, read where they write them (core/style/set.ts replacedDeclarations: the class
+// the Style tab targets, an instance's component, else the element, at the active breakpoint and style state), a
+// structured value (a shadow) as the CSS the page writes. Null when the document has no such element.
+export function ruleDeclarations(state: { readonly document: DocumentJson; readonly selection: Selection; readonly ui: EditorUi }, target: NodeId, rules: ModelRules): readonly string[] | null {
+  const at = locate(state.document, target);
+  if (at === null) return null;
+  return declarationTexts(replacedDeclarations(state.document, state.selection, state.ui.styleTarget ?? null, at, activeLayer(state)), rules);
+}
+
+// The rule the pane edits: ruleDeclarations of the selected element, one a line — what the CSS pane shows while one
+// element is selected, and what style.applyCssRule writes back (the manifest's code-panel-edit-css: "edit its rule,
+// then apply"). Null when the selection is not one element: the pane shows the whole stylesheet then.
+export function ruleText(state: { readonly document: DocumentJson; readonly selection: Selection; readonly ui: EditorUi }, rules: ModelRules): string | null {
   const id = state.selection.length === 1 ? state.selection[0] : undefined;
   if (id === undefined) return null;
-  const at = locate(state.document, id as NodeId);
-  if (at === null) return null;
-  const { breakpoint, state: base } = rules.base;
-  const styles = at.node.styles as Record<string, Record<string, Record<string, string>> | undefined>;
-  const held = styles[breakpoint]?.[base] ?? {};
-  return Object.entries(held)
-    .map(([property, value]) => `${property}: ${value};`)
-    .join('\n');
+  return ruleDeclarations(state, id, rules)?.join('\n') ?? null;
 }
 
 // The lines of one element's own markup (and of everything inside it): the export's lines for the subtree, with the

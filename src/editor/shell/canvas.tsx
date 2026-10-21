@@ -265,7 +265,8 @@ function BreakpointTabs({ seen }: { readonly seen: { readonly from: number; read
   );
 }
 
-// While a state other than Base is edited (spec state-styles), a badge over the frame names it: "Editing Hover".
+// While a state other than Base is edited (spec state-styles), a band between the frame's tabs and its page names it:
+// "Editing: Hover".
 function StateBadge() {
   const t = useT();
   const state = useEditorState((s) => activeState(s.ui));
@@ -353,8 +354,10 @@ export function CanvasColumn() {
                         canonical frame): their row takes its own width, so at a small zoom the tabs run past the
                         frame's edge instead of being cut or overlapping (the audit's A3.18) */}
                     <BreakpointTabs seen={{ from: Math.max(0, -(FIT_MARGIN + pan)), to: Math.min(pageWidth * zoom, size.width - (FIT_MARGIN + pan)) }} />
-                    <StateBadge />
+                    {/* the bands of what the edits reach, in the flow between the tabs and the page: the breakpoint's,
+                        then the state's (window-overlays.css) */}
                     <BreakpointBadge />
+                    <StateBadge />
                     {/* the edge first: the page's overlay (its handles at the page's edge) is drawn over it */}
                     <FrameEdge width={pageWidth} />
                     <CanvasFrame width={pageWidth} screen={pageHeight} zoom={zoom} />

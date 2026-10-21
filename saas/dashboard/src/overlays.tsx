@@ -1,6 +1,6 @@
-// Personalizações: os projetos da extensão Site Editor guardados no espaço de trabalho (tabela site_overlays). Daqui se
-// publica (o wc-runtime.js dos sites busca pela chave), se copia o código de instalação por cliente, se liga a um
-// projeto do editor e se abre no navegador com a extensão (pela ponte window.postMessage da extensão).
+// Customizations: the Site Editor extension's projects stored in the workspace (table site_overlays). From here one
+// publishes (the sites' wc-runtime.js fetches by key), copies the install code per client, links to an editor
+// project and opens it in the browser with the extension (through the extension's window.postMessage bridge).
 import { useCallback, useEffect, useState } from 'react';
 import { canAdmin, canEdit, errorText, supabase, when, type Workspace } from './supabase.ts';
 
@@ -21,7 +21,7 @@ const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL as string | undefined) ?
 const ENDPOINT = `${SUPABASE_URL.replace(/\/$/, '')}/functions/v1/overlay`;
 const RUNTIME_URL = new URL('wc-runtime.js', new URL(import.meta.env.BASE_URL, window.location.origin)).href;
 
-// A ponte da extensão (site-editor/src/content/bridge.ts): pedido e resposta por window.postMessage.
+// The extension bridge (site-editor/src/content/bridge.ts): request and response over window.postMessage.
 function bridge<T>(action: string, payload?: Record<string, unknown>, timeout = 15000): Promise<T> {
   return new Promise((resolve, reject) => {
     const id = crypto.randomUUID();

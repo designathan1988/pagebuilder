@@ -10,6 +10,8 @@ export interface FormsSettingsPorts {
   readonly fields: readonly { readonly value: string; readonly label: string }[];
   readonly elements: readonly { readonly value: string; readonly label: string }[];
   readonly locales: readonly string[];
+  // the language of the page the field is on: a number mask with no locale of its own reads and writes in it
+  readonly language?: string;
   readonly field: (control: {
     readonly door: string;
     readonly labelKey: string;
@@ -84,7 +86,7 @@ export function FieldFormSettings({ config, onChange: commit, ports, maskAllowed
   const numberRule = (property: 'minLength' | 'maxLength' | 'minimum' | 'maximum' | 'step') => field(`rules.${property}`, 'number', rules[property], (value) => changeRules({ [property]: value === '' ? undefined : Number(value) }));
   let preview: string;
   try {
-    const result = createFormsEngine(systemClock.now).mask(trial, mask);
+    const result = createFormsEngine(systemClock.now).mask(trial, mask, ports.language);
     preview = `${result.formatted} · ${ports.t('forms.preview.raw')}: ${result.raw} · ${ports.t(result.valid ? 'forms.preview.valid' : 'forms.preview.invalid')}`;
   }
   catch { preview = ports.t('forms.validation.configuration'); }

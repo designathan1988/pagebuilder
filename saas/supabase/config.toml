@@ -1,9 +1,9 @@
-# Configuração do Supabase CLI (supabase.com/docs/guides/local-development/cli/config).
+# Supabase CLI configuration (supabase.com/docs/guides/local-development/cli/config).
 project_id = "webconstructor"
 
 [api]
 port = 54321
-# o schema "private" nunca entra aqui: as funções dele não podem ser chamadas pela API
+# the "private" schema never goes here: its functions must not be callable through the API
 schemas = ["public", "graphql_public"]
 max_rows = 1000
 
@@ -20,9 +20,9 @@ enabled = false
 client_id = ""
 secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
 
-# Chamadas sem JWT do Supabase: o Asaas (webhook) e o Worker dos sites (formulários) se autenticam com segredo
-# próprio; o proxy de IA lê o token do cabeçalho x-api-key, como o assistente do editor manda, e confere com getUser;
-# a função overlay é pública e só devolve personalizações publicadas, pela chave.
+# Calls without a Supabase JWT: Asaas (webhook) and the sites Worker (forms) authenticate with their own secret;
+# the AI proxy reads the token from the x-api-key header, as the editor's assistant sends it, and checks it with getUser;
+# the overlay function is public and only returns published customizations, by key.
 [functions.asaas-webhook]
 verify_jwt = false
 
@@ -32,11 +32,11 @@ verify_jwt = false
 [functions.ai-proxy]
 verify_jwt = false
 
-# o wc-runtime.js dos sites busca a personalização publicada sem login (site-editor)
+# the sites' wc-runtime.js fetches the published customization without login (site-editor)
 [functions.overlay]
 verify_jwt = false
 
-# o banco de dados dos apps publicados: o Worker dos sites repassa /_api/* com o segredo da plataforma; os visitantes
-# se identificam com o token de membro do site, não com o JWT do Supabase
+# the published apps' database: the sites Worker forwards /_api/* with the platform secret; visitors identify
+# themselves with the site's member token, not with the Supabase JWT
 [functions.site-data]
 verify_jwt = false

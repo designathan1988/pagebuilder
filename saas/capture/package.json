@@ -2,7 +2,7 @@
   "name": "webconstructor-capture",
   "private": true,
   "type": "module",
-  "description": "A captura de sites na nuvem: o código do Companion (tools/companion/capture.ts) como serviço",
+  "description": "The cloud site capture: the Companion's code (tools/companion/capture.ts) as a service",
   "scripts": {
     "start": "node --experimental-strip-types saas/capture/server.ts"
   },

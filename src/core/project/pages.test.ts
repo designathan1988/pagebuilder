@@ -10,7 +10,8 @@ import { manualClock } from '../ports/clock.ts';
 import { anyCss } from '../ports/css.ts';
 import { sequentialIds } from '../ports/ids.ts';
 import { noLayout } from '../ports/layout.ts';
-import { duplicatePageCommand } from './pages.ts';
+import { addPageCommand, duplicatePageCommand } from './pages.ts';
+import { documentOf, RULES, runHandler } from '../testing/handlers.ts';
 
 const node = (id: string, type: string, tag: string, fields: Partial<DocNode> = {}): DocNode => ({
   id: id as NodeId, type: type as DocNode['type'], name: id, tag, attributes: {}, classes: [], styles: {}, text: null, children: [], ...fields,
@@ -47,5 +48,21 @@ describe('pages.duplicate', () => {
       document = applyPatches(document, outcome.patches ?? []).document;
     }
     expect(document.pages.map((page) => page.name)).toEqual(['Home', 'Home 2', 'Home 3', 'About']);
+  });
+});
+
+// CORE-4: a page made or copied never takes the path of a project file, and the validator refuses a page there
+describe('a new page’s file', () => {
+  it('skips a path a project file holds, for pages.add and pages.duplicate', () => {
+    const files = [{ path: 'page.html', type: 'text/html', bytes: 'AAAA' }, { path: 'home-2.html', type: 'text/html', bytes: 'AAAA' }];
+    const original = documentOf({ pages: [{ id: 'p', name: 'Home', file: 'index.html', tree: node('Page', 'page', 'body') }], files });
+    const added = runHandler(addPageCommand(), original, { name: 'Page' }, { ui: {} });
+    expect(added.document.pages.map((page) => page.file)).toEqual(['index.html', 'page-2.html']);
+    expect(added.problems).toEqual([]);
+    const copied = runHandler(duplicatePageCommand, original, { page: 'p' });
+    expect(copied.document.pages.map((page) => page.file)).toEqual(['index.html', 'home-3.html']);
+    expect(copied.problems).toEqual([]);
+    const clashing = { ...original, pages: [...original.pages, { id: 'q', name: 'Page', file: 'page.html', tree: node('Other', 'page', 'body') }] };
+    expect(validateDocument(clashing, [], RULES).map((problem) => problem.path)).toContain('/pages/1/file');
   });
 });

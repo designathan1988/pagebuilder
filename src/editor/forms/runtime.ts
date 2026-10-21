@@ -83,7 +83,7 @@ export function installFormsRuntime(target: Document, engine: FormsEngine, defau
     field.setCustomValidity('');
     const files = 'files' in field && field.files ? [...field.files] : [];
     const config = { ...state.config, rules: { ...nativeRules(field), ...state.config.rules } };
-    const failures: Violation[] = engine.validate(field.value, config, { fields: values(field.form), files, locale: locale() });
+    const failures: Violation[] = engine.validate(field.value, config, { fields: values(field.form), files, locale: locale(), numeric: field.getAttribute('type') === 'number' });
     const native = field.validity;
     const kinds: readonly [keyof ValidityState, RuleCode][] = [['valueMissing', 'required'], ['typeMismatch', 'type'], ['patternMismatch', 'pattern'], ['tooShort', 'tooShort'], ['tooLong', 'tooLong'], ['rangeUnderflow', 'minimum'], ['rangeOverflow', 'maximum'], ['stepMismatch', 'step'], ['badInput', 'type']];
     const nativeFailure = kinds.find(([name]) => native[name]);
@@ -108,11 +108,11 @@ export function installFormsRuntime(target: Document, engine: FormsEngine, defau
       // Count mask data, not currency symbols or unit labels. Numeric raw text also retains the decimal
       // separator, so typing a decimal does not put the caret back before it after formatting.
       const size = (text: string): number => {
-        const raw = engine.mask(text, state.config.mask).raw;
+        const raw = engine.mask(text, state.config.mask, locale()).raw;
         return numeric ? raw.length : raw.replace(/[^\p{L}\p{N}]/gu, '').length;
       };
       const meaningfulBefore = caret === null ? null : size(original.slice(0, caret));
-      const result = engine.mask(original, state.config.mask);
+      const result = engine.mask(original, state.config.mask, locale());
       if (result.formatted === original) return;
       input.value = result.formatted;
       if (meaningfulBefore !== null) {
@@ -266,7 +266,7 @@ export function installFormsRuntime(target: Document, engine: FormsEngine, defau
         if (!state?.config.mask || state.config.mask.submit !== 'raw' || !field.name || field.disabled || field.getAttribute('type') === 'file') continue;
         if ('checked' in field && ['checkbox', 'radio'].includes(field.type) && !field.checked) continue;
         const queue = queues.get(field.name) ?? [];
-        queue.push({ formatted: field.value, raw: engine.mask(field.value, state.config.mask).raw });
+        queue.push({ formatted: field.value, raw: engine.mask(field.value, state.config.mask, locale()).raw });
         queues.set(field.name, queue);
       }
       for (const [name, queue] of queues) {

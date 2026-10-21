@@ -9,6 +9,11 @@
 
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var lang = document.documentElement.lang || 'pt-BR';
+  /* The words the visitor reads, in each UI language of the editor: script.ts writes them here from the catalogues
+     (app-runtime/words.ts), and the page's language picks one table, Portuguese for a pt page and English for any
+     other. */
+  var wordsByLanguage = /* site words */ {};
+  var words = wordsByLanguage[/^pt(-|$)/i.test(lang) ? 'pt-BR' : 'en'];
   var all = function (root, selector) { return Array.prototype.slice.call(root.querySelectorAll(selector)); };
   var each = function (kind, init) {
     all(document, '[data-wc="' + kind + '"]').forEach(function (root) {
@@ -95,7 +100,7 @@
     if (!track) return;
     var slides = Array.prototype.slice.call(track.children);
     root.setAttribute('role', 'region');
-    if (!root.getAttribute('aria-roledescription')) root.setAttribute('aria-roledescription', 'carousel');
+    if (!root.getAttribute('aria-roledescription')) root.setAttribute('aria-roledescription', words.carousel);
     var index = function () {
       var left = track.scrollLeft, best = 0, distance = Infinity;
       slides.forEach(function (slide, i) {
@@ -166,8 +171,12 @@
       box.className = 'wc-lightbox';
       box.setAttribute('role', 'dialog');
       box.setAttribute('aria-modal', 'true');
-      box.innerHTML = '<img alt=""><p></p><button type="button" class="wc-lb-close" aria-label="Fechar">×</button>' +
-        (images.length > 1 ? '<button type="button" class="wc-lb-prev" aria-label="Anterior">‹</button><button type="button" class="wc-lb-next" aria-label="Próxima">›</button>' : '');
+      box.innerHTML = '<img alt=""><p></p><button type="button" class="wc-lb-close">×</button>' +
+        (images.length > 1 ? '<button type="button" class="wc-lb-prev">‹</button><button type="button" class="wc-lb-next">›</button>' : '');
+      [['.wc-lb-close', words.close], ['.wc-lb-prev', words.previous], ['.wc-lb-next', words.next]].forEach(function (one) {
+        var button = box.querySelector(one[0]);
+        if (button) button.setAttribute('aria-label', one[1]);
+      });
       box.addEventListener('click', function (e) {
         var t = e.target;
         if (t === box || t.classList.contains('wc-lb-close')) close();
@@ -347,7 +356,7 @@
   all(document, '[data-wc-cart-open]').forEach(function (b) { b.addEventListener('click', function (e) { e.preventDefault(); openCart(); }); });
   each('cart', function (root) {
     root.setAttribute('role', 'dialog');
-    root.setAttribute('aria-label', root.getAttribute('aria-label') || 'Carrinho');
+    root.setAttribute('aria-label', root.getAttribute('aria-label') || words.cart);
     var list = root.querySelector('[data-wc-items]');
     var total = root.querySelector('[data-wc-total]');
     var empty = root.querySelector('[data-wc-empty]');
@@ -367,10 +376,10 @@
           sum.textContent = money(item.price * item.qty, item.currency);
           var qty = document.createElement('div');
           qty.className = 'wc-cart-qty';
-          var minus = document.createElement('button'); minus.type = 'button'; minus.textContent = '−'; minus.setAttribute('aria-label', 'Menos');
+          var minus = document.createElement('button'); minus.type = 'button'; minus.textContent = '−'; minus.setAttribute('aria-label', words.decrease);
           var amount = document.createElement('span'); amount.textContent = String(item.qty);
-          var plus = document.createElement('button'); plus.type = 'button'; plus.textContent = '+'; plus.setAttribute('aria-label', 'Mais');
-          var remove = document.createElement('button'); remove.type = 'button'; remove.className = 'wc-remove'; remove.textContent = 'Remover';
+          var plus = document.createElement('button'); plus.type = 'button'; plus.textContent = '+'; plus.setAttribute('aria-label', words.increase);
+          var remove = document.createElement('button'); remove.type = 'button'; remove.className = 'wc-remove'; remove.textContent = words.remove;
           minus.addEventListener('click', function () { item.qty -= 1; if (item.qty <= 0) cart.splice(i, 1); saveCart(); });
           plus.addEventListener('click', function () { item.qty += 1; saveCart(); });
           remove.addEventListener('click', function () { cart.splice(i, 1); saveCart(); });
@@ -392,11 +401,11 @@
         if (cart.length === 0) return;
         var lines = cart.map(function (item) { return item.qty + 'x ' + item.name + ' — ' + money(item.price * item.qty, item.currency); });
         var value = cart.reduce(function (n, item) { return n + item.price * item.qty; }, 0);
-        var text = (root.getAttribute('data-wc-greeting') || 'Olá! Quero fazer este pedido:') + '\n\n' + lines.join('\n') + '\n\nTotal: ' + money(value, (cart[0] && cart[0].currency) || 'BRL');
+        var text = (root.getAttribute('data-wc-greeting') || words.greeting) + '\n\n' + lines.join('\n') + '\n\n' + words.total + ': ' + money(value, (cart[0] && cart[0].currency) || 'BRL');
         var phone = (root.getAttribute('data-wc-whatsapp') || '').replace(/\D/g, '');
         var email = root.getAttribute('data-wc-email') || '';
         if (phone) window.open('https://wa.me/' + phone + '?text=' + encodeURIComponent(text), '_blank', 'noopener');
-        else if (email) location.href = 'mailto:' + email + '?subject=' + encodeURIComponent('Pedido') + '&body=' + encodeURIComponent(text);
+        else if (email) location.href = 'mailto:' + email + '?subject=' + encodeURIComponent(words.orderSubject) + '&body=' + encodeURIComponent(text);
         if (root.hasAttribute('data-wc-clear-after')) { cart = []; saveCart(); }
       });
     }

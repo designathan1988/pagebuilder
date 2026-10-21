@@ -76,10 +76,11 @@
   flex: none;
 }
 
-/* the name's box beside it starts from nothing and takes the rest, so the row keeps the name, the type and Delete on
-   one line (a name's 76 px basis sent Delete under them) */
+/* the name's box takes the whole line, and the type and Delete go together on the line under it: started from nothing
+   beside them, the name kept only what the widest type and Delete left ("descricao" read "descrica" in a 224 px
+   sidebar), and a 76 px basis sent Delete alone under the other two */
 .data-fields__row:has(> .data-field--type) > .data-field:not(.data-field--type) {
-  flex-basis: 0;
+  flex: 1 1 100%;
 }
 
 .data-field--type select.input {

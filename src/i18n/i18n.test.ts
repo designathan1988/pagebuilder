@@ -89,15 +89,15 @@ describe('the i18n runtime', () => {
 
   it('chooses complete singular messages for one in both languages, with zero and two plural', () => {
     expect(translate('en', 'status.classes.deleted', { name: 'accent', count: 1 })).toBe('Deleted .accent from 1 element.');
-    expect(translate('pt-BR', 'status.classes.deleted', { name: 'accent', count: 1 })).toBe('Classe .accent apagada de 1 elemento.');
+    expect(translate('pt-BR', 'status.classes.deleted', { name: 'accent', count: 1 })).toBe('Classe .accent excluída de 1 elemento.');
     expect(translate('en', 'status.classes.deleted', { name: 'accent', count: 0 })).toBe('Deleted .accent from 0 elements.');
-    expect(translate('pt-BR', 'status.classes.deleted', { name: 'accent', count: 2 })).toBe('Classe .accent apagada de 2 elementos.');
+    expect(translate('pt-BR', 'status.classes.deleted', { name: 'accent', count: 2 })).toBe('Classe .accent excluída de 2 elementos.');
     expect(translate('pt-BR', 'status.layers.searchMatches', { count: 1, query: 'Hero' })).toBe('1 camada corresponde a "Hero".');
     expect(translate('pt-BR', 'status.style.declarationsSet', { count: 1, name: 'Card' })).toBe('Card tem 1 declaração.');
     expect(translate('pt-BR', 'layout.predict.columns', { count: 1, gap: 12 })).toBe('1 coluna');
     expect(translate('pt-BR', 'status.motion.timelineInUse', { name: 'Entrada', count: 1 })).toBe('Entrada é reproduzida ou controlada 1 vez: remova esse uso primeiro.');
     expect(translate('en', 'styles.deleteClassUsedBy', { count: 1 })).toBe('Delete class used by 1 element');
-    expect(translate('pt-BR', 'styles.deleteClassUsedBy', { count: 1 })).toBe('Apagar classe usada por 1 elemento');
+    expect(translate('pt-BR', 'styles.deleteClassUsedBy', { count: 1 })).toBe('Excluir classe usada por 1 elemento');
     const keys = [
       'status.classes.deleted', 'status.layers.searchMatches', 'status.style.declarationsSet', 'status.tokens.inUse',
       'status.selection.count', 'status.pasted.html', 'status.table.columnCreated', 'status.table.columnRemoved',

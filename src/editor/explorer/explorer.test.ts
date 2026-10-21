@@ -24,7 +24,8 @@ describe('the Explorer tree lists what the export writes', () => {
 
   it('lists the interactions script once the project has interactions, with the text the export writes', () => {
     const one = store();
-    expect(one.dispatch('element.insert', { entry: 'template-modal' }).status).toBe('done');
+    expect(one.dispatch('element.insert', { entry: 'button' }).status).toBe('done');
+    expect(one.dispatch('interactions.add', { trigger: 'click', action: 'open-link', options: { address: 'https://example.com' } }).status).toBe('done');
     const document = one.getState().document;
     const script = treeRows(document, MODEL_RULES).find((row) => row.path === 'js/interactions.js');
     expect(script).toMatchObject({ folder: false, depth: 1, kind: 'js', generated: true });

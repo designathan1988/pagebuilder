@@ -53,7 +53,16 @@ describe('CSV and TSV', () => {
     expect(await refused('a.csv', bytes('a,,c\n1,2,3\n'))).toEqual({ key: 'status.data.fileHeaderBlank', params: { name: 'a.csv', column: 2 } });
     expect(await refused('a.csv', bytes('Nome,nome\n1,2\n'))).toEqual({ key: 'status.data.fileHeaderTaken', params: { name: 'a.csv', label: 'nome' } });
     expect(await refused('a.csv', bytes('\n\n'))).toEqual({ key: 'status.data.fileEmpty', params: { name: 'a.csv' } });
-    expect(await refused('a.csv', new Uint8Array([0x61, 0x0a, 0xff, 0xfe]))).toEqual({ key: 'status.data.fileEncoding', params: { name: 'a.csv' } });
+    expect(await refused('a.csv', new Uint8Array([0x61, 0x0a, 0xff, 0x01]))).toEqual({ key: 'status.data.fileEncoding', params: { name: 'a.csv' } });
+  });
+
+  it('reads Excel\'s CSV of a pt-BR Windows: semicolons between cells, Windows-1252 text (DATA-4, DATA-5)', async () => {
+    const semicolons = await readDataFile('precos.csv', bytes('produto;preco\nCafé;6,50\n"Pão; doce";"5,00"\n'), domXml);
+    expect(semicolons.sheets[0]?.rows).toEqual([{ produto: 'Café', preco: '6,50' }, { produto: 'Pão; doce', preco: '5,00' }]);
+    expect(readDelimited('p.csv', 'produto;preco\nCafe;6\n').rows).toEqual([{ produto: 'Cafe', preco: '6' }]);
+    expect(readDelimited('p.csv', 'a,b\n"x;y",2\n').rows).toEqual([{ a: 'x;y', b: '2' }]);
+    const ansi = await readDataFile('p.csv', new Uint8Array([...bytes('produto,preco\nP'), 0xe3, ...bytes('o,5\n')]), domXml);
+    expect(ansi.sheets[0]?.rows).toEqual([{ produto: 'Pão', preco: '5' }]);
   });
 
   it('refuses a file of another kind by its name', async () => {

@@ -3,7 +3,7 @@
 // the dialog region in its header (ui.dismiss). It takes the focus when it opens, keeps Tab inside it, names the dialog
 // key context (Escape closes it: ui.dismiss) and, when it closes, gives the focus back to what opened it: the control,
 // or the button of the menu whose item did.
-import { useEffect, useRef, useState, type FocusEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { isFeatureBuilt } from '../../core/commands/registry.ts';
 import type { FeatureId, MessageId, RegionId } from '../../generated/ids.ts';
 import { DoorControl } from '../doors/door.tsx';
@@ -32,16 +32,10 @@ export function ModalDialog({ region, titleKey, className, children }: { readonl
       if (returnTo instanceof HTMLElement && returnTo.isConnected) returnTo.focus();
     };
   }, [returnTo]);
-  // the focus stays in the dialog: Tab past its last control lands on the edge after it, which sends the focus to its
-  // first control, and Shift+Tab before its first on the edge before it, which sends it to its last
-  const wrap = (event: FocusEvent<HTMLSpanElement>) => {
-    const items = [...(panel.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [])];
-    (event.currentTarget.dataset.edge === 'first' ? items[0] : items[items.length - 1])?.focus();
-  };
   const title = `${region}-title`;
   return (
     <div className="dialog-shield">
-      <span tabIndex={0} data-edge="last" onFocus={wrap} />
+      <FocusEdge layer={panel} sends="last" />
       <div className={`dialog ${className}`} ref={panel} role="dialog" aria-modal="true" aria-labelledby={title} tabIndex={-1} data-region={region} data-key-context={DIALOG_KEYS}>
         <header className="dialog__header">
           <h2 className="dialog__title" id={title}>
@@ -51,7 +45,19 @@ export function ModalDialog({ region, titleKey, className, children }: { readonl
         </header>
         {children}
       </div>
-      <span tabIndex={0} data-edge="first" onFocus={wrap} />
+      <FocusEdge layer={panel} sends="first" />
     </div>
   );
+}
+
+// An edge of a modal layer (a dialog, the command bar): the focus stays in the layer. Tab past its last control lands
+// on the edge after it, which sends the focus to its first control, and Shift+Tab before its first on the edge before
+// it, which sends it to its last. Every layer marked aria-modal draws one on each side (the input audit's INPUT-10: the
+// command bar had none, and Tab past its pills reached the editor under it).
+export function FocusEdge({ layer, sends }: { readonly layer: RefObject<HTMLElement | null>; readonly sends: 'first' | 'last' }) {
+  const wrap = () => {
+    const items = [...(layer.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [])];
+    (sends === 'first' ? items[0] : items[items.length - 1])?.focus();
+  };
+  return <span tabIndex={0} data-edge={sends} onFocus={wrap} />;
 }

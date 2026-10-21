@@ -31,8 +31,8 @@ const NO_DATA: DataUi = {};
 export const dataOf = (ui: EditorUi): DataUi => ui.data ?? NO_DATA;
 const withData = (ui: EditorUi, change: Partial<DataUi>): EditorUi => ({ ...ui, data: { ...dataOf(ui), ...change } });
 
-// The columns' types as the file's values suggest them.
-const guessed = (sheet: Sheet | undefined): Record<string, FieldType> => Object.fromEntries((sheet?.columns ?? []).map((column) => [column, guessType(sheet?.rows.map((row) => row[column]) ?? [])]));
+// The columns' types as the file's values suggest them, read in the site's language (its thousands mark).
+const guessed = (sheet: Sheet | undefined, language: string | undefined): Record<string, FieldType> => Object.fromEntries((sheet?.columns ?? []).map((column) => [column, guessType(sheet?.rows.map((row) => row[column]) ?? [], language)]));
 
 // The sheet the preview shows.
 export const previewSheet = (preview: DataPreview): Sheet | undefined => preview.sheets[preview.sheet];
@@ -141,7 +141,7 @@ export const previewFile = registerHandler<'data.preview', EditorUi>('data.previ
   if (handed === null) return { kind: 'refused', message: message('status.data.fileSheet', { name: '' }) };
   if ('problem' in handed) return { kind: 'refused', message: handed.problem };
   const sheet = handed.sheets[0];
-  const preview: DataPreview = { file: handed.name, sheets: handed.sheets, sheet: 0, types: guessed(sheet) };
+  const preview: DataPreview = { file: handed.name, sheets: handed.sheets, sheet: 0, types: guessed(sheet, state.document.language) };
   return { kind: 'change', ui: withData(state.ui, { preview }), message: message('status.data.previewed', { name: handed.name, count: { plural: 'data.rows', count: sheet?.rows.length ?? 0 } }) };
 });
 
@@ -153,7 +153,7 @@ export const choosePreviewSheet = registerHandler<'data.previewSheet', EditorUi>
     const index = preview?.sheets.findIndex((one) => one.name === sheet) ?? -1;
     if (preview === undefined || index < 0) return { kind: 'refused', message: argumentRefused('sheet') };
     const shown = preview.sheets[index];
-    return { kind: 'change', ui: withData(state.ui, { preview: { ...preview, sheet: index, types: guessed(shown) } }), message: message('status.data.sheetShown', { name: sheet, count: { plural: 'data.rows', count: shown?.rows.length ?? 0 } }) };
+    return { kind: 'change', ui: withData(state.ui, { preview: { ...preview, sheet: index, types: guessed(shown, state.document.language) } }), message: message('status.data.sheetShown', { name: sheet, count: { plural: 'data.rows', count: shown?.rows.length ?? 0 } }) };
   },
   (state, { sheet }) => {
     const preview = dataOf(state.ui).preview;
@@ -200,13 +200,13 @@ export const importNew = registerHandler<'data.importNew', EditorUi>('data.impor
       taken.push(key);
       const type = preview.types[column] ?? 'text';
       // a number column keeps the decimal places the file writes ("6,50" stays "6,50" on the site, DEF-0620)
-      const decimals = type === 'number' ? decimalsOf(sheet.rows.map((row) => row[column])) : 0;
+      const decimals = type === 'number' ? decimalsOf(sheet.rows.map((row) => row[column]), document.language) : 0;
       return { key, label: column, type, ...(decimals > 0 ? { decimals } : {}) };
     });
     const typed = name.trim() === '' ? stem(preview.file) : name.trim();
     const empty = createCollection(collectionsOf(document), typed, fields);
     const rows = sheet.rows.map((row) => Object.fromEntries(fields.map((field, i) => [field.key, row[sheet.columns[i] as string]])));
-    const collection = importRows(empty, rows, 'append', null, () => data.ids.next());
+    const collection = importRows(empty, rows, 'append', null, () => data.ids.next(), document.language);
     return {
       document: { ...document, collections: [...collectionsOf(document), collection] },
       message: message('status.data.imported', { collection: collection.name, count: { plural: 'data.items', count: collection.items.length } }),
@@ -243,10 +243,10 @@ export const importInto = registerHandler<'data.importInto', EditorUi>('data.imp
     const widened = held.fields.map((field) => {
       const column = [...matched].find(([, f]) => f.key === field.key)?.[0];
       if (field.type !== 'number' || column === undefined) return field;
-      const decimals = Math.max(field.decimals ?? 0, decimalsOf(sheet.rows.map((row) => row[column])));
+      const decimals = Math.max(field.decimals ?? 0, decimalsOf(sheet.rows.map((row) => row[column]), document.language));
       return decimals > 0 ? { ...field, decimals } : field;
     });
-    const next = importRows({ ...held, fields: widened }, rows, mode as ImportMode, key, () => data.ids.next());
+    const next = importRows({ ...held, fields: widened }, rows, mode as ImportMode, key, () => data.ids.next(), document.language);
     return {
       document: { ...document, collections: collectionsOf(document).map((c) => (c.name === held.name ? next : c)) },
       message: message('status.data.importedInto', { collection: held.name, count: { plural: 'data.items', count: rows.length }, mode: { key: `data.mode.${mode}` as MessageId } }),

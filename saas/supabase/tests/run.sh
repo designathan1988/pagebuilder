@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
-# Aplica as migrações num Postgres local limpo e roda os testes de RLS.
-# Uso: PGHOST=... PGPORT=... PGUSER=postgres sh saas/supabase/tests/run.sh
+# Applies the migrations to a clean local Postgres and runs the RLS tests.
+# Usage: PGHOST=... PGPORT=... PGUSER=postgres sh saas/supabase/tests/run.sh
 set -e
 here=$(dirname "$0")
 dropdb --if-exists webconstructor_test

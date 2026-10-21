@@ -5,7 +5,7 @@
 // in the words of the catalogue, before anything is changed.
 import { message, type Message, type MessageParam } from '../commands/registry.ts';
 import type { MessageId } from '../../generated/ids.ts';
-import { readAddress } from '../elements/address.ts';
+import { holdsControl, readAddress } from '../elements/address.ts';
 import { canonical, parseInline, plainText, type InlineRun } from '../text/inline.ts';
 import { fold } from '../text/fold.ts';
 import { FIELD_TYPES, type Cell, type Collection, type Field, type FieldType, type Filter, type Item, type Query } from './model.ts';
@@ -41,6 +41,52 @@ const FALSE_WORDS = ['false', 'no', '0', 'nao', 'falso'];
 const IMAGE_FILE = /\.(png|jpe?g|gif|webp|avif|svg|bmp|ico)$/i;
 const PAGE_PATH = /^[\w-]+(\/[\w-]+)*\.html?(#[\w-]*)?$/i;
 
+// A number grouped by thousands and maybe with a fraction, its group mark one of "." and "," and its decimal mark the
+// other ("1.234,56", "1,234.56", "1.234.567"): never a leading zero in its first group ("0.500" is a fraction).
+const GROUPED_NUMBER = /^[+-]?[1-9]\d{0,2}([.,])\d{3}(?:\1\d{3})*(?:([.,])\d+)?$/;
+// one group mark and one group of three digits, nothing else ("1.500", "12,345"): a fraction or a thousand, as the
+// language reading it says
+const ONE_GROUP = /^[+-]?[1-9]\d{0,2}[.,]\d{3}$/;
+
+// The group mark a language writes thousands with, when it is "." or "," ("pt-BR" → ".", "en" → ","); undefined for a
+// language that groups with another mark (a space) or that Intl does not know.
+const groupMarks = new Map<string, string | undefined>();
+function groupMarkOf(language: string): string | undefined {
+  if (groupMarks.has(language)) return groupMarks.get(language);
+  let mark: string | undefined;
+  try {
+    // seven digits: a language that groups four digits only from five on (es, pt-PT) still shows its mark
+    const group = new Intl.NumberFormat(language, { useGrouping: true }).formatToParts(1234567.5).find((part) => part.type === 'group')?.value;
+    mark = group === '.' || group === ',' ? group : undefined;
+  } catch (error) {
+    if (!(error instanceof RangeError)) throw error;
+    mark = undefined;
+  }
+  groupMarks.set(language, mark);
+  return mark;
+}
+
+// A number as a person or a file writes it, with the decimal places it is written with, or null (DATA-3): a plain one
+// ("42", "-3.5", "1e3"), a decimal comma ("42,5"), or one grouped by thousands ("1.234,56", "1,234.56"). One group
+// mark before three digits alone ("1.500") is a thousand in a language that groups with that mark (pt-BR's 1.500 is
+// R$ 1.500) and a fraction otherwise. What the site writes (cellText, no grouping) reads back as the same number.
+export function readNumber(text: string, language?: string): { readonly value: number; readonly decimals: number } | null {
+  const finite = (written: string, fraction: string): { readonly value: number; readonly decimals: number } | null => {
+    const value = Number(written);
+    return Number.isFinite(value) ? { value, decimals: fraction.length } : null;
+  };
+  const mark = ONE_GROUP.test(text) ? text.replace(/[^.,]/g, '') : '';
+  if (mark !== '' && language !== undefined && groupMarkOf(language) === mark) return finite(text.replace(mark, ''), '');
+  if (NUMBER.test(text)) return finite(text, /^[^e]*\.(\d+)/i.exec(text)?.[1] ?? '');
+  if (COMMA_NUMBER.test(text)) return finite(text.replace(',', '.'), text.split(',')[1] ?? '');
+  const grouped = GROUPED_NUMBER.exec(text);
+  if (grouped === null) return null;
+  const [, group, decimal] = grouped;
+  if (decimal !== undefined && decimal === group) return null;
+  const [whole = '', fraction = ''] = decimal === undefined ? [text] : [text.slice(0, text.lastIndexOf(decimal)), text.slice(text.lastIndexOf(decimal) + 1)];
+  return finite(`${whole.replaceAll(group ?? '', '')}${fraction === '' ? '' : `.${fraction}`}`, fraction);
+}
+
 // A calendar date that exists (2026-02-30 does not).
 function realDate(value: string): boolean {
   if (!ISO_DATE.test(value)) return false;
@@ -52,7 +98,8 @@ function realDate(value: string): boolean {
 // when the value is not one of the field's type. Text is trimmed at its ends; a number keeps the number it reads as; a
 // date is a real YYYY-MM-DD date; a link is an address the link rule allows; an image is a project path, a file name
 // or a web address (which one it names is resolved when an element shows it: core/design/components.ts imageSource).
-export function readCell(type: FieldType, value: unknown): Cell | undefined | null {
+// The site's language, when given, says what a thousands mark is (readNumber).
+export function readCell(type: FieldType, value: unknown, language?: string): Cell | undefined | null {
   if (value === null || value === undefined) return undefined;
   if (typeof value === 'string' && value.trim() === '') return undefined;
   const text = typeof value === 'string' ? value.trim() : null;
@@ -69,10 +116,7 @@ export function readCell(type: FieldType, value: unknown): Cell | undefined | nu
     case 'number': {
       if (typeof value === 'number') return Number.isFinite(value) ? value : null;
       if (text === null) return null;
-      const written = COMMA_NUMBER.test(text) ? text.replace(',', '.') : text;
-      if (!NUMBER.test(written)) return null;
-      const number = Number(written);
-      return Number.isFinite(number) ? number : null;
+      return readNumber(text, language)?.value ?? null;
     }
     case 'boolean': {
       if (typeof value === 'boolean') return value;
@@ -92,7 +136,8 @@ export function readCell(type: FieldType, value: unknown): Cell | undefined | nu
       return address.ok ? address.value : null;
     }
     case 'image': {
-      if (text === null) return null;
+      // a control character hides a scheme from the check below (the URL parser strips it: DATA-8); no file holds one
+      if (text === null || holdsControl(text)) return null;
       // a web address must be one the link rule allows; a path or a file name is resolved by the element that shows it
       if (/^[a-z][a-z0-9+.-]*:/i.test(text)) return readAddress(text).ok ? text : null;
       return /\s$|^\s/.test(text) ? null : text;
@@ -138,25 +183,36 @@ function numberText(value: number, style: NumberStyle): string {
 }
 
 // The decimal places a column of a file writes its numbers with: the most any filled value has ("6,50" → 2), 0 when
-// none has a fraction.
-export function decimalsOf(values: readonly unknown[]): number {
+// none has a fraction. A thousands mark is no fraction ("1.500" on a pt-BR site has none, DATA-3).
+export function decimalsOf(values: readonly unknown[], language?: string): number {
   let most = 0;
   for (const value of values) {
     if (typeof value !== 'string') continue;
-    const match = /^[+-]?\d*[.,](\d+)$/.exec(value.trim());
-    if (match?.[1] !== undefined) most = Math.max(most, match[1].length);
+    most = Math.max(most, readNumber(value.trim(), language)?.decimals ?? 0);
   }
   return Math.min(most, MAX_DECIMALS);
 }
 
+// A code written with digits that a number would change (DATA-6): a leading zero ("01310100", a CEP; "0,5" is a
+// number), or more significant digits than a number keeps exactly (a phone with its country, a long SKU).
+const MOST_DIGITS = 15;
+function digitCode(value: unknown): boolean {
+  if (typeof value !== 'string') return false;
+  const text = value.trim();
+  if (/^[+-]?0\d/.test(text)) return true;
+  const digits = text.replace(/e.*$/i, '').replace(/\D/g, '').replace(/^0+/, '');
+  return digits.length > MOST_DIGITS;
+}
+
 // The kind of value a column of a file holds, guessed from its filled cells: every one a yes/no, a number, a date, an
 // image file or address, a web address; else text. The person can change every guess before importing.
-export function guessType(values: readonly unknown[]): FieldType {
+export function guessType(values: readonly unknown[], language?: string): FieldType {
   const filled = values.filter((value) => value !== null && value !== undefined && !(typeof value === 'string' && value.trim() === ''));
   if (filled.length === 0) return 'text';
-  const all = (type: FieldType) => filled.every((value) => readCell(type, value) !== null);
+  const all = (type: FieldType) => filled.every((value) => readCell(type, value, language) !== null);
   if (filled.every((value) => typeof value === 'boolean') || (all('boolean') && filled.every((value) => typeof value === 'string' && !/^[01]$/.test(value.trim())))) return 'boolean';
-  if (all('number')) return 'number';
+  // a column of codes stays text: a number would lose their zeros or their last digits (the person may still choose it)
+  if (all('number') && !filled.some(digitCode)) return 'number';
   if (all('date')) return 'date';
   if (filled.every((value) => typeof value === 'string' && IMAGE_FILE.test(value.trim().split(/[?#]/)[0] ?? ''))) return 'image';
   if (filled.every((value) => typeof value === 'string' && /^https?:\/\//i.test(value.trim()) && readCell('link', value) !== null)) return 'link';
@@ -211,11 +267,11 @@ export function nameRefusal(collections: readonly Collection[], name: string, ex
 // The values of an item read from a row (field key → what the row holds), each in its canonical form; a value that is
 // not one of its field's type is refused naming the row (counted from 1, as a person counts the rows of a file), the
 // column and the value.
-function valuesOf(collection: string, fields: readonly Field[], row: Readonly<Record<string, unknown>>, rowNumber: number): Record<string, Cell> {
+function valuesOf(collection: string, fields: readonly Field[], row: Readonly<Record<string, unknown>>, rowNumber: number, language: string | undefined): Record<string, Cell> {
   const values: Record<string, Cell> = {};
   for (const field of fields) {
     if (!Object.hasOwn(row, field.key)) continue;
-    const read = readCell(field.type, row[field.key]);
+    const read = readCell(field.type, row[field.key], language);
     if (read === null) refuse('status.data.badValue', { collection, row: rowNumber, column: field.label, value: shownValue(row[field.key]), type: { key: `data.type.${field.type}` as MessageId } });
     if (read !== undefined) values[field.key] = read;
   }
@@ -236,7 +292,9 @@ export type ImportMode = 'append' | 'replace' | 'update';
 // The collection with the rows imported (each row: field key → value): appended after its items, in place of them,
 // or updating the item whose key field holds the row's key (rows with a new key are appended). An update needs a key
 // that is filled and unique in the collection and in the rows; the whole import is refused at its first bad row.
-export function importRows(collection: Collection, rows: readonly Readonly<Record<string, unknown>>[], mode: ImportMode, key: string | null, next: () => string): Collection {
+// A replace keeps the ids of the items it replaces (DATA-7), so the pages made for them and the links to those pages
+// stay: the item holding the row's key when a key is named, else the item at the row's place; a row past them is new.
+export function importRows(collection: Collection, rows: readonly Readonly<Record<string, unknown>>[], mode: ImportMode, key: string | null, next: () => string, language?: string): Collection {
   const keyField = key === null ? undefined : collection.fields.find((f) => f.key === key);
   if (mode === 'update' && (keyField === undefined || keyField.type === 'richtext')) refuse('status.data.keyNeeded', { collection: collection.name });
   const items: Item[] = mode === 'replace' ? [] : [...collection.items];
@@ -247,12 +305,27 @@ export function importRows(collection: Collection, rows: readonly Readonly<Recor
       if (held !== undefined) at.set(JSON.stringify(held), index);
     });
   }
+  const replacedBy = new Map<string, string>();
+  if (keyField !== undefined && mode === 'replace') {
+    for (const item of collection.items) {
+      const held = item.values[keyField.key];
+      if (held !== undefined && !replacedBy.has(JSON.stringify(held))) replacedBy.set(JSON.stringify(held), item.id);
+    }
+  }
+  const reused = new Set<string>();
+  const replacedId = (index: number, values: Readonly<Record<string, Cell>>): string => {
+    const held = keyField === undefined ? undefined : values[keyField.key];
+    const id = keyField === undefined ? collection.items[index]?.id : held === undefined ? undefined : replacedBy.get(JSON.stringify(held));
+    if (id === undefined || reused.has(id)) return next();
+    reused.add(id);
+    return id;
+  };
   const seen = new Set<string>();
   rows.forEach((row, index) => {
     const rowNumber = index + 1;
-    const values = valuesOf(collection.name, collection.fields, row, rowNumber);
+    const values = valuesOf(collection.name, collection.fields, row, rowNumber, language);
     if (mode !== 'update' || keyField === undefined) {
-      items.push({ id: next(), values });
+      items.push({ id: mode === 'replace' ? replacedId(index, values) : next(), values });
       return;
     }
     const keyValue = values[keyField.key];
@@ -269,13 +342,13 @@ export function importRows(collection: Collection, rows: readonly Readonly<Recor
 }
 
 // The collection with one value of an item set from what a person typed ('' empties it).
-export function setCell(collection: Collection, itemId: string, fieldKey: string, typed: unknown): Collection {
+export function setCell(collection: Collection, itemId: string, fieldKey: string, typed: unknown, language?: string): Collection {
   const field = collection.fields.find((f) => f.key === fieldKey);
   const index = collection.items.findIndex((item) => item.id === itemId);
   const item = collection.items[index];
   // a name of an item or a field the collection does not hold went stale under its door (the random probe)
   if (field === undefined || item === undefined) refuse('status.stale');
-  const read = readCell(field.type, typed);
+  const read = readCell(field.type, typed, language);
   if (read === null) refuse('status.data.badValue', { collection: collection.name, row: index + 1, column: field.label, value: shownValue(typed), type: { key: `data.type.${field.type}` as MessageId } });
   const { [field.key]: _old, ...others } = item.values;
   void _old;
@@ -372,6 +445,8 @@ function holds(filter: Filter, field: Field, value: Cell | undefined): boolean {
   if (filter.operator === 'filled') return value !== undefined;
   if (value === undefined) return false;
   const typed = filter.value ?? '';
+  // a number holds the digits the site writes, with its decimal places and either decimal mark ("6,5" finds 6.50)
+  if (filter.operator === 'contains' && typeof value === 'number') return numberText(value, { language: 'en', decimals: field.decimals }).includes(typed.trim().replace(',', '.'));
   if (filter.operator === 'contains') return fold(cellText(value, { yes: 'true', no: 'false' })).includes(fold(typed.trim()));
   // the other operators compare with the typed text read as the field's type
   const other = readCell(field.type, typed);

@@ -198,6 +198,12 @@
   --color-syntax-selector: #a8237f;
   --color-canvas-handle: #ffffff;
   --color-on-canvas-band: #ffffff;
+  /* the ink of words drawn on a canvas fill (a drop's pill, a refused pill, a measured value), each read on its own
+     fill at 4.5:1 or more (tokens.test.ts): white on these dark fills, but black on the measure's red, where white
+     read 4.25:1 */
+  --color-on-canvas-drop: #ffffff;
+  --color-on-danger: #ffffff;
+  --color-on-canvas-measure: #000000;
   --color-canvas-band-shade: #000000;
   --color-scrim: rgb(11 15 20 / 0.32);
   --color-status-bar: #0b7f72;
@@ -265,6 +271,10 @@
     --color-syntax-selector: #f07ad2;
     --color-canvas-handle: #ffffff;
     --color-on-canvas-band: #ffffff;
+    /* the dark theme's light fills take a near-black ink (white read 2.5:1 to 3:1 on them) */
+    --color-on-canvas-drop: #0b0f14;
+    --color-on-danger: #0b0f14;
+    --color-on-canvas-measure: #0b0f14;
     --color-canvas-band-shade: #000000;
     --color-scrim: rgb(0 0 0 / 0.5);
     --color-status-bar: #1fa594;
@@ -332,6 +342,10 @@
   --color-syntax-selector: #f07ad2;
   --color-canvas-handle: #ffffff;
   --color-on-canvas-band: #ffffff;
+  /* the dark theme's light fills take a near-black ink (white read 2.5:1 to 3:1 on them) */
+  --color-on-canvas-drop: #0b0f14;
+  --color-on-danger: #0b0f14;
+  --color-on-canvas-measure: #0b0f14;
   --color-canvas-band-shade: #000000;
   --color-scrim: rgb(0 0 0 / 0.5);
   --color-status-bar: #1fa594;

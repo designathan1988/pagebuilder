@@ -1,7 +1,7 @@
 import re
-"""Adds the "Componentes" palette group: working web components (menu, carousel, lightbox, tabs, shop, blog filter,
+"""Adds the "Components" palette group: working web components (menu, carousel, lightbox, tabs, shop, blog filter,
 map, video, countdown, counters, LGPD cookies, WhatsApp, popup, share, pricing period...). Their behaviour is
-src/editor/widgets/widgets.js, read from data-wc attributes. Run from the project root: python3 -I /tmp/claude-0/s/components.py
+src/editor/widgets/widgets.js, read from data-wc attributes. Run from the project root: python3 -I tools/gen/content/components.py
 """
 import json
 

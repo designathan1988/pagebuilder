@@ -47,3 +47,54 @@ describe('Update component carries texts and links the other instances never cha
     expect(other?.children[1]?.text).toBe('Quem somos');
   });
 });
+
+// The audit of 2026-10-21 (STRUCT-2 to STRUCT-5): what stays each instance's own through an update, and what follows
+// the edited one with the identities of the instance it reaches.
+describe('Update component keeps each instance its own (STRUCT-2 to STRUCT-5)', () => {
+  const card = (id: string, fields: Partial<ReturnType<typeof node>> = {}, text: Partial<ReturnType<typeof node>> = {}, extra: ReturnType<typeof node>[] = []) =>
+    node(id, 'div', 'div', { component: 'Card', componentPart: [], ...fields, children: [node(`${id}-t`, 'paragraph', 'p', { text: 'Hello', componentPart: [0], ...text }), ...extra] });
+  const project = (a: ReturnType<typeof node>, b: ReturnType<typeof node>) =>
+    documentOf({
+      pages: [{ id: 'home', name: 'Home', file: 'index.html', tree: node('Page', 'page', 'body', { children: [a, b] }) }],
+      components: [{ name: 'Card', tree: node('Def', 'div', 'div', { children: [node('Def-t', 'paragraph', 'p', { text: 'Hello' })] }) }],
+    });
+  it('takes a text and its marks together from one side', () => {
+    const marked = runHandler(updateFromInstanceCommand, project(card('A', {}, { text: 'Hello', inline: [{ tag: 'strong', children: ['Hello'] }] as never }), card('B', {}, { text: 'Other' })), {}, { selection: ['A'] });
+    expect(marked.problems).toEqual([]);
+    expect(marked.document.pages[0]?.tree.children[1]?.children[0]?.inline).toBeUndefined();
+    const italic = [{ tag: 'em', children: ['Other'] }];
+    const kept = runHandler(updateFromInstanceCommand, project(card('A'), card('B', {}, { text: 'Other', inline: italic as never })), {}, { selection: ['A'] });
+    expect(kept.problems).toEqual([]);
+    expect(kept.document.pages[0]?.tree.children[1]?.children[0]?.inline).toEqual(italic);
+  });
+  it('keeps another instance its variant, its hidden and locked flags, and gives the definition none', () => {
+    const ran = runHandler(updateFromInstanceCommand, project(card('A', {}, { hidden: true }), card('B', { classes: ['card--gold'] }, { locked: true })), {}, { selection: ['A'] });
+    expect(ran.problems).toEqual([]);
+    const other = ran.document.pages[0]?.tree.children[1];
+    expect(other?.classes).toEqual(['card--gold']);
+    expect(other?.children[0]?.hidden).toBeUndefined();
+    expect(other?.children[0]?.locked).toBe(true);
+    expect(ran.document.components?.[0]?.tree.children[0]?.hidden).toBeUndefined();
+  });
+  it('refuses to change a locked element inside another instance', () => {
+    const ran = runHandler(updateFromInstanceCommand, project(card('A', {}, { classes: ['lead'] }), card('B', {}, { locked: true })), {}, { selection: ['A'] });
+    expect(ran.outcome.kind).toBe('refused');
+  });
+  it('points an interaction, an animation name and an HTML id new to the edited instance at each instance\'s own', () => {
+    const panel = (id: string) => node(`${id}-p`, 'div', 'div', { componentPart: [1] });
+    const a = card('A', {}, { interactions: [{ trigger: 'click', action: 'show', target: 'A-p' }] as never, animations: [{ name: 'fade', settings: {}, keyframes: [] }] as never, attributes: { id: 'promo' } }, [panel('A')]);
+    const b = card('B', {}, {}, [panel('B')]);
+    const document = documentOf({
+      pages: [{ id: 'home', name: 'Home', file: 'index.html', tree: node('Page', 'page', 'body', { children: [a, b] }) }],
+      components: [{ name: 'Card', tree: node('Def', 'div', 'div', { children: [node('Def-t', 'paragraph', 'p', { text: 'Hello' }), node('Def-p', 'div', 'div')] }) }],
+    });
+    const ran = runHandler(updateFromInstanceCommand, document, {}, { selection: ['A'] });
+    expect(ran.problems).toEqual([]);
+    const other = ran.document.pages[0]?.tree.children[1]?.children[0];
+    expect(other?.interactions?.[0]?.target).toBe('B-p');
+    expect(other?.animations?.[0]?.name).not.toBe('fade');
+    expect(other?.attributes.id).not.toBe('promo');
+    const definition = ran.document.components?.[0]?.tree;
+    expect(definition?.children[0]?.interactions?.[0]?.target).toBe(definition?.children[1]?.id);
+  });
+});

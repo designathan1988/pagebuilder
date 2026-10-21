@@ -79,14 +79,18 @@ export function styleSource(state: State): DocNode | null {
 // every class, in the project's order, before the elements): the node's own value at the edited layer or the nearest
 // one up the cascade (className null), else the last class it lists that holds one there; with the layer it was found
 // at. Null when neither sets it (the node inherits it or takes the default).
+// A state's rule outranks every base rule (a class's `.card:hover` beats the element's own base rule; the audit's
+// STYLE-9), so the edited state is looked for first, in the node's own values and then the classes', and the base
+// state only when no holder sets the property at the edited one.
 export function cascadeSource(doc: DocumentJson, node: DocNode, property: string, rules: ModelRules): { readonly breakpoint: string; readonly state: string; readonly className: string | null } | null {
-  const own = shownValue(node, property, rules);
-  if (own !== undefined) return { breakpoint: own.breakpoint, state: own.state, className: null };
-  for (const c of [...classesOf(doc)].reverse()) {
-    if (!node.classes.includes(c.name)) continue;
-    const held = shownValue({ ...node, styles: c.styles }, property, rules);
-    if (held !== undefined) return { breakpoint: held.breakpoint, state: held.state, className: c.name };
-  }
+  const holders = [{ styles: node.styles, className: null }, ...[...classesOf(doc)].reverse().flatMap((c) => (node.classes.includes(c.name) ? [{ styles: c.styles, className: c.name }] : []))];
+  const states = rules.base.state === rules.baseLayer.state ? [rules.base.state] : [rules.base.state, rules.baseLayer.state];
+  for (const state of states)
+    for (const holder of holders) {
+      // shownValue looks at the edited state and then the base one: a value found at another state waits its turn
+      const held = shownValue({ ...node, styles: holder.styles }, property, rules);
+      if (held !== undefined && held.state === state) return { breakpoint: held.breakpoint, state: held.state, className: holder.className };
+    }
   return null;
 }
 

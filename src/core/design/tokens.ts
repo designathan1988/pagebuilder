@@ -46,6 +46,8 @@ interface Use {
   readonly element: string | null;
   readonly className: string | null;
   readonly component: string | null;
+  // the value is the custom property itself (--name), not a CSS text naming it: a motion "Set variable" action's name
+  readonly declares?: true;
 }
 
 // The texts a stored value names a variable in: the value itself, or every text of a structured value's layers (a
@@ -138,6 +140,13 @@ export function usesOf(document: DocumentJson, name: string): readonly Use[] {
   timelineTexts(document).forEach(({ path, value }) => {
     if (referenceTo(name).test(value)) found.push({ path, value, holder: 'timeline', element: null, className: null, component: null });
   });
+  // a "Set variable" action sets the custom property it names (the audit's STRUCT-12: a renamed variable left the
+  // action setting --old, which nothing reads any more, and a variable it set could be deleted)
+  (document.motionTimelines ?? []).forEach((timeline, t) => {
+    timeline.actions.forEach((action, a) => {
+      if (action.effect.kind === 'variable' && action.effect.name === `--${name}`) found.push({ path: ['motionTimelines', t, 'actions', a, 'effect', 'name'], value: action.effect.name, holder: 'timeline', element: null, className: null, component: null, declares: true });
+    });
+  });
   tokensOf(document).forEach((token, index) => {
     if (referenceTo(name).test(token.value)) found.push({ path: ['tokens', index, 'value'], value: token.value, holder: 'token', element: null, className: null, component: null });
   });
@@ -229,7 +238,7 @@ export const renameToken = registerHandler('tokens.rename', (context, { token, n
 // the project holds one of its name with another value: import/destinations.ts)
 export function renameTokenPatches(document: DocumentJson, from: string, to: string): Patch[] {
   const at = indexOf(document, from);
-  const uses: Patch[] = usesOf(document, from).map((use) => ({ op: 'replace', path: use.path, value: renamedIn(use.value, from, to) }));
+  const uses: Patch[] = usesOf(document, from).map((use) => ({ op: 'replace', path: use.path, value: use.declares === true ? `--${to}` : renamedIn(use.value, from, to) }));
   return [{ op: 'replace', path: ['tokens', at, 'name'], value: to }, ...uses];
 }
 

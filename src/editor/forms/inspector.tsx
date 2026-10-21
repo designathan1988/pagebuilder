@@ -1,6 +1,7 @@
 import { useEffect, useId, useMemo, useRef, type ReactNode } from 'react';
 import type { DocNode } from '../../core/document/model.ts';
 import { walk } from '../../core/document/model.ts';
+import { pageLanguage } from '../../core/export/names.ts';
 import { acceptsTextMask, inputTypeOf, rulesOfControl } from '../../core/elements/inputs.ts';
 
 // the input types a text field with a mask can stand for (Use a text field for masks)
@@ -107,6 +108,8 @@ export function FormsInspector({ node }: { readonly node: DocNode }): ReactNode 
     const page = document.pages.find(page => [...walk(page.tree)].some(one => one.id === node.id));
     const nodes = page ? [...walk(page.tree)] : [];
     return {
+      // the language the exported page declares (its own, else the project's): the runtime's locale()
+      language: pageLanguage(page?.tree.attributes['pageLanguage' as keyof DocNode['attributes']], document.language),
       fields: nodes.filter(one => ['input', 'textarea', 'select'].includes(one.tag ?? '') && typeof one.attributes.name === 'string').map(one => ({ value: String(one.attributes.name), label: `${one.name} · ${String(one.attributes.name)}` })),
       elements: nodes.filter(one => typeof one.attributes.id === 'string' && one.attributes.id !== '').map(one => ({ value: String(one.attributes.id), label: `${one.name} · ${String(one.attributes.id)}` })),
     };

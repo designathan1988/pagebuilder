@@ -355,8 +355,9 @@ export function startAutosave<Ui>(store: Store<Ui>, saved: SavedWork | null | un
   };
   document.addEventListener('visibilitychange', hidden);
   window.addEventListener('pagehide', hidden);
-  // the work a crash left in the journal alone goes to IndexedDB at once
-  if (saved?.recovered === true && canWrite()) {
+  // the work a crash left in the journal alone goes to IndexedDB at once, once the reader has read it: a journal it
+  // refused is a blocked saved work like any other, and the record it would replace stays untouched (CORE-5)
+  if (saved?.recovered === true && !blocked && canWrite()) {
     const { recovered: _journal, ...work } = saved;
     void _journal;
     pending = work;

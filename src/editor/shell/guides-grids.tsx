@@ -24,6 +24,7 @@ import { DoorControl, Icon, useDoor } from '../doors/door.tsx';
 import { breaksIn, doorSlots, drawnAsOf } from '../doors/placement.ts';
 import { afterGesture } from '../input/pointer.ts';
 import { heldDraft, typedNumber, type HeldDraft } from '../input/held-draft.ts';
+import { INNER_LAYER, onInnerLayerDismiss } from '../input/inner-layer.ts';
 import { activeBreakpoint } from '../view/breakpoints.ts';
 import { useEditorState, useStore } from '../store.ts';
 import { useT } from '../text.ts';
@@ -68,22 +69,67 @@ function useRun(): (entry: DoorEntry, args: Readonly<Record<string, unknown>>, c
   return (entry, args, context) => afterGesture(store, () => (store.dispatch as (id: CommandId, a: unknown, c?: EditContext) => DispatchResult)(entry.command.id as CommandId, { ...entry.door.args, ...args }, context));
 }
 
+// Add a guide on an axis: its opener shows the place field. Enter adds the guide; the place typed is held in the one
+// registry of typing (input/held-draft.ts, rule G2), so leaving the field, a press elsewhere or the dialog closing add
+// it too, in the context of its first key (the input audit's INPUT-7: leaving the field threw "120" away). Escape in
+// the field cancels it and closes the field alone, never the dialog (input/inner-layer.ts, INPUT-6); a field left
+// with nothing typed closes without a word.
 function AddGuide({ entry, axis }: { readonly entry: DoorEntry; readonly axis: string }) {
   const t = useT();
   const run = useRun();
+  const store = useStore();
   const [open, setOpen] = useState(false);
   const label = t(ADD_LABEL[axis] ?? (entry.door.labelKey as MessageId));
   const door = useDoor(entry, { axis }, label, ready(entry));
+  const opener = useRef<HTMLButtonElement>(null);
+  // the place field, which is its own region and the layer Escape closes
+  const input = useRef<HTMLInputElement>(null);
+  // the text typed now, for the keep the registry runs outside a render
+  const typed = useRef<string | null>(null);
+  // the text as the number the command takes, never judged here: the command refuses a place that is none (DEF-0515)
+  const add = (text: string, context?: EditContext) => run(entry, { axis, at: typedNumber(text) }, context);
+  const keepHeld = useRef<(context: EditContext) => void>(() => undefined);
+  useEffect(() => {
+    keepHeld.current = (context) => {
+      const text = typed.current;
+      typed.current = null;
+      setOpen(false);
+      if (text !== null && text.trim() !== '') add(text, context);
+    };
+  });
+  const command = entry.command.id as CommandId;
+  const held = useRef<HeldDraft | null>(null);
+  useEffect(() => {
+    const layer = input.current;
+    if (!open || layer === null) return;
+    const draft = heldDraft(store, input, input, command, keepHeld);
+    held.current = draft;
+    const stop = onInnerLayerDismiss(layer, () => {
+      typed.current = null;
+      draft.done();
+      opener.current?.focus();
+      setOpen(false);
+    });
+    return () => {
+      stop();
+      draft.left();
+      held.current = null;
+    };
+  }, [open, store, command]);
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const field = event.currentTarget.elements.namedItem('at') as HTMLInputElement | null;
+    const text = input.current?.value ?? '';
+    typed.current = null;
+    held.current?.done();
+    // the focus goes back to the opener, never to the page under the field that closes
+    opener.current?.focus();
     setOpen(false);
-    // the text as the number the command takes, never judged here: the command refuses a place that is none (DEF-0515)
-    run(entry, { axis, at: typedNumber(field?.value ?? '') });
+    add(text);
   };
   return (
     <span className="guides-grids__add">
       <button
+        ref={opener}
         type="button"
         className={`door door--button${door.available ? '' : ' is-unavailable'}`}
         data-door={entry.ref}
@@ -99,7 +145,27 @@ function AddGuide({ entry, axis }: { readonly entry: DoorEntry; readonly axis: s
       </button>
       {open ? (
         <form className="guides-grids__place" onSubmit={submit}>
-          <input className="input" name="at" autoFocus inputMode="decimal" spellCheck={false} aria-label={t('guidesGrids.place')} placeholder={t('guidesGrids.place')} data-local="guide-place" data-key-context={DIALOG_KEYS} onBlur={() => setOpen(false)} />
+          <input
+            ref={input}
+            {...{ [INNER_LAYER]: '' }}
+            className="input"
+            name="at"
+            autoFocus
+            inputMode="decimal"
+            spellCheck={false}
+            aria-label={t('guidesGrids.place')}
+            placeholder={t('guidesGrids.place')}
+            data-local="guide-place"
+            data-key-context={DIALOG_KEYS}
+            onChange={(event) => {
+              typed.current = event.currentTarget.value;
+              held.current?.typed();
+            }}
+            onBlur={() => {
+              held.current?.left();
+              setOpen(false);
+            }}
+          />
         </form>
       ) : null}
     </span>

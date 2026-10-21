@@ -67,7 +67,16 @@ describe('components.insertInstance and detach', () => {
     const placed = next.pages[0]?.tree.children[1];
     expect(placed).toMatchObject({ name: 'Card 2', component: 'Card', componentPart: [] });
     expect(placed?.children[0]).toMatchObject({ name: 'Title 2', componentPart: [0], text: 'Monthly' });
-    expect(insertInstanceCommand.run(context(first, ['Card']), { component: 'Card' })).toMatchObject({ kind: 'refused', message: { key: 'status.components.inInstance' } });
+    // a parent named inside an instance refuses, in words of its own (the audit's STRUCT-8)
+    expect(insertInstanceCommand.run(context(first, ['Page']), { component: 'Card', parent: 'Card' as NodeId })).toMatchObject({ kind: 'refused', message: { key: 'status.instance.nested' } });
+  });
+
+  it('places the instance right after a selected instance, or the instance of a selected element of one (STRUCT-8)', () => {
+    const first = made();
+    for (const selected of ['Card', 'Title']) {
+      const next = after(first, insertInstanceCommand.run(context(first, [selected]), { component: 'Card' }));
+      expect(next.pages[0]?.tree.children.map((child) => child.component)).toEqual(['Card', 'Card']);
+    }
   });
 
   it('gives each instance fresh HTML ids while preserving references within it', () => {

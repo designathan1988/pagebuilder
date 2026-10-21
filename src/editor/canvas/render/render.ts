@@ -621,9 +621,13 @@ export class PageRenderer {
     // the project's breakpoints changed: every media query is written again
     if (before.breakpoints !== after.breakpoints) return this.mount(after);
     // a file's bytes changed (an SVG saved from the code pane): its object URL is a new one and the old one is revoked,
-    // so every element and rule that draws it is written again (the audit's RN1)
+    // so every element and rule that draws it is written again (the audit's RN1). A path added, removed or renamed does
+    // the same: an element's src or poster, and a rule's url(), resolve through the project's files (this.address,
+    // resolvedSource), so a deleted image kept drawing from its cached object URL and an image uploaded after its path
+    // was typed stayed broken until a rebuild, where a render from scratch draws neither (G7; the audit's RENDER-7).
     const held = new Map((before.files ?? []).map((file) => [file.path, file.bytes] as const));
-    if ((after.files ?? []).some((file) => held.has(file.path) && held.get(file.path) !== file.bytes)) return this.mount(after);
+    const files = after.files ?? [];
+    if (files.length !== held.size || files.some((file) => held.get(file.path) !== file.bytes)) return this.mount(after);
     this.doc = after;
     if (patches.some((patch) => patch.path[0] === TOKENS_FIELD)) this.writeTokens(after);
     if (patches.some((patch) => patch.path[0] === CLASSES_FIELD)) this.writeClasses(after);

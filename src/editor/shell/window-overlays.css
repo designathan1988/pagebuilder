@@ -437,7 +437,7 @@
   padding: 0 var(--space-2);
   border-radius: var(--radius-xs);
   background: var(--color-canvas-measure);
-  color: var(--color-on-canvas-band);
+  color: var(--color-on-canvas-measure);
   font: var(--fw-micro) var(--fs-micro) / var(--lh-micro) var(--font-ui);
 }
 
@@ -505,28 +505,36 @@
   translate: -50% 0;
 }
 
-/* the state being edited (canvas.tsx StateBadge): at the frame's right, under its breakpoint tabs (D-1: they stand at the
-   frame's top) and under the breakpoint's band when there is one, never over a tab; a name, not a control, so a press
-   there reaches the page (DEF-0536) */
+/* the state being edited (canvas.tsx StateBadge): a band across the whole frame, under its breakpoint tabs (D-1: they
+   stand at the frame's top) and under the breakpoint's band when there is one, in the flow as that band is, so it
+   pushes the page down instead of lying over its top-right corner, where it hid the element being edited (G4); a name,
+   not a control, so it takes no press (DEF-0536). Its words at the band's end, as the breakpoint band's: the selection
+   label of an element at the page's top starts at the element's left edge (DEC-70), so the two do not meet */
 .canvas-state-badge {
-  position: absolute;
-  top: calc(var(--size-frame-tabs) + var(--space-1));
-  right: var(--space-2);
-  z-index: 2;
-  pointer-events: none;
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-pill);
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: safe flex-end;
+  height: var(--size-target-min);
+  padding: 0 var(--space-4);
+  overflow: hidden;
   background: var(--color-mode-state);
   color: var(--color-on-mode-state);
-  font: var(--fw-label) var(--fs-label) / var(--lh-label) var(--font-ui);
+  font: var(--fw-label) var(--fs-label) / var(--size-target-min) var(--font-ui);
+  white-space: nowrap;
+  pointer-events: none;
 }
 
 /* the breakpoint being edited, when it is not the base (canvas.tsx BreakpointBadge, J22): the canonical band
-   (design/final .bpband) across the whole frame, under its tabs and over the page, in the breakpoint mode's colour */
+   (design/final .bpband) across the whole frame, under its tabs and over the page, in the breakpoint mode's colour.
+   Its words at the band's end: the selection label and the quick panel's chip of an element at the page's top lie
+   on this band (DEC-70) from the element's left edge, so words at the start were hidden under them (UI-3); `safe`
+   keeps the start in view when the words are wider than the band */
 .canvas-breakpoint-badge {
   display: flex;
   flex: none;
   align-items: center;
+  justify-content: safe flex-end;
   gap: var(--space-3);
   height: var(--size-target-min);
   padding: 0 var(--space-4);
@@ -536,10 +544,6 @@
   font: var(--weight-semibold) var(--fs-body) / var(--lh-body) var(--font-ui);
   white-space: nowrap;
   pointer-events: none;
-}
-
-.frame:has(.canvas-breakpoint-badge) .canvas-state-badge {
-  top: calc(var(--size-frame-tabs) + var(--size-target-min) + var(--space-1));
 }
 
 .canvas-breakpoint-badge > span {

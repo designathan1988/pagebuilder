@@ -1,4 +1,4 @@
-// As mensagens que os formulários dos sites recebem: por site, não lidas primeiro, marcar como lida, exportar CSV.
+// The messages the sites' forms receive: per site, unread first, mark as read, export CSV.
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { canAdmin, canEdit, errorText, supabase, when, type Submission, type Workspace } from './supabase.ts';
 
@@ -10,7 +10,7 @@ function csv(rows: Submission[], sites: Map<string, string>): string {
   const keys = [...new Set(rows.flatMap((row) => Object.keys(row.data)))];
   const cell = (value: unknown) => {
     const text = value === null || value === undefined ? '' : typeof value === 'object' ? JSON.stringify(value) : String(value);
-    // uma célula que começa com = + - @ vira texto, para a planilha não executá-la como fórmula
+    // a cell starting with = + - @ becomes text, so the spreadsheet does not run it as a formula
     const safe = /^[=+\-@]/.test(text) ? `'${text}` : text;
     return `"${safe.replaceAll('"', '""')}"`;
   };

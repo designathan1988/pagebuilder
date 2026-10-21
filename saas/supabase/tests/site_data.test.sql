@@ -1,9 +1,9 @@
--- Testes do banco de dados dos apps publicados (site_members, site_records): rodar depois das migrações
--- (tests/run.sh) e dos testes de site_overlays, que criam a Carla (dona de um workspace).
+-- Tests of the published apps' database (site_members, site_records): run after the migrations
+-- (tests/run.sh) and the site_overlays tests, which create Carla (owner of a workspace).
 \set ON_ERROR_STOP on
 insert into auth.users (id, email) values ('55555555-5555-5555-5555-555555555555', 'eva@exemplo.com');
 
--- a função site-data grava com a chave secreta (aqui, sem papel): um site da Carla, um membro e duas linhas
+-- the site-data function writes with the secret key (here, with no role): a site of Carla's, a member and two rows
 do $$
 declare ws uuid; proj uuid; site uuid; member uuid;
 begin
@@ -17,65 +17,65 @@ begin
     values (site, ws, 'recados', '{"texto":"Olá"}', member), (site, ws, 'recados', '{"texto":"Oi"}', null);
   begin
     insert into public.site_members (site_id, workspace_id, email, password_hash) values (site, ws, 'ANA@exemplo.com', 'x');
-    raise exception 'e-mail com maiúsculas entrou';
+    raise exception 'an email with uppercase letters got in';
   exception when check_violation then null;
   end;
   begin
     insert into public.site_records (site_id, workspace_id, collection, data) values (site, ws, 'Recados!', '{}');
-    raise exception 'nome de tabela inválido entrou';
+    raise exception 'an invalid table name got in';
   exception when check_violation then null;
   end;
   begin
     insert into public.site_records (site_id, workspace_id, collection, data) values (site, ws, 'recados', '[1]');
-    raise exception 'linha que não é objeto entrou';
+    raise exception 'a row that is not an object got in';
   exception when check_violation then null;
   end;
 end $$;
 
--- a Carla lê as linhas e os membros pelo painel, muda o papel, mas nunca lê a senha
+-- Carla reads the rows and the members through the dashboard, changes the role, but never reads the password
 set role authenticated;
 select set_config('request.jwt.claim.sub', '33333333-3333-3333-3333-333333333333', false);
 do $$
 declare changed int;
 begin
-  assert (select count(*) from public.site_records) = 2, 'a dona lê as linhas';
-  assert (select count(*) from public.site_members) = 1, 'a dona lê os membros';
+  assert (select count(*) from public.site_records) = 2, 'the owner reads the rows';
+  assert (select count(*) from public.site_members) = 1, 'the owner reads the members';
   update public.site_members set role = 'admin' where email = 'ana@exemplo.com';
   get diagnostics changed = row_count;
-  assert changed = 1, 'a dona faz a Ana administradora do site';
+  assert changed = 1, 'the owner makes Ana an administrator of the site';
   begin
     perform password_hash from public.site_members;
-    raise exception 'a senha saiu pelo painel';
+    raise exception 'the password leaked through the dashboard';
   exception when insufficient_privilege then null;
   end;
   begin
     update public.site_members set password_hash = 'x';
-    raise exception 'o painel trocou a senha';
+    raise exception 'the dashboard changed the password';
   exception when insufficient_privilege then null;
   end;
 end $$;
 
--- a Eva, de outro workspace, não vê nada do site da Carla
+-- Eva, from another workspace, sees nothing of Carla's site
 select set_config('request.jwt.claim.sub', '55555555-5555-5555-5555-555555555555', false);
 do $$
 declare changed int;
 begin
-  assert (select count(*) from public.site_records) = 0, 'Eva não lê linhas da Carla';
-  assert (select count(*) from public.site_members) = 0, 'Eva não lê membros da Carla';
+  assert (select count(*) from public.site_records) = 0, 'Eva does not read Carla''s rows';
+  assert (select count(*) from public.site_members) = 0, 'Eva does not read Carla''s members';
   delete from public.site_records;
   get diagnostics changed = row_count;
-  assert changed = 0, 'Eva não apaga';
+  assert changed = 0, 'Eva does not delete';
 end $$;
 
--- quem não está logado não lê nada direto do banco
+-- someone not signed in reads nothing directly from the database
 set role anon;
 select set_config('request.jwt.claim.sub', '', false);
 do $$
 begin
-  assert (select count(*) from public.site_records) = 0, 'visitante não lê o banco direto';
+  assert (select count(*) from public.site_records) = 0, 'a visitor does not read the database directly';
 end $$;
 
--- a Carla apaga uma linha
+-- Carla deletes a row
 set role authenticated;
 select set_config('request.jwt.claim.sub', '33333333-3333-3333-3333-333333333333', false);
 do $$
@@ -83,7 +83,7 @@ declare changed int;
 begin
   delete from public.site_records where data->>'texto' = 'Oi';
   get diagnostics changed = row_count;
-  assert changed = 1, 'a dona apaga';
+  assert changed = 1, 'the owner deletes';
 end $$;
 reset role;
 select 'site_data: ok';

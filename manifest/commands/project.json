@@ -172,7 +172,9 @@
         "predicate": "always",
         "refusalKey": null
       },
-      "refusals": [],
+      "refusals": [
+        "status.project.tooLarge"
+      ],
       "confirmation": null,
       "history": {
         "undoable": false

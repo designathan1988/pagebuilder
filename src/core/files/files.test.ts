@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { documentOf, node, runHandler } from '../testing/handlers.ts';
 import { FORMS_SCRIPT, INTERACTIONS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, STYLESHEET } from '../export/export.ts';
-import { createFileCommand, deleteFileCommand, folderOf, javascriptProblem, moveFileCommand, nameOfPath, renameFileCommand, uniqueFilePath, uploadPath } from './files.ts';
+import { createFileCommand, deleteFileCommand, folderOf, javascriptProblem, moveFileCommand, nameOfPath, objectUrl, releaseObjectUrls, renameFileCommand, uniqueFilePath, uploadPath } from './files.ts';
 
 const png = (path: string) => ({ path, type: 'image/png', bytes: 'AAAA' });
 const home = (children: ReturnType<typeof node>[] = [], attributes: Record<string, string> = {}) => ({ id: 'p', name: 'Home', file: 'index.html', tree: node('Page', 'page', 'body', { attributes, children }) });
@@ -104,5 +104,26 @@ describe('the paths the export writes its generated files at stay free', () => {
     expect(made.outcome).toEqual({ kind: 'refused', message: { key: 'status.files.generatedPath', params: { path } } });
     expect(uploadPath(document, `${folderOf(path)}/`, nameOfPath(path))).not.toBe(path);
     expect(uniqueFilePath(document, path)).not.toBe(path);
+  });
+});
+
+// CORE-6: a renamed or moved file keeps its object URL, and a content no file holds any more is released
+describe('objectUrl', () => {
+  it('keys the URL by content, and releaseObjectUrls revokes the ones no kept file holds', () => {
+    const before = png('img/a.png');
+    const url = objectUrl(before);
+    expect(objectUrl({ ...before, path: 'media/b.png' })).toBe(url);
+    const revoked: string[] = [];
+    const revoke = URL.revokeObjectURL;
+    URL.revokeObjectURL = (one: string) => void revoked.push(one);
+    try {
+      releaseObjectUrls([{ ...before, path: 'media/b.png' }]);
+      expect(revoked).toEqual([]);
+      releaseObjectUrls([]);
+      expect(revoked).toEqual([url]);
+    } finally {
+      URL.revokeObjectURL = revoke;
+    }
+    expect(objectUrl(before)).not.toBe(url);
   });
 });

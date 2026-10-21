@@ -1,11 +1,11 @@
-// As regras do banco de dados dos apps publicados (função site-data): quem lê e quem grava cada tabela, as senhas
-// dos membros dos sites e os tokens de sessão deles. Sem dependência do Deno nem do Supabase: o mesmo código roda nos
-// testes (src/core/logic/site-data.test.ts) e na função. Só Web Crypto (crypto.subtle), que os dois têm.
+// The rules of the published apps' database (the site-data function): who reads and who writes each table, the
+// passwords of the sites' members and their session tokens. No dependency on Deno or Supabase: the same code runs in
+// the tests (src/core/logic/site-data.test.ts) and in the function. Only Web Crypto (crypto.subtle), which both have.
 
-// Quem lê: qualquer visitante, só membros logados, cada membro só as próprias linhas, só administradores do site.
+// Who reads: any visitor, signed-in members only, each member only their own rows, site administrators only.
 export const READ_ACCESS = ['public', 'members', 'owner', 'admin'] as const;
-// Quem cria: qualquer visitante, só membros logados, só administradores. Alterar e apagar: o dono da linha ou um
-// administrador.
+// Who creates: any visitor, signed-in members only, administrators only. Changing and deleting: the row's owner or an
+// administrator.
 export const WRITE_ACCESS = ['public', 'members', 'admin'] as const;
 export type ReadAccess = (typeof READ_ACCESS)[number];
 export type WriteAccess = (typeof WRITE_ACCESS)[number];
@@ -24,7 +24,7 @@ export interface Member {
 export const TABLE_NAME = /^[a-z][a-z0-9_]{0,39}$/u;
 export const MAX_TABLES = 50;
 
-// As regras que o editor manda ao publicar, conferidas; null quando não são uma lista de regras.
+// The rules the editor sends when publishing, checked; null when they are not a list of rules.
 export function readRules(value: unknown): readonly TableRule[] | null {
   if (!Array.isArray(value) || value.length > MAX_TABLES) return null;
   const names = new Set<string>();
@@ -42,7 +42,7 @@ export function readRules(value: unknown): readonly TableRule[] | null {
 
 export const ruleOf = (rules: readonly TableRule[], table: string): TableRule | null => rules.find((rule) => rule.name === table) ?? null;
 
-// Pode listar ou ler a tabela? "owner" deixa ler, mas só as próprias linhas (ownOnly).
+// May the table be listed or read? "owner" allows reading, but only one's own rows (ownOnly).
 export function canRead(rule: TableRule, member: Member | null): { readonly allowed: boolean; readonly ownOnly: boolean } {
   if (member?.role === 'admin') return { allowed: true, ownOnly: false };
   if (rule.read === 'public') return { allowed: true, ownOnly: false };
@@ -58,7 +58,7 @@ export function canCreate(rule: TableRule, member: Member | null): boolean {
   return false;
 }
 
-// Alterar ou apagar uma linha: o membro que a criou, ou um administrador do site.
+// Changing or deleting a row: the member who created it, or a site administrator.
 export function canChange(rule: TableRule, member: Member | null, ownerId: string | null): boolean {
   if (member === null) return false;
   if (member.role === 'admin') return true;
@@ -66,7 +66,7 @@ export function canChange(rule: TableRule, member: Member | null, ownerId: strin
   return ownerId !== null && ownerId === member.id;
 }
 
-// ---------------------------------------------------------------- consultas
+// ---------------------------------------------------------------- queries
 
 export interface ListQuery {
   readonly where: Readonly<Record<string, string | number | boolean | null>>;
@@ -79,7 +79,7 @@ export interface ListQuery {
 const FIELD = /^[A-Za-z_][\w]{0,63}$/u;
 export const MAX_LIMIT = 500;
 
-// A consulta que o runtime manda em ?q=<json>: { where, order: 'campo' | '-campo', limit, offset, mine }.
+// The query the runtime sends in ?q=<json>: { where, order: 'field' | '-field', limit, offset, mine }.
 export function readQuery(text: string | null): ListQuery | null {
   let raw: Record<string, unknown> = {};
   if (text !== null && text !== '') {
@@ -109,7 +109,7 @@ export function readQuery(text: string | null): ListQuery | null {
   return { where, order: { field, ascending: !descending }, limit, offset, mine: raw.mine === true };
 }
 
-// Uma linha do banco como o runtime a entrega: os dados, o id, quem criou e quando.
+// A database row as the runtime delivers it: the data, the id, who created it and when.
 export interface StoredRecord {
   readonly id: string;
   readonly data: Readonly<Record<string, unknown>>;
@@ -120,7 +120,7 @@ export interface StoredRecord {
 
 export const recordOut = (row: StoredRecord): Record<string, unknown> => ({ ...row.data, id: row.id, _owner: row.owner_id, _created: row.created_at, _updated: row.updated_at });
 
-// Os dados que um visitante grava: um objeto de até 64 KB, sem os campos que o banco escreve.
+// The data a visitor writes: an object of up to 64 KB, without the fields the database writes.
 export const MAX_RECORD_BYTES = 64 * 1024;
 export function readData(value: unknown): Record<string, unknown> | null {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) return null;
@@ -129,7 +129,7 @@ export function readData(value: unknown): Record<string, unknown> | null {
   return data;
 }
 
-// Ordena as linhas por um campo dos dados (os criados e alterados pelos do banco), números como números.
+// Sorts the rows by a data field (created and updated by the database's own), numbers as numbers.
 export function sortRecords(rows: readonly Record<string, unknown>[], order: ListQuery['order']): Record<string, unknown>[] {
   const sign = order.ascending ? 1 : -1;
   return [...rows].sort((a, b) => {
@@ -143,7 +143,7 @@ export function sortRecords(rows: readonly Record<string, unknown>[], order: Lis
   });
 }
 
-// ---------------------------------------------------------------- senhas e sessões
+// ---------------------------------------------------------------- passwords and sessions
 
 const encoder = new TextEncoder();
 const toBase64Url = (bytes: Uint8Array): string => btoa(String.fromCharCode(...bytes)).replace(/\+/gu, '-').replace(/\//gu, '_').replace(/=+$/u, '');
@@ -152,7 +152,7 @@ const fromBase64Url = (text: string): Uint8Array<ArrayBuffer> => {
   return Uint8Array.from(atob(normal + '='.repeat((4 - (normal.length % 4)) % 4)), (c) => c.charCodeAt(0));
 };
 
-// OWASP Password Storage Cheat Sheet: PBKDF2-HMAC-SHA256 com 600 000 iterações e sal único por senha.
+// OWASP Password Storage Cheat Sheet: PBKDF2-HMAC-SHA256 with 600 000 iterations and a unique salt per password.
 export const PBKDF2_ITERATIONS = 600_000;
 export const MIN_PASSWORD = 8;
 
@@ -187,7 +187,7 @@ async function hmac(secret: string, text: string): Promise<Uint8Array> {
   return new Uint8Array(await crypto.subtle.sign('HMAC', key, encoder.encode(text)));
 }
 
-// O token de sessão de um membro: <dados em base64url>.<HMAC-SHA256>, válido só no site em que entrou.
+// A member's session token: <base64url data>.<HMAC-SHA256>, valid only on the site where they signed in.
 export async function signSession(secret: string, memberId: string, siteId: string, now = Date.now()): Promise<string> {
   const body = toBase64Url(encoder.encode(JSON.stringify({ sub: memberId, site: siteId, exp: Math.floor(now / 1000) + SESSION_DAYS * 86400 })));
   return `${body}.${toBase64Url(await hmac(secret, body))}`;

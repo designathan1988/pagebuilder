@@ -44,7 +44,7 @@ import { rootCss } from '../design/tokens.ts';
 import type { InlineRun } from '../text/inline.ts';
 import { animationsOf, keyframesCss, playedClassDeclarations, playedClassName, animationListDeclarations } from '../animation/animation.ts';
 import { addressedNodes, playedAnimations } from '../events/interactions.ts';
-import { interactionsJs, isModalTemplate, isTabsTemplate, pageNeedsScript } from '../events/script.ts';
+import { interactionsJs, pageNeedsScript } from '../events/script.ts';
 import type { SiteScripts } from '../ports/site-scripts.ts';
 import { addressedMotionNodes, treeUsesMotion } from '../motion/document.ts';
 import { motionConfig, siteUsesLottie } from '../motion/export.ts';
@@ -56,8 +56,10 @@ import { compileApp, importMap, mapAddress, siteUsesApp } from '../logic/compile
 
 // the generated files' paths (paths.ts, the one list the file tree reads too), published here for the editor
 export { FORMS_SCRIPT, INTERACTIONS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, STYLESHEET, WIDGETS_SCRIPT } from './paths.ts';
-// a page holding a web component (a data-wc attribute: carousel, lightbox, tabs, cart…) links js/widgets.js
-export const pageUsesWidgets = (tree: DocNode): boolean => [...walk(tree)].some((node) => node.customAttributes?.['data-wc'] !== undefined);
+// a page holding a web component links js/widgets.js: an element marked data-wc (carousel, lightbox, tabs, cart…) or
+// any part of one (a data-wc-* attribute: a popup's opener, data-wc-open, stands outside any data-wc element, and
+// without the script it opened nothing on the exported site)
+export const pageUsesWidgets = (tree: DocNode): boolean => [...walk(tree)].some((node) => Object.keys(node.customAttributes ?? {}).some((name) => name === 'data-wc' || name.startsWith('data-wc-')));
 const pageUsesForms = (tree: DocNode): boolean => [...walk(tree)].some(node => node.attributes.formField !== undefined || node.attributes.formSubmit !== undefined);
 // the page setting that is the page's title (elements.json), written in the head rather than as an attribute
 const TITLE_SETTING = 'pageTitle';
@@ -238,12 +240,20 @@ const writtenCss = (document: DocumentJson, text: string, from: string): string 
 // stood 5 px further from its field than on the canvas, which draws no space there): two neighbours that run on in the
 // line (HTML's phrasing content: a span and an input, two links, two images) are parted by a space where a line break
 // stands between them, unless the element lays its children out as a flex or a grid in every layer of its own styles
-// (its own display overrides its classes': its rule comes after theirs).
+// (its own display overrides its classes': its rule comes after theirs). A child runs on in the line when its tag is
+// phrasing, or when any display it holds — its own, in any breakpoint or state, or one of its classes' — is an inline
+// one (inline, inline-block, inline-flex, inline-grid): two Div boxes at inline-block and 50% each sit side by side on
+// the canvas, which writes no whitespace between them, and a line break in the export pushed the second one down
+// (the audit's RENDER-2).
 const LAYOUTS = new Set(['flex', 'inline-flex', 'grid', 'inline-grid']);
-function runsOn(node: DocNode, inner: readonly DocNode[], rules: ModelRules): boolean {
-  const inline = (child: DocNode): boolean => child.tag !== null && rules.contentModel.phrasing(child.tag) === true;
+const displaysOf = (styles: DocNode['styles']): string[] =>
+  Object.values(styles).flatMap((byState) => Object.values(byState ?? {}).map((held) => (held as Readonly<Record<string, string>>).display)).filter((d): d is string => d !== undefined);
+function runsOn(node: DocNode, inner: readonly DocNode[], rules: ModelRules, classStyles: ReadonlyMap<string, DocNode['styles']>): boolean {
+  const inline = (child: DocNode): boolean =>
+    (child.tag !== null && rules.contentModel.phrasing(child.tag) === true) ||
+    [...displaysOf(child.styles), ...child.classes.flatMap((name) => displaysOf(classStyles.get(name) ?? {}))].some((display) => display.startsWith('inline'));
   if (!inner.some((child, i) => i > 0 && inline(child) && inline(inner[i - 1] as DocNode))) return false;
-  const displays = Object.values(node.styles).flatMap((byState) => Object.values(byState ?? {}).map((held) => (held as Readonly<Record<string, string>>).display)).filter((d) => d !== undefined);
+  const displays = displaysOf(node.styles);
   const base = (node.styles[rules.baseLayer.breakpoint as keyof DocNode['styles']] as Readonly<Record<string, Readonly<Record<string, string>>>> | undefined)?.[rules.baseLayer.state]?.display;
   return !(base !== undefined && LAYOUTS.has(base) && displays.every((d) => LAYOUTS.has(d as string)));
 }
@@ -257,6 +267,15 @@ function capturedHeadOf(document: DocumentJson, page: DocumentJson['pages'][numb
     lang: pageLanguage(page.tree.attributes['pageLanguage' as keyof DocNode['attributes']], document.language),
   };
 }
+
+// The file the preview writes every page from: its addresses stay as the document holds them (relative = false), and
+// previewPage turns them into the bytes it draws.
+const PREVIEW_BASE = '';
+// The tags that link a generated script, as a page's head writes them from the file at `from`. One writer for the head
+// and for previewPage, which finds the very tag it replaces with the script's text: it looked the tags up from the
+// page's own file, so a page in a folder (blog/post.html) ran none of its scripts in Preview (the audit's RENDER-5).
+const deferredScriptTag = (from: string, path: string): string => `  <script defer src="${escapeAttribute(relativePath(from, path))}"></script>`;
+const moduleScriptTag = (from: string, path: string): string => `  <script type="module" src="${escapeAttribute(relativePath(from, path))}"></script>`;
 
 export function pageLines(document: DocumentJson, pageIndex: number, manifestRules: ModelRules, shared: SharedClasses = newShared(document, manifestRules), relative = true): PageCode {
   // the project's breakpoints: its media queries (core/document/breakpoints.ts)
@@ -272,12 +291,14 @@ export function pageLines(document: DocumentJson, pageIndex: number, manifestRul
   // the elements an interaction or a motion addresses take a class of their own (spec export-events-js,
   // export-motion-js)
   const addressed = new Set<NodeId>([...addressedNodes(document), ...addressedMotionNodes(document)]);
-  for (const page of document.pages) for (const node of walk(page.tree)) if (animationsOf(node).length > 0 || isModalTemplate(node) || isTabsTemplate(node)) addressed.add(node.id as NodeId);
+  for (const page of document.pages) for (const node of walk(page.tree)) if (animationsOf(node).length > 0) addressed.add(node.id as NodeId);
   const classes = generatedClasses(page.tree, shared, addressed);
   const inForm = formNodes(document);
+  // the project's classes by name: a child whose class lays it out inline runs on in the line (runsOn)
+  const classStyles = new Map((document.classes ?? []).map((one) => [one.name, one.styles] as const));
   // the file the page is written at: the base of every address it holds (the preview writes absolute paths, which it
   // then turns into object URLs of its own)
-  const from = relative ? page.file : '';
+  const from = relative ? page.file : PREVIEW_BASE;
   const { output, contentModel } = rules;
   // the animations an event of this project plays: their animation properties go to a class rule beside their
   // @keyframes rather than the element's own rule, so nothing plays until the event fires (spec export-events-js)
@@ -324,7 +345,7 @@ export function pageLines(document: DocumentJson, pageIndex: number, manifestRul
     const markup = svgMarkupOf(node);
     const inner = node.children.filter((child) => writesNode(child, output));
     if (inner.length === 0 && markup === '') return put(`${open}</${tag}>`);
-    if (lines === null || runsOn(node, inner, rules)) return put(`${open}${inner.map((child) => write(child, 0, false, null)).join('')}${markup}</${tag}>`);
+    if (lines === null || runsOn(node, inner, rules, classStyles)) return put(`${open}${inner.map((child) => write(child, 0, false, null)).join('')}${markup}</${tag}>`);
     put(open);
     for (const child of inner) write(child, depth + 1, false, lines);
     if (markup !== '') lines.push({ text: `${indent}  ${markup}`, node: node.id });
@@ -374,15 +395,15 @@ export function pageLines(document: DocumentJson, pageIndex: number, manifestRul
     ...headLines(document, page.tree, rules, from),
     ...(capturedStyle === null ? [] : [`  <link rel="stylesheet" href="${escapeAttribute(relativePath(from, capturedPageStylePath(page)))}">`]),
     `  <link rel="stylesheet" href="${escapeAttribute(relativePath(from, STYLESHEET))}">`,
-    ...(usesInteractions || linksScript(page.tree, INTERACTIONS_SCRIPT) ? [`  <script defer src="${escapeAttribute(relativePath(from, INTERACTIONS_SCRIPT))}"></script>`] : []),
-    ...(pageUsesForms(page.tree) || linksScript(page.tree, FORMS_SCRIPT) ? [`  <script defer src="${escapeAttribute(relativePath(from, FORMS_SCRIPT))}"></script>`] : []),
+    ...(usesInteractions || linksScript(page.tree, INTERACTIONS_SCRIPT) ? [deferredScriptTag(from, INTERACTIONS_SCRIPT)] : []),
+    ...(pageUsesForms(page.tree) || linksScript(page.tree, FORMS_SCRIPT) ? [deferredScriptTag(from, FORMS_SCRIPT)] : []),
     // a page holding motion links the Lottie player when the site uses one, then the motion script
-    ...(treeUsesMotion(page.tree) && siteUsesLottie(document) || linksScript(page.tree, LOTTIE_SCRIPT) ? [`  <script defer src="${escapeAttribute(relativePath(from, LOTTIE_SCRIPT))}"></script>`] : []),
-    ...(treeUsesMotion(page.tree) || linksScript(page.tree, MOTION_SCRIPT) ? [`  <script defer src="${escapeAttribute(relativePath(from, MOTION_SCRIPT))}"></script>`] : []),
-    ...(pageUsesWidgets(page.tree) || linksScript(page.tree, WIDGETS_SCRIPT) ? [`  <script defer src="${escapeAttribute(relativePath(from, WIDGETS_SCRIPT))}"></script>`] : []),
+    ...(treeUsesMotion(page.tree) && siteUsesLottie(document) || linksScript(page.tree, LOTTIE_SCRIPT) ? [deferredScriptTag(from, LOTTIE_SCRIPT)] : []),
+    ...(treeUsesMotion(page.tree) || linksScript(page.tree, MOTION_SCRIPT) ? [deferredScriptTag(from, MOTION_SCRIPT)] : []),
+    ...(pageUsesWidgets(page.tree) || linksScript(page.tree, WIDGETS_SCRIPT) ? [deferredScriptTag(from, WIDGETS_SCRIPT)] : []),
     // the application (spec app-logic): the import map that names its modules, before the module that starts it
     ...(siteUsesApp(document)
-      ? [`  <script type="importmap">${importMap(document, (path) => mapAddress(relativePath(from, path)))}</script>`, `  <script type="module" src="${escapeAttribute(relativePath(from, APP_MAIN_SCRIPT))}"></script>`]
+      ? [`  <script type="importmap">${importMap(document, (path) => mapAddress(relativePath(from, path)))}</script>`, moduleScriptTag(from, APP_MAIN_SCRIPT)]
       : []),
     '</head>',
   ].map((text) => ({ text, node: null }));
@@ -541,16 +562,15 @@ export function previewPage(document: DocumentJson, rules: ModelRules, pageIndex
   // an inline script is never deferred.
   if (site.interactions !== null) {
     const inline = `  <script>document.addEventListener('DOMContentLoaded', function () {\n${inlineScript(site.interactions)}  });</script>`;
-    html = html.replace(`  <script defer src="${relativePath(page?.file ?? '', INTERACTIONS_SCRIPT)}"></script>`, () => inline);
+    html = html.replace(deferredScriptTag(PREVIEW_BASE, INTERACTIONS_SCRIPT), () => inline);
   }
   const link = `  <link rel="stylesheet" href="${STYLESHEET}">`;
-  if (site.forms !== null) html = html.replace(`  <script defer src="${FORMS_SCRIPT}"></script>`, () => `  <script>document.addEventListener('DOMContentLoaded', function () {\n${inlineScript(site.forms ?? '')}\n});</script>`);
+  if (site.forms !== null) html = html.replace(deferredScriptTag(PREVIEW_BASE, FORMS_SCRIPT), () => `  <script>document.addEventListener('DOMContentLoaded', function () {\n${inlineScript(site.forms ?? '')}\n});</script>`);
   // the Lottie player and the motion script run in the preview from their own text, in their order (the page links
   // them by paths the preview cannot load)
-  const pageFile = page?.file ?? '';
-  if (site.lottie !== null) html = html.replace(`  <script defer src="${relativePath(pageFile, LOTTIE_SCRIPT)}"></script>`, () => `  <script>\n${inlineScript(site.lottie ?? '')}\n  </script>`);
-  if (site.motion !== null) html = html.replace(`  <script defer src="${relativePath(pageFile, MOTION_SCRIPT)}"></script>`, () => `  <script>document.addEventListener('DOMContentLoaded', function () {\n${inlineScript(site.motion ?? '')}\n});</script>`);
-  if (site.widgets !== null) html = html.replace(`  <script defer src="${relativePath(pageFile, WIDGETS_SCRIPT)}"></script>`, () => `  <script>document.addEventListener('DOMContentLoaded', function () {\n${inlineScript(site.widgets ?? '')}\n});</script>`);
+  if (site.lottie !== null) html = html.replace(deferredScriptTag(PREVIEW_BASE, LOTTIE_SCRIPT), () => `  <script>\n${inlineScript(site.lottie ?? '')}\n  </script>`);
+  if (site.motion !== null) html = html.replace(deferredScriptTag(PREVIEW_BASE, MOTION_SCRIPT), () => `  <script>document.addEventListener('DOMContentLoaded', function () {\n${inlineScript(site.motion ?? '')}\n});</script>`);
+  if (site.widgets !== null) html = html.replace(deferredScriptTag(PREVIEW_BASE, WIDGETS_SCRIPT), () => `  <script>document.addEventListener('DOMContentLoaded', function () {\n${inlineScript(site.widgets ?? '')}\n});</script>`);
   // the application runs from its own text too: the import map gives each module as a data: address (the frame has no
   // folder), js/app-layer/main.js is written in, and the runtime shows its errors in the page (data-app-debug)
   if (site.app !== null) {
@@ -561,10 +581,12 @@ export function previewPage(document: DocumentJson, rules: ModelRules, pageIndex
       return file === null ? path : dataAddress(new TextDecoder().decode(fileBytes(file)));
     })()), app.runtime, { main: app.main, modules: app.modules });
     html = html.replace(/ {2}<script type="importmap">.*<\/script>/u, () => `  <script type="importmap">${map}</script>`);
-    html = html.replace(`  <script type="module" src="${relativePath(pageFile, APP_MAIN_SCRIPT)}"></script>`, () => `  <script type="module">\n${inlineScript(app.main)}\n  </script>`);
+    html = html.replace(moduleScriptTag(PREVIEW_BASE, APP_MAIN_SCRIPT), () => `  <script type="module">\n${inlineScript(app.main)}\n  </script>`);
     html = html.replace('<html', '<html data-app-debug');
   }
-  return html.replace(link, `  <base target="_blank">\n  <style>\n${css}  </style>`);
+  // the stylesheet through a function too, so its $&, $' and $` stay as they are (RP1), and with its "</style" written
+  // "<\/style" as the captured page's CSS above is: a value holding either never cuts the page (the audit's RENDER-6)
+  return html.replace(link, () => `  <base target="_blank">\n  <style>\n${css.replace(/<\/style/gi, '<\\/style')}  </style>`);
 }
 
 // The site's archive (spec export-zip): the pages, the stylesheet, the scripts the project needs and every file of

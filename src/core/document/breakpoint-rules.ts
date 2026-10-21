@@ -107,6 +107,8 @@ export function rulesForDocument(rules: ModelRules, document: Tabled): ModelRule
     base: { ...rules.base, breakpoint: base.id },
     baseLayer: { ...rules.baseLayer, breakpoint: base.id },
     output: outputForTable(rules.output, table),
+    // the manifest's rules these were made from: what the validator reads any document against (validate.ts)
+    manifest: rules.manifest ?? rules,
   };
   byRules.set(rules, next);
   return next;

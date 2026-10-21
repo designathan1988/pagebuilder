@@ -1,11 +1,11 @@
-// O servidor dos sites publicados. Um Worker só, para todos os clientes:
-//  - lê o Host e acha o site: <slug>.<SITES_SUFFIX>, ou um domínio próprio mapeado em domains/<host>;
-//  - serve a versão publicada do R2 (sites/<slug>/v<N>/...), com index.html, URLs sem extensão e a 404 do site;
-//  - recebe os formulários dos sites (POST) e os repassa à plataforma;
-//  - repassa /_api/* (o banco de dados e os membros dos apps: app.db e app.auth do runtime) à função site-data;
-//  - no host de publicação, com o segredo, grava uma versão nova a partir do ZIP do editor e troca o ponteiro
-//    (meta/<slug>.json) de uma vez, e mantém o mapa dos domínios próprios.
-// Referências: developers.cloudflare.com (R2 Workers API, Cache API, routes, Cloudflare for SaaS), lidas em 2026-10-21.
+// The server of the published sites. A single Worker, for all customers:
+//  - reads the Host and finds the site: <slug>.<SITES_SUFFIX>, or a custom domain mapped in domains/<host>;
+//  - serves the published version from R2 (sites/<slug>/v<N>/...), with index.html, extensionless URLs and the site's 404;
+//  - receives the sites' forms (POST) and forwards them to the platform;
+//  - forwards /_api/* (the apps' database and members: the runtime's app.db and app.auth) to the site-data function;
+//  - on the publishing host, with the secret, stores a new version from the editor's ZIP and swaps the pointer
+//    (meta/<slug>.json) at once, and keeps the map of custom domains.
+// References: developers.cloudflare.com (R2 Workers API, Cache API, routes, Cloudflare for SaaS), read on 2026-10-21.
 import { unzipSync } from 'fflate';
 
 export interface Env {
@@ -44,9 +44,9 @@ function sameSecret(given: string, expected: string): boolean {
   return diff === 0;
 }
 
-// Cabeçalhos de segurança para sites de clientes num domínio separado do painel (web.dev, "Securely hosting user
-// data"; exemplo de security headers da Cloudflare). Sem COEP require-corp (quebraria imagens e vídeos de terceiros)
-// e sem X-Frame-Options DENY (o painel mostra o site num iframe).
+// Security headers for customer sites on a domain separate from the dashboard (web.dev, "Securely hosting user
+// data"; Cloudflare's security headers example). No COEP require-corp (it would break third-party images and videos)
+// and no X-Frame-Options DENY (the dashboard shows the site in an iframe).
 function secure(headers: Headers): void {
   headers.set('X-Content-Type-Options', 'nosniff');
   headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
@@ -70,9 +70,9 @@ async function metaOf(slug: string, env: Env): Promise<SiteMeta | null> {
   return object === null ? null : (await object.json<SiteMeta>());
 }
 
-// ------------------------------------------------------------------ publicação (host da plataforma)
+// ------------------------------------------------------------------ publishing (platform host)
 
-// Um caminho de dentro do ZIP, seguro para virar chave: sem "..", sem barra inicial, sem barras invertidas.
+// A path from inside the ZIP, safe to become a key: no "..", no leading slash, no backslashes.
 function safePath(name: string): string | null {
   const path = name.replace(/\\/g, '/').replace(/^\/+/, '');
   if (path === '' || path.endsWith('/') || path.split('/').some((part) => part === '..' || part === '.')) return null;
@@ -93,10 +93,10 @@ async function publish(request: Request, env: Env, url: URL, ctx: ExecutionConte
     count += 1;
   }
   if (count === 0) return new Response('empty archive', { status: 400 });
-  // a troca: daqui em diante as visitas leem a versão nova
+  // the swap: from here on, visits read the new version
   const meta: SiteMeta = { version, badge: url.searchParams.get('badge') === '1' };
   await env.SITES.put(`meta/${slug}.json`, JSON.stringify(meta), { httpMetadata: { contentType: 'application/json' } });
-  // as versões antigas saem depois da resposta
+  // the old versions are removed after the response
   ctx.waitUntil(removeOlderVersions(env, slug, version));
   return Response.json({ ok: true, files: count });
 }
@@ -138,7 +138,7 @@ async function platform(request: Request, env: Env, url: URL, ctx: ExecutionCont
   return new Response('not found', { status: 404 });
 }
 
-// ------------------------------------------------------------------ formulários dos sites
+// ------------------------------------------------------------------ the sites' forms
 
 const THANKS = (back: string) => `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Mensagem enviada</title>
 <style>body{font-family:system-ui,sans-serif;display:grid;place-items:center;min-height:100vh;margin:0;background:#f8fafc;color:#0f172a}main{max-width:420px;padding:32px;text-align:center}a{color:#4f46e5}</style></head>
@@ -148,7 +148,7 @@ async function form(request: Request, env: Env, url: URL, slug: string): Promise
   const type = request.headers.get('content-type') ?? '';
   if (!type.includes('application/x-www-form-urlencoded') && !type.includes('multipart/form-data')) return new Response('method not allowed', { status: 405 });
   const data = await request.formData();
-  // campo-isca: robôs preenchem, pessoas não veem
+  // honeypot field: bots fill it in, people do not see it
   if (String(data.get('_gotcha') ?? '') !== '') return new Response(THANKS(url.pathname), { headers: { 'content-type': 'text/html; charset=utf-8' } });
   const fields: Record<string, string> = {};
   for (const [key, value] of data.entries()) if (typeof value === 'string' && key !== '_gotcha') fields[key] = value;
@@ -163,13 +163,13 @@ async function form(request: Request, env: Env, url: URL, slug: string): Promise
   return new Response(THANKS(url.pathname), { headers });
 }
 
-// ------------------------------------------------------------------ o banco de dados dos apps
+// ------------------------------------------------------------------ the apps' database
 
 const API_PREFIX = '/_api/';
 const MAX_API_BODY = 256 * 1024;
 
-// Mesma origem do site: o runtime chama /_api/... sem CORS. "ping" responde aqui (o runtime descobre se o site tem o
-// banco da plataforma); o resto vai para a função site-data, com o slug e o caminho em cabeçalhos.
+// Same origin as the site: the runtime calls /_api/... without CORS. "ping" answers here (the runtime finds out whether
+// the site has the platform database); the rest goes to the site-data function, with the slug and the path in headers.
 async function api(request: Request, env: Env, url: URL, slug: string): Promise<Response> {
   const path = url.pathname.slice(API_PREFIX.length);
   const headers = new Headers({ 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' });
@@ -194,9 +194,9 @@ async function api(request: Request, env: Env, url: URL, slug: string): Promise<
   return new Response(forwarded.body, { status: forwarded.status, headers });
 }
 
-// ------------------------------------------------------------------ as visitas
+// ------------------------------------------------------------------ visits
 
-// o selo do plano grátis, no fim do <body> de cada página
+// the free plan badge, at the end of each page's <body>
 function withBadge(response: Response, env: Env): Response {
   const badge = `<a href="${env.BADGE_URL}" target="_blank" rel="noopener" style="position:fixed;right:12px;bottom:12px;z-index:2147483647;`
     + 'padding:6px 10px;border-radius:8px;background:#0f172a;color:#fff;font:600 12px/1.4 system-ui,sans-serif;text-decoration:none;'
@@ -207,7 +207,7 @@ function withBadge(response: Response, env: Env): Response {
 async function visit(request: Request, env: Env, url: URL, ctx: ExecutionContext, slug: string): Promise<Response> {
   const meta = await metaOf(slug, env);
   if (meta === null) return new Response('Site não encontrado', { status: 404, headers: { 'content-type': 'text/plain; charset=utf-8' } });
-  // a versão entra na chave do cache: publicar de novo nunca serve a versão anterior (a chave inclui o host)
+  // the version is part of the cache key: publishing again never serves the previous version (the key includes the host)
   const cacheKey = new Request(`${url.origin}${url.pathname}?__v=${meta.version}`, { method: 'GET' });
   const cache = caches.default;
   if (request.method === 'GET') {
@@ -225,7 +225,7 @@ async function visit(request: Request, env: Env, url: URL, ctx: ExecutionContext
   const base = `sites/${slug}/v${meta.version}`;
   let key = `${base}${path}`;
   let object = await env.SITES.get(key);
-  // URLs sem extensão: /sobre -> /sobre.html ou /sobre/index.html
+  // extensionless URLs: /about -> /about.html or /about/index.html
   if (object === null && !/\.[a-z0-9]+$/i.test(path)) {
     for (const candidate of [`${base}${path}.html`, `${base}${path}/index.html`]) {
       object = await env.SITES.get(candidate);
@@ -247,7 +247,7 @@ async function visit(request: Request, env: Env, url: URL, ctx: ExecutionContext
   object.writeHttpMetadata(headers);
   if (!headers.has('content-type')) headers.set('content-type', mimeOf(key));
   headers.set('etag', object.httpEtag);
-  // HTML: o navegador sempre confere; o resto: cache longo (a versão nova tem outra chave no cache da borda)
+  // HTML: the browser always revalidates; the rest: long cache (the new version has another key in the edge cache)
   headers.set('cache-control', html ? 'public, max-age=0, must-revalidate' : 'public, max-age=3600');
   secure(headers);
   let response = new Response(request.method === 'HEAD' ? null : object.body, { status, headers });

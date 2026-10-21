@@ -1,15 +1,15 @@
-// O banco de dados e os membros dos apps publicados (app.db e app.auth do runtime). O Worker dos sites repassa para cá
-// cada /_api/* de um site com o segredo da plataforma, o slug do site (x-site-slug) e o caminho (x-api-path); o
-// visitante manda o token de membro em Authorization. As regras de cada tabela são as que o editor publicou
-// (sites.data_rules); uma tabela sem regra não existe.
+// The database and the members of the published apps (the runtime's app.db and app.auth). The sites Worker forwards
+// each /_api/* of a site here with the platform secret, the site slug (x-site-slug) and the path (x-api-path); the
+// visitor sends the member token in Authorization. Each table's rules are the ones the editor published
+// (sites.data_rules); a table without a rule does not exist.
 //   POST   auth/signup  { email, password, name }  -> { token, user }
 //   POST   auth/login   { email, password }        -> { token, user }
 //   GET    auth/me                                 -> { user }
-//   GET    db/<tabela>?q=<consulta>                -> { items }
-//   GET    db/<tabela>/<id>                        -> { item }
-//   POST   db/<tabela>  { data }                   -> { item }
-//   PATCH  db/<tabela>/<id> { data }               -> { item }   (junta os campos)
-//   DELETE db/<tabela>/<id>                        -> { ok }
+//   GET    db/<table>?q=<query>                    -> { items }
+//   GET    db/<table>/<id>                         -> { item }
+//   POST   db/<table>  { data }                    -> { item }
+//   PATCH  db/<table>/<id> { data }                -> { item }   (merges the fields)
+//   DELETE db/<table>/<id>                         -> { ok }
 import { adminClient, env } from '../_shared/env.ts';
 import { sameSecret } from '../_shared/http.ts';
 import {
@@ -34,7 +34,7 @@ import {
 
 const SLUG = /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$/;
 const ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-// linhas por tabela de um site: o limite que protege a conta de um site que enche o banco
+// rows per table of a site: the limit that protects the account from a site that fills the database
 const MAX_ROWS_PER_TABLE = 20000;
 const MAX_MEMBERS = 50000;
 const FIELDS = 'id, data, owner_id, created_at, updated_at';
@@ -43,7 +43,7 @@ const reply = (body: unknown, status = 200): Response =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' } });
 const failure = (error: string, status: number): Response => reply({ error }, status);
 
-// a chave dos tokens dos membros: derivada do segredo da plataforma, para não exigir mais um segredo
+// the key for the members' tokens: derived from the platform secret, so no extra secret is required
 const sessionSecret = (): string => `site-members:${env.required('SITES_PLATFORM_SECRET')}`;
 
 interface SiteRow {
@@ -65,7 +65,7 @@ export default {
     if (!site) return failure('not_found', 404);
     const rules = readRules(site.data_rules) ?? [];
 
-    // quem está logado: o token do site, de um membro que ainda existe
+    // who is signed in: the site's token, of a member that still exists
     let member: (Member & { email: string; name: string }) | null = null;
     const token = (req.headers.get('authorization') ?? '').replace(/^Bearer\s+/i, '');
     if (token !== '') {
@@ -78,7 +78,7 @@ export default {
     const body = req.method === 'POST' || req.method === 'PATCH' ? await req.json().catch(() => null) as Record<string, unknown> | null : null;
     const parts = path.split('/');
 
-    // ------------------------------------------------------------ membros
+    // ------------------------------------------------------------ members
     if (parts[0] === 'auth') {
       const route = `${req.method} ${parts[1] ?? ''}`;
       if (route === 'GET me') return reply({ user: member === null ? null : userOut(member) });
@@ -98,12 +98,12 @@ export default {
         return reply({ token: await signSession(sessionSecret(), data.id, site.id), user: userOut(data) }, 201);
       }
       const { data } = await admin.from('site_members').select('id, email, name, role, password_hash').eq('site_id', site.id).eq('email', email).maybeSingle();
-      // a mesma resposta para e-mail desconhecido e senha errada
+      // the same response for an unknown email and a wrong password
       if (!data || !(await checkPassword(password, data.password_hash))) return failure('invalid_credentials', 401);
       return reply({ token: await signSession(sessionSecret(), data.id, site.id), user: userOut(data) });
     }
 
-    // ------------------------------------------------------------ tabelas
+    // ------------------------------------------------------------ tables
     if (parts[0] !== 'db' || parts.length < 2 || parts.length > 3) return failure('not_found', 404);
     const rule = ruleOf(rules, parts[1] ?? '');
     if (rule === null) return failure('unknown_table', 404);
@@ -128,7 +128,7 @@ export default {
         if (error) return failure('unavailable', 503);
         return reply({ items: (data as StoredRecord[]).map(recordOut) });
       }
-      // por um campo dos dados: lido inteiro (até o limite da tabela) e ordenado aqui
+      // by a data field: read in full (up to the table limit) and sorted here
       const { data, error } = await select.order('created_at', { ascending: false }).limit(MAX_ROWS_PER_TABLE);
       if (error) return failure('unavailable', 503);
       return reply({ items: sortRecords((data as StoredRecord[]).map(recordOut), query.order).slice(query.offset, query.offset + query.limit) });

@@ -7,7 +7,7 @@ import { createEditorStore } from '../store.ts';
 import { manualClock } from '../../core/ports/clock.ts';
 import { sequentialIds } from '../../core/ports/ids.ts';
 import { anyCss } from '../../core/ports/css.ts';
-import { startAutosave } from './autosave.ts';
+import { saveState, startAutosave } from './autosave.ts';
 
 const memory = (): { read(): string | null; write(text: string): void } => {
   let held: string | null = null;
@@ -23,6 +23,14 @@ describe('work made while recovery is required asks before leaving (AS1)', () =>
     const leaving = new Event('beforeunload', { cancelable: true });
     window.dispatchEvent(leaving);
     expect(leaving.defaultPrevented).toBe(true);
+    stop();
+  });
+
+  it('a crash journal the reader refused is not written over the saved record (CORE-5)', () => {
+    const store = createEditorStore({ storage: memory(), workspace: memory(), clock: manualClock(1_000_000), ids: sequentialIds('a'), ports: { css: anyCss, readOnly: () => false }, freeze: true });
+    const stop = startAutosave(store, { revision: 4, format: 3, document: { broken: true }, selection: [], recovered: true }, false);
+    // the journal stays unwritten: recovery is still required, and nothing started saving it
+    expect(saveState.get()).toBe('recoveryRequired');
     stop();
   });
 });

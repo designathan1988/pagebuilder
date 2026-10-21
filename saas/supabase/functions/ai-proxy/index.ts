@@ -1,19 +1,19 @@
-// O assistente de IA do editor, pela plataforma: o editor fala o formato da API de Mensagens da Anthropic em
-// streaming (src/editor/assistant/provider.ts) e manda o token da sessão no cabeçalho x-api-key. Aqui a chave da
-// Anthropic é a do servidor, o modelo vem de uma lista permitida, e cada resposta desconta créditos do workspace
-// pelo uso real (usage.input_tokens no message_start, usage.output_tokens no message_delta).
-// POST /ai-proxy?workspace=<id>   corpo: o JSON da API de Mensagens (stream: true)
+// The editor's AI assistant, through the platform: the editor speaks the Anthropic Messages API format with
+// streaming (src/editor/assistant/provider.ts) and sends the session token in the x-api-key header. Here the
+// Anthropic key is the server's, the model comes from an allow list, and each response deducts workspace credits
+// by actual usage (usage.input_tokens in message_start, usage.output_tokens in message_delta).
+// POST /ai-proxy?workspace=<id>   body: the Messages API JSON (stream: true)
 import { adminClient, env } from '../_shared/env.ts';
 import { EDITORS, caller, corsHeaders, failure, roleIn } from '../_shared/http.ts';
 
-// os modelos atuais (Claude Opus 5.5 é o padrão); outros pedidos caem no padrão
+// the current models (Claude Opus 5.5 is the default); any other request falls back to the default
 const MODELS = new Set(['claude-opus-5-5', 'claude-sonnet-5-5', 'claude-haiku-5-5']);
 const DEFAULT_MODEL = 'claude-opus-5-5';
 const MAX_TOKENS = 64000;
-// 1 crédito = 10 mil tokens de entrada equivalentes; a saída pesa 5 vezes a entrada (o preço da Anthropic é 5x)
+// 1 credit = 10 thousand equivalent input tokens; output weighs 5 times input (Anthropic's price is 5x)
 const creditsOf = (input: number, output: number) => Math.max(1, Math.ceil((input + 5 * output) / 10000));
 
-// lê o SSE copiado e soma o uso informado pela API
+// reads the copied SSE and adds up the usage the API reports
 async function usageOf(stream: ReadableStream<Uint8Array>): Promise<{ input: number; output: number }> {
   const reader = stream.pipeThrough(new TextDecoderStream()).getReader();
   let buffer = '';
@@ -35,7 +35,7 @@ async function usageOf(stream: ReadableStream<Uint8Array>): Promise<{ input: num
         }
         if (data.type === 'message_delta' && data.usage?.output_tokens !== undefined) output = data.usage.output_tokens;
       } catch {
-        // uma linha que não é JSON (ping, comentário) não muda a conta
+        // a line that is not JSON (ping, comment) does not change the count
         continue;
       }
     }
@@ -73,7 +73,7 @@ export default {
     const headers = { ...corsHeaders(), 'content-type': upstream.headers.get('content-type') ?? 'text/event-stream', 'cache-control': 'no-store' };
     if (!upstream.ok || !upstream.body) return new Response(upstream.body, { status: upstream.status, headers });
     const [toEditor, toMeter] = upstream.body.tee();
-    // a conta fecha quando o stream termina, sem segurar a resposta (EdgeRuntime.waitUntil)
+    // the count closes when the stream ends, without holding the response (EdgeRuntime.waitUntil)
     const meter = usageOf(toMeter).then(({ input, output }) => admin.from('ai_usage').insert({
       workspace_id: workspaceId, user_id: who.user.id, input_tokens: input, output_tokens: output, credits: creditsOf(input, output),
     }));

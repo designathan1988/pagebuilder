@@ -94,6 +94,20 @@ const MODIFIERS = [
 // for several doors of one gesture told apart by their modifier (a Layers row: click, Shift+click, Ctrl+click) runs
 // the door of the modifier its click holds, read the same way.
 export function modifierOf(event: Readonly<Record<(typeof MODIFIERS)[number][0], boolean>>): string | null {
-  const held = MODIFIERS.filter(([key]) => event[key]).map(([, name]) => name);
+  const held = modifiersHeld(event);
   return held.length === 1 ? (held[0] ?? null) : held.length === 0 ? null : 'several';
+}
+
+// every modifier held, as the manifest names them
+export function modifiersHeld(event: Readonly<Record<(typeof MODIFIERS)[number][0], boolean>>): readonly string[] {
+  return MODIFIERS.filter(([key]) => event[key]).map(([, name]) => name);
+}
+
+// The modifier a number field's step runs with, read the same way for every door of the step (its arrows, its step
+// buttons, the wheel, its label's scrub: rule G3): the one key held (modifierOf) when the step gives it a meaning (the
+// command's `modifier` values: Shift x10, Alt x0.1); none for no key, a key it gives no meaning, or several held at
+// once (Shift+Alt asks for x10 and x0.1 together: a plain step). The wheel let Shift win, the keys ran nothing and the
+// buttons stepped plainly (the input audit's INPUT-8).
+export function stepModifier(held: string | null, offered: readonly string[] | undefined): string | null {
+  return held !== null && offered?.includes(held) === true ? held : null;
 }

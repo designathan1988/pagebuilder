@@ -4,7 +4,7 @@ import type { CommandId, FeatureId, KeyContextId, MessageId, StyleTargetId } fro
 import { GENERATED_VALUES, INITIAL_VALUES } from '../../generated/value-lists.ts';
 import { isFeatureBuilt } from '../../core/commands/registry.ts';
 import { locate } from '../../core/document/model.ts';
-import type { DispatchResult } from '../../core/store/store.ts';
+import type { DispatchResult, EditContext } from '../../core/store/store.ts';
 import { manifest, type DoorEntry } from '../../manifest/runtime.ts';
 import { DoorControl, Icon, useDoor } from '../doors/door.tsx';
 import { GLYPHS, doorSlots } from '../doors/placement.ts';
@@ -15,7 +15,7 @@ import { styleSource } from '../inspector/style-target.ts';
 import { pluralForm } from '../../i18n/index.ts';
 import { useLocale, useT } from '../text.ts';
 import { usePrimarySize } from '../view/selection-size.ts';
-import { KeywordButtons, NumberField, propertyWord, TextStyleField, keepAfterGesture, presetsOf, useEffectiveText, useMixed, type FieldPart } from './field.tsx';
+import { KeywordButtons, NumberField, propertyWord, TextStyleField, presetsOf, useEffectiveText, useKeptField, useMixed, type FieldPart } from './field.tsx';
 import { shownText } from '../../core/style/set.ts';
 import { storedValue } from '../../core/style/stored.ts';
 import { kindsOf } from '../../core/style/applies.ts';
@@ -441,27 +441,18 @@ function SpacingField({ entry, box, sides, properties, where, label }: { readonl
   const appearance = useFieldAppearance(properties, mixed);
   const t = useT();
   const shown = mixed ? '' : (stored ?? '');
-  const said = useEditorState((st) => st.message);
-  const field = useRef<HTMLInputElement>(null);
-  const typed = useRef(false);
+  // the typing is held in the one registry of typing and kept for the elements and in the context of its first key
+  // (useKeptField, rules G1 and G2); a status message that is not the side's own leaves it alone (DEF-0565, INPUT-5)
   const command = entry.command.id;
-  useEffect(() => {
-    if (field.current === null) return;
-    field.current.value = shown;
-    typed.current = false;
-  }, [shown, said]);
-  const keep = () => {
-    const element = field.current;
-    if (element === null || !typed.current) return;
-    typed.current = false;
-    const value = element.value;
-    keepAfterGesture(store, () => {
-      if (store.getState().selection.length === 0) return;
-      (store.dispatch as (id: CommandId, args: unknown) => DispatchResult)(command, { box, sides, value });
-    });
-  };
+  const { input, region, onInput, onBlur, onSubmit } = useKeptField(shown, command, SPACING_KEYS, (value, context, targets) => {
+    if (targets.length === 0) return;
+    const now = store.getState().selection;
+    const same = now.length === targets.length && now.every((id, i) => id === targets[i]);
+    (store.dispatch as (id: CommandId, args: unknown, context?: EditContext) => DispatchResult)(command, same ? { box, sides, value } : { box, sides, value, targets: [...targets] }, context);
+  });
   return (
     <form
+      ref={region}
       className={`box__side box__side--${where}`}
       data-origin={appearance.kind}
       data-door={entry.ref}
@@ -469,22 +460,17 @@ function SpacingField({ entry, box, sides, properties, where, label }: { readonl
       // box
       data-args={JSON.stringify({ box, sides, property: properties.length === 1 ? properties[0] : box })}
       title={door.title}
-      onSubmit={(event) => {
-        event.preventDefault();
-        keep();
-      }}
+      onSubmit={onSubmit}
     >
       <input
-        ref={field}
+        ref={input}
         className="box__input"
         disabled={!door.available || primary === null}
         aria-label={door.label}
         spellCheck={false}
         placeholder={mixed ? t('inspector.mixedValue') : effective || undefined}
-        onInput={() => {
-          typed.current = true;
-        }}
-        onBlur={keep}
+        onInput={onInput}
+        onBlur={onBlur}
         data-key-context={SPACING_KEYS}
       />
       <span className="box__rest-value" aria-hidden="true">{mixed ? t('inspector.mixedValue') : compactFieldValue(shown || effective, true).value}</span>

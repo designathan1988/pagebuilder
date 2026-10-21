@@ -19,6 +19,7 @@ import { locate, type Animation, type DocNode, type DocumentJson, type Keyframe,
 import type { Patch } from '../history/transaction.ts';
 import { firstLockRefusal } from '../nodes/flags.ts';
 import { readValue } from '../style/set.ts';
+import { cssAnimationFollowPatches } from '../motion/document.ts';
 import { GENERATED_VALUES } from '../../generated/value-lists.ts';
 import { declarationLines, type OutputModel } from '../render/output.ts';
 import { manifest } from '../../manifest/runtime.ts';
@@ -80,9 +81,9 @@ function allAnimationNames(document: DocumentJson): Set<string> {
 }
 
 
-// the keyframes of an animation the CSS is written for: the ones that hold something, in offset order (a keyframe added
-// and not filled yet writes nothing)
-const writtenKeyframes = (animation: Animation): readonly Keyframe[] => animation.keyframes.filter((k) => Object.keys(k.declarations).length > 0);
+// the keyframes of an animation the CSS is written for: the ones that hold something (a declaration or an easing), in
+// offset order (a keyframe added and not filled yet writes nothing)
+const writtenKeyframes = (animation: Animation): readonly Keyframe[] => animation.keyframes.filter((k) => Object.keys(k.declarations).length > 0 || k.easing.trim() !== '');
 
 // The duration of an animation in whole ms, read from its stored CSS text ("1s", "800ms", "1.5s"); 0 while it holds a
 // duration that is no time (the timeline then has no length to draw).
@@ -99,11 +100,15 @@ const controlNameOf = (entry: DoorRef): string | null => (entry.door.kind === 'p
 const DURATION_SETTING = SETTING_DOORS.find(({ entry }) => controlNameOf(entry) === 'setting-duration')?.setting ?? '';
 
 // The @keyframes rule of an animation (the export's stylesheet and the canvas's own keyframes sheet): one block per
-// keyframe that holds something, its offset in percent and its declarations, in offset order; '' when nothing would be
-// written. `layout` is the export's laid-out form or the canvas's one line per rule.
+// keyframe that holds something, its offset in percent, its declarations and its easing (the timing function of the
+// segment it starts, as the import reads it back: the audit's STYLE-4, the easing was stored and never written), in
+// offset order; '' when nothing would be written. `layout` is the export's laid-out form or the canvas's one line per
+// rule.
 export function keyframesCss(animation: Animation, model: OutputModel, layout: 'line' | 'block' = 'block'): string {
+  const easingProperty = keyframeEasingProperty();
   const blocks = writtenKeyframes(animation).map((keyframe) => {
-    const lines = declarationLines(keyframe.declarations, model, layout);
+    const easing = keyframe.easing.trim();
+    const lines = [...declarationLines(keyframe.declarations, model, layout), ...(easing === '' || easingProperty === null ? [] : [`${easingProperty}: ${easing};`])];
     if (lines.length === 0) return '';
     const head = `${keyframe.offset}%`;
     return layout === 'line' ? `${head} { ${lines.join(' ')} }` : `${head} {\n${lines.map((l) => `  ${l}`).join('\n')}\n}`;
@@ -245,7 +250,9 @@ export const renameAnimationCommand = registerHandler('animation.rename', (conte
   const interactions = (found.node.interactions ?? []).map((each) => (each.animation === animation ? { ...each, animation: typed } : each));
   const node = { ...withAnimations(found.node, replaceAnimation(found.node, animation, renamed)) };
   const written = interactions.length > 0 ? { ...node, interactions } : node;
-  return { kind: 'change', patches: [{ op: 'replace', path: [...found.path], value: written }], message: message('status.animation.renamed', { oldName: animation, name: typed }) };
+  // so does every timeline action that plays it (motion/document.ts cssAnimationFollowPatches)
+  const patches: Patch[] = [{ op: 'replace', path: [...found.path], value: written }, ...cssAnimationFollowPatches(context.state.document, animation, typed)];
+  return { kind: 'change', patches, message: message('status.animation.renamed', { oldName: animation, name: typed }) };
 });
 
 export const deleteAnimationCommand = registerHandler('animation.delete', (context, { animation }): Outcome<never> => {
@@ -261,7 +268,9 @@ export const deleteAnimationCommand = registerHandler('animation.delete', (conte
   const { interactions: _held, ...rest } = without;
   void _held;
   const written = playing.length === (found.node.interactions ?? []).length ? without : playing.length === 0 ? rest : { ...without, interactions: playing };
-  return { kind: 'change', patches: [{ op: 'replace', path: [...found.path], value: written }], message: message('status.animation.deleted', { name: animation }) };
+  // and so does every timeline action that played it (motion/document.ts cssAnimationFollowPatches)
+  const patches: Patch[] = [{ op: 'replace', path: [...found.path], value: written }, ...cssAnimationFollowPatches(context.state.document, animation, null)];
+  return { kind: 'change', patches, message: message('status.animation.deleted', { name: animation }) };
 });
 
 export const addKeyframeCommand = registerHandler('animation.addKeyframe', (context, { animation, offset }): Outcome<never> => {

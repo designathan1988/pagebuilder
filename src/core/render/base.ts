@@ -9,13 +9,20 @@
 // spec elements-lists, Problems in Pager 6, "no style of the editor's own").
 //
 // A neutral starting point for page content belongs here, not in each node's stored styles. All presentation rules
-// use :where() so a class or an element's own declaration wins without extra specificity.
+// use :where() so a class or an element's own declaration wins without extra specificity. The one exception is
+// [hidden]: a hidden element (its hidden flag, written as the hidden attribute by the export; a tab panel or a
+// filtered item the site's scripts hide) stays hidden whatever display its own rule or class gives it, as the canvas
+// hides it (render.ts, data-hidden with display: none !important). The browser's own [hidden] rule loses to any author
+// display (the audit's RENDER-1: a hidden Row showed on the exported site). An embedded frame, like an image or a
+// video, never grows wider than its container: its default 420 px overflowed the 390 px Phone breakpoint (RENDER-9);
+// its height stays the one it is given (an iframe has no intrinsic ratio for height: auto to keep).
 // A function, not a constant: the tooth proof switches a module off by stubbing its exports (tools/runner/
 // tooth-plugin.ts), and only a function can be stubbed.
 import { generate as generateCssTree, parse as parseCssTree } from 'css-tree';
 
 export function baseCss(): string {
   return `*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
 :where(body) { margin: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 16px; line-height: 1.5; }
 :where(h1, h2, h3, h4, h5, h6) { margin: 0 0 0.6em; font-weight: 700; line-height: normal; }
 :where(h1) { font-size: 2rem; }
@@ -36,6 +43,7 @@ export function baseCss(): string {
 :where(figure) { margin: 0 0 1rem; }
 :where(figcaption) { margin-top: 0.5rem; color: #64748b; font-size: 0.875rem; }
 :where(img, video) { max-width: 100%; height: auto; }
+:where(iframe) { max-width: 100%; }
 :where(button, input, select, textarea) { font: inherit; color: inherit; }
 :where(button, input[type="button"], input[type="submit"], input[type="reset"]) { padding: 0.625rem 1rem; border: 1px solid #cbd5e1; border-radius: 6px; background: #f1f5f9; cursor: pointer; }
 :where([role="tab"][aria-selected="true"]) { background: #dbeafe; border-color: #93c5fd; }

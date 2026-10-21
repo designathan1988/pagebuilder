@@ -1,6 +1,6 @@
--- Simula o mínimo do Supabase para testar as migrações num Postgres comum (só para testes locais):
--- os papéis anon, authenticated e service_role, a tabela auth.users e auth.uid() lendo o "sub" do JWT.
--- os papéis são do cluster: criados só na primeira vez
+-- Simulates the minimum of Supabase to test the migrations on a plain Postgres (local tests only):
+-- the anon, authenticated and service_role roles, the auth.users table and auth.uid() reading the JWT "sub".
+-- roles belong to the cluster: created only the first time
 do $$ begin
   if not exists (select 1 from pg_roles where rolname = 'anon') then create role anon nologin; end if;
   if not exists (select 1 from pg_roles where rolname = 'authenticated') then create role authenticated nologin; end if;

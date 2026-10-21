@@ -1,7 +1,7 @@
-// Assinar, trocar ou cancelar o plano de um workspace (Asaas).
+// Subscribe to, change or cancel a workspace's plan (Asaas).
 // POST { action: 'subscribe', workspaceId, planId, name, cpfCnpj, email? } -> { invoiceUrl }
 // POST { action: 'cancel', workspaceId } -> { ok: true }
-// Só a dona ou um admin do workspace. O plano só passa a valer quando o webhook confirmar o pagamento.
+// Only the workspace owner or an admin. The plan takes effect only when the webhook confirms the payment.
 import { asaas, today, type AsaasList, type AsaasPayment } from '../_shared/asaas.ts';
 import { adminClient, env } from '../_shared/env.ts';
 import { ADMINS, caller, corsHeaders, failure, json, roleIn } from '../_shared/http.ts';
@@ -9,7 +9,7 @@ import { ADMINS, caller, corsHeaders, failure, json, roleIn } from '../_shared/h
 const onlyDigits = (value: string) => value.replace(/\D/g, '');
 
 async function firstInvoiceUrl(subscriptionId: string): Promise<string | null> {
-  // a primeira cobrança pode aparecer um instante depois de criar a assinatura (docs: não é dito que é síncrona)
+  // the first charge may appear a moment after the subscription is created (docs: it is not stated to be synchronous)
   for (let attempt = 0; attempt < 4; attempt += 1) {
     const list = await asaas<AsaasList<AsaasPayment>>(`/subscriptions/${subscriptionId}/payments?status=PENDING`);
     const url = list.data[0]?.invoiceUrl;
@@ -34,7 +34,7 @@ export default {
 
     if (body.action === 'cancel') {
       if (!held?.asaas_subscription_id) return json({ ok: true });
-      // fim no período já pago: a assinatura para de gerar cobranças, o histórico fica (docs: PUT status INACTIVE)
+      // ends at the end of the period already paid: the subscription stops generating charges, the history stays (docs: PUT status INACTIVE)
       await asaas(`/subscriptions/${held.asaas_subscription_id}`, { method: 'PUT', body: { status: 'INACTIVE' } });
       await admin.from('subscriptions').update({ status: 'canceled', pending_plan_id: null, updated_at: new Date().toISOString() }).eq('workspace_id', body.workspaceId);
       return json({ ok: true });
@@ -46,7 +46,7 @@ export default {
     const value = plan.price_cents / 100;
     const description = `Plano ${plan.name}`;
 
-    // cliente do Asaas: um por workspace (externalReference = id do workspace)
+    // Asaas customer: one per workspace (externalReference = the workspace id)
     let customerId = held?.asaas_customer_id as string | undefined;
     if (!customerId) {
       const document = onlyDigits(body.cpfCnpj ?? '');
@@ -58,7 +58,7 @@ export default {
       customerId = customer.id;
     }
 
-    // já tem assinatura ativa no Asaas: troca de valor (upgrade/downgrade) nas próximas cobranças
+    // already has an active Asaas subscription: change the amount (upgrade/downgrade) on the next charges
     if (held?.asaas_subscription_id && held.status !== 'canceled') {
       await asaas(`/subscriptions/${held.asaas_subscription_id}`, {
         method: 'PUT',
@@ -69,7 +69,7 @@ export default {
       return json({ invoiceUrl });
     }
 
-    // assinatura nova: a pessoa escolhe Pix, boleto ou cartão na página de pagamento do Asaas (billingType UNDEFINED)
+    // new subscription: the person picks Pix, boleto or card on the Asaas payment page (billingType UNDEFINED)
     const subscription = await asaas<{ id: string }>('/subscriptions', {
       method: 'POST',
       body: {

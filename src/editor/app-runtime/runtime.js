@@ -9,6 +9,11 @@
 // show, repeat (each/as/key), two-way fields (model), attribute/class/style/property bindings, code components and
 // event handlers (DOM events, window:/document: events, mount, frame, every:<ms>).
 
+// the words the visitor reads, in each UI language of the editor: script.ts writes them here from the catalogues
+// (app-runtime/words.ts), and the page's language picks one table, Portuguese for a pt page and English for any other
+const WORDS_BY_LANGUAGE = /* site words */ {};
+const WORDS = WORDS_BY_LANGUAGE[/^pt(-|$)/i.test(document.documentElement.lang) ? 'pt-BR' : 'en'];
+
 const ITERATE = Symbol('iterate');
 const RAW = Symbol('raw');
 const proxies = new WeakMap();
@@ -170,7 +175,7 @@ function report(where, error) {
     box.setAttribute('data-app-errors', '');
     box.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;z-index:2147483647;max-height:40vh;overflow:auto;background:#7f1d1d;color:#fff;font:13px/1.4 ui-monospace,monospace;padding:10px 12px;border-radius:8px;box-shadow:0 8px 30px rgba(0,0,0,.35);white-space:pre-wrap';
     box.addEventListener('click', () => box.remove());
-    box.title = 'Clique para fechar';
+    box.title = WORDS.closeErrors;
     document.body.appendChild(box);
   }
   const line = document.createElement('div');
@@ -340,21 +345,9 @@ function forget(key) {
   memory.delete(key);
 }
 
-const fail = (code, status) => Object.assign(new Error(MESSAGES[code] || code), { code, status });
-const MESSAGES = {
-  login_required: 'Entre na sua conta para continuar.',
-  forbidden: 'Você não tem permissão para isso.',
-  unknown_table: 'Essa tabela não existe no app.',
-  not_found: 'Não encontrado.',
-  invalid_email: 'E-mail inválido.',
-  weak_password: 'A senha precisa ter pelo menos 8 caracteres.',
-  email_taken: 'Já existe uma conta com esse e-mail.',
-  invalid_credentials: 'E-mail ou senha incorretos.',
-  invalid_data: 'Dados inválidos.',
-  invalid_query: 'Consulta inválida.',
-  table_full: 'A tabela chegou ao limite de linhas.',
-  unavailable: 'O banco está indisponível agora. Tente de novo.',
-};
+// an error's message is the visitor's words for its code (WORDS['error.<code>']); a code without words (http_502)
+// is its own message
+const fail = (code, status) => Object.assign(new Error(Object.hasOwn(WORDS, `error.${code}`) ? WORDS[`error.${code}`] : code), { code, status });
 
 async function cloud() {
   if (backend === null) {

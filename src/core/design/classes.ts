@@ -131,12 +131,47 @@ function classListers(document: DocumentJson, name: string): { readonly node: Do
   return found;
 }
 
-// Shared by class renaming and collision isolation of an imported group.
+// Every place an interaction or a motion names a class by its name, with what it holds there under another name: an
+// event interaction's scope ("every element with .menu-button") and the class it toggles, a motion interaction's scope
+// (on the pages' elements and the components' definitions), and a timeline action's target class (class, descendants,
+// ancestor) and the class it adds, removes or toggles. The exported script binds and toggles these names verbatim, so a
+// class renamed without them left the menu button doing nothing (the audit's STRUCT-11 and STYLE-6).
+interface ClassBinding {
+  readonly path: readonly (string | number)[];
+  readonly renamed: (nextName: string) => unknown;
+}
+export function classBindings(document: DocumentJson, className: string): readonly ClassBinding[] {
+  const found: ClassBinding[] = [];
+  const visit = (node: DocNode, path: readonly (string | number)[]): void => {
+    (node.interactions ?? []).forEach((one, i) => {
+      if (one.scope !== className && one.className !== className) return;
+      found.push({ path: [...path, 'interactions', i], renamed: (nextName) => ({ ...one, ...(one.scope === className ? { scope: nextName } : {}), ...(one.className === className ? { className: nextName } : {}) }) });
+    });
+    (node.motions ?? []).forEach((one, i) => {
+      if (one.scope === className) found.push({ path: [...path, 'motions', i, 'scope'], renamed: (nextName) => nextName });
+    });
+    node.children.forEach((child, i) => visit(child, [...path, 'children', i]));
+  };
+  document.pages.forEach((page, i) => visit(page.tree, ['pages', i, 'tree']));
+  (document.components ?? []).forEach((component, i) => visit(component.tree, ['components', i, 'tree']));
+  (document.motionTimelines ?? []).forEach((timeline, t) => {
+    timeline.actions.forEach((action, a) => {
+      const base = ['motionTimelines', t, 'actions', a];
+      if ('className' in action.target && action.target.className === className) found.push({ path: [...base, 'target', 'className'], renamed: (nextName) => nextName });
+      if (action.effect.kind === 'class' && action.effect.className === className) found.push({ path: [...base, 'effect', 'className'], renamed: (nextName) => nextName });
+    });
+  });
+  return found;
+}
+
+// Shared by class renaming and collision isolation of an imported group: the class, every element and definition that
+// lists it, and every interaction and motion that names it (classBindings).
 export function renameClassPatches(document: DocumentJson, className: string, nextName: string): Patch[] {
   const index = classesOf(document).findIndex(c => c.name === className);
   return [
     ...(index < 0 ? [] : [{ op: 'replace' as const, path: ['classes', index, 'name'], value: nextName }]),
     ...classListers(document, className).map((at): Patch => ({ op: 'replace', path: [...at.path, 'classes'], value: at.node.classes.map(name => name === className ? nextName : name) })),
+    ...classBindings(document, className).map((binding): Patch => ({ op: 'replace', path: binding.path, value: binding.renamed(nextName) })),
   ];
 }
 
@@ -160,6 +195,10 @@ export const deleteClassCommand = registerHandler('classes.delete', ({ state, co
   const uses = classUses(state.document, className);
   const locked = firstLockRefusal(state.document, uses.map((at) => at.node.id as NodeId), 'status.locked.edit');
   if (locked !== null) return { kind: 'refused', message: locked };
+  // a class an interaction or a motion names stays (as a variable in use does): deleted, the exported script bound and
+  // toggled a class no element holds, and the trigger never fired (the audit's STYLE-6)
+  const bindings = classBindings(state.document, className).length;
+  if (bindings > 0) return { kind: 'refused', message: message('status.classes.inUseByInteractions', { name: className, count: bindings }) };
   if (!confirmed) return { kind: 'confirm', params: { count: uses.length } };
   const patches: Patch[] = [
     ...classListers(state.document, className).map((at): Patch => ({ op: 'replace', path: [...at.path, 'classes'], value: at.node.classes.filter((name) => name !== className) })),

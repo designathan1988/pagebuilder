@@ -62,7 +62,8 @@ describe('a value of each type', () => {
     expect(readCell('number', '1e3')).toBe(1000);
     expect(readCell('number', 7)).toBe(7);
     expect(readCell('number', 'R$ 42')).toBeNull();
-    expect(readCell('number', '1.000,50')).toBeNull();
+    expect(readCell('number', '1.000,50')).toBe(1000.5);
+    expect(readCell('number', '1.000.50')).toBeNull();
     expect(readCell('number', Number.POSITIVE_INFINITY)).toBeNull();
   });
 
@@ -88,6 +89,9 @@ describe('a value of each type', () => {
   });
 
   it('takes an image by a path, a file name or a web address, never an unsafe one', () => {
+    // a control character before a scheme hides it from the check, and the browser strips it (DATA-8)
+    expect(readCell('image', '\u0001javascript:alert(1)')).toBeNull();
+    expect(readCell('link', '\u0001javascript:alert(1)')).toBeNull();
     expect(readCell('image', 'graos.png')).toBe('graos.png');
     expect(readCell('image', 'img/graos.png')).toBe('img/graos.png');
     expect(readCell('image', 'https://example.com/a.png')).toBe('https://example.com/a.png');
@@ -163,10 +167,15 @@ describe('importing rows', () => {
     expect(refused).toEqual({ key: 'status.data.badValue', params: { collection: 'Menu', row: 3, column: 'Preço', value: 'R$ 9', type: { key: 'data.type.number' } } });
   });
 
-  it('replaces the items', () => {
+  it('replaces the items, each row keeping the id of the item at its place (DATA-7: item pages and their links stay)', () => {
     const first = importRows(empty(), rows, 'append', null, sequentialIds('i').next);
     const replaced = importRows(first, [{ nome: 'Cold brew', preco: 35 }], 'replace', null, sequentialIds('j').next);
-    expect(replaced.items).toEqual([{ id: 'j1', values: { nome: 'Cold brew', preco: 35 } }]);
+    expect(replaced.items).toEqual([{ id: 'i1', values: { nome: 'Cold brew', preco: 35 } }]);
+    const longer = importRows(first, [{ nome: 'A' }, { nome: 'B' }, { nome: 'C' }], 'replace', null, sequentialIds('j').next);
+    expect(longer.items.map((item) => item.id)).toEqual(['i1', 'i2', 'j1']);
+    // with a key named, the item holding the row's key keeps its id
+    const keyed = importRows(first, [{ nome: 'Filtrado', preco: '1' }, { nome: 'Moka' }], 'replace', 'nome', sequentialIds('j').next);
+    expect(keyed.items.map((item) => item.id)).toEqual(['i2', 'j1']);
   });
 
   it('updates the items whose key matches, keeps their ids and their other values, and adds the new ones', () => {
@@ -280,6 +289,28 @@ describe('a number as the site shows it (DEF-0620)', () => {
     expect(cellText(6.5, words, { language: 'en', decimals: 2 })).toBe('6.50');
     expect(cellText(0.125, words, { language: 'pt-BR' })).toBe('0,125');
     expect(cellText(6.5, words)).toBe('6.5');
+  });
+  it('reads a thousands mark by the site language, and keeps codes with digits as text (DATA-3, DATA-6)', () => {
+    expect(readCell('number', '1.500', 'pt-BR')).toBe(1500);
+    expect(readCell('number', '1.500', 'en')).toBe(1.5);
+    expect(readCell('number', '1,500', 'en')).toBe(1500);
+    expect(readCell('number', '1,500', 'pt-BR')).toBe(1.5);
+    expect(readCell('number', '1.234,56')).toBe(1234.56);
+    expect(readCell('number', '1,234.56')).toBe(1234.56);
+    expect(readCell('number', '0.500', 'pt-BR')).toBe(0.5);
+    expect(decimalsOf(['1.500', '2.300'], 'pt-BR')).toBe(0);
+    expect(guessType(['1.500', '2.300'], 'pt-BR')).toBe('number');
+    expect(guessType(['01310100', '04538133'])).toBe('text');
+    expect(guessType(['12345678901234567'])).toBe('text');
+    expect(guessType(['0,5', '0'])).toBe('number');
+    // what the site writes reads back as the same number in its language
+    expect(readCell('number', cellText(1.5, words, { language: 'pt-BR', decimals: 3 }), 'pt-BR')).toBe(1.5);
+    expect(readCell('number', cellText(1.5, words, { language: 'en', decimals: 3 }), 'en')).toBe(1.5);
+  });
+  it('finds a number by its digits with either decimal mark', () => {
+    const prices: Collection = { name: 'P', fields: [{ key: 'p', label: 'P', type: 'number', decimals: 2 }], items: [{ id: 'a', values: { p: 6.5 } }] };
+    expect(queryItems(prices, { filters: [{ field: 'p', operator: 'contains', value: '6,50' }] })).toHaveLength(1);
+    expect(queryItems(prices, { filters: [{ field: 'p', operator: 'contains', value: '6.5' }] })).toHaveLength(1);
   });
   it('holds the decimal places only on a number field, within bounds', () => {
     const fields = [{ key: 'preco', label: 'Preço', type: 'number' as const, decimals: 2 }];

@@ -26,3 +26,20 @@ describe('every store of values is read (SV1)', () => {
     expect(siteColoursOf(doc()).map((one) => one.colour)).toContain('#00ff00');
   });
 });
+
+// The audit of 2026-10-21 (STRUCT-12): a "Set variable" action names the custom property it sets; a rename follows it
+// and a delete is refused while it does.
+describe('a motion action that sets a variable', () => {
+  const setting = () =>
+    documentOf({
+      tokens: [{ name: 'brand', kind: 'color', value: '#ff0000' }] as never,
+      motionTimelines: [{ id: 't1', name: 'Intro', markers: [], actions: [{ id: 'a1', target: { kind: 'self' }, start: 0, duration: 0, effect: { kind: 'variable', name: '--brand', value: '#000000' } }] }] as never,
+      pages: [{ id: 'p', name: 'Home', file: 'index.html', tree: node('Page', 'page', 'body') }],
+    });
+  it('follows the variable renamed and keeps it from being deleted', () => {
+    const renamed = runHandler(renameToken, setting(), { token: 'brand', name: 'primary' });
+    expect(renamed.problems).toEqual([]);
+    expect(renamed.document.motionTimelines?.[0]?.actions[0]?.effect).toMatchObject({ name: '--primary' });
+    expect(runHandler(deleteToken, setting(), { token: 'brand' }).outcome.kind).toBe('refused');
+  });
+});

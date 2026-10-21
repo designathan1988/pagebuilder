@@ -1,8 +1,8 @@
-// Publicar um projeto: o editor manda o ZIP que o Exportar ZIP gera; a função confere quem é, o limite do plano e
-// o endereço, e entrega o ZIP ao Worker, que grava a nova versão no R2 e troca o ponteiro de uma vez.
-// POST /publish?project=<id>&slug=<subdominio>&rules=<json>   corpo: application/zip   -> { url, version }
-// rules: as tabelas do banco do app e quem lê e grava cada uma (site-data), a lista que o editor escreve
-// DELETE /publish?project=<id>                    -> tira o site do ar
+// Publishing a project: the editor sends the ZIP that Export ZIP produces; the function checks who it is, the plan
+// limit and the address, and hands the ZIP to the Worker, which stores the new version in R2 and swaps the pointer at once.
+// POST /publish?project=<id>&slug=<subdomain>&rules=<json>   body: application/zip   -> { url, version }
+// rules: the app's database tables and who reads and writes each one (site-data), the list the editor writes
+// DELETE /publish?project=<id>                    -> takes the site offline
 import { adminClient, env } from '../_shared/env.ts';
 import { EDITORS, caller, corsHeaders, failure, json, roleIn } from '../_shared/http.ts';
 import { RESERVED, SLUG, platform } from '../_shared/sites.ts';
@@ -17,7 +17,7 @@ export default {
     if (!who) return failure('unauthorized', 401);
     const url = new URL(req.url);
     const projectId = url.searchParams.get('project') ?? '';
-    // o RLS de quem chama: só acha o projeto se for membro
+    // the caller's RLS: the project is found only if the caller is a member
     const { data: project } = await who.db.from('projects').select('id, workspace_id').eq('id', projectId).maybeSingle();
     if (!project) return failure('not_found', 404);
     const role = await roleIn(who, project.workspace_id);
@@ -58,7 +58,7 @@ export default {
 
     const version = (site?.version ?? 0) + 1;
     const badge = (plan as { show_badge: boolean }).show_badge ? '1' : '0';
-    // trocou de endereço: o antigo sai do ar
+    // the address changed: the old one goes offline
     if (site && site.slug !== slug) await platform(`/__platform/site?slug=${site.slug}`, { method: 'DELETE' });
     await platform(`/__platform/publish?slug=${slug}&version=${version}&badge=${badge}`, { method: 'PUT', body: zip, contentType: 'application/zip' });
     const now = new Date().toISOString();

@@ -47,7 +47,16 @@ describe('forms masks and document validators', () => {
     expect(engine.mask('1,234.56', { kind: 'currency', locale: 'en-US', currency: 'USD' })).toMatchObject({ raw: '1234.56', formatted: '$1,234.56' });
     expect(engine.mask('12,5', { kind: 'percent', locale: 'pt-BR', maximum: 100 })).toMatchObject({ raw: '12.5', formatted: '12,5%' });
     expect(engine.mask('101', { kind: 'percent', maximum: 100 }).valid).toBe(false);
-    expect(engine.mask('12,5', { kind: 'preset', preset: 'measurement', suffix: 'kg' }).formatted).toBe('12,5 kg');
+    expect(engine.mask('12,5', { kind: 'preset', preset: 'measurement', suffix: 'kg' }, 'pt-BR').formatted).toBe('12,5 kg');
+    // a mask with no locale reads in the page's language, never pt-BR's marks on an English page (DATA-10)
+    expect(engine.mask('2.5', { kind: 'number' }, 'en')).toMatchObject({ formatted: '2.5', raw: '2.5' });
+    // a language that groups four digits only from five on keeps its decimal comma (DATA-11)
+    expect(engine.mask('12,50', { kind: 'currency', locale: 'es', currency: 'EUR' })).toMatchObject({ raw: '12.50', formatted: expect.stringMatching(/^12,50\s€$/u) });
+    // a unit with a digit is no part of the number (DATA-12)
+    expect(engine.mask('12,5 m2', { kind: 'preset', preset: 'measurement', suffix: 'm2' }, 'pt-BR')).toMatchObject({ raw: '12.5', formatted: '12,5 m2' });
+    // a number rule reads a text field in the page's marks, an input of type number as HTML writes it (DATA-13)
+    expect(engine.validate('6,50', { rules: { type: 'number', minimum: 1 } }, { locale: 'pt-BR' })).toEqual([]);
+    expect(engine.validate('6.5', { rules: { type: 'number', minimum: 6, maximum: 7 } }, { locale: 'pt-BR', numeric: true })).toEqual([]);
     expect(engine.mask('12.5', { kind: 'currency', locale: 'en-US', currency: 'EUR' }).formatted).toBe('€12.5');
     expect(engine.mask('-', { kind: 'number' }).complete).toBe(false);
   });

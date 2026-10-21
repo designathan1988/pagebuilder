@@ -79,9 +79,9 @@ export function CodePane() {
   const selection = useEditorState((s) => s.selection);
   const kind = paneKind(ui);
   const info = useMemo(() => shownPane(ui, document, MODEL_RULES), [ui, document]);
-  // the rule the CSS pane edits while one element is selected (code-panel-edit-css): the declarations the element holds
-  // at the active breakpoint and state
-  const rule = useMemo(() => ruleText({ document, selection }, MODEL_RULES), [document, selection]);
+  // the rule the CSS pane edits while one element is selected (code-panel-edit-css): the declarations Apply replaces,
+  // read where it writes them (the targeted class, the active breakpoint and state)
+  const rule = useMemo(() => ruleText({ document, selection, ui }, MODEL_RULES), [document, selection, ui]);
   // The pane's lines: the whole file, every line carrying the node it was written for — so the selected element's
   // lines are marked and scrolled to, and a click on any line selects its element (spec code-panel-selection-sync).
   // The CSS pane shows the element's own rule while one element is selected: its lines are those declarations.

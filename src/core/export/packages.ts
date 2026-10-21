@@ -11,6 +11,9 @@
 //    app/ through a privileged app:// scheme (so modules, storage and fetch work as on the web); `npm install` and
 //    `npm run make` build the Windows installer (Squirrel), the macOS ZIP and the Linux packages.
 // Pure: the files in, the archive's files out.
+import en from '../../i18n/locales/en.json' with { type: 'json' };
+import ptBR from '../../i18n/locales/pt-BR.json' with { type: 'json' };
+import { formatMessage } from '../../i18n/index.ts';
 import type { DocumentJson } from '../document/model.ts';
 import { relativePath } from '../files/files.ts';
 import { crc32, type ZipEntry } from '../project/zip.ts';
@@ -326,57 +329,17 @@ export function androidEntries(entries: readonly ZipEntry[], document: DocumentJ
     }),
     json('capacitor.config.json', { appId: identity.id, appName: identity.name, webDir: 'www', android: { backgroundColor: identity.background } }),
     text('.gitignore', GITIGNORE),
-    text('LEIA-ME.md', androidReadme(identity)),
+    readme(identity, 'export.readme.android'),
     ...inFolder('www', site),
   ];
 }
 
-function androidReadme(identity: AppIdentity): string {
-  return `# ${identity.name}: app Android e iOS
-
-Este projeto é o seu site dentro de um app nativo feito com o [Capacitor](https://capacitorjs.com/docs) (versão 8).
-O site está em \`www/\`; \`capacitor.config.json\` tem o nome (\`${identity.name}\`) e o identificador (\`${identity.id}\`).
-
-## O que instalar uma vez
-
-- [Node.js](https://nodejs.org) 22 ou mais novo.
-- Para Android: o [Android Studio](https://developer.android.com/studio).
-- Para iPhone: um Mac com o Xcode.
-
-## Gerar o app Android
-
-\`\`\`sh
-npm install
-npx cap add android
-npx cap open android
-\`\`\`
-
-No Android Studio, use **Build › Generate Signed App Bundle / APK** para gerar o \`.aab\` (Google Play) ou o \`.apk\`
-(instalar direto no celular).
-
-## Gerar o app iPhone
-
-\`\`\`sh
-npx cap add ios
-npx cap open ios
-\`\`\`
-
-No Xcode, escolha a sua equipe em *Signing & Capabilities* e use **Product › Archive** para enviar à App Store.
-
-## Atualizar o app depois de mudar o site
-
-Exporte de novo, troque a pasta \`www/\` pela nova e rode \`npx cap sync\`.
-
-## Trocar o ícone
-
-Troque os arquivos de \`www/icons/\` ou use o
-[@capacitor/assets](https://capacitorjs.com/docs/guides/splash-screens-and-icons) para gerar os ícones nativos.
-
-## Outra opção: publicar na Play Store sem Android Studio
-
-Publique o site (botão Publicar do editor) e cole o endereço no [PWABuilder](https://www.pwabuilder.com): ele gera o
-pacote Android (TWA) direto do site publicado.
-`;
+// The README of an app project, in the project's language (Portuguese for a pt project, English for any other), its
+// file name too (LEIA-ME or README, in Markdown): the wording is the catalogues' (export.readme.*).
+type ReadmeKey = 'export.readme.android' | 'export.readme.desktop';
+function readme(identity: AppIdentity, key: ReadmeKey): ZipEntry {
+  const catalogue = /^pt(-|$)/iu.test(identity.language) ? ptBR : en;
+  return text(catalogue['export.readme.file'], formatMessage(catalogue[key], { name: identity.name, id: identity.id }));
 }
 
 // The Electron Forge project of the site (Windows, macOS and Linux).
@@ -414,7 +377,7 @@ export function desktopEntries(entries: readonly ZipEntry[], document: DocumentJ
     }),
     text('main.js', electronMain(identity)),
     text('.gitignore', GITIGNORE),
-    text('LEIA-ME.md', desktopReadme(identity)),
+    readme(identity, 'export.readme.desktop'),
     ...inFolder('app', site),
   ];
 }
@@ -469,49 +432,6 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
-`;
-}
-
-function desktopReadme(identity: AppIdentity): string {
-  return `# ${identity.name}: app para Windows, macOS e Linux
-
-Este projeto é o seu site dentro de um app de computador feito com o [Electron](https://www.electronjs.org) e empacotado
-pelo [Electron Forge](https://www.electronforge.io). O site está em \`app/\`; \`main.js\` abre a janela.
-
-## O que instalar uma vez
-
-- [Node.js](https://nodejs.org) 22.13 ou mais novo.
-
-## Testar
-
-\`\`\`sh
-npm install
-npm start
-\`\`\`
-
-## Gerar o instalador
-
-\`\`\`sh
-npm run make
-\`\`\`
-
-O resultado fica em \`out/make/\`:
-
-- no Windows: \`squirrel.windows/…/${identity.name} Setup.exe\`, o instalador;
-- no macOS: um \`.zip\` com o \`.app\`;
-- no Linux: um \`.deb\` e um \`.zip\`.
-
-Cada sistema gera o próprio instalador: rode \`npm run make\` no Windows para ter o \`.exe\`.
-
-## Atualizar o app depois de mudar o site
-
-Exporte de novo, troque a pasta \`app/\` pela nova e rode \`npm run make\`.
-
-## Outra opção: Microsoft Store sem instalar nada
-
-Publique o site (botão Publicar do editor) e cole o endereço no [PWABuilder](https://www.pwabuilder.com): ele gera o
-pacote MSIX da Microsoft Store direto do site publicado. Também dá para instalar o site publicado pelo Edge ou pelo
-Chrome (ícone *Instalar app* na barra de endereço), porque ele já é um app instalável (PWA).
 `;
 }
 

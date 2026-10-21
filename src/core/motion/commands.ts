@@ -44,7 +44,7 @@ import {
   type Placement,
 } from './timeline.ts';
 import type { Behaviour, Effect, MotionInteraction, MotionTimeline, TimelineAction, Trigger } from './model.ts';
-import { RUNTIME_BEHAVIOURS, type BehaviourKind, type RuntimeBehaviourKind } from './model.ts';
+import { RUNTIME_BEHAVIOURS, TRANSFORM_PARTS, type BehaviourKind, type RuntimeBehaviourKind } from './model.ts';
 import { DIRECTION, OPACITY } from './words.ts';
 
 type Located = { readonly node: DocNode; readonly path: readonly (string | number)[] };
@@ -598,6 +598,14 @@ const PART_IDENTITY: Readonly<Record<string, string>> = {
   'skew-y': '0deg',
 };
 
+// Whether a keyframe's value is one its property takes: a CSS property's, as the browser decides it (the CSS support
+// port, as style.set and the declarations text ask it; the audit's STYLE-13: opacity "banana" was stored and played as
+// nothing). A transform part (a custom property the runtime registers with its syntax) and a custom property of the
+// person's own are the runtime's to read, and so is a value naming a variable (CSS.supports takes any var()).
+function keyframeValueTaken<Ui>(context: HandlerContext<Ui>, property: string, value: string): boolean {
+  return (TRANSFORM_PARTS as readonly string[]).includes(property) || property.startsWith('--') || /\bvar\(/i.test(value) || context.css.supports(property, value);
+}
+
 export const setKeyframeCommand = registerHandler('motion.setKeyframe', (context, { timeline, action, at, property, value }): Outcome<never> => {
   // at the playhead of the editor's Timeline
   const time = playheadOf(context);
@@ -611,6 +619,7 @@ export const setKeyframeCommand = registerHandler('motion.setKeyframe', (context
   if (local < 0) return { kind: 'refused', message: message('status.motion.recordBeforeAction', { time: (time / 1000).toFixed(2) }) };
   const text = value === undefined || value.trim() === '' ? startingValue(held, named, local) : value.trim();
   if (text === null || named === '') return invalid(property);
+  if (!keyframeValueTaken(context, named, text)) return invalid(value ?? text);
   // a keyframe past the action's end makes the action longer, so it lies inside it
   const grown = local > held.duration ? { ...held, duration: local } : held;
   const next = setKeyframeAt(grown, named, local, text, undefined, () => context.ids.next());
@@ -626,6 +635,9 @@ export const editKeyframeCommand = registerHandler('motion.editKeyframe', (conte
   if (field === 'value') {
     const text = readText(value);
     if (text === null || text === '') return invalid(value);
+    const owner = found.timeline.actions.find((one) => one.id === ref.action);
+    const track = owner?.effect.kind === 'animate' || owner?.effect.kind === 'split-text' ? owner.effect.tracks.find((one) => one.id === ref.track) : undefined;
+    if (track !== undefined && !keyframeValueTaken(context, track.property, text)) return invalid(value);
     next = editKeyframe(found.timeline, ref, { value: text });
   } else if (field === 'easing') {
     // the easing of the segment that starts at the keyframe (plan: "easing per segment")

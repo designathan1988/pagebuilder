@@ -2,7 +2,8 @@
 // floats next to the control that opened it, drawn over the whole window from the document's body so no panel that
 // clips its content cuts it. Its parts are the one answer for every such layer:
 // - where it is drawn: float.ts floatBelow, under its anchor and always inside the window;
-// - how it closes: outside-layer observes outside presses without consuming them; Escape is a dismissal;
+// - how it closes: outside-layer observes outside presses without consuming them; Escape is a dismissal, except in a
+//   layer opened from a modal dialog, which Escape closes alone (input/inner-layer.ts);
 // - where the focus goes: into the layer once it is placed (the element marked data-autofocus, else its first field or
 //   button), and back to the control that opened it when a dismissal took the focus down with it.
 // What the layer holds (a form, a list, a filter) and what it runs are its owner's.
@@ -12,6 +13,7 @@ import type { KeyContextId } from '../../generated/ids.ts';
 import { useEditorState } from '../store.ts';
 import { useOutsideLayer } from './outside-layer.ts';
 import { floatBelow, type Placed } from './float.ts';
+import { INNER_LAYER, onInnerLayerDismiss } from '../input/inner-layer.ts';
 
 export interface PopoverState {
   readonly open: boolean;
@@ -82,7 +84,21 @@ export function Popover({ anchor, className, children, role = 'dialog', label, k
   const style: CSSProperties = at === null ? { visibility: 'hidden', left: 0, top: 0 } : { left: at.left, top: at.top };
   // a layer opened from a modal dialog floats over it (the Breakpoints dialog's trash menu), else under every dialog
   const overDialog = anchor.current?.closest('[aria-modal="true"]') !== null && anchor.current !== null;
-  const common = { className: `popover${overDialog ? ' popover--over-dialog' : ''} ${className}`, role, 'aria-label': label, 'data-key-context': keyContext, style, onClick };
+  // there, Escape closes the layer alone and the focus goes back to its anchor (input/inner-layer.ts: the dialog's
+  // Escape closed both, INPUT-6)
+  const dismissed = useRef(onDismiss);
+  useEffect(() => {
+    dismissed.current = onDismiss;
+  });
+  useEffect(() => {
+    const layer = own.current;
+    if (!overDialog || layer === null) return;
+    return onInnerLayerDismiss(layer, () => {
+      anchor.current?.focus();
+      dismissed.current();
+    });
+  }, [overDialog, anchor]);
+  const common = { className: `popover${overDialog ? ' popover--over-dialog' : ''} ${className}`, role, 'aria-label': label, 'data-key-context': keyContext, style, onClick, ...(overDialog ? { [INNER_LAYER]: '' } : {}) };
   return createPortal(
     <div className="popover-layer">
       {as === 'form' ? (

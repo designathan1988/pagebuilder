@@ -35,4 +35,33 @@ describe('new bytes of a file reach the elements that draw it (RN1)', () => {
       URL.createObjectURL = created;
     }
   });
+
+  // the audit's RENDER-7: a file deleted, or one uploaded at a path an element already names, draws as a render from
+  // scratch draws it
+  it('stops drawing a deleted file and draws one uploaded at a path already named', () => {
+    const created = URL.createObjectURL;
+    let n = 0;
+    URL.createObjectURL = () => `blob:test/${n++}`;
+    try {
+      const doc: DocumentJson = { version: 4, files: [{ path: 'img/a.svg', type: 'image/svg+xml', bytes: btoa('<svg/>') }], pages: [{ id: 'p', name: 'Home', file: 'index.html', tree: node('root', 'page', 'body', { children: [node('pic', 'image', 'img', { attributes: { src: 'img/a.svg', alt: '' } as never })] }) }] };
+      const target = document.implementation.createHTMLDocument('page');
+      let current = doc;
+      const renderer = new PageRenderer(target, model, 0, null, (name, value) => canvasValue(current, name, value));
+      renderer.mount(doc);
+      expect(target.querySelector('img')?.getAttribute('src')).toBe('blob:test/0');
+      const removal: Patch[] = [{ op: 'replace', path: ['files'], value: [] }];
+      const without = applyPatches(doc, removal).document;
+      current = without;
+      renderer.apply(doc, without, removal);
+      const fresh = document.implementation.createHTMLDocument('fresh');
+      new PageRenderer(fresh, model, 0, null, (name, value) => canvasValue(without, name, value)).mount(without);
+      expect(target.querySelector('img')?.getAttribute('src')).toBe(fresh.querySelector('img')?.getAttribute('src'));
+      const upload: Patch[] = [{ op: 'replace', path: ['files'], value: doc.files }];
+      current = doc;
+      renderer.apply(without, doc, upload);
+      expect(target.querySelector('img')?.getAttribute('src')).toMatch(/^blob:test\//);
+    } finally {
+      URL.createObjectURL = created;
+    }
+  });
 });

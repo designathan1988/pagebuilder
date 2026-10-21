@@ -52,3 +52,13 @@ describe('the origin of the value a Style field shows (inspector/origin.ts)', ()
     expect(valueOrigin({ ...stateOf(documentWith({}), 'n-intro'), selection: [] }, ['color'], tablet)).toBeNull();
   });
 });
+
+describe('a state rule of a class outranks the element\'s own base rule (the audit\'s STYLE-9)', () => {
+  it('at Hover, the class\'s hover value is the origin, not the element\'s base value', () => {
+    const hover = { ...MODEL_RULES, base: { breakpoint: MODEL_RULES.base.breakpoint, state: 'hover' } };
+    const document = documentWith({ 'n-card-b': { desktop: { base: { color: '#aa0000' } } } }, [{ name: 'card2', styles: { desktop: { hover: { color: '#0000aa' } } } }], { 'n-card-b': ['card2'] });
+    expect(valueOrigin(stateOf(document, 'n-card-b'), ['color'], hover)).toEqual({ kind: 'class', name: 'card2' });
+    // at Base, the element's own value still wins
+    expect(valueOrigin(stateOf(document, 'n-card-b'), ['color'], MODEL_RULES)).toEqual({ kind: 'here', breakpoint: 'desktop', state: 'base' });
+  });
+});

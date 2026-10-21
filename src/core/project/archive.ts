@@ -9,7 +9,7 @@ import { isEmptyProject, type DocumentJson } from '../document/model.ts';
 import { migrateDocument } from '../document/migrations.ts';
 import { MAX_DOCUMENT_NESTING, MAX_TREE_DEPTH, nestsDeeperThan } from '../document/shape.ts';
 import { validateDocument, type ModelRules } from '../document/validate.ts';
-import { ArchiveError, archiveReason, isZip, unzip, zip } from './zip.ts';
+import { ARCHIVE_LIMITS, ArchiveError, archiveReason, isZip, unzip, zip, type ArchiveLimits } from './zip.ts';
 
 // the reason a file is refused, always words of the catalogue: a text of its own (an error's, the validator's prose)
 // would reach the person in English whatever the interface's language (DCS-003, DEF-0549)
@@ -42,9 +42,19 @@ export function readProject(parsed: unknown, rules: ModelRules): { readonly docu
 // history changes.
 const PROJECT_ARCHIVE = 'project.zip';
 const PROJECT_DOCUMENT = 'project.json';
+// The one bound of a project file (CORE-2): File › Open reads project.zip within these limits, and File › Save project
+// writes nothing it would refuse. The archive stores project.json as it is (ratio 1), so the bound that binds is the
+// size of project.json itself: a project above it is refused at the save, in words, instead of being written as a
+// file the app that wrote it could never open again.
+export const PROJECT_FILE_LIMITS: ArchiveLimits = ARCHIVE_LIMITS;
+const PROJECT_FILE_BYTES = Math.min(PROJECT_FILE_LIMITS.entryBytes, PROJECT_FILE_LIMITS.totalBytes);
+const MEGABYTE = 1024 * 1024;
 
 export const saveProject = registerHandler('project.save', ({ state, clock }) => {
   const document = new TextEncoder().encode(`${JSON.stringify(state.document, null, 2)}\n`);
+  if (document.length > PROJECT_FILE_BYTES) {
+    return { kind: 'refused' as const, message: message('status.project.tooLarge', { megabytes: Math.ceil(document.length / MEGABYTE), limit: Math.floor(PROJECT_FILE_BYTES / MEGABYTE) }) };
+  }
   const bytes = zip([{ path: PROJECT_DOCUMENT, bytes: document }], clock.now());
   return { kind: 'change' as const, message: message('status.project.saved', { file: PROJECT_ARCHIVE }), download: { name: PROJECT_ARCHIVE, type: 'application/zip', bytes } };
 });
@@ -55,7 +65,7 @@ export const saveProject = registerHandler('project.save', ({ state, clock }) =>
 export async function projectFileText(bytes: Uint8Array): Promise<string> {
   if (!isZip(bytes)) return new TextDecoder().decode(bytes);
   try {
-    const document = (await unzip(bytes)).get(PROJECT_DOCUMENT);
+    const document = (await unzip(bytes, PROJECT_FILE_LIMITS)).get(PROJECT_DOCUMENT);
     return document === undefined ? JSON.stringify({ archive: message('archive.noDocument', { file: PROJECT_DOCUMENT }) }) : new TextDecoder().decode(document);
   } catch (error) {
     return JSON.stringify({ archive: error instanceof ArchiveError ? error.reason : message('archive.broken') });

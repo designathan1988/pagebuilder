@@ -21,13 +21,9 @@ export const applyCssRuleCommand = registerHandler('style.applyCssRule', (contex
   if (locked !== null) return { kind: 'refused' as const, message: locked };
   const parsed = parseDeclarations(String(css ?? ''), context);
   if ('refused' in parsed) return { kind: 'refused' as const, message: parsed.refused };
-  const { breakpoint, state: base } = context.rules.base;
-  const byBreakpoint = (at.node.styles as Record<string, Record<string, Record<string, string>> | undefined>)[breakpoint];
-  const wanted = Object.fromEntries(parsed.declarations);
-  const current = byBreakpoint?.[base] ?? {};
-  const same = Object.keys(current).length === Object.keys(wanted).length && Object.entries(wanted).every(([property, value]) => current[property] === value);
   const said = message('status.css.applied', { name: at.node.name });
-  if (same) return { kind: 'change' as const, message: said };
-  // the one writer of declarations, through the holders every style write goes to (the audit's OW1)
-  return { kind: 'change' as const, patches: replaceLayer(context, at, wanted), message: said };
+  // the one writer of declarations, through the holders every style write goes to (the audit's OW1); a text that holds
+  // what the holder written holds records nothing (replaceLayer compares with that holder's layer, the one the pane
+  // shows: set.ts replacedDeclarations)
+  return { kind: 'change' as const, patches: replaceLayer(context, at, Object.fromEntries(parsed.declarations)), message: said };
 });

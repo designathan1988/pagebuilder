@@ -1,7 +1,7 @@
-// Domínio próprio de um site (Cloudflare for SaaS, custom hostnames; developers.cloudflare.com, lido em 2026-10-21):
-// POST { action: 'add', siteId, hostname }  -> cria o hostname com validação HTTP e devolve o que o cliente põe no DNS
-// POST { action: 'check', domainId }        -> atualiza status e SSL (pronto quando os dois estão "active")
-// POST { action: 'remove', domainId }       -> apaga na Cloudflare e o mapeamento no Worker
+// A site's own domain (Cloudflare for SaaS, custom hostnames; developers.cloudflare.com, read on 2026-10-21):
+// POST { action: 'add', siteId, hostname }  -> creates the hostname with HTTP validation and returns what the customer puts in DNS
+// POST { action: 'check', domainId }        -> updates status and SSL (ready when both are "active")
+// POST { action: 'remove', domainId }       -> deletes it at Cloudflare and the mapping in the Worker
 import { adminClient, env } from '../_shared/env.ts';
 import { ADMINS, caller, corsHeaders, failure, json, roleIn } from '../_shared/http.ts';
 import { platform } from '../_shared/sites.ts';
@@ -29,7 +29,7 @@ interface CustomHostname {
 
 function verificationOf(result: CustomHostname, hostname: string) {
   return {
-    // o registro principal: CNAME do domínio do cliente para o alvo da plataforma
+    // the main record: a CNAME from the customer's domain to the platform target
     cname: { name: hostname, value: env.required('CF_CNAME_TARGET') },
     ownership: result.ownership_verification ?? null,
     ssl: result.ssl?.validation_records ?? [],
@@ -73,7 +73,7 @@ export default {
     if (!role || !ADMINS.includes(role)) return failure('forbidden', 403);
 
     if (body.action === 'check') {
-      // o POST pode vir sem os registros de validação: um GET depois os traz (docs: common API calls)
+      // the POST may come without the validation records: a later GET brings them (docs: common API calls)
       const result = await cloudflare<CustomHostname>(`/custom_hostnames/${domain.cf_hostname_id}`, 'GET');
       const { data: row } = await admin.from('domains').update({
         status: result.status, ssl_status: result.ssl?.status ?? domain.ssl_status,

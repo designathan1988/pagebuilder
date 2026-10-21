@@ -737,5 +737,5 @@
    position 2 of 3"); a refused drop keeps its own */
 .chrome__drop .chrome__label:not(.is-refused) {
   background: var(--color-canvas-drop);
-  color: var(--color-on-accent);
+  color: var(--color-on-canvas-drop);
 }

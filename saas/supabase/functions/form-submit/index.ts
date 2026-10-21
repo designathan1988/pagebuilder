@@ -1,5 +1,5 @@
-// Um formulário enviado num site publicado: o Worker dos sites repassa o POST para cá com o segredo da plataforma.
-// POST { slug, page, data } -> grava na caixa de entrada do workspace.
+// A form submitted on a published site: the sites Worker forwards the POST here with the platform secret.
+// POST { slug, page, data } -> stores it in the workspace inbox.
 import { adminClient, env } from '../_shared/env.ts';
 import { sameSecret } from '../_shared/http.ts';
 
@@ -12,7 +12,7 @@ export default {
     if (!sameSecret(req.headers.get('x-platform-secret') ?? '', env.required('SITES_PLATFORM_SECRET'))) return new Response('unauthorized', { status: 401 });
     const body = await req.json().catch(() => null) as { slug?: string; page?: string; data?: Record<string, unknown> } | null;
     if (!body?.slug || !body.data || typeof body.data !== 'object') return new Response('bad request', { status: 400 });
-    // só texto curto: nada de arquivos nem campos sem fim
+    // short text only: no files and no endless fields
     const entries = Object.entries(body.data).slice(0, MAX_FIELDS).map(([key, value]) => [key.slice(0, 100), String(value).slice(0, MAX_VALUE)]);
     const admin = adminClient();
     const { data: site } = await admin.from('sites').select('id, workspace_id').eq('slug', body.slug).not('published_at', 'is', null).maybeSingle();

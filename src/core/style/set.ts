@@ -21,8 +21,9 @@ import { IDENTIFIER_SOURCE } from '../text/identifier.ts';
 import type { StyleTargetId } from '../../generated/ids.ts';
 import { GENERATED_VALUES } from '../../generated/value-lists.ts';
 import { message, registerHandler, type HandlerContext, type MessageParam, type Outcome } from '../commands/registry.ts';
-import { locate, type DocNode, type Location, type NodeId, type StoredValue } from '../document/model.ts';
-import { targetClass } from '../design/classes.ts';
+import { locate, type DocNode, type DocumentJson, type Location, type NodeId, type Selection, type StoredValue } from '../document/model.ts';
+import { classTarget } from '../design/classes.ts';
+import { structuredCss } from '../render/output.ts';
 import { componentHolders, instanceRootOf } from '../design/instances.ts';
 import type { ModelRules } from '../document/validate.ts';
 import type { Patch } from '../history/transaction.ts';
@@ -34,6 +35,7 @@ import { clearedRecipes } from './recipes.ts';
 import { heldAt, storedValue } from './stored.ts';
 import { DEFAULT_UNIT, codecOf, type Codec, type Value, type ValueFacts } from './codecs.ts';
 import { keywordOfWord } from './keyword-words.ts';
+import { decimalPoint } from './decimal.ts';
 
 type Layers = Record<string, Record<string, Record<string, StoredValue>> | undefined>;
 // the path of a page's element: pages, its page, tree, then children and an index down to it
@@ -54,14 +56,20 @@ export interface StyleHolder {
 
 // The holders of the selected elements' styles (found in the document), or the one class that is the style target.
 export function styleHolders<Ui>(context: HandlerContext<Ui>, nodes: readonly Location[]): StyleHolder[] {
+  return holdersOf(context.state.document, context.state.selection, context.styleClass ?? null, nodes);
+}
+
+// The same, for a document, its selection and the class the editor names as the style target: what the editor's
+// readers ask (replacedDeclarations), so what they show is read where the writers write.
+function holdersOf(document: DocumentJson, selection: Selection, styleClass: string | null, nodes: readonly Location[]): StyleHolder[] {
   const primary = nodes[0];
-  const target = targetClass(context);
+  const target = classTarget(document, selection, styleClass);
   if (target !== null && primary !== undefined) return [{ node: { ...primary.node, styles: target.styleClass.styles }, path: ['classes', target.index], parent: primary.parent, name: `.${target.styleClass.name}` }];
   // an element of an instance writes into its component's definition and every instance's same element
   // (core/design/components.ts); each holder once
   const seen = new Set<string>();
   return nodes.flatMap((found) =>
-    (componentHolders(context.state.document, found.node.id as NodeId) ?? [found]).flatMap((held) => {
+    (componentHolders(document, found.node.id as NodeId) ?? [found]).flatMap((held) => {
       const key = held.path.join('/');
       if (seen.has(key)) return [];
       seen.add(key);
@@ -81,8 +89,43 @@ export function replaceLayer<Ui>(context: HandlerContext<Ui>, at: Location, want
   return styleHolders(context, [at]).flatMap((held) => {
     const current = (held.node.styles as Layers)[layer.breakpoint]?.[layer.state] ?? {};
     const cleared = Object.fromEntries(Object.keys(current).filter((property) => !(property in wanted)).map((property) => [property, null]));
-    return writeDeclarations(held.node, held.path, layer, { ...cleared, ...wanted });
+    return writeDeclarations(held.node, held.path, layer, { ...cleared, ...keptStructures(current, wanted, context.rules) });
   });
+}
+
+// The declarations a whole-rule write (replaceLayer: the code pane's rule, the custom declarations) replaces: the
+// layer of the first holder it writes (the class that is the style target, an instance's component, else the element)
+// at that layer. The one reader of them, so the code pane and the declarations field show exactly what Apply replaces,
+// and the commands compare what was typed with it (the audit's STYLE-1: they showed the element at Desktop/Base and
+// replaced the targeted class, or the active breakpoint's layer).
+export function replacedDeclarations(
+  document: DocumentJson,
+  selection: Selection,
+  styleClass: string | null,
+  at: Location,
+  layer: { readonly breakpoint: string; readonly state: string },
+): Readonly<Record<string, StoredValue>> {
+  const held = holdersOf(document, selection, styleClass, [at])[0];
+  return held === undefined ? {} : ((held.node.styles as Layers)[layer.breakpoint]?.[layer.state] ?? {});
+}
+
+// The declarations wanted, a structured value whose CSS is what the held one writes kept as it is held: a rule's text
+// shows a shadow as its CSS, which leaves its hidden layers out, so a rule applied unchanged keeps them.
+function keptStructures(current: Readonly<Record<string, StoredValue>>, wanted: Readonly<Record<string, StoredValue>>, rules: ModelRules): Record<string, StoredValue> {
+  return Object.fromEntries(
+    Object.entries(wanted).map(([property, value]): [string, StoredValue] => {
+      const fields = rules.structures.get(property);
+      const held = current[property];
+      if (fields === undefined || held === undefined || typeof held === 'string' || typeof value === 'string') return [property, value];
+      return structuredCss(held, fields) === structuredCss(value, fields) ? [property, held] : [property, value];
+    }),
+  );
+}
+
+// A layer's declarations as CSS text, one "property: value" each, a structured value (a shadow's layers) as the page
+// writes it: what the code pane's rule and the declarations field show.
+export function declarationTexts(declarations: Readonly<Record<string, StoredValue>>, rules: ModelRules): readonly string[] {
+  return Object.entries(declarations).map(([property, value]) => `${property}: ${typeof value === 'string' ? value : structuredCss(value, rules.structures.get(property) ?? [])};`);
 }
 
 export function writeDeclarations(
@@ -118,7 +161,7 @@ export function writeDeclarations(
 
 // The patches that write these values into a keyframe's declarations (a null value removes its property); empty when it
 // already holds them. The one writer of a keyframe's declarations, beside writeDeclarations for an element's layer.
-function writeKeyframeDeclarations(
+export function writeKeyframeDeclarations(
   node: DocNode,
   path: readonly (string | number)[],
   animationName: string,
@@ -236,10 +279,10 @@ export function readValue<Ui>(context: HandlerContext<Ui>, property: string, typ
   const { state, rules, css } = context;
   // a variable named without var() ("--brand", as a person types it in any field; the plan's stage 3) is var(--brand)
   const bare = new RegExp(`^\\s*--(${IDENTIFIER_SOURCE})\\s*$`, 'u').exec(typedText);
-  // one number with a decimal comma ("1,5px": pt-BR's decimal separator, which the numpad of an ABNT2 keyboard types)
-  // is that number with a point (the audit's L10N1); a list ("a, b") or anything else keeps its commas
-  const decimal = /^\s*[+-]?\d+,\d+\s*[a-z%]*\s*$/i.test(typedText) ? typedText.replace(',', '.') : typedText;
-  const text = bare === null ? decimal : `var(--${bare[1] ?? ''})`;
+  // one number with a decimal comma ("1,5px", ",5rem": pt-BR's decimal separator, which the numpad of an ABNT2
+  // keyboard types) is that number with a point, through the one decimal reader (decimal.ts; the audits' L10N1 and
+  // INPUT-9); a list ("a, b") or anything else keeps its commas
+  const text = bare === null ? decimalPoint(typedText) : `var(--${bare[1] ?? ''})`;
   // a design token of the project, named as a CSS variable, is kept as written (spec css-variables-tokens, Problems in
   // Pager 4); one the project does not have is no value
   const token = new RegExp(`^\\s*var\\(\\s*--(${IDENTIFIER_SOURCE})\\s*\\)\\s*$`, 'u').exec(text);
@@ -249,6 +292,10 @@ export function readValue<Ui>(context: HandlerContext<Ui>, property: string, typ
     const written = text.trim();
     // a structured value (a shadow's layers) is stored as its layers, never as one text: a token is no value for it
     if (rules.structures.has(property)) return null;
+    // the value the variable holds must be one the property takes, as typed in its field (the audit's STYLE-12: a
+    // colour variable as a width was stored, and the page dropped the declaration at computed-value time); a variable
+    // holding another variable is judged by what that one holds, each once
+    if (!tokenTaken(context, property, held.value, new Set([held.name]))) return null;
     const composite = rules.compositeFacts.get(property);
     if (composite === undefined) return { value: { kind: 'expression', text: written }, css: written };
     // a composite is stored as its longhands (journey03 J1: var(--line) as a border colour wrote the shorthand
@@ -271,6 +318,17 @@ export function readValue<Ui>(context: HandlerContext<Ui>, property: string, typ
   const longhands = longhandValues(property, value, rules);
   if (longhands !== null) return Object.entries(longhands).every(([p, v]) => css.supports(p, v)) ? { value, css: written } : null;
   return css.supports(property, written) ? { value, css: written } : null;
+}
+
+// Whether the value a variable holds is one a property takes (readValue's reading of it), following a variable that
+// holds another; a variable met twice (a loop) or one the project lacks is none.
+function tokenTaken<Ui>(context: HandlerContext<Ui>, property: string, value: string, seen: Set<string>): boolean {
+  const named = new RegExp(`^\\s*var\\(\\s*--(${IDENTIFIER_SOURCE})\\s*\\)\\s*$`, 'u').exec(value)?.[1];
+  if (named === undefined) return readValue(context, property, value) !== null;
+  const next = (context.state.document.tokens ?? []).find((t) => t.name === named);
+  if (next === undefined || seen.has(next.name)) return false;
+  seen.add(next.name);
+  return tokenTaken(context, property, next.value, seen);
 }
 
 // What a property's codec reads a text against: the units and keywords it offers (a composite offers what its first
@@ -408,15 +466,23 @@ export const setStyleCommand = registerHandler('style.set', (given, { property, 
   }
   // An Enter in a field the elements hold no value of their own in (the text empty, nothing typed) asks for nothing:
   // nothing is written and nothing is said. It was refused as '"" is not a value this field takes' (DEF-0605). A text
-  // emptied where a value is held keeps the refusal (decisoes.md, DCS-031).
-  if (value.trim() === '' && (context.keyframe ?? null) === null && nothingHeld(context, property)) return { kind: 'change' as const };
+  // emptied where a value is held keeps the refusal (decisoes.md, DCS-031). On a keyframe, what is held is the
+  // keyframe's (the audit's STYLE-5).
+  if (value.trim() === '' && nothingHeld(context, property)) return { kind: 'change' as const };
   return writePropertyText(context, property, value);
 });
 
 // whether none of the elements a write goes to (their holders: a class targeted, a component) holds a value of the
-// property, or of its longhands, in the layer edited
+// property, or of its longhands, in the layer edited; while the playhead sits on a keyframe of the primary element (a
+// write goes to it: writeStyle), whether that keyframe holds none
 function nothingHeld<Ui>(context: HandlerContext<Ui>, property: string): boolean {
   const nodes = context.state.selection.map((id) => locate(context.state.document, id)).filter((found) => found !== null);
   const parts = [property, ...(context.rules.compositeFacts.get(property)?.longhands ?? [])];
+  const keyframe = context.keyframe ?? null;
+  const primary = nodes[0];
+  if (keyframe !== null && primary !== undefined && keyframe.node === primary.node.id) {
+    const declarations = (primary.node.animations ?? []).find((a) => a.name === keyframe.animation)?.keyframes.find((k) => k.offset === keyframe.keyframe)?.declarations ?? {};
+    return parts.every((one) => !(one in declarations));
+  }
   return styleHolders(context, nodes).every((held) => parts.every((one) => heldAt(held.node, one, context.rules) === undefined));
 }

@@ -122,3 +122,10 @@ describe('the Options in the exported script', () => {
 function page1(interactions: readonly Interaction[]): DocumentJson {
   return page([node('button', interactions)]);
 }
+
+describe('the exported scroll honours reduced motion (the audit\'s STYLE-14)', () => {
+  it('scrolls without animation when the visitor asks the system to reduce motion', () => {
+    const script = interactionsJs(page1([{ trigger: 'click', action: 'scroll-to', target: 'button' as NodeId }]), (id) => `.${id}`) ?? '';
+    expect(script).toContain("window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'");
+  });
+});

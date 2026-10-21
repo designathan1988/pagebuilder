@@ -5,10 +5,10 @@
     "commands": 387,
     "doors": 1399,
     "scenarios": 1869,
-    "modules": 510,
-    "lines": 89754,
+    "modules": 513,
+    "lines": 90562,
     "fields": 207,
-    "interactive": 270
+    "interactive": 269
   },
   "features": [
     {
@@ -4142,7 +4142,7 @@
       "door": 92,
       "inside-door": 41,
       "local": 18,
-      "none": 90,
+      "none": 89,
       "spread": 6,
       "wraps-door": 23
     },
@@ -5213,15 +5213,6 @@
         "owner": "none"
       },
       {
-        "key": "src/editor/shell/dialog.tsx|span|data-edge,onFocus,tabIndex|1",
-        "tag": "span",
-        "role": null,
-        "handlers": [
-          "onFocus"
-        ],
-        "owner": "none"
-      },
-      {
         "key": "src/editor/shell/dialog.tsx|div|aria-labelledby,aria-modal,className,data-key-context,data-region,ref,role,tabIndex|1",
         "tag": "div",
         "role": "dialog",
@@ -5229,7 +5220,7 @@
         "owner": "wraps-door"
       },
       {
-        "key": "src/editor/shell/dialog.tsx|span|data-edge,onFocus,tabIndex|2",
+        "key": "src/editor/shell/dialog.tsx|span|data-edge,onFocus,tabIndex|1",
         "tag": "span",
         "role": null,
         "handlers": [
@@ -5549,7 +5540,7 @@
         "owner": "door"
       },
       {
-        "key": "src/editor/shell/guides-grids.tsx|button|aria-disabled,aria-expanded,aria-haspopup,className,data-args,data-door,onClick,title,type|1",
+        "key": "src/editor/shell/guides-grids.tsx|button|aria-disabled,aria-expanded,aria-haspopup,className,data-args,data-door,onClick,ref,title,type|1",
         "tag": "button",
         "role": null,
         "handlers": [
@@ -5567,10 +5558,11 @@
         "owner": "none"
       },
       {
-        "key": "src/editor/shell/guides-grids.tsx|input|aria-label,autoFocus,className,data-key-context,data-local,inputMode,name,onBlur,placeholder,spellCheck|1",
+        "key": "src/editor/shell/guides-grids.tsx|input|aria-label,autoFocus,className,data-key-context,data-local,inputMode,name,onBlur,onChange,placeholder,ref,spellCheck|1",
         "tag": "input",
         "role": null,
         "handlers": [
+          "onChange",
           "onBlur"
         ],
         "owner": "local"
@@ -5670,7 +5662,7 @@
         "owner": "inside-door"
       },
       {
-        "key": "src/editor/shell/inspector-controls.tsx|form|className,data-args,data-door,data-origin,onSubmit,title|3",
+        "key": "src/editor/shell/inspector-controls.tsx|form|className,data-args,data-door,data-origin,onSubmit,ref,title|1",
         "tag": "form",
         "role": null,
         "handlers": [
@@ -6130,7 +6122,7 @@
         "owner": "inside-door"
       },
       {
-        "key": "src/editor/shell/sidebar/styles.tsx|form|className,data-args,data-door,onSubmit,title|1",
+        "key": "src/editor/shell/sidebar/styles.tsx|form|className,data-args,data-door,onSubmit,ref,title|1",
         "tag": "form",
         "role": null,
         "handlers": [
@@ -6139,10 +6131,11 @@
         "owner": "door"
       },
       {
-        "key": "src/editor/shell/sidebar/styles.tsx|input|aria-label,className,disabled,onBlur,ref,spellCheck|1",
+        "key": "src/editor/shell/sidebar/styles.tsx|input|aria-label,className,disabled,onBlur,onInput,ref,spellCheck|1",
         "tag": "input",
         "role": null,
         "handlers": [
+          "onInput",
           "onBlur"
         ],
         "owner": "inside-door"
@@ -6295,7 +6288,7 @@
         "owner": "door"
       },
       {
-        "key": "src/editor/shell/variables.tsx|form|className,data-args,data-door,onSubmit,title|1",
+        "key": "src/editor/shell/variables.tsx|form|className,data-args,data-door,onSubmit,ref,title|1",
         "tag": "form",
         "role": null,
         "handlers": [
@@ -6304,16 +6297,17 @@
         "owner": "door"
       },
       {
-        "key": "src/editor/shell/variables.tsx|input|aria-label,className,disabled,onBlur,ref,spellCheck|1",
+        "key": "src/editor/shell/variables.tsx|input|aria-label,className,disabled,onBlur,onInput,ref,spellCheck|1",
         "tag": "input",
         "role": null,
         "handlers": [
+          "onInput",
           "onBlur"
         ],
         "owner": "inside-door"
       },
       {
-        "key": "src/editor/shell/variables.tsx|form|className,data-args,data-door,onSubmit,title|2",
+        "key": "src/editor/shell/variables.tsx|form|className,data-args,data-door,onSubmit,ref,title|2",
         "tag": "form",
         "role": null,
         "handlers": [
@@ -6322,10 +6316,11 @@
         "owner": "door"
       },
       {
-        "key": "src/editor/shell/variables.tsx|input|aria-label,className,disabled,onBlur,ref,spellCheck|2",
+        "key": "src/editor/shell/variables.tsx|input|aria-label,className,disabled,onBlur,onInput,ref,spellCheck|2",
         "tag": "input",
         "role": null,
         "handlers": [
+          "onInput",
           "onBlur"
         ],
         "owner": "inside-door"

@@ -3,8 +3,26 @@
 // project does not parse, so the export writes it as a function that reports it (core/logic/compile.ts).
 import runtimeSource from './runtime.js?raw';
 import type { CodeKind } from '../../core/logic/compile.ts';
+import { withSiteWords } from './words.ts';
 
-export const appRuntimeScript = (): string => runtimeSource;
+// the visitor's words of the runtime (its WORDS): the error box's hint and the messages of app.db and app.auth's codes
+const runtime = withSiteWords(runtimeSource, {
+  closeErrors: 'siteRuntime.app.closeErrors',
+  'error.login_required': 'siteRuntime.app.error.loginRequired',
+  'error.forbidden': 'siteRuntime.app.error.forbidden',
+  'error.unknown_table': 'siteRuntime.app.error.unknownTable',
+  'error.not_found': 'siteRuntime.app.error.notFound',
+  'error.invalid_email': 'siteRuntime.app.error.invalidEmail',
+  'error.weak_password': 'siteRuntime.app.error.weakPassword',
+  'error.email_taken': 'siteRuntime.app.error.emailTaken',
+  'error.invalid_credentials': 'siteRuntime.app.error.invalidCredentials',
+  'error.invalid_data': 'siteRuntime.app.error.invalidData',
+  'error.invalid_query': 'siteRuntime.app.error.invalidQuery',
+  'error.table_full': 'siteRuntime.app.error.tableFull',
+  'error.unavailable': 'siteRuntime.app.error.unavailable',
+});
+
+export const appRuntimeScript = (): string => runtime;
 
 // The engine's own parser, through the Function constructors: the code is parsed, never run. A module (import/export)
 // is not checked here: the browser reports it when the site imports it, and the runtime says which script it was.

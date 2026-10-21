@@ -19,6 +19,7 @@ import { useLocale, useT } from '../text.ts';
 import { alsoNamed, tagOfElement } from '../palette/palette.ts';
 import { PANELS, panelName, type Panel } from '../workspace/panel-catalogue.ts';
 import { PanelBodies } from './bodies.ts';
+import { FocusEdge } from './dialog.tsx';
 import { walk } from '../../core/document/model.ts';
 import { openedPage } from '../../core/project/pages.ts';
 import { classesOf } from '../../core/design/classes.ts';
@@ -54,6 +55,7 @@ function CommandBarDialog() {
   const [query, setQuery] = useState('');
   const field = useRef<HTMLInputElement>(null);
   const list = useRef<HTMLUListElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
 
   // every entry offered now: a built door that applies to the selection (appliesNow; the bar is modal: nothing
   // changes while it is open)
@@ -167,7 +169,9 @@ function CommandBarDialog() {
   return (
     <div className="command-bar">
       {BACKDROP ? <DoorControl entry={BACKDROP} className="command-bar__backdrop" /> : null}
-      <div className="command-bar__panel" role="dialog" aria-modal="true" aria-label={t('command.commandBar')} data-region="command-palette" data-key-context="command-bar">
+      {/* the bar is modal: Tab stays in it, between its edges (FocusEdge, as every modal dialog) */}
+      <FocusEdge layer={panel} sends="last" />
+      <div ref={panel} className="command-bar__panel" role="dialog" aria-modal="true" aria-label={t('command.commandBar')} data-region="command-palette" data-key-context="command-bar">
         {/* the field in its row (the canonical palette): the search glyph, the query, the key that closes the bar */}
         <div className="command-bar__search">
         <Icon name={GLYPHS.search} size="sm" />
@@ -254,6 +258,7 @@ function CommandBarDialog() {
           ) : null}
         </p>
       </div>
+      <FocusEdge layer={panel} sends="first" />
     </div>
   );
 }

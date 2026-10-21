@@ -105,6 +105,21 @@
   background: currentColor;
 }
 
+/* the words of every state in one cell, only the current one visible (status-bar.tsx TopBarSaveState): the cell is as
+   wide as the widest, so a change of state does not change the bar's widths */
+.top-bar__saved-words {
+  display: inline-grid;
+}
+
+.top-bar__saved-words > span {
+  grid-area: 1 / 1;
+  visibility: hidden;
+}
+
+.top-bar__saved-words > .is-current {
+  visibility: visible;
+}
+
 .top-bar__saved.is-saved {
   color: var(--color-success);
 }

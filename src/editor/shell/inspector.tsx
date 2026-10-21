@@ -19,9 +19,9 @@ import { Fragment, useEffect, useId, useLayoutEffect, useMemo, useRef, useState,
 import type { CommandId, FeatureId, MessageId, SectionId } from '../../generated/ids.ts';
 import { isFeatureBuilt } from '../../core/commands/registry.ts';
 import { componentHolders, instanceRootOf } from '../../core/design/instances.ts';
-import { locate, type DocNode, type StoredValue } from '../../core/document/model.ts';
-import { structuredCss } from '../../core/render/output.ts';
+import { locate, type DocNode, type NodeId } from '../../core/document/model.ts';
 import type { DispatchResult } from '../../core/store/store.ts';
+import { ruleDeclarations } from '../code-panel/code-panel.ts';
 import { elementIcon, manifest, type DoorEntry } from '../../manifest/runtime.ts';
 import { DoorControl, Icon, useDoor } from '../doors/door.tsx';
 import { MenuButton } from '../doors/menu.tsx';
@@ -460,17 +460,9 @@ function cssTextArg(entry: DoorEntry): string | null {
   return text.length === 1 ? (text[0] as [string, unknown])[0] : null;
 }
 
-// the node's declarations at the base breakpoint and state, "property: value;" each, on one line
-function declarationsText(node: DocNode): string {
-  const byState = (node.styles as Record<string, Record<string, Record<string, StoredValue>> | undefined>)[MODEL_RULES.base.breakpoint];
-  // a structured value (a shadow's layers) as the page writes it
-  return Object.entries(byState?.[MODEL_RULES.base.state] ?? {})
-    .map(([property, value]) => `${property}: ${typeof value === 'string' ? value : structuredCss(value, MODEL_RULES.structures.get(property) ?? [])};`)
-    .join(' ');
-}
-
-// The element's CSS declarations (style.setCustomDeclarations): a field showing what the element holds at the base
-// breakpoint and state, the declarations separated by ";"; Enter (the field is the one field of its form, so Enter
+// The element's CSS declarations (style.setCustomDeclarations): a field showing what the command replaces (the code
+// pane's reader, code-panel.ts ruleDeclarations: the targeted class, the active breakpoint and state), the
+// declarations separated by ";"; Enter (the field is the one field of its form, so Enter
 // submits it) or leaving it (Tab, a click elsewhere, another selection) keeps what it holds for the node it was drawn
 // for, one undo step, when it differs from what it last showed. A refused text is shown again as the document holds it
 // after the command says why.
@@ -482,7 +474,7 @@ function DeclarationsField({ entry, node }: { readonly entry: DoorEntry; readonl
   const form = useRef<HTMLFormElement>(null);
   const field = useRef<HTMLInputElement>(null);
   const shown = useRef('');
-  const stored = declarationsText(node);
+  const stored = useEditorState((s) => ruleDeclarations(s, node.id as NodeId, MODEL_RULES)?.join(' ') ?? '');
   const said = useEditorState((s) => s.message);
   const command = entry.command.id;
   useEffect(() => {

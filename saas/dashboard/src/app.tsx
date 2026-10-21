@@ -1,5 +1,5 @@
-// O painel: a sessão (ou a tela de entrar), o espaço de trabalho escolhido e as páginas, por endereço com # para
-// funcionar em qualquer hospedagem estática.
+// The dashboard: the session (or the sign-in screen), the chosen workspace and the pages, routed by # address so it
+// works on any static hosting.
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { AuthScreen, NewPassword } from './auth.tsx';
@@ -21,7 +21,7 @@ export const go = (path: string) => {
   window.location.hash = `/${path}`;
 };
 
-// depois de entrar, de volta ao editor que pediu a sessão (?next=), se for desta origem
+// after signing in, back to the editor that asked for the session (?next=), if it is from this origin
 function returnToNext(): boolean {
   const next = new URLSearchParams(window.location.search).get('next');
   if (!next) return false;
@@ -99,7 +99,7 @@ function Shell({ session }: { session: Session }) {
     try {
       window.localStorage.setItem(WORKSPACE_KEY, id);
     } catch {
-      // sem armazenamento: vale só nesta visita
+      // no storage: it holds only for this visit
     }
   };
 

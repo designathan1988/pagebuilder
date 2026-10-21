@@ -161,7 +161,8 @@ function settled(document: DocumentJson, nodes: readonly DocNode[], renamed: Rea
     const now = renamed.get(named) ?? (present.has(named) ? named : null);
     return now === null ? null : fragment ? `#${now}` : now;
   };
-  const repair = (node: DocNode, detached = false): DocNode => {
+  // `held`: whether the root of an instance of the project's components is pasted above this node (it keeps its marks)
+  const repair = (node: DocNode, held = false): DocNode => {
     const attributes: Record<string, unknown> = {};
     for (const [name, value] of Object.entries(node.attributes)) {
       if (name === 'id' && typeof value === 'string' && occupied.has(value)) {
@@ -184,15 +185,21 @@ function settled(document: DocumentJson, nodes: readonly DocNode[], renamed: Rea
       .filter((one) => !('target' in one) || one.target !== undefined);
     const { component, componentPart, ...rest } = node;
     delete (rest as { interactions?: unknown }).interactions;
-    // an instance root of a component the project does not hold is detached, and every part under it with it
-    const detaching = detached || (component !== undefined && !components.has(component));
-    const instance = detaching ? {} : { ...(component === undefined ? {} : { component }), ...(componentPart === undefined ? {} : { componentPart }) };
+    // A pasted node keeps its instance marks only with its instance's root pasted with it: an instance root of a
+    // component the project holds stays an instance, and its parts stay its parts. Any other part (copied from inside
+    // an instance, its root left behind) becomes a plain element: outside an instance it is an ordinary element, inside
+    // one an element added to that instance alone. Kept, its part was refused outside an instance (the model: only an
+    // element of an instance has a part) and, inside an instance of another component, was read as that component's
+    // element, so its styles went to that definition and every instance of it (the audit's STRUCT-7). An instance
+    // root of a component the project does not hold is detached, and every part under it with it.
+    const root = component !== undefined && components.has(component);
+    const instance = root ? { component, ...(componentPart === undefined ? {} : { componentPart }) } : held && component === undefined && componentPart !== undefined ? { componentPart } : {};
     return {
       ...rest,
       ...instance,
       attributes: attributes as DocNode['attributes'],
       ...(interactions === undefined || interactions.length === 0 ? {} : { interactions }),
-      children: node.children.map((child) => repair(child, detaching)),
+      children: node.children.map((child) => repair(child, root || (held && component === undefined))),
     } as DocNode;
   };
   // a pasted animation takes a @keyframes name the document does not hold (clone.ts, the audit's UQ1)

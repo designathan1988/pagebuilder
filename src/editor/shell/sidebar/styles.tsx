@@ -1,15 +1,14 @@
 // The Styles view (spec shared-style-classes): the project's classes, each renamed in place, then its variables,
 // site colours and suggestions (variables.tsx).
-import { useEffect, useRef } from 'react';
 import { isFeatureBuilt } from '../../../core/commands/registry.ts';
-import type { DispatchResult } from '../../../core/store/store.ts';
+import type { DispatchResult, EditContext } from '../../../core/store/store.ts';
 import type { CommandId, FeatureId } from '../../../generated/ids.ts';
 import type { DoorEntry } from '../../../manifest/runtime.ts';
 import { DoorControl, useDoor } from '../../doors/door.tsx';
 import { doorSlots } from '../../doors/placement.ts';
-import { afterGesture } from '../../input/pointer.ts';
 import { useEditorState, useStore } from '../../store.ts';
 import { ViewTitle } from '../view-title.tsx';
+import { useKeptField } from '../field.tsx';
 import { useT } from '../../text.ts';
 import { SiteColours, Suggestions, Variables } from '../variables.tsx';
 import { classesOf, usesOfClass } from '../../../core/design/classes.ts';
@@ -44,8 +43,10 @@ function StyleClasses() {
   const remove = doorSlots('styles').find((entry) => entry.command.args.className !== undefined && entry.command.args.nextName === undefined);
   return (
     <ul className="style-classes">
-      {rows.map(([name, count]) => (
-        <li key={name} className="style-classes__row">
+      {/* a row is keyed by its place, which a rename keeps (the project's classes, in the order they were made): keyed
+          by the name, the row was drawn anew and the focus in it fell to the page (DEF-0618) */}
+      {rows.map(([name, count], at) => (
+        <li key={at} className="style-classes__row">
           {rename !== undefined ? <ClassNameField entry={rename} name={name} /> : <span className="style-classes__name">.{name}</span>}
           <span className="style-classes__count">{count === 1 ? t('styles.count.one') : t('styles.count.other', { count })}</span>
           {remove !== undefined ? <DoorControl entry={remove} args={{ className: name }} label={t('styles.deleteClassUsedBy', { count })} /> : null}
@@ -55,24 +56,19 @@ function StyleClasses() {
   );
 }
 
+// A class's name, renamed in place: the typing is held in the one registry of typing (useKeptField, rules G1 and G2)
+// and kept on Enter or when it is left, for the class the field was drawn for; a status message that is not the
+// rename's own leaves it alone (DEF-0565; the input audit's INPUT-5).
 function ClassNameField({ entry, name }: { readonly entry: DoorEntry; readonly name: string }) {
   const store = useStore();
   const door = useDoor(entry, { className: name }, undefined, isFeatureBuilt(entry.door.feature as FeatureId));
-  const field = useRef<HTMLInputElement>(null);
-  const said = useEditorState((state) => state.message);
-  useEffect(() => {
-    if (field.current !== null) field.current.value = name;
-  }, [name, said]);
-  const keep = () => {
-    const nextName = field.current?.value ?? name;
+  const { input, region, onInput, onBlur, onSubmit } = useKeptField(name, entry.command.id, null, (nextName, context) => {
     if (nextName === name) return;
-    afterGesture(store, () => (store.dispatch as (id: CommandId, args: unknown) => DispatchResult)(entry.command.id, { className: name, nextName }));
-  };
+    (store.dispatch as (id: CommandId, args: unknown, context?: EditContext) => DispatchResult)(entry.command.id, { className: name, nextName }, context);
+  });
   return (
-    <form className={`style-classes__field${door.available ? '' : ' is-unavailable'}`} data-door={entry.ref} data-args={JSON.stringify({ className: name })} title={door.title} onSubmit={(event) => { event.preventDefault();
-      keep();
-    }}>
-      <input ref={field} className="input" aria-label={door.label} disabled={!door.available} spellCheck={false} onBlur={keep} />
+    <form ref={region} className={`style-classes__field${door.available ? '' : ' is-unavailable'}`} data-door={entry.ref} data-args={JSON.stringify({ className: name })} title={door.title} onSubmit={onSubmit}>
+      <input ref={input} className="input" aria-label={door.label} disabled={!door.available} spellCheck={false} onInput={onInput} onBlur={onBlur} />
     </form>
   );
 }

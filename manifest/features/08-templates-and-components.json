@@ -6359,13 +6359,15 @@
                         "styles": {
                           "desktop": {
                             "base": {
-                              "padding-top": "20px",
-                              "padding-right": "40px",
-                              "padding-bottom": "20px",
-                              "padding-left": "40px",
+                              "padding-top": "0px",
+                              "padding-right": "0px",
+                              "padding-bottom": "0px",
+                              "padding-left": "0px",
                               "display": "flex",
                               "flex-direction": "row",
-                              "column-gap": "8px"
+                              "column-gap": "8px",
+                              "flex-wrap": "wrap",
+                              "row-gap": "8px"
                             }
                           }
                         },
@@ -6379,7 +6381,10 @@
                             "classes": [],
                             "styles": {},
                             "text": "First tab",
-                            "children": []
+                            "children": [],
+                            "customAttributes": {
+                              "data-wc-tab": ""
+                            }
                           },
                           {
                             "type": "button",
@@ -6389,7 +6394,10 @@
                             "classes": [],
                             "styles": {},
                             "text": "Second tab",
-                            "children": []
+                            "children": [],
+                            "customAttributes": {
+                              "data-wc-tab": ""
+                            }
                           },
                           {
                             "type": "button",
@@ -6399,13 +6407,16 @@
                             "classes": [],
                             "styles": {},
                             "text": "Third tab",
-                            "children": []
+                            "children": [],
+                            "customAttributes": {
+                              "data-wc-tab": ""
+                            }
                           }
                         ]
                       },
                       {
                         "type": "div",
-                        "name": "Container",
+                        "name": "Panel one",
                         "tag": "div",
                         "attributes": {},
                         "classes": [],
@@ -6419,12 +6430,66 @@
                             "attributes": {},
                             "classes": [],
                             "styles": {},
-                            "text": "The content of the chosen tab.",
+                            "text": "The content of the first tab.",
                             "children": []
                           }
-                        ]
+                        ],
+                        "customAttributes": {
+                          "data-wc-panel": ""
+                        }
+                      },
+                      {
+                        "type": "div",
+                        "name": "Panel two",
+                        "tag": "div",
+                        "attributes": {},
+                        "classes": [],
+                        "styles": {},
+                        "text": null,
+                        "children": [
+                          {
+                            "type": "paragraph",
+                            "name": "Paragraph 2",
+                            "tag": "p",
+                            "attributes": {},
+                            "classes": [],
+                            "styles": {},
+                            "text": "The content of the second tab.",
+                            "children": []
+                          }
+                        ],
+                        "customAttributes": {
+                          "data-wc-panel": ""
+                        }
+                      },
+                      {
+                        "type": "div",
+                        "name": "Panel three",
+                        "tag": "div",
+                        "attributes": {},
+                        "classes": [],
+                        "styles": {},
+                        "text": null,
+                        "children": [
+                          {
+                            "type": "paragraph",
+                            "name": "Paragraph 3",
+                            "tag": "p",
+                            "attributes": {},
+                            "classes": [],
+                            "styles": {},
+                            "text": "The content of the third tab.",
+                            "children": []
+                          }
+                        ],
+                        "customAttributes": {
+                          "data-wc-panel": ""
+                        }
                       }
-                    ]
+                    ],
+                    "customAttributes": {
+                      "data-wc": "tabs"
+                    }
                   }
                 ]
               }
@@ -6684,44 +6749,14 @@
                 "path": "/Page/@children",
                 "value": [
                   {
-                    "type": "dialog",
+                    "type": "div",
                     "name": "Modal",
-                    "tag": "dialog",
+                    "tag": "div",
                     "attributes": {},
                     "classes": [],
-                    "styles": {
-                      "desktop": {
-                        "base": {
-                          "position": "fixed",
-                          "top": "0px",
-                          "right": "0px",
-                          "bottom": "0px",
-                          "left": "0px"
-                        }
-                      }
-                    },
+                    "styles": {},
                     "text": null,
                     "children": [
-                      {
-                        "type": "heading",
-                        "name": "Heading",
-                        "tag": "h2",
-                        "attributes": {},
-                        "classes": [],
-                        "styles": {},
-                        "text": "Dialog title",
-                        "children": []
-                      },
-                      {
-                        "type": "paragraph",
-                        "name": "Paragraph",
-                        "tag": "p",
-                        "attributes": {},
-                        "classes": [],
-                        "styles": {},
-                        "text": "What the person needs to know or decide.",
-                        "children": []
-                      },
                       {
                         "type": "button",
                         "name": "Button",
@@ -6729,8 +6764,67 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Close",
-                        "children": []
+                        "text": "Open dialog",
+                        "children": [],
+                        "customAttributes": {
+                          "data-wc-open": "modal"
+                        }
+                      },
+                      {
+                        "type": "dialog",
+                        "name": "Dialog",
+                        "tag": "dialog",
+                        "attributes": {
+                          "id": "modal"
+                        },
+                        "classes": [],
+                        "styles": {
+                          "desktop": {
+                            "base": {
+                              "position": "fixed",
+                              "top": "0px",
+                              "right": "0px",
+                              "bottom": "0px",
+                              "left": "0px"
+                            }
+                          }
+                        },
+                        "text": null,
+                        "children": [
+                          {
+                            "type": "heading",
+                            "name": "Heading",
+                            "tag": "h2",
+                            "attributes": {},
+                            "classes": [],
+                            "styles": {},
+                            "text": "Dialog title",
+                            "children": []
+                          },
+                          {
+                            "type": "paragraph",
+                            "name": "Paragraph",
+                            "tag": "p",
+                            "attributes": {},
+                            "classes": [],
+                            "styles": {},
+                            "text": "What the person needs to know or decide.",
+                            "children": []
+                          },
+                          {
+                            "type": "button",
+                            "name": "Button 2",
+                            "tag": "button",
+                            "attributes": {},
+                            "classes": [],
+                            "styles": {},
+                            "text": "Close",
+                            "children": [],
+                            "customAttributes": {
+                              "data-wc-close": ""
+                            }
+                          }
+                        ]
                       }
                     ]
                   }

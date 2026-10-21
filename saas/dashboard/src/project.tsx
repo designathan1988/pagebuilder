@@ -1,5 +1,5 @@
-// Um projeto: o site publicado (tirar do ar), os domínios próprios com as instruções de DNS e a verificação, e as
-// versões guardadas pelo editor (restaurar uma).
+// A project: the published site (take it offline), the custom domains with the DNS instructions and verification, and
+// the versions saved by the editor (restore one).
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { go } from './app.tsx';
 import { callFunction, canAdmin, canEdit, editorLink, errorText, siteUrl, supabase, when, type Domain, type Project, type Version, type Workspace } from './supabase.ts';

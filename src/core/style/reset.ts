@@ -12,7 +12,7 @@ import { message, registerHandler, type HandlerContext, type Outcome } from '../
 import { locate, type NodeId } from '../document/model.ts';
 import type { Patch } from '../history/transaction.ts';
 import { firstLockRefusal } from '../nodes/flags.ts';
-import { propertyName, styleHolders, writeDeclarations } from './set.ts';
+import { propertyName, styleHolders, writeDeclarations, writeKeyframeDeclarations } from './set.ts';
 import { storedValue } from './stored.ts';
 
 export function removeStyle<Ui>(context: HandlerContext<Ui>, property: string): Outcome<Ui> {
@@ -24,6 +24,14 @@ export function removeStyle<Ui>(context: HandlerContext<Ui>, property: string): 
   if (locked !== null) return { kind: 'refused', message: locked };
   const names = rules.compositeFacts.get(property)?.longhands ?? [property];
   const gone = Object.fromEntries(names.map((name) => [name, null] as const));
+  // While the timeline's playhead sits on a keyframe of the primary element, the fields show that keyframe's values
+  // and a write goes to it (set.ts writeStyle): the property goes from the keyframe, the element keeping its own (the
+  // audit's STYLE-5: the reset took the element's value and left the keyframe's).
+  const keyframe = context.keyframe ?? null;
+  if (keyframe !== null && keyframe.node === primary.node.id) {
+    const patches = writeKeyframeDeclarations(primary.node, primary.path, keyframe.animation, keyframe.keyframe, { ...gone, [property]: null });
+    return { kind: 'change', patches, message: message('status.keyframe.reset', { property: propertyName(property, rules), name: primary.node.name, animation: keyframe.animation, offset: String(keyframe.keyframe) }) };
+  }
   const holders = styleHolders(context, nodes);
   const patches: Patch[] = holders.flatMap((held) => {
     const removed: Record<string, null> = { ...gone };

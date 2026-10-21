@@ -991,7 +991,7 @@
   display: grid;
   place-items: center;
   background: var(--color-danger);
-  color: var(--color-on-accent);
+  color: var(--color-on-danger);
   font: var(--fw-caption) var(--fs-caption) / var(--lh-caption) var(--font-ui);
   white-space: nowrap;
   overflow: hidden;
@@ -1033,7 +1033,7 @@
   padding: 0 var(--space-1);
   border-radius: var(--radius-sm);
   background: var(--color-canvas-measure);
-  color: var(--color-on-canvas-hover);
+  color: var(--color-on-canvas-measure);
   font: var(--fw-caption) var(--fs-caption) / var(--lh-caption) var(--font-mono);
   white-space: nowrap;
 }
@@ -1362,11 +1362,12 @@
 
 .chrome__pill {
   background: var(--color-canvas-drop);
-  color: var(--color-on-canvas-band);
+  color: var(--color-on-canvas-drop);
 }
 
 .chrome__pill.is-refused {
   background: var(--color-danger);
+  color: var(--color-on-danger);
 }
 
 /* the elements a drop placed flash (drag-layout, row 10) */

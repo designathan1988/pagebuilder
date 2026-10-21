@@ -234,6 +234,9 @@ const LayersRow = memo(function LayersRow({ node, depth, view }: { readonly node
   const tabStop = useEditorState((s) => (s.selection[0] === undefined ? depth === 0 : s.selection[0] === node.id));
   const expanded = useEditorState((s) => isExpanded(s.ui, node.id));
   const renaming = useEditorState((s) => renamedNode(s.ui) === node.id);
+  // the pick buttons the strip draws while a target is being picked (RowPickTarget, RowPickMotionTarget): counted in
+  // the strip's room, so the name ends before them as it ends before the other actions
+  const picks = useEditorState((s) => (pickingTarget(s.ui) !== null && LAYERS_PICK !== null ? 1 : 0) + (motionPicking(s.ui) !== null && LAYERS_MOTION_PICK !== null ? 1 : 0));
   // a drag in progress, from Layers or from the canvas (spec layers-drag): the row its drop is placed against says
   // where (before, after, inside, or refused over the dragged nodes' own subtree), and the receiving parent's row is
   // marked, except while the drop is refused (Problems in Pager 4)
@@ -285,7 +288,7 @@ const LayersRow = memo(function LayersRow({ node, depth, view }: { readonly node
         data-drop-position={dropAt}
         // the room the actions strip takes at the row's end (sidebar.css .row--tree): a button per action drawn
         // there, the colour dot among them unless it leads the row
-        style={{ ...(({ '--depth': depth, '--row-actions': LAYERS_BUTTONS.filter((b) => b.ref !== LAYERS_COLOUR?.ref || colour === undefined).length }) as CSSProperties), ...(colour === undefined ? {} : ({ '--row-colour': layerColourCss(colour) } as CSSProperties)) }}
+        style={{ ...(({ '--depth': depth, '--row-actions': LAYERS_BUTTONS.filter((b) => b.ref !== LAYERS_COLOUR?.ref || colour === undefined).length + picks }) as CSSProperties), ...(colour === undefined ? {} : ({ '--row-colour': layerColourCss(colour) } as CSSProperties)) }}
         title={door.title}
         data-door={LAYERS_SELECT.ref}
         data-args={JSON.stringify({ target: node.id })}

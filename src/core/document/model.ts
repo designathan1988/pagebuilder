@@ -264,13 +264,24 @@ export function createEmptyDocument(ids: IdGenerator, names: EmptyProjectNames, 
   };
 }
 
-// Whether a document is the empty project, whatever its names and ids: one page whose root holds no element and
-// carries no attribute, class or style. Replacing it loses nothing (File › Open asks no confirmation over it).
+// Whether a document is the empty project, whatever its names and ids: the document createEmptyDocument makes, one
+// page whose root holds nothing, and nothing else. Replacing it loses nothing, so File › Open, File › New blank page
+// and the imports ask no confirmation over it; any other field that holds something (a file, a class, a token, a
+// saved colour, a component, a collection, a breakpoint table, a guide, a second page, a field a later version adds)
+// is the person's work, and replacing it asks first (CORE-3).
+// What only names, places or sets up a document, a page and a root, and is not work: the format's version, the
+// project's languages (the empty project takes the interface's), the ids, the names and the page's file.
+const DOCUMENT_SETUP: ReadonlySet<string> = new Set(['version', 'language', 'codeLanguage', 'pages']);
+const PAGE_NAMES: ReadonlySet<string> = new Set(['id', 'name', 'file', 'tree']);
+const ROOT_NAMES: ReadonlySet<string> = new Set(['id', 'type', 'name', 'tag']);
+// a field that holds nothing: absent, null, an empty text, or an empty list or map
+const holdsNothing = (value: unknown): boolean =>
+  value === undefined || value === null || value === '' || (typeof value === 'object' && (Array.isArray(value) ? value.length === 0 : Object.keys(value).length === 0));
+const holdsOnly = (record: object, setup: ReadonlySet<string>): boolean => Object.entries(record).every(([key, value]) => setup.has(key) || holdsNothing(value));
 export function isEmptyProject(doc: DocumentJson): boolean {
   const [page, ...others] = doc.pages;
-  if (page === undefined || others.length > 0 || page.capture !== undefined) return false;
-  const root = page.tree;
-  return root.children.length === 0 && Object.keys(root.attributes).length === 0 && root.classes.length === 0 && Object.keys(root.styles).length === 0;
+  if (page === undefined || others.length > 0) return false;
+  return holdsOnly(doc, DOCUMENT_SETUP) && holdsOnly(page, PAGE_NAMES) && holdsOnly(page.tree, ROOT_NAMES);
 }
 
 // Every node of a tree, the root first, in document order.

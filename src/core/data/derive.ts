@@ -74,7 +74,7 @@ function written(node: DocNode, shown: string, type: Collection['fields'][number
 }
 
 // Step 1: the items the change edited through their elements.
-function writeBack(before: DocumentJson, after: DocumentJson, pages: ItemPages, context: DataContext): DocumentJson {
+function writeBack(before: DocumentJson, after: DocumentJson, pages: ItemPages): DocumentJson {
   const old = new Map<string, DocNode>();
   for (const page of before.pages) for (const node of walk(page.tree)) if (node.bind !== undefined) old.set(node.id, node);
   if (old.size === 0) return after;
@@ -88,13 +88,13 @@ function writeBack(before: DocumentJson, after: DocumentJson, pages: ItemPages, 
         if (now === shownBy(was, bound.to)) continue;
         // a value that is what the item shows already is no edit of this element's (the command that changed it was
         // a content command, which showed the item itself)
-        const expected = valueFor(after, bound, place, pages, context);
+        const expected = valueFor(after, bound, place, pages);
         const expectedText = expected === undefined ? undefined : typeof expected === 'string' ? expected : plainText(expected as readonly InlineRun[]);
         if (now === expectedText) continue;
         if (bound.field === ITEM_PAGE) refuse('status.data.pageLink', { name: node.name });
         const field = place.collection.fields.find((f) => f.key === bound.field);
         if (field === undefined) continue;
-        const value = now === undefined ? undefined : readCell(field.type, written(node, now, field.type));
+        const value = now === undefined ? undefined : readCell(field.type, written(node, now, field.type), after.language);
         if (value === null) refuse('status.data.badValue', { collection: place.collection.name, row: place.row, column: field.label, value: now ?? '', type: { key: `data.type.${field.type}` as MessageId } });
         const ofCollection = writes.get(place.collection.name) ?? new Map<string, Map<string, Cell | undefined>>();
         const ofItem = ofCollection.get(place.item.id) ?? new Map<string, Cell | undefined>();
@@ -197,7 +197,7 @@ export function derivedDocument(before: DocumentJson, changed: DocumentJson, con
   const after = prune(changed, context);
   if (!holdsContent(after) && !holdsContent(before)) return after;
   listEdit(before, after);
-  const written = writeBack(before, after, itemPagesOf(after), context);
+  const written = writeBack(before, after, itemPagesOf(after));
   const regions = syncRegions(before, written, context);
   return materialize(regions, context);
 }

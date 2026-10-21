@@ -208,6 +208,9 @@ function withFreeHtmlIds(tree: DocNode, occupied: ReadonlySet<string>): DocNode 
     renamed.set(id, free);
   }
   if (renamed.size === 0) return tree;
+  // a popup's opener names its dialog by id (data-wc-open, js/widgets.js): it follows the renamed dialog, or the second
+  // Modal placed opened the first one's dialog
+  const OPENS = 'data-wc-open';
   const repair = (node: DocNode): DocNode => {
     const { id, href } = node.attributes;
     const attributes = {
@@ -215,7 +218,9 @@ function withFreeHtmlIds(tree: DocNode, occupied: ReadonlySet<string>): DocNode 
       ...(typeof id === 'string' && renamed.has(id) ? { id: renamed.get(id) as string } : {}),
       ...(typeof href === 'string' && href.startsWith('#') && renamed.has(href.slice(1)) ? { href: `#${renamed.get(href.slice(1)) as string}` } : {}),
     };
-    return { ...node, attributes, children: node.children.map(repair) };
+    const opens = node.customAttributes?.[OPENS];
+    const customAttributes = opens !== undefined && renamed.has(opens) ? { customAttributes: { ...node.customAttributes, [OPENS]: renamed.get(opens) as string } } : {};
+    return { ...node, attributes, ...customAttributes, children: node.children.map(repair) };
   };
   return repair(tree);
 }

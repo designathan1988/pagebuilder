@@ -89,15 +89,40 @@ export function fileBytes(file: ProjectFile): Uint8Array {
 }
 
 // The object URL the canvas draws a project file with (an <img> cannot fetch a path the editor holds only in the
-// document). One URL per path and content: the bytes are decoded once and kept until they change.
-const urls = new Map<string, { readonly bytes: string; readonly url: string }>();
+// document). One URL per content (the bytes, then the type), whatever path holds it: a file renamed or moved keeps its
+// URL, and its bytes are decoded once, never once more per path it took (CORE-6). A content no file holds any more
+// is released by releaseObjectUrls.
+const urls = new Map<string, Map<string, string>>();
 export function objectUrl(file: ProjectFile): string {
-  const held = urls.get(file.path);
-  if (held !== undefined && held.bytes === file.bytes) return held.url;
-  if (held !== undefined) URL.revokeObjectURL(held.url);
+  let byType = urls.get(file.bytes);
+  if (byType === undefined) {
+    byType = new Map();
+    urls.set(file.bytes, byType);
+  }
+  const held = byType.get(file.type);
+  if (held !== undefined) return held;
   const url = URL.createObjectURL(new Blob([fileBytes(file).slice().buffer], { type: file.type }));
-  urls.set(file.path, { bytes: file.bytes, url });
+  byType.set(file.type, url);
   return url;
+}
+// Releases the object URL of every content none of `kept` holds (a file deleted, or its bytes replaced): the one
+// owner of the URLs' lifetime, for the editor to call with the files of the document it shows.
+export function releaseObjectUrls(kept: readonly ProjectFile[]): void {
+  const live = new Map<string, Set<string>>();
+  for (const file of kept) {
+    const types = live.get(file.bytes) ?? new Set<string>();
+    types.add(file.type);
+    live.set(file.bytes, types);
+  }
+  for (const [bytes, byType] of urls) {
+    const types = live.get(bytes);
+    for (const [type, url] of byType) {
+      if (types?.has(type) === true) continue;
+      URL.revokeObjectURL(url);
+      byType.delete(type);
+    }
+    if (byType.size === 0) urls.delete(bytes);
+  }
 }
 // The data URL the preview draws a project file with: its frame has an opaque origin, where a blob: URL of the editor's
 // origin does not load (spec code-panel-edit-js; the console says "Not allowed to load local resource"). The bytes are

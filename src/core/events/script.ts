@@ -13,69 +13,13 @@ import { walk, type DocNode, type DocumentJson, type Interaction, type NodeId } 
 import { actionTarget, firesOnce, interactionsOf, needsAddress, needsAnimation, needsTarget } from './interactions.ts';
 import { playedClassName } from '../animation/animation.ts';
 
-// The saved template trees predate runtime metadata. Recognise their semantic structure so existing projects and
-// newly inserted templates behave alike without changing the model or its palette insertion contract.
-export const isModalTemplate = (node: DocNode): boolean =>
-  node.tag === 'dialog' && node.children.some((child) => child.tag === 'button');
-export const isTabsTemplate = (node: DocNode): boolean =>
-  node.tag === 'div' && node.children[0]?.tag === 'nav' && node.children[0].children.length >= 2 &&
-  node.children[0].children.every((child) => child.tag === 'button') && node.children[1]?.tag === 'div';
-export const pageNeedsScript = (tree: DocNode): boolean =>
-  [...walk(tree)].some((node) => interactionsOf(node).length > 0 || isModalTemplate(node) || isTabsTemplate(node));
-
-const tabsRuntime = (selector: string): string => `each(${quoted(selector)}, function (root) {
-  var nav = root.querySelector(':scope > nav');
-  var firstPanel = root.querySelector(':scope > div');
-  if (!nav || !firstPanel) return;
-  var tabs = nav.querySelectorAll(':scope > button');
-  if (tabs.length < 2) return;
-  nav.setAttribute('role', 'tablist');
-  var freshId = function (kind) {
-    var number = 1, id;
-    do { id = 'builder-' + kind + '-' + number; number += 1; } while (document.getElementById(id));
-    return id;
-  };
-  var panels = [firstPanel];
-  firstPanel.setAttribute('role', 'tabpanel');
-  for (var i = 1; i < tabs.length; i += 1) {
-    var panel = document.createElement('div');
-    panel.setAttribute('role', 'tabpanel');
-    var placeholder = document.createElement('p');
-    placeholder.textContent = tabs[i].textContent || '';
-    panel.appendChild(placeholder);
-    panel.hidden = true;
-    panels[i - 1].after(panel);
-    panels.push(panel);
-  }
-  var select = function (index, focus) {
-    for (var j = 0; j < tabs.length; j += 1) {
-      var active = j === index;
-      tabs[j].setAttribute('aria-selected', String(active));
-      tabs[j].tabIndex = active ? 0 : -1;
-      panels[j].hidden = !active;
-    }
-    if (focus) tabs[index].focus();
-  };
-  for (var k = 0; k < tabs.length; k += 1) {
-    tabs[k].setAttribute('role', 'tab');
-    if (!tabs[k].id) tabs[k].id = freshId('tab');
-    if (!panels[k].id) panels[k].id = freshId('panel');
-    tabs[k].setAttribute('aria-controls', panels[k].id);
-    panels[k].setAttribute('aria-labelledby', tabs[k].id);
-    (function (index) {
-      tabs[index].addEventListener('click', function (event) { event.preventDefault(); select(index, false); });
-      tabs[index].addEventListener('keydown', function (event) {
-        var next = event.key === 'ArrowRight' ? (index + 1) % tabs.length
-          : event.key === 'ArrowLeft' ? (index + tabs.length - 1) % tabs.length
-          : event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : -1;
-        if (next < 0) return;
-        event.preventDefault();
-        select(next, true);
-      });
-    })(k);
-  }
-  select(0, false);
-});`;
+// A page links this script while one of its elements holds an interaction. The Tabs and Modal templates are no shape
+// this script recognises: they carry the web components' explicit marks (data-wc="tabs" with data-wc-tab and
+// data-wc-panel; a button's data-wc-open naming its dialog), which js/widgets.js binds to the panels and the opener
+// the person built on the canvas. The shape this script once recognised (a nav of buttons above a div; a dialog with a
+// button) made panels and an opener of its own that the document did not hold, and turned a person's own toolbar into
+// tabs (the audit's RENDER-3 and RENDER-4; G7).
+export const pageNeedsScript = (tree: DocNode): boolean => [...walk(tree)].some((node) => interactionsOf(node).length > 0);
 
 // One selector per node, as the export writes it: the class the export gave the element (the export gives every element
 // an interaction addresses a class of its own), or the person's own `id` attribute.
@@ -101,7 +45,9 @@ function actionJs(node: DocNode, interaction: Interaction, selectorOf: SelectorO
       const name = playedClassName(interaction.animation);
       return `if (target) { target.classList.remove(${quoted(name)}); void target.offsetWidth; target.classList.add(${quoted(name)}); }`;
     }
-    if (interaction.action === 'scroll-to') return `if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });`;
+    // smooth unless the visitor asks the system to reduce motion, as the motion runtime's scroll does (the audit's
+    // STYLE-14)
+    if (interaction.action === 'scroll-to') return `if (target) target.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });`;
     if (needsAddress(interaction.action)) {
       if (interaction.address === undefined) return null;
       return interaction.newTab === true
@@ -156,40 +102,8 @@ function wiringJs(node: DocNode, interaction: Interaction, triggerSelectorOf: Se
 // Null while the project holds none (a site without interactions gets no file and no script link).
 export function interactionsJs(document: DocumentJson, selectorOf: SelectorOf): string | null {
   const blocks: string[] = [];
-  // Component instances can intentionally share a generated class. One binding covers every matching instance.
-  const modalSelectors = new Set<string>();
-  const tabsSelectors = new Set<string>();
   for (const page of document.pages) {
     for (const node of walk(page.tree)) {
-      const selector = selectorOf(node.id as NodeId);
-      if (isModalTemplate(node) && !modalSelectors.has(selector)) {
-        modalSelectors.add(selector);
-        blocks.push(`each(${quoted(selector)}, function (dialog) {
-  var closer = dialog.querySelector(':scope > button');
-  if (!closer) return;
-  var opener = document.createElement('button');
-  opener.type = 'button';
-  opener.textContent = dialog.querySelector(':scope > h2')?.textContent?.trim() || 'Open dialog';
-  dialog.before(opener);
-  opener.addEventListener('click', function () {
-    if (dialog.open) dialog.close();
-    dialog.showModal();
-  });
-  closer.addEventListener('click', function (event) {
-    event.preventDefault();
-    dialog.close();
-  });
-  dialog.addEventListener('click', function (event) {
-    var bounds = dialog.getBoundingClientRect();
-    if (event.target === dialog && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) dialog.close();
-  });
-  if (dialog.open) { dialog.close(); dialog.showModal(); }
-});`);
-      }
-      if (isTabsTemplate(node) && !tabsSelectors.has(selector)) {
-        tabsSelectors.add(selector);
-        blocks.push(tabsRuntime(selector));
-      }
       for (const interaction of interactionsOf(node)) {
         // an interaction that applies to a class binds every element with it (model.ts scope, "Applies to": EV1)
         const wired = wiringJs(node, interaction, () => (interaction.scope === undefined ? selectorOf(node.id as NodeId) : `.${interaction.scope}`), selectorOf);

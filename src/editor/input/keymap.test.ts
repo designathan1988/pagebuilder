@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { bindingFor, bindingGroups, chordCap, chordHint, chordOf, heldKeyBinding } from './keymap.ts';
+import { bindingFor, bindingGroups, chordCap, chordHint, chordOf, heldKeyBinding, waitsForChoice } from './keymap.ts';
 import type { DoorEntry } from '../../manifest/runtime.ts';
 import { manifest } from '../../manifest/runtime.ts';
 
@@ -48,10 +48,31 @@ describe('the keymap', () => {
     const shiftUp = heldKeyBinding('number-field', key({ key: 'ArrowUp', code: 'ArrowUp', shiftKey: true }));
     expect([shiftUp?.entry.ref, shiftUp?.modifier]).toEqual(['field.step#key-arrow-up-in-number-field', 'Shift']);
     expect(heldKeyBinding('number-field', key({ key: 'ArrowDown', code: 'ArrowDown', altKey: true }))?.modifier).toBe('Alt');
-    // a key the gesture gives no meaning, two keys held, or a door without a gesture: nothing
+    // Shift and Alt held together step plainly, as the wheel and the step buttons do (stepModifier, INPUT-8)
+    const both = heldKeyBinding('number-field', key({ key: 'ArrowUp', code: 'ArrowUp', shiftKey: true, altKey: true }));
+    expect([both?.entry.ref, both?.modifier]).toEqual(['field.step#key-arrow-up-in-number-field', null]);
+    // a key the gesture gives no meaning, alone or with one it does, or a door without a gesture: nothing
     expect(heldKeyBinding('number-field', key({ key: 'ArrowUp', code: 'ArrowUp', ctrlKey: true }))).toBeNull();
-    expect(heldKeyBinding('number-field', key({ key: 'ArrowUp', code: 'ArrowUp', shiftKey: true, altKey: true }))).toBeNull();
+    expect(heldKeyBinding('number-field', key({ key: 'ArrowUp', code: 'ArrowUp', ctrlKey: true, shiftKey: true }))).toBeNull();
     expect(heldKeyBinding('number-field', key({ key: 'PageUp', code: 'PageUp', shiftKey: true }))).toBeNull();
+  });
+
+  it('makes every key of the canvas, and every key that changes the document, wait for the canvas to be chosen on a focus lost to the page (INPUT-4)', () => {
+    const at = (context: string, chord: string) => {
+      const entry = bindingFor(context as Parameters<typeof bindingFor>[0], chord);
+      if (entry === null) throw new Error(`no binding for ${chord} in ${context}`);
+      return entry;
+    };
+    expect(waitsForChoice(at('canvas', 'Backspace'), 'Backspace')).toBe(true);
+    expect(waitsForChoice(at('canvas', 'Ctrl+A'), 'a')).toBe(true);
+    expect(waitsForChoice(at('canvas', 'Enter'), 'Enter')).toBe(true);
+    expect(waitsForChoice(at('canvas', 'Ctrl+D'), 'd')).toBe(true);
+    expect(waitsForChoice(at('canvas', 'Ctrl+X'), 'x')).toBe(true);
+    // Escape chooses the canvas again; the history, the command bar and the regions' keys never wait
+    expect(waitsForChoice(at('canvas', 'Escape'), 'Escape')).toBe(false);
+    expect(waitsForChoice(at('canvas', 'Ctrl+Z'), 'z')).toBe(false);
+    expect(waitsForChoice(at('canvas', 'Ctrl+K'), 'k')).toBe(false);
+    expect(waitsForChoice(at('canvas', 'F6'), 'F6')).toBe(false);
   });
 
   it('shows a command’s global shortcut as its hint', () => {
