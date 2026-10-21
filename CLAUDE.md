@@ -14,7 +14,7 @@ Este arquivo contém **requisitos e regras de trabalho**. Ele não descreve o es
 6. testes unitários, com as sondas de sequências aleatórias em poucas execuções (a varredura exaustiva `tools/runner/fuzz.test.ts` e os testes das plantas do `manifest:check` ficam para o fim de etapa);
 7. fumaça no navegador: as jornadas centrais no servidor de desenvolvimento (`tools/verify/smoke.spec.ts`), quando a mudança chega ao navegador.
 
-No fim, o `verify` avisa quando o `manifest/generated/ui-widths.json` foi medido com outras folhas de estilo (`tools/ui-fit/css-hash.ts`). A medição (três condições, comando no aviso) é tarefa de fim de etapa, não de cada lote.
+No fim, o `verify` avisa quando o `manifest/generated/ui-widths.json` foi medido com outras folhas de estilo (`tools/ui-fit/css-hash.ts`). A medição (três condições, comando no aviso) é tarefa de fim de etapa: o `npm run verify -- --all`, portão do fim de etapa, reprova enquanto ela não for refeita.
 
 **Proibido rodar qualquer outra coisa de teste ou medição:** a suíte de navegador (`npm run e2e`, `npx playwright test`), `npm test`, o catálogo de mutantes, medições de tempo e de largura. Passo do `verify` que passou do orçamento se corrige no passo (menos casos, menos execuções), nunca aumentando o orçamento sem pedido do dono.
 

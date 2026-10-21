@@ -14,7 +14,8 @@
 //     what the browser runs.
 //
 // Usage: npm run verify [-- --all] [-- --no-browser]
-//   --all         lint every file and run the smoke, as if everything changed
+//   --all         the end of a stage's check: lint every file, run the smoke, and require ui-widths.json measured with
+//                 today's stylesheets
 //   --no-browser  skip the smoke
 import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -134,11 +135,13 @@ for (const step of steps.filter((one) => !AT_ONCE.has(one.name))) {
   }
   if (!(await timed(step))) failed = true;
 }
-// the labels' measurement is the end of a stage's (it runs a browser in three screen conditions): the check says when
-// the stylesheets moved since, so it is never forgotten, without making every change wait for it
+// the labels' measurement is the end of a stage's (it runs a browser in three screen conditions): a change's check says
+// when the stylesheets moved since, so it is never forgotten, without making every change wait for it; the end of a
+// stage's check (--all) fails until it is measured again
 if (!measurementIsCurrent()) {
-  console.log('note: manifest/generated/ui-widths.json was measured with other stylesheets; measure it at the end of the stage:');
+  console.log(`${everything ? '✗ measurement' : 'note'}: manifest/generated/ui-widths.json was measured with other stylesheets; measure it:`);
   console.log('  npm run ui-fit:measure, then with E2E_SCROLLBARS=shown E2E_SCALE=1.25, then with UI_FIT_CONDITION=ptbr E2E_SCROLLBARS=shown E2E_SCALE=1.25');
-}
+  if (everything) failed = true;
+} else if (everything) console.log('✓ measurement (ui-widths.json measured with the stylesheets on the disk)');
 console.log(`${failed ? 'FAILED' : 'passed'} in ${((Date.now() - started) / 1000).toFixed(1)} s (${changed.length} changed files)`);
 process.exit(failed ? 1 : 0);
