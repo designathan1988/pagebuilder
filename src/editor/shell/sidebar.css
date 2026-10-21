@@ -61,9 +61,15 @@
   scrollbar-width: thin;
 }
 
-/* the line at the top of the Insert view naming where a palette click inserts (the user's real-use audit, A3.19) */
+/* the line at the top of the Insert view naming where a palette click inserts (the user's real-use audit, A3.19): it
+   stays at the top of the view while the tiles scroll under it, on the view's own surface, so the tile under the
+   pointer far down the list is still described (it scrolled off with the search: the last check's L02) */
 .insert__destination {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   flex: none;
+  background: var(--color-surface);
   padding: 0 var(--space-6);
   color: var(--color-text-muted);
   font-size: var(--fs-micro);
@@ -589,14 +595,39 @@
   outline-offset: 1px;
 }
 
-/* an instance's row names its component, in the accent (sidebar.tsx LayersRow, J21) */
+/* an instance's row names its component, in the accent (layers.tsx LayersRow, J21). The row's own name comes first:
+   where both do not fit, the chip keeps only its component icon, the component's name in its tooltip and read out
+   (name-first.ts sets data-component-compact; "Site header 3" read "Site h…" beside "Site hea…", the last check's L11) */
 .row__component {
+  display: inline-flex;
+  align-items: center;
   flex: none;
-  max-width: 40%;
+  color: var(--color-accent);
+}
+
+.row__component > .icon {
+  display: none;
+  flex: none;
+}
+
+.row__component-name {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--color-accent);
+}
+
+.row[data-component-compact] > .row__component > .icon {
+  display: block;
+}
+
+.row[data-component-compact] > .row__component > .row__component-name {
+  position: absolute;
+  width: var(--space-0);
+  height: var(--space-0);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* the coloured row's dot, before its icon (sidebar.tsx LayersRow) */
@@ -857,24 +888,26 @@
   padding: 0;
 }
 
-/* a tile's name longer than its tile is cut with an ellipsis, its tooltip holding it whole (the viewport and language
-   sweep: "Formulário com campos" spilled out of its tile in pt-BR) */
+/* a tile's name wraps inside its tile, as many lines as it takes, and the tile (with its grid row) grows to hold it:
+   never cut (the viewport and language sweep: "Formulário com campos" spilled out of its tile in pt-BR; held to two
+   lines, "Shop with cart (order by…" lost its end, the last check's L09) */
 .tile .tile__label {
-  display: -webkit-box;
   max-width: 100%;
-  overflow: hidden;
+  min-width: 0;
   text-align: center;
   white-space: normal;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  overflow-wrap: break-word;
+  /* a word wider than a narrow tile (the three-column density: "Depoimentos", "Pré-formatado") breaks where the
+     interface language hyphenates it (<html lang> follows the locale, shell.tsx), with its hyphen */
+  hyphens: auto;
+  /* the lines the name may wrap to, for the measurement of the labels (tools/ui-fit/measure.spec.ts): its widest line
+     must fit the tile */
+  --label-lines: 4;
 }
 
-/* a row of the list keeps its name on its one line */
+/* a row of the list starts its name at its icon, the tag after it; a name longer than the row wraps the same way */
 .insert--list .tile .tile__label {
-  display: block;
   text-align: start;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 }
 
 /* another page's name reads as text: a click opens the page (only the page on the canvas is renamed in place) */

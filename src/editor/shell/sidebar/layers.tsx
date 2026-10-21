@@ -219,7 +219,8 @@ interface InsertAt {
   readonly previous: string | null;
 }
 
-// the icon an instance of a component wears in its Layers row (the Insert view's components wear it too)
+// the icon an instance of a component wears in its Layers row (the Insert view's components wear it too), and the one
+// its component chip keeps where the row is narrow
 const COMPONENT_ICON = 'component';
 
 const LayersRow = memo(function LayersRow({ node, depth, view }: { readonly node: DocNode; readonly depth: number; readonly view: SearchView | null }) {
@@ -323,8 +324,11 @@ const LayersRow = memo(function LayersRow({ node, depth, view }: { readonly node
           </span>
         )}
         {node.component !== undefined ? (
+          // where the row is too narrow for the name and the chip, the chip gives way first: it keeps only its icon,
+          // its component's name still in its tooltip and read out (name-first.ts, sidebar.css .row__component)
           <span className="row__component" data-row-component={node.component} title={t('layers.instanceOf', { component: node.component })}>
-            {node.component}
+            <Icon name={COMPONENT_ICON} size="sm" />
+            <span className="row__component-name">{node.component}</span>
           </span>
         ) : null}
         <RowDetails node={node} />

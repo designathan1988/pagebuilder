@@ -288,8 +288,11 @@ export function screenFindings(input: { readonly english: readonly string[] | nu
         tag === 'DT' ||
         ['menuitem', 'menuitemcheckbox', 'menuitemradio', 'tab', 'option', 'button'].includes(role) ||
         /(^|[-_])(label|name|title|head|caption|chip|tab)s?($|[-_])/.test(el.className.toString());
-      // a name drawn to take more than one line on purpose (a line clamp: a palette tile's two lines) is not wrapped
-      const clamped = s.getPropertyValue('-webkit-line-clamp') !== '' && s.getPropertyValue('-webkit-line-clamp') !== 'none';
+      // a name drawn to take more than one line on purpose is not wrapped: a line clamp, or the lines a label declares it
+      // may wrap to (--label-lines: a palette tile's name grows with its tile, sidebar.css; read by the ui-fit measure)
+      const clamped =
+        (s.getPropertyValue('-webkit-line-clamp') !== '' && s.getPropertyValue('-webkit-line-clamp') !== 'none') ||
+        Number.parseInt(s.getPropertyValue('--label-lines'), 10) > 1;
       if (name && !clamped && el.closest('p,[role=alert],[role=status],.toast,.notice,.hint,.empty,[data-region=assistant]') === null) {
         // the lines of its own text only: a label holding its field (a grid of the name over the input) has the field's
         // box below the name, which is no second line of the name

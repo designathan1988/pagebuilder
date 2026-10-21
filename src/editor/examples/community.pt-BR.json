@@ -469,7 +469,7 @@
            {
             "id": "club152",
             "type": "input",
-            "name": "Email",
+            "name": "E-mail",
             "tag": "input",
             "attributes": {
              "inputType": "email",

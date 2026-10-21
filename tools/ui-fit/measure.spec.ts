@@ -100,8 +100,11 @@ test(`measures the width of the regions and the labels (${CONDITION})`, async ({
         }
         if (escaped === 'fixed') right = Math.min(right, (line?.left ?? 0) + window.innerWidth);
         const width = Math.max(0, right - (line?.left ?? 0));
-        // the lines the label may take before it cuts (a tile's name: two)
+        // the lines the label may take before it cuts: its -webkit-line-clamp, else the lines it declares it may wrap
+        // to (--label-lines: a tile's name grows with its tile, sidebar.css)
         const clamp = Number.parseInt(style.webkitLineClamp, 10);
+        const declared = Number.parseInt(style.getPropertyValue('--label-lines'), 10);
+        const lines = clamp > 1 ? clamp : declared > 1 ? declared : 0;
         nodes.forEach((node, index) => {
           node.data = held[index] ?? '';
         });
@@ -119,7 +122,7 @@ test(`measures the width of the regions and the labels (${CONDITION})`, async ({
                   letterSpacing: Number.parseFloat(style.letterSpacing) || 0,
                   textTransform: style.textTransform,
                   text: drawnText,
-                  ...(clamp > 1 ? { lines: clamp } : {}),
+                  ...(lines > 1 ? { lines } : {}),
                 },
         };
       }),

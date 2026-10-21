@@ -1,7 +1,7 @@
 {
   "$generated": {
     "by": "tools/ui-fit/measure.spec.ts",
-    "css": "0f53dba4209c5ea735363be888b9080c8c81b0bde75da337c029f828c523a568"
+    "css": "a17c38921e128f85964b98afa3cc9ef89b96a4850ff6ef3fc855d4f0370b6caf"
   },
   "regions": {
     "activity-bar": {
@@ -322,7 +322,7 @@
         "fontWeight": 400
       },
       "ptbr": {
-        "width": 213,
+        "width": 223,
         "fontSize": 12,
         "fontWeight": 400
       }
@@ -339,7 +339,7 @@
         "fontWeight": 400
       },
       "ptbr": {
-        "width": 213,
+        "width": 223,
         "fontSize": 12,
         "fontWeight": 400
       }
@@ -373,7 +373,7 @@
         "fontWeight": 400
       },
       "ptbr": {
-        "width": 213,
+        "width": 223,
         "fontSize": 12,
         "fontWeight": 400
       }
@@ -1912,7 +1912,7 @@
     },
     "data.createCollection#data-new-collection": {
       "default": {
-        "width": 159,
+        "width": 157.046875,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -1920,7 +1920,7 @@
         "text": "New"
       },
       "windows": {
-        "width": 149,
+        "width": 148.3125,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -1928,7 +1928,7 @@
         "text": "New"
       },
       "ptbr": {
-        "width": 149,
+        "width": 148.3125,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -1938,7 +1938,7 @@
     },
     "data.preview#data-import": {
       "default": {
-        "width": 159,
+        "width": 157.046875,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -1946,7 +1946,7 @@
         "text": "Import file"
       },
       "windows": {
-        "width": 149,
+        "width": 148.3125,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -1954,7 +1954,7 @@
         "text": "Import file"
       },
       "ptbr": {
-        "width": 149,
+        "width": 148.3125,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -2078,31 +2078,31 @@
     },
     "element.insert#elements-tile": {
       "default": {
-        "width": 93.5,
+        "width": 87.96875,
         "fontSize": 11,
         "fontWeight": 400,
         "letterSpacing": 0,
         "textTransform": "none",
         "text": "Full landing page",
-        "lines": 2
+        "lines": 4
       },
       "windows": {
-        "width": 88.5,
+        "width": 87.96875,
         "fontSize": 11,
         "fontWeight": 400,
         "letterSpacing": 0,
         "textTransform": "none",
         "text": "Full landing page",
-        "lines": 2
+        "lines": 4
       },
       "ptbr": {
-        "width": 88.5,
+        "width": 87.96875,
         "fontSize": 11,
         "fontWeight": 400,
         "letterSpacing": 0,
         "textTransform": "none",
         "text": "Landing page completa",
-        "lines": 2
+        "lines": 4
       }
     },
     "element.moveDown#context-menu": {
@@ -4503,7 +4503,7 @@
         "text": "index.html"
       },
       "ptbr": {
-        "width": 79.6875,
+        "width": 89.6875,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -5371,7 +5371,7 @@
     },
     "pages.switch#toolbar-top-bar-page-switcher": {
       "default": {
-        "width": 659.03125,
+        "width": 621.59375,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -5379,7 +5379,7 @@
         "text": "index.html"
       },
       "windows": {
-        "width": 659.03125,
+        "width": 621.59375,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -5387,7 +5387,7 @@
         "text": "index.html"
       },
       "ptbr": {
-        "width": 428.90625,
+        "width": 378.109375,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -9019,7 +9019,7 @@
         "text": "system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif"
       },
       "windows": {
-        "width": 64.25,
+        "width": 171.484375,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,

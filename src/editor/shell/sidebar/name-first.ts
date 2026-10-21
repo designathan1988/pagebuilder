@@ -3,6 +3,8 @@
 // they leave that row, and the name ends in an ellipsis only where it does not fit the row alone (the audit of
 // 2026-10-05: "Cartão Assinatura título" read "Cartão Assi…" beside "article"). The details' width is kept when they
 // leave, so a row is judged the same either way and nothing flickers: they come back once the name and they fit again.
+// Before them, an instance's chip naming its component gives way: it keeps only its icon, the component's name in its
+// tooltip and read out, and is drawn whole again only after the details are back (the last check's L11: "Site h…").
 // a Layers row, and an Explorer file's main area, with the name and the details each holds
 const ROWS = '.row--tree, .row__main';
 const NAME = ':scope > .row__name';
@@ -11,6 +13,9 @@ const NAME = ':scope > .row__name';
 const DETAILS = ':scope > .row__meta[data-region="layers-row-details"], .row__main > .row__meta, .row__main > .row__gen';
 // the sub-pixel difference between the text's width and its box
 const TOLERANCE = 0.5;
+// an instance's chip naming its component (a Layers row): it gives the name its room before the details do
+const CHIP = ':scope > .row__component';
+const CHIP_NAME = ':scope > .row__component-name';
 
 // The room a row leaves free beside what it draws: an Explorer file's name is as wide as it reads and does not grow,
 // so the free room is where the details come back to (a Layers row's name takes the row, and leaves none)
@@ -24,31 +29,51 @@ function freeRoom(row: HTMLElement, gap: number): number {
 export function fitNames(list: HTMLElement): void {
   for (const row of list.querySelectorAll<HTMLElement>(ROWS)) {
     const name = row.querySelector<HTMLElement>(NAME);
-    const details = [...row.querySelectorAll<HTMLElement>(DETAILS)];
-    if (name === null || details.length === 0) {
-      delete row.dataset.nameFirst;
-      continue;
+    const chip = row.querySelector<HTMLElement>(CHIP);
+    // the name is cut, or the chip's own words are (asked only while the chip shows them)
+    const chipName = chip?.querySelector<HTMLElement>(CHIP_NAME) ?? null;
+    const cut = () =>
+      (name !== null && name.scrollWidth > name.clientWidth + TOLERANCE) || (chipName !== null && chipName.scrollWidth > chipName.clientWidth + TOLERANCE);
+    // an instance's component chip gives way first: it keeps only its icon while the name does not fit beside it
+    if (chip === null || name === null) delete row.dataset.componentCompact;
+    else if (!('componentCompact' in row.dataset) && cut()) row.dataset.componentCompact = '';
+    fitDetails(row, name);
+    // and comes back last, once the details are back: tried whole, and kept to its icon again if the name is then cut
+    // (the same frame's layout, never painted)
+    if (chip !== null && 'componentCompact' in row.dataset && !('nameFirst' in row.dataset)) {
+      delete row.dataset.componentCompact;
+      if (cut()) row.dataset.componentCompact = '';
     }
-    const gap = parseFloat(getComputedStyle(row).columnGap) || 0;
-    if (!('nameFirst' in row.dataset)) {
-      // the room the details take from the name: their width, their margins and the gaps before them. A Layers row's
-      // tag stands in the room its actions keep (its right margin is negative, sidebar.css .row--tree .row__meta):
-      // there it takes none, and its leaving gave the name nothing — "Form…" lost its "form" beside an empty end
-      // (DEF-0599)
-      const taken = details.filter((one) => one.offsetWidth > 0).reduce((sum, one) => {
-        const style = getComputedStyle(one);
-        return sum + one.offsetWidth + Math.max(0, parseFloat(style.marginLeft) || 0) + (parseFloat(style.marginRight) || 0) + gap;
-      }, 0);
-      if (name.scrollWidth > name.clientWidth + TOLERANCE && taken > TOLERANCE) {
-        row.dataset.detailsWidth = String(taken);
-        row.dataset.nameFirst = '';
-      }
-      continue;
-    }
-    // the details come back once the name and they fit: the name's own box and the room the row leaves free (an
-    // Explorer file whose name went first once, the sidebar narrower for a moment, kept its details away for good,
-    // since its name never grows past what it reads, DEF-0593)
-    const room = Number(row.dataset.detailsWidth ?? '0');
-    if (name.scrollWidth + room <= name.clientWidth + freeRoom(row, gap) + TOLERANCE) delete row.dataset.nameFirst;
   }
+}
+
+// The row's details (its tag, id or classes; a file's folder and size) leave where the name does not fit beside them,
+// and come back once both fit
+function fitDetails(row: HTMLElement, name: HTMLElement | null): void {
+  const details = [...row.querySelectorAll<HTMLElement>(DETAILS)];
+  if (name === null || details.length === 0) {
+    delete row.dataset.nameFirst;
+    return;
+  }
+  const gap = parseFloat(getComputedStyle(row).columnGap) || 0;
+  if (!('nameFirst' in row.dataset)) {
+    // the room the details take from the name: their width, their margins and the gaps before them. A Layers row's
+    // tag stands in the room its actions keep (its right margin is negative, sidebar.css .row--tree .row__meta):
+    // there it takes none, and its leaving gave the name nothing — "Form…" lost its "form" beside an empty end
+    // (DEF-0599)
+    const taken = details.filter((one) => one.offsetWidth > 0).reduce((sum, one) => {
+      const style = getComputedStyle(one);
+      return sum + one.offsetWidth + Math.max(0, parseFloat(style.marginLeft) || 0) + (parseFloat(style.marginRight) || 0) + gap;
+    }, 0);
+    if (name.scrollWidth > name.clientWidth + TOLERANCE && taken > TOLERANCE) {
+      row.dataset.detailsWidth = String(taken);
+      row.dataset.nameFirst = '';
+    }
+    return;
+  }
+  // the details come back once the name and they fit: the name's own box and the room the row leaves free (an
+  // Explorer file whose name went first once, the sidebar narrower for a moment, kept its details away for good,
+  // since its name never grows past what it reads, DEF-0593)
+  const room = Number(row.dataset.detailsWidth ?? '0');
+  if (name.scrollWidth + room <= name.clientWidth + freeRoom(row, gap) + TOLERANCE) delete row.dataset.nameFirst;
 }

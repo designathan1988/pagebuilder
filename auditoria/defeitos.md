@@ -2424,3 +2424,27 @@
 - Sintoma: arrastar a borda da moldura (Desktop 1440 â†’ 881 px) ou o divisor do inspector e apertar Esc: a barra dizia "Arraste cancelado â€” nada mudou", mas a largura arrastada ficava.
 - Causa: `src/editor/input/pointer/effects.ts` `endCancelled` deixava `ps.splitting` fora do cancelamento, e `Gesture.cancel` (`src/core/store/store.ts`) sÃ³ restaura documento, seleÃ§Ã£o e histÃ³rico, nÃ£o o estado do editor (`ui`) que esses arrastes mudam.
 - Prova: o cancelamento roda o prÃ³prio movimento do arraste no ponto da pressÃ£o (mesma intenÃ§Ã£o, mesmo tratador) antes de fechar o gesto; os quatro ramos de Esc das alÃ§as viram um sÃ³ (`pointer.ts`); `pointer-escape.test.ts` falha antes (240 em vez de 336, 1680 em vez de 1440) e passa depois; uso real: borda 1440 â†’ 881 â†’ 1440, divisor 1105 â†’ 1201 â†’ 1105, alÃ§a 532 â†’ 245 â†’ 532 sem passo de desfazer (fotos `escape/after-*`).
+
+## DEF-0785 — a linha de destino do Inserir saía de vista ao rolar os blocos
+- Status: corrigido (fim da etapa, 2026-10-21)
+- Sintoma: no painel Inserir rolado até Componentes, a linha "Inserir em …, depois de …" que descreve o bloco sob o ponteiro ficava fora da vista (foto `last-check/L02`).
+- Causa: `src/editor/shell/sidebar.css` `.insert__destination` estava dentro da `.view` que rola.
+- Prova: a linha fica fixa no topo da vista, com fundo próprio; fotos `last-fix/F01` (pt 1280, lista no fim) e `F03` (en 1440).
+
+## DEF-0786 — a linha de uma instância em Camadas cortava o nome a poucas letras
+- Status: corrigido (fim da etapa, 2026-10-21)
+- Sintoma: "Site header 3" aparecia "Site h…" ao lado do chip "Site hea…" (foto `last-check/L11`).
+- Causa: `src/editor/shell/sidebar/name-first.ts` `fitNames` não dava prioridade ao nome; o chip do componente ocupava até 40 % da linha.
+- Prova: o chip recolhe ao ícone (nome no tooltip e lido em voz) antes de o nome ser cortado (`data-component-compact`); fotos `last-fix/F04`–`F06`. Limite: um nome sozinho mais largo que a linha ainda termina em reticências (F07).
+
+## DEF-0787 — nomes longos de blocos do Inserir cortados com reticências
+- Status: corrigido (fim da etapa, 2026-10-21)
+- Sintoma: "Shop with cart (order by…" e "Loja com carrinho (pedido no…" cortados na grade de blocos (foto `last-check/L09`).
+- Causa: `src/editor/shell/sidebar.css` `.tile .tile__label` prendia o nome a duas linhas com `line-clamp`.
+- Prova: o nome quebra em quantas linhas precisar e o bloco cresce, com hifenização no idioma da interface; `--label-lines` declara isso à medição (`tools/ui-fit/measure.spec.ts`) e à guarda de tela; 104 blocos sem corte em pt e en (F02, F03); `ui-widths.json` medido de novo nas três condições, ui-fit 3 de 3.
+
+## DEF-0788 — o exemplo Membros chamava o campo de "Email" em pt-BR
+- Status: corrigido (fim da etapa, 2026-10-21)
+- Sintoma: no exemplo Membros em português o campo se chamava "Email", e a interface diz "E-mail".
+- Causa: `tools/gen/content/app-examples.py` usava o mesmo nome nos dois idiomas.
+- Prova: "E-mail" no pt-BR, "Email" no inglês; gerador idempotente; foto `last-fix/F09`.
