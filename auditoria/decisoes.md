@@ -321,3 +321,24 @@
 
 ## DCS-056 — dados guardados por site: visitantes perdem os valores antigos uma vez
 - **Decidido (2026-10-21):** com as chaves por site (`app:<host><pasta>|…`, `wc:<host><pasta>|…`, DEF-0727), carrinhos, variáveis guardadas e sessões gravados com as chaves antigas não são lidos de novo: cada visitante perde esses valores uma vez. Não há migração das chaves antigas.
+
+## DCS-057 — rótulo e chip da seleção ficam sobre as alças de redimensionar
+- **Decidido (2026-10-21):** o rótulo da seleção e o chip do painel rápido ficam acima das alças (`CANVAS_LAYERS` em `src/editor/canvas/arrangement.ts`; `--z-canvas-handle: 3`, `--z-canvas-label: 4`). Uma alça de cima que o rótulo cobre quase toda cede (`yieldingAt`); as alças dos cantos ficam. Inverte a ordem "alça sobre o rótulo" da revisão de 2026-10-05 em favor de um rótulo legível (G5; V-4, DEF-0774).
+
+## DCS-058 — parte aberta só na seleção, escolhida em Camadas, traz o canvas até ela
+- **Decidido (2026-10-21):** um toque em Camadas continua sem rolar o canvas, exceto para um elemento dentro de uma parte de widget que só abre enquanto selecionada (gaveta do carrinho, menu do celular, diálogo fechado): aí o canvas faz pan até ela (`RevealSelection`, `src/editor/canvas/reveal-selection.tsx`; V-6, DEF-0776).
+
+## DCS-059 — sem seleção, o fim da página fica antes do rodapé que a fecha
+- **Decidido (2026-10-21):** com nada selecionado (ou a raiz da página selecionada), uma inserção no fim da página vai logo antes do rodapé que fecha a página (`footer` ou `role="contentinfo"`, com só elementos fixos ou absolutos depois dele). Um rodapé que entra vai por último; sem rodapé de fechamento, o elemento vai depois do último filho. Arrastes e colagem mantêm suas regras (`placement`, `src/core/structure/insert.ts`; V-8, DEF-0778).
+
+## DCS-060 — prévia mais larga que a janela é reduzida para caber
+- **Decidido (2026-10-21):** quando o breakpoint é mais largo que o palco da prévia, a página é disposta na largura do breakpoint e reduzida à largura do palco, centrada, e a barra diz "Mostrada a N % para caber na janela" (en: "Shown at N % to fit the window"). Num palco que cabe o breakpoint, a prévia segue a 100 % (`src/editor/shell/preview.tsx`; V-11, DEF-0781).
+
+## DCS-061 — no canvas, uma parte de widget abre só enquanto selecionada
+- **Decidido (2026-10-21):** as partes que o site mantém fechadas até serem abertas (gaveta do carrinho, menu do celular, painéis de abas depois do primeiro, textos de fim da contagem e de filtro vazio) ficam fechadas no canvas como no site; uma parte abre no canvas só enquanto ela ou um filho estiver selecionado (`widgetStateCss`, `src/core/render/base.ts`; `reveal`, `src/editor/canvas/render/render.ts`; USE-1, DEF-0755).
+
+## DCS-062 — páginas exportadas carregam um script de início clássico
+- **Decidido (2026-10-21):** cada página exportada liga um único script clássico, `js/app-layer/start.js`, para que os apps rodem também aberto do disco (`file://`); servido por http, ele carrega os arquivos de módulo como antes. Efeito aceito: uma CSP estrita num site aberto do disco precisa de `data:` em `script-src` (`src/core/export/app-start.ts`; USE-3, DEF-0757).
+
+## DCS-063 — a prévia guarda os valores do site por projeto carregado
+- **Decidido (2026-10-21):** os valores que o site guarda (carrinho, variáveis guardadas) persistem na prévia enquanto o editor está aberto, entre páginas e entre fechar e reabrir a prévia, como numa visita de volta; carregar outro projeto (abrir, começar ou restaurar) os esquece. Nada vai para o `localStorage` do editor; o sandbox da prévia não ganha `allow-same-origin` (`src/editor/shell/preview.tsx`; USE-8, DEF-0762, DEF-0783).

@@ -2244,3 +2244,177 @@
 - Sintoma: no zoom Encaixar, a alça da borda direita da moldura ficava 12 a 24 px além da borda e a área do canvas a cortava; não dava para arrastar a largura (foto a15-frame-edge-drag; igual antes da DCS-035).
 - Causa: `src/editor/shell/canvas.css` `.frame__edge`: `right: calc(var(--space-6) * -2)` punha a alça inteira fora da moldura.
 - Prova: `right: calc(var(--space-6) / -2)` centra a alça na borda, metade sobre a página e metade na margem do Encaixar (8 px), então a área não a corta; em 46 % a borda arrasta com a seleção à vista (foto a20).
+
+## DEF-0755 — gaveta do carrinho sempre aberta no canvas, cobrindo a página (USE-1)
+- Status: corrigido (76f655fb)
+- Sintoma: depois de inserir "Loja com carrinho", o painel "Seu carrinho" (225 px, `position: fixed`) ficava sobre o lado direito do canvas em qualquer rolagem, cobrindo menu, hero e números; a prévia e a exportação o escondiam (G7; fotos A31-shop-inserted, A45, A60).
+- Causa: `src/editor/widgets/widgets.js:117`: a regra que fecha as partes (carrinho, menu do celular, abas, textos da contagem e do filtro) só existia no runtime publicado, não no canvas.
+- Prova: `widgetStateCss()` em `src/core/render/base.ts:26-50` é a fonte única; o canvas a escreve em `mount`/`writeCapture` (`render.ts:621-622`, `:957`) e a exportação em `export.ts:455-457`; toda parte abre por `data-wc-open`; `reveal()` abre a parte com ela ou um filho selecionado (DCS-061). Casos em `render.test.ts`, `runtime.test.ts`, `import-classes.test.ts`. Fotos fix1/02-shop-inserted (sem gaveta), 04-cart-open-top, 15/16-phone-menu e V13 (fechada após inserir).
+
+## DEF-0756 — "Fazer variável desta cor" gerava 13 avisos de contraste falsos (USE-2)
+- Status: corrigido (76f655fb)
+- Sintoma: Estilos › Cores em uso › variável de #b45309: Verificações subia de 3 para 16, com "contraste abaixo de 4,5:1" em texto branco sobre `var(--color-1)` (fotos A21-checks, A95-checks-list).
+- Causa: `src/core/a11y/checks.ts:139-141`: `readColour` não lia `var(--color-1)` e caía no fundo do pai (branco).
+- Prova: `checksOf` lê texto e fundo por `colourOf`/`backgroundOf` (`checks.ts:122-138`), resolvendo os tokens do projeto por `resolvedVariables` (`src/core/style/swatch.ts`), com aliases e fallbacks; fundo ilegível fica desconhecido para o nó e o que está dentro, nunca o do pai. Casos em `checks.test.ts` ("text and background that name the project variables"). Uso: Checks ficou 3 (en) e Verificações 0 (pt) depois de criar variáveis (verify-use, seção 2).
+
+## DEF-0757 — site exportado aberto do disco não rodava a lógica do app (USE-3)
+- Status: corrigido (76f655fb)
+- Sintoma: abrindo o `index.html` do ZIP por `file://`, o console mostrava "Access to script … blocked"; o parágrafo ligado ficava com o texto de design e o clique não fazia nada (fotos A91-export-1440-top, A93-export-390-clicks).
+- Causa: `src/core/export/export.ts`: a página carregava `importmap` mais `<script type="module">`, que o navegador bloqueia em `file://`.
+- Prova: cada página liga um script clássico `js/app-layer/start.js` (`src/core/export/app-start.ts`, `paths.ts:20-25`, `export.ts:404-406`), que por http usa os módulos e em `file:`/`about:`/`data:`/`blob:` os dá como endereços `data:`; a prévia embute o mesmo script (`export.ts:576-583`; DCS-062). Casos em `logic.test.ts`. Fotos fix1/12-file-tarefas, 13-file-tarefas-after-reload, 14-served-tarefas e V23-export-file-1440, V30-tarefas-file.
+
+## DEF-0758 — rótulo da seleção sumia num elemento de nome longo perto da borda direita (USE-4)
+- Status: corrigido (76f655fb)
+- Sintoma: o botão "Remover" renomeado "Botão para remover a tarefa da lista de afazeres" ficava sem rótulo nem chip, no Desktop e no Celular (DEC-70; fotos B38-nome-longo, B39-celular-selecionado).
+- Causa: `src/editor/canvas/chrome.tsx:791`: `seen` exige `x + largura <= stage.right`; o rótulo de 358 px passava da borda e recebia `is-away`.
+- Prova: `heldInStage` e `labelRoom` (`src/editor/canvas/placement.ts`) recuam rótulo, chip e barra de texto pela linha de cima da moldura até a borda do palco, e só um nome maior que o palco termina em reticências (`.chrome__name` com `min-width: 0`); o chip conta enquanto é medido. 5 casos em `placement.test.ts`. Fotos fix2/C20, C21, C26 e V25-pt-long-label.
+
+## DEF-0759 — painel de cima da doca esquerda espremido a ~200 px em 1280×720 (USE-5)
+- Status: corrigido (76f655fb)
+- Sintoma: com Camadas na metade de baixo, Inserir mostrava uma linha com "Destaque com" cortado e Dados escondia a prévia do CSV, o nome da coleção, Importar e "Adicionar campo" (G5; fotos B02, B10, B13, B42, B43).
+- Causa: `src/editor/shell/sidebar.css`: `.sidebar__stack` era `flex: none` com 440 px, deixando 210 px para a vista em 720 px.
+- Prova: a vista guarda `min(380px, 60%)` e Camadas cede até o cabeçalho; `splitterSize` = mínimo entre o escolhido e o desenhado (`src/editor/workspace/layout.ts`, `sidebar.tsx`, `splitter.tsx`), então arraste e setas partem do que se vê. Caso em `layout.test.ts`. Fotos fix2/C02-inserir-after, C04, C07, C10–C12 e V26-pt1280-inserir, V27-pt-csv-preview.
+
+## DEF-0760 — mapa incorporado como caixa branca no canvas (USE-6)
+- Status: corrigido (76f655fb)
+- Sintoma: na página Contato, o cartão "Como chegar" ficava em branco e o console registrava "Blocked script execution … openstreetmap" a cada desenho (fotos A46-contact-page, A51, A56).
+- Causa: `src/editor/canvas/render/render.ts`: o iframe de outro site era renderizado em sandbox sem `allow-scripts`.
+- Prova: `framePlaceholder` (`render.ts:95-110`, `:819-823`) dá a todo iframe de endereço absoluto um `srcdoc` estático (ícone, título, host); o `src` fica no DOM e a exportação não muda. Caso em `render.test.ts`. Fotos fix1/05-contact-page e V17-map-placeholder, console vazio.
+
+## DEF-0761 — componente salvo inserido no lugar errado ou recusado (USE-7)
+- Status: corrigido (76f655fb)
+- Sintoma: com o cabeçalho selecionado, Inserir › "Cabeçalho do site" dava "<header> não pode ficar dentro de <header>"; com uma caixa do Contato, o componente ia para dentro da seção (fotos A48, A50, A53–A56).
+- Causa: `src/core/design/components.ts` `insertInstanceCommand`: chamava `placement` sem o nó que entra, pulando a regra do bloco de página e a DEF-0601.
+- Prova: a instância é montada antes e posta por `placement(state, selection, rules, parent, index, node)`, a mesma regra das peças da paleta. Caso "places an instance its selected place refuses after it…" em `components.test.ts`. Foto V11-component-after-header ("em Body, posição 2 de 5", logo após o cabeçalho).
+
+## DEF-0762 — prévia avisava de armazenamento e esquecia os valores guardados (USE-8)
+- Status: corrigido (76f655fb)
+- Sintoma: toda prévia registrava "this browser keeps no values … SecurityError" e um "Blocked script execution in 'about:srcdoc'"; a variável `tasks` (guardada) do Tarefas zerava a cada prévia (fotos A79-preview, B37-tarefas-previa).
+- Causa: `src/editor/shell/preview.tsx`: o iframe da prévia não tem `allow-same-origin`, então `localStorage` lança em `runtime.js` e `widgets.js`.
+- Prova: `runtime.js:230-234` e `widgets.js:43-46` usam `__builderPreviewStore` quando existe; `preview.tsx:112-136` escreve esse armazenamento semeado de `PREVIEW_KEPT` e o relé (`:48-55`) aceita só escritas da janela da prévia; o sandbox não muda (DCS-063). Caso em `runtime.test.ts`. Fotos fix1/08-preview-cart-kept, 11-tarefas-preview-kept, console vazio.
+
+## DEF-0763 — linhas de "Ligar campos" iguais: três "Paragra… text" (USE-9)
+- Status: corrigido (76f655fb)
+- Sintoma: Dados › Ligar campos de um depoimento listava "Paragra… text" três vezes, sem dizer qual parágrafo é nome, citação ou cargo (fotos A68-connect-fields, A70-fields-connected).
+- Causa: `src/editor/data/panel.css` `.data-target__name`: `flex: 1; min-width: 0` ao lado do select deixava ~55 px ao nome.
+- Prova: cada linha mostra sob o nome o que a parte mostra agora (`shownBy`, `src/editor/data/mapping.tsx:89-105`, `.data-target__shows`); o nome guarda a coluna de rótulo e o select desce de linha. Caso "tells the parts apart by what each shows now" em `panel.test.tsx`. Foto V19-connect-fields-en.
+
+## DEF-0764 — botões de alinhamento com palavras CSS em inglês na interface em português (USE-10)
+- Status: corrigido (76f655fb)
+- Sintoma: Inspetor › Texto › Alinhar texto: dicas e nomes acessíveis `start`, `end`, `left`, `right`, `center`, `justify`; o mesmo na direção do flex (fotos B05-inspetor-titulo, A16-zoom-textalign).
+- Causa: `src/editor/shell/field.tsx` `KeywordButtons` e `inspector-controls.tsx`: usavam o valor CSS como `title`/`aria-label`.
+- Prova: os três controles keyword-buttons (text-align, flex-direction, position) usam `useValueLabel` com 15 mensagens `value.<propriedade>.<valor>` em en e pt-BR; Posição mantém a palavra visível (DCS-003) com o nome na dica. `value-labels.test.ts` exige nome para todo valor oferecido. Foto V29-pt-inspector.
+
+## DEF-0765 — exemplo Tarefas dizia "1 abertas de 2" (USE-11)
+- Status: corrigido (76f655fb)
+- Sintoma: canvas e prévia do Tarefas mostravam "1 abertas de 2"; o mesmo plural fixo em "N palavras" e "N pontos" (fotos B36-app-tarefas, B39).
+- Causa: `tools/gen/content/app-examples.py` (gera `src/editor/examples/todo.pt-BR.json:515`, `:518`): plural fixo para qualquer contagem.
+- Prova: os três textos passam à forma de rótulo ("Abertas: 1 de 2", "Palavras: 14 · salvo neste navegador", "Fim de jogo! Pontos: 3"; en igual); todos os `+ '…'` dos oito exemplos conferidos; gerador idempotente. Visto no verify-use ("Abertas: 1 de 2" no canvas, na prévia e no export) e fix1/12-file-tarefas.
+
+## DEF-0766 — exemplo das ligações cortado no meio da palavra na aba Lógica (USE-12)
+- Status: corrigido (76f655fb)
+- Sintoma: o placeholder do nome da ligação saía "attr:href, class:active, style:color, prop:" (en) e "…prop:l" (pt) (fotos A75-logic-tab, B33-aba-Lógica).
+- Causa: `src/editor/app-panel/logic-tab.tsx`: o exemplo era `placeholder` de um `<input>`, uma linha que não quebra num inspetor de 240 px.
+- Prova: o exemplo vai para um `<small class="logic-binding__example">` sob o campo, ligado por `aria-describedby`, que quebra nas vírgulas (`panel.css`); mesmo texto. Medido `scrollWidth <= clientWidth` nas duas línguas; fotos fix2/C30-en1366-logic, C31-pt1280-logica e V21-logic-tab-en.
+
+## DEF-0767 — contraste julgado contra o fundo do pai sobre imagem ou gradiente
+- Status: corrigido (76f655fb)
+- Sintoma: texto branco sobre uma foto ou um gradiente de fundo era julgado contra o branco da seção de fora e reportado como contraste baixo (achado junto do USE-2).
+- Causa: `src/core/a11y/checks.ts`: só `background-color` era lido; `background-image` não existia em `manifest/interactions.json` `checks`.
+- Prova: `backgroundImageProperty` entra no manifesto (`interactions.json`, `consumers.json`, `schema.ts`) e `backgroundOf` (`checks.ts`) devolve desconhecido sob imagem ou gradiente próprio, julgando de novo com `none`. Caso "text over a background image" em `checks.test.ts`. Uso: Checks 3 no Restaurante, cujo hero tem foto (V02-restaurant-opened).
+
+## DEF-0768 — nome longo de ação do painel Dados cortado com reticências
+- Status: corrigido (76f655fb)
+- Sintoma: com uma coleção criada, o botão saía "Uma página por item de Cole…" numa doca de 224 px (G5; foto fix2/C06-dados-fim).
+- Causa: `src/editor/data/panel.css` `.data-panel__actions > .door .door__label`: `overflow: hidden; text-overflow: ellipsis; white-space: nowrap`.
+- Prova: o rótulo quebra em linhas (`white-space: normal; overflow-wrap: anywhere`) e o botão cresce em altura (`height: auto; min-height: var(--size-control)`), sem passar da largura do painel. Foto V28-pt-pages-per-item: "Uma página por item de produtos, com o nome em nome" em 3 linhas, inteira.
+
+## DEF-0769 — incidente "moldura menor que a tela" por arredondamento de zoom fracionário
+- Status: corrigido (76f655fb)
+- Sintoma: em 1366×768 (zoom 51 %) o feed acusava "the canvas frame is shorter than the screen: 899 px of a 900 px screen" sem moldura curta (fotos fix2/C10–C12-pt1366).
+- Causa: `src/editor/canvas/frame.tsx:110`: `innerHeight` é px inteiro do quadro com zoom e a sonda tolerava só 0,5 px.
+- Prova: a sonda tolera 1 px (`inside.innerHeight < screen - 1`), como a de crescimento (DEF-0752); uma moldura curta de verdade segue acusada. Sessões seguintes (verify-use, verify-fix-a) com o feed vazio.
+
+## DEF-0770 — "−" e "+" do carrinho encostados na borda de baixo dos botões
+- Status: corrigido (76f655fb)
+- Sintoma: na prévia com o carrinho aberto, os sinais de quantidade ficavam na borda de baixo dos botões de 28 px (foto fix1/07-preview-cart-open).
+- Causa: `src/editor/widgets/widgets.js`: os botões herdavam o padding de botão da base (10px 16px).
+- Prova: `.wc-cart-qty button{display:inline-grid;place-items:center;padding:0;line-height:1}` (`widgets.js:126-127`), no CSS que o site publicado e a prévia compartilham. Foto fix1/08-preview-cart-kept: sinais centrados.
+
+## DEF-0771 — o cartão de início cobria as abas de breakpoint (V-1)
+- Status: corrigido (7b2a2a71)
+- Sintoma: com o projeto vazio, a borda de cima do cartão caía sobre a metade de baixo das abas Notebook/Tablet/Celular, cortando os rótulos (D-1; fotos V01-start-en, V24-pt1280-start).
+- Causa: `src/editor/shell/canvas.css:1511-1518`: `.start-screen` com `inset: 0` sobre o palco inteiro, então o cartão centrado começava dentro da faixa das abas.
+- Prova: `StartScreen` recebe `below`, o fim do cabeçalho da moldura (`src/editor/shell/canvas.tsx`), e a camada do cartão começa ali (`start-screen.tsx`); cartão em y 190, abas em 142–166. Fotos verify-fix-a/A01-start-en, A09-pt1280-start: abas inteiras.
+
+## DEF-0772 — no Encaixar, a borda da moldura não acompanhava o ponteiro ao arrastar (V-2)
+- Status: corrigido (7b2a2a71)
+- Sintoma: arrastando a borda 120 px para a esquerda, o zoom reencaixava a cada movimento (56 → 74 %), a borda ficava em x 1096 e a largura mudava mais rápido que a mão (foto V03-edge-dragging).
+- Causa: `src/editor/view/frame-edge.ts`: o canvas reencaixava o zoom a cada movimento e o tratador lia o zoom da largura atual, não da do toque.
+- Prova: `heldZoom`/`holdZoom` (`src/editor/input/pointer/views.ts`), postos no toque da borda (`effects.ts`), seguram o zoom do Encaixar (`canvas.tsx`); `resizeViewport` lê `zoomShowing` da largura do toque (`camera.ts`). Medido: borda = x do ponteiro a cada passo, 56 % até soltar. Fotos verify-fix-a/A02-edge-mid-drag, A03-edge-released.
+
+## DEF-0773 — chips do seletor de cor escureciam sob o ponteiro (V-3)
+- Status: corrigido (7b2a2a71)
+- Sintoma: passando o ponteiro sobre um chip de variável ou cor salva, o preenchimento virava o tom de hover (`rgb(31,36,44)`) e não se via a cor a escolher (foto V07-picker-variable).
+- Causa: `src/editor/shell/primitives.css:33`: o fundo de `.door:not(.is-unavailable):hover` vencia `.picker__chip { background: var(--swatch-colour) }`.
+- Prova: `.picker__chip.door:not(.is-unavailable):hover` mantém `var(--swatch-colour)`, e o hover vira um anel de 1 px (`panel-editors.css`); a amostra da cor anterior mantém suas camadas. Fotos verify-fix-a/A06, A07-picker-text-chip-hover.
+
+## DEF-0774 — alça de redimensionar cobria o texto do rótulo da seleção (V-4)
+- Status: corrigido (7b2a2a71)
+- Sintoma: no título do hero com classe e Hover, a alça do meio de cima (z 6) cobria "221" em "Heading h1 .hero-title 532 × 221 :hover" e a do canto, o início do rótulo (foto V09-class-hover).
+- Causa: `src/editor/canvas/arrangement.ts` `CANVAS_LAYERS`: alças acima do rótulo, que fica na linha da moldura (DEC-70).
+- Prova: a ordem passa a band, edge, direct, handle, label, chip… (`--z-canvas-handle: 3`, `--z-canvas-label: 4`, `src/ui/tokens.css`); a alça que o rótulo cobre quase toda cede por `yieldingAt`, os cantos ficam (DCS-057). Caso em `arrangement.test.ts`. Foto verify-fix-a/A05-label-over-handles.
+
+## DEF-0775 — o painel Inserir anunciava um destino diferente do usado (V-5)
+- Status: corrigido (7b2a2a71)
+- Sintoma: com o cabeçalho do Contato selecionado, o painel dizia "Inserir em Menu que dobra no celular 3, depois de Container 17", mas o componente ia para Body, posição 2 de 5; sob o componente achado aparecia "Nenhum elemento corresponde" (foto V11).
+- Causa: `src/editor/shell/sidebar/insert.tsx`: a linha de destino chamava `placement` sem o nó da peça, ao contrário da inserção desde a DEF-0761.
+- Prova: `insertLanding` (`src/core/structure/insert.ts`) e `instanceLanding` (`components.ts`) são o pouso dos comandos e de `insertDestination`, que monta o nó da peça mirada (ponteiro por `tileOver`, foco ou única da busca); a linha tracejada de Camadas lê a mesma peça; a contagem inclui componentes. Caso em `insert.test.ts` (insertLanding = comando); headless "insert|palette|components" 184 passaram; sem foto depois da correção.
+
+## DEF-0776 — parte aberta só na seleção, escolhida em Camadas, abria fora de vista (V-6)
+- Status: corrigido (7b2a2a71)
+- Sintoma: escolhendo "Cart header 2" em Camadas, a gaveta abria no topo da prancheta e a vista seguia na loja; o rótulo ficava `is-away` e nada mudava na tela (fotos V14, V16).
+- Causa: `src/editor/canvas/reveal-selection.tsx`: a regra "toque em Camadas não rola o canvas" valia também para uma parte que só aparece selecionada.
+- Prova: `openedBySelection`/`opensWhenSelected` (`render.ts`) são a regra única usada por `PageRenderer.reveal` e por `RevealSelection`, que faz `view.pan` para essa parte (DCS-058). Caso em `reveal-selection.test.tsx`. Foto verify-fix-a/A08-cart-from-layers: topo da moldura de −1432 a 137, gaveta à vista.
+
+## DEF-0777 — "Adicionar ligação" mantinha nome e expressão depois de adicionar (V-7)
+- Status: corrigido (7b2a2a71)
+- Sintoma: depois de adicionar `class:active` com `state.count > 1`, a linha de adição seguia preenchida e um segundo clique não mudava nada mas mostrava "Lógica de Contagem alterada." (foto V21-logic-tab-en).
+- Causa: `src/editor/app-panel/logic-tab.tsx`: o formulário `logic-binding__add` não se refazia após o envio; a mensagem era a anterior, mantida pela store num comando sem mudança.
+- Prova: o formulário tem `key` pelas ligações do elemento, então uma ligação que entra o redesenha vazio e uma recusa mantém o texto; adicionar vazio é recusado com `status.app.badBinding`. Foto verify-fix-a/A16-pt-bindings-fixed: linha de adição vazia.
+
+## DEF-0778 — seção pronta inserida sem seleção caía depois do rodapé (V-8)
+- Status: corrigido (7b2a2a71)
+- Sintoma: na Home sem seleção, Inserir › "Loja com carrinho" punha a loja "em Body, posição 10 de 10", abaixo do rodapé e do botão flutuante do WhatsApp, também na prévia e na exportação (fotos V13, V22, V23).
+- Causa: `src/core/structure/insert.ts` `placement`: o fim da página era sempre depois do último filho.
+- Prova: `pageEnd` põe o elemento antes do rodapé que fecha a página (`footer` ou `role="contentinfo"`, só fixos ou absolutos depois), um rodapé que entra vai por último (DCS-059); vale para toda porta que usa `placement`. 4 casos em `insert.test.ts` ("element.insert at the end of a page that ends with its footer"); sem foto depois da correção.
+
+## DEF-0779 — nomes de camadas sem acento nos exemplos em pt-BR (V-9)
+- Status: corrigido (7b2a2a71)
+- Sintoma: Camadas, rótulo e barra de status mostravam "Rodape", "Cartao", "Titulo", "Descricao", "Celula", "Conteudo", "Pagina" (fotos V26-pt1280-inserir, V31-pt-app-logic).
+- Causa: `tools/gen/content/app-examples.py`: os nomes dos nós em pt-BR estavam escritos sem acento.
+- Prova: nomes acentuados no gerador (nós, chaves `EN_NAMES` e `SAMPLES`, `described`); 8 arquivos `src/editor/examples/*.pt-BR.json` regerados, en sem mudança, segunda execução idêntica; nenhum código ou CSS usa esses nomes; os modelos de site já estavam acentuados. Sem foto depois da correção.
+
+## DEF-0780 — texto de "Guardar no navegador do visitante" passava da borda do botão (V-10)
+- Status: corrigido (7b2a2a71)
+- Sintoma: pt-BR, 1280×720, painel App, variável `tasks`: o texto do botão terminava em 247 com o botão em 246 (`scrollWidth` 189 > `clientWidth` 187), encostado na borda (foto V31-pt-app-logic).
+- Causa: `src/editor/app-panel/panel.css` `.app-variable__row`: o botão não encolhia nem quebrava o texto.
+- Prova: `.app-variable__row > .door:not(.door--icon-button)` encolhe até a linha e quebra as palavras dentro da borda; texto termina em 235, `scrollWidth` = `clientWidth`. Foto verify-fix-a/A10-pt-app-variable (2 linhas dentro da borda).
+
+## DEF-0781 — prévia mais larga que a janela cortava 160 px da direita (V-11)
+- Status: corrigido (7b2a2a71)
+- Sintoma: pt-BR, 1280×720, Pré-visualizar em Desktop: o quadro de 1440 px num palco de 1280 deixava o cartão do Tarefas descentrado e a direita da página fora de vista (foto V32-pt-preview).
+- Causa: `src/editor/shell/preview.tsx:33`, `:76`: o iframe tinha sempre a largura do breakpoint, sem escala.
+- Prova: `PreviewPage` mede o palco; mais estreito que o breakpoint, o iframe mantém a largura e ganha `zoom` = palco/breakpoint, centrado, e a barra diz "Mostrada a N % para caber na janela" (`preview.scaled`; DCS-060). Fotos verify-fix-a/A18-pt-preview-scaled (89 %), A19 (Tablet a 100 %), A20 (clique onde se vê), A21-en-preview-scaled.
+
+## DEF-0782 — cartão da ligação desenhado alto e campos de adição espremidos (V-12)
+- Status: corrigido (7b2a2a71)
+- Sintoma: a ligação adicionada aparecia como caixa de 112 px com espaço vazio acima do nome, e os campos de "Adicionar ligação" tinham 16 px de altura (fotos V21-logic-tab-en, verify-fix-a/A11, A13).
+- Causa: `src/editor/data/panel.css` `.data-field { flex: 1 1 var(--size-tag-field) }` e `.data-form .input { flex: 1 1 0% }`, regras de linha, viravam altura nos cartões em coluna.
+- Prova: `.app-variable/.app-module/.logic-handler/.logic-binding > .data-field` e os filhos de `.logic-binding__add.data-form` e `.app-library__add` com `flex: none` (`app-panel/panel.css`); cartão 112 → 60 px, campos 24 px. Fotos verify-fix-a/A16-pt-bindings-fixed, A17-pt-app-variable-fixed.
+
+## DEF-0783 — valores guardados da prévia passavam de um projeto para outro
+- Status: corrigido (7b2a2a71)
+- Sintoma: depois da DEF-0762, um carrinho ou uma lista guardados na prévia de um projeto apareciam na prévia de outro projeto aberto, iniciado ou restaurado.
+- Causa: `src/editor/shell/preview.tsx`: `PREVIEW_KEPT` vivia enquanto o editor estivesse aberto, sem ligação com o projeto.
+- Prova: `forgetPreviewValuesOnLoad` assina as mudanças do documento e limpa `PREVIEW_KEPT` quando a carga troca `pages` inteiro (o caminho de carga de `src/core/store/store.ts`), como um visitante de outro site (DCS-063). Sem caso unitário nem foto; o `verify --all` do commit passou.

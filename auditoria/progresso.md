@@ -6,8 +6,9 @@ Leia por inteiro antes de começar; atualize ao fim de cada lote. Regras de ritm
 - **Repositório:** `github.com/designathan1988/pagebuilder`, ramo `estrutura/edicao-e-espaco`. O `webconstructor-saas3` foi juntado a este repositório em 2026-10-21 (DCS-043).
 - **Auditoria de 2026-10-21:** leitura de código em 7 áreas (estado e persistência, estrutura, estilos e movimento, entrada e foco, render e exportação, shell e interface, dados e formulários), 79 achados. 70 corrigidos no commit ec8b5361 (DEF-0633 a DEF-0700; alguns já vinham corrigidos pelo saas3, DEF-0615 a DEF-0631); a rodada 2 no commit 1ddff589 (DEF-0701 a DEF-0712). Decisões novas: DCS-036 a DCS-045.
 - **Commit c03f9818:** DCS-035 feita (canvas como prancheta: moldura da altura da página, pan nos dois eixos, abas presas ao topo da área; decisões DCS-046 a DCS-051, incidentes MEC-31 a MEC-33). Camada de aplicação (LOGIC-1 a 22) e modelos, exemplos e pacotes (TPL-1 a 15) auditados e corrigidos (DCS-052 a DCS-056).
-- **Defeitos:** DEF-0615 a DEF-0754 corrigidos; nenhum aberto registrado. No c03f9818: DEF-0713 a DEF-0734 (lógica), DEF-0735 a DEF-0749 (modelos) e DEF-0750 a DEF-0754 (uso real da DCS-035).
-- **Verificação:** um comando só, `npm run verify` (`tools/verify/run.ts`); com `--all`, 66 s no c03f9818. `ui-widths.json` precisa de nova medida no fim da etapa (folhas de estilo mudaram).
+- **Uso real final e verificação por uso (commits 76f655fb e 7b2a2a71):** feitos em en 1440×900 e pt-BR 1280×720, com fotos examinadas e o feed de incidentes vazio. Os achados viraram DEF-0755 a DEF-0770 (76f655fb) e DEF-0771 a DEF-0783 (7b2a2a71); decisões DCS-057 a DCS-063.
+- **Defeitos:** DEF-0615 a DEF-0783 corrigidos; nenhum aberto registrado. No c03f9818: DEF-0713 a DEF-0734 (lógica), DEF-0735 a DEF-0749 (modelos) e DEF-0750 a DEF-0754 (uso real da DCS-035).
+- **Verificação:** um comando só, `npm run verify` (`tools/verify/run.ts`); com `--all`, cerca de 63 s no 7b2a2a71. `ui-widths.json` precisa de nova medida no fim da etapa (folhas de estilo mudaram).
 - **Código em inglês:** comentários, identificadores, nomes de arquivo, títulos de teste e mensagens de ferramentas.
 
 ## Estado anterior (2026-10-10)
@@ -135,7 +136,7 @@ Leia por inteiro antes de começar; atualize ao fim de cada lote. Regras de ritm
 - **Fim da etapa dos lotes 7 a 10 (2026-10-09):** catálogo inteiro de mutantes, 152, com 149 acusados e 3 equivalentes com motivo (M19, M25, M30), 100 % dos não equivalentes, em 294 s. A suíte inteira de navegador não rodou: o pedido do dono desta rodada a proíbe; cada lote rodou os specs da sua área nas duas condições.
 
 ## Próximo passo
-Uso real final com fotos (em andamento) e medição do ui-widths no fim da etapa.
+Esc durante arrastes (em andamento); depois medição do ui-widths no fim da etapa.
 
 ## Para uma próxima rodada (fora dos lotes 1 a 5)
 - O quadro de `onUp` acima de 50 ms só com a CPU disputada: o caminho está em `otimizacoes.md`, "O que fica para uma próxima rodada".
