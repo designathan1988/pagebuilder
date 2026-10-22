@@ -9,7 +9,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
 import { createPortal } from 'react-dom';
 import type { EditContext } from '../../core/store/store.ts';
-import type { CommandId } from '../../generated/ids.ts';
+import type { CommandId, MessageId } from '../../generated/ids.ts';
 import { heldDraft, type HeldDraft } from '../input/held-draft.ts';
 import { GENERATED_VALUES } from '../../generated/value-lists.ts';
 import type { DoorEntry } from '../../manifest/runtime.ts';
@@ -312,6 +312,7 @@ export function PanelButton({
   disabled = false,
   onDone,
   children,
+  reason,
 }: {
   readonly entry: DoorEntry;
   readonly args?: Readonly<Record<string, unknown>>;
@@ -319,12 +320,16 @@ export function PanelButton({
   readonly label?: string;
   readonly pressed?: boolean | null;
   readonly disabled?: boolean;
+  // why the panel holds the button disabled (its disabled prop), for its tooltip: the door's title says only its name
+  readonly reason?: MessageId;
   readonly onDone?: () => void;
   readonly children?: React.ReactNode;
 }) {
   const door = useDoor(entry, args, label);
   const store = useStore();
+  const t = useT();
   const ready = door.available && !disabled;
+  const title = door.available && disabled && reason !== undefined ? t('common.disabledTitle', { label: door.label, reason: { key: reason, params: {} } }) : door.title;
   return (
     <button
       type="button"
@@ -333,7 +338,7 @@ export function PanelButton({
       data-args={JSON.stringify({ ...entry.door.args, ...args })}
       aria-disabled={ready ? undefined : true}
       aria-pressed={pressed === null ? undefined : pressed}
-      title={door.title}
+      title={title}
       disabled={!isDoorBuilt(entry)}
       onClick={() => {
         if (!ready) return;

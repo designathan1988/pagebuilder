@@ -5411,6 +5411,7 @@ export const MESSAGE_IDS = [
   "timeline.animations",
   "timeline.easingDefault",
   "timeline.empty",
+  "timeline.noAnimationShown",
   "timeline.keyframeOffset",
   "timeline.name",
   "timeline.newAnimation",

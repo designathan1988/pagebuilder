@@ -63,7 +63,7 @@ function NewAnimation({ ready }: { readonly ready: boolean }) {
         aria-disabled={ready ? undefined : true}
         aria-haspopup="dialog"
         aria-label={t('timeline.newAnimation')}
-        title={t('timeline.newAnimation')}
+        title={ready ? t('timeline.newAnimation') : t('common.disabledTitle', { label: t('timeline.newAnimation'), reason: { key: 'timeline.empty', params: {} } })}
         onClick={() => {
           if (ready) setAsking(true);
         }}
@@ -181,22 +181,22 @@ export function TimelinePanel() {
       <div className="timeline__track-area">
         <div className="timeline__controls">
           {PLAY !== null ? (
-            <PanelButton entry={PLAY} args={{ animation: shownName ?? '' }} pressed={timeline.playing === true} disabled={shown === null}>
+            <PanelButton entry={PLAY} args={{ animation: shownName ?? '' }} pressed={timeline.playing === true} disabled={shown === null} reason="timeline.noAnimationShown">
               <Icon name="play" size="sm" />
             </PanelButton>
           ) : null}
           {PAUSE !== null ? (
-            <PanelButton entry={PAUSE} args={{ animation: shownName ?? '' }} disabled={shown === null}>
+            <PanelButton entry={PAUSE} args={{ animation: shownName ?? '' }} disabled={shown === null} reason="timeline.noAnimationShown">
               <Icon name="pause" size="sm" />
             </PanelButton>
           ) : null}
           {STOP !== null ? (
-            <PanelButton entry={STOP} args={{ animation: shownName ?? '' }} disabled={shown === null}>
+            <PanelButton entry={STOP} args={{ animation: shownName ?? '' }} disabled={shown === null} reason="timeline.noAnimationShown">
               <Icon name="square" size="sm" />
             </PanelButton>
           ) : null}
           {LOOP !== null ? (
-            <PanelButton entry={LOOP} args={{ animation: shownName ?? '' }} pressed={timeline.loop === true} disabled={shown === null}>
+            <PanelButton entry={LOOP} args={{ animation: shownName ?? '' }} pressed={timeline.loop === true} disabled={shown === null} reason="timeline.noAnimationShown">
               <Icon name="repeat" size="sm" />
             </PanelButton>
           ) : null}

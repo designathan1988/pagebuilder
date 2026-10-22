@@ -2196,6 +2196,7 @@
   "timeline.animations": "Animations",
   "timeline.easingDefault": "the animation's own timing",
   "timeline.empty": "Select an element to animate.",
+  "timeline.noAnimationShown": "Choose an animation of the selected element first.",
   "timeline.keyframeOffset": "At {offset}%",
   "timeline.name": "Name",
   "timeline.newAnimation": "New animation",
