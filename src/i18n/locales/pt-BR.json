@@ -2584,7 +2584,7 @@
   "layout.command.place": "Posicionar uma região",
   "layout.door.placeRegion": "Arraste uma região para movê-la",
   "layout.door.resizeRegion": "Arraste o puxador de uma região para redimensioná-la",
-  "layout.door.compose": "Layout (L)",
+  "layout.door.compose": "Layout",
   "layout.door.composeMenu": "Layout",
   "layout.door.done": "Concluir",
   "layout.door.escape": "Sair da composição de layout",
