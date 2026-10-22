@@ -4517,5 +4517,5 @@
   "data.cellColourHint": "#2563eb",
   "data.cellEmailHint": "nome@exemplo.com",
   "data.cellItemsHint": "Títulos, separados por vírgulas",
-  "data.cellRichHint": "Texto em várias linhas"
+  "data.cellRichHint": "Texto; <b>negrito</b>, <i>itálico</i> e <a href=\"…\">links</a> são mantidos"
 }

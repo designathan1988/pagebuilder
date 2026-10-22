@@ -4517,5 +4517,5 @@
   "data.cellColourHint": "#2563eb",
   "data.cellEmailHint": "name@example.com",
   "data.cellItemsHint": "Titles, separated by commas",
-  "data.cellRichHint": "Text over several lines"
+  "data.cellRichHint": "Text; <b>bold</b>, <i>italic</i> and <a href=\"…\">links</a> are kept"
 }

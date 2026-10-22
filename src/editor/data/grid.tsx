@@ -7,6 +7,7 @@ import { collectionsOf, fieldText, itemTitle, lookupIn, MAX_DECIMALS, queryItems
 import { FIELD_TYPES, FILTER_OPERATORS, PAGINGS, isReferenceType, type Collection, type Field, type Query } from '../../core/data/model.ts';
 import type { MessageId } from '../../generated/ids.ts';
 import { filesOf } from '../../core/document/model.ts';
+import { typedMarkupOf, type InlineRun } from '../../core/text/inline.ts';
 import { DoorControl } from '../doors/door.tsx';
 import { useEditorState } from '../store.ts';
 import { useT } from '../text.ts';
@@ -200,7 +201,7 @@ function Grid({ collection, query }: { readonly collection: Collection; readonly
                   </span>
                 </th>
                 {collection.fields.map((field) => (
-                  <td key={field.key}>{cell(field, field.type === 'reference' ? String(item.values[field.key] ?? '') : fieldText(field, item.values[field.key], words, { language, decimals: field.decimals }, lookup), item.id)}</td>
+                  <td key={field.key}>{cell(field, field.type === 'reference' ? String(item.values[field.key] ?? '') : field.type === 'richtext' && Array.isArray(item.values[field.key]) ? typedMarkupOf(item.values[field.key] as InlineRun[]) : fieldText(field, item.values[field.key], words, { language, decimals: field.decimals }, lookup), item.id)}</td>
                 ))}
               </tr>
             );

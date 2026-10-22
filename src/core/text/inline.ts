@@ -336,3 +336,53 @@ function htmlSegments(nodes: readonly ClipboardNode[], model: ContentModel): Seg
   if (last !== undefined) out[out.length - 1] = { ...last, text: last.text.replace(/ $/, '') };
   return merged(out);
 }
+
+// ---- marks typed as tags (a rich text cell of a collection) ----
+
+// The tags a person types in a plain field to mark a rich text, read and written: <b> or <strong> bold, <i> or <em>
+// italic, <a href="…"> a link, <br> a line break. A rich text cell kept what was typed as one plain run, its marks lost
+// on the page. Any other tag, or an address the link rule refuses, is kept as the characters typed.
+const TYPED_TAG = /<(\/?)(b|strong|i|em|a|br)\b([^>]*)>/giu;
+const escaped = (text: string): string => text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+const unescaped = (text: string): string => text.replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&quot;', '"').replaceAll('&amp;', '&');
+
+export function runsFromTypedMarkup(typed: string): InlineRun[] {
+  const segments: Segment[] = [];
+  let strong = 0;
+  let em = 0;
+  const links: string[] = [];
+  let at = 0;
+  const push = (text: string) => {
+    if (text !== '') segments.push({ text: unescaped(text), strong: strong > 0, em: em > 0, href: links.at(-1) ?? null });
+  };
+  for (const match of typed.matchAll(TYPED_TAG)) {
+    push(typed.slice(at, match.index));
+    at = match.index + match[0].length;
+    const closing = match[1] === '/';
+    const tag = (match[2] ?? '').toLowerCase();
+    if (tag === 'br') push('\n');
+    else if (tag === 'b' || tag === 'strong') strong = Math.max(0, strong + (closing ? -1 : 1));
+    else if (tag === 'i' || tag === 'em') em = Math.max(0, em + (closing ? -1 : 1));
+    else if (closing) links.pop();
+    else {
+      const href = /href\s*=\s*(?:"([^"]*)"|'([^']*)')/iu.exec(match[3] ?? '');
+      const address = href === null ? null : unescaped(href[1] ?? href[2] ?? '');
+      if (address !== null && isSafeHref(address)) links.push(keptHref(address));
+      else push(match[0]);
+    }
+  }
+  push(typed.slice(at));
+  return runsOf(segments);
+}
+
+// A marked text written as the tags runsFromTypedMarkup reads: what a rich text cell shows to be edited again.
+export function typedMarkupOf(runs: readonly InlineRun[]): string {
+  return runs
+    .map((run): string => {
+      if (typeof run === 'string') return escaped(run).replaceAll('\n', '<br>');
+      const inner = typedMarkupOf(run.children);
+      if (run.tag === 'a') return `<a href="${run.href.replaceAll('"', '&quot;')}">${inner}</a>`;
+      return run.tag === 'strong' ? `<b>${inner}</b>` : `<i>${inner}</i>`;
+    })
+    .join('');
+}

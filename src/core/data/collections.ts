@@ -6,7 +6,7 @@
 import { message, type Message, type MessageParam } from '../commands/registry.ts';
 import type { MessageId } from '../../generated/ids.ts';
 import { holdsControl, readAddress } from '../elements/address.ts';
-import { canonical, parseInline, plainText, type InlineRun } from '../text/inline.ts';
+import { canonical, parseInline, plainText, runsFromTypedMarkup, type InlineRun } from '../text/inline.ts';
 import { fold, slug } from '../text/fold.ts';
 import { FIELD_TYPES, PAGINGS, isReferenceType, type Cell, type Collection, type Field, type FieldType, type Filter, type Item, type Query } from './model.ts';
 import { registerReferenceKind } from '../store/references.ts';
@@ -112,7 +112,11 @@ export function readCell(type: FieldType, value: unknown, language?: string): Ce
     case 'text':
       return typeof value === 'number' || typeof value === 'boolean' ? String(value) : text;
     case 'richtext': {
-      if (text !== null) return [text];
+      // a text typed in a cell may mark itself with tags (<b>, <i>, <a href>): read as the marks they name
+      if (text !== null) {
+        const typed = canonical(runsFromTypedMarkup(text));
+        return plainText(typed).trim() === '' ? undefined : typed;
+      }
       const runs = parseInline(value);
       if (runs === null || runs === 'unsafe') return null;
       const runsCanonical = canonical(runs);
