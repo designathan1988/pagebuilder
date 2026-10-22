@@ -16650,7 +16650,9 @@
                     "type": "audio",
                     "name": "Audio",
                     "tag": "audio",
-                    "attributes": {},
+                    "attributes": {
+                      "controls": true
+                    },
                     "classes": [],
                     "styles": {},
                     "text": null,
@@ -17933,7 +17935,9 @@
                     "type": "audio",
                     "name": "Audio",
                     "tag": "audio",
-                    "attributes": {},
+                    "attributes": {
+                      "controls": true
+                    },
                     "classes": [],
                     "styles": {},
                     "text": null,

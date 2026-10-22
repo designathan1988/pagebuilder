@@ -258,12 +258,17 @@ export function paletteNode(make: NodeMaker, entry: string): DocNode {
   if (item === undefined || make.rules.elements.get(item.element) === undefined) throw new Error(`the palette has no entry ${entry}`);
   // a field tile's element is named by its tile (a Checkbox, an Email field), not by the element it is ("Input 4")
   const made = item.template === null ? newElement(make, item.element, startingParts(item.element), item.inputType === null ? undefined : item.labelKey) : withFreeHtmlIds(templateElement(make, item.template, item.labelKey), make.htmlIds);
-  if (item.inputType === null) return made;
+  const starting = item.template === null ? STARTING_ATTRIBUTES[item.element] : undefined;
+  if (item.inputType === null) return starting === undefined ? made : { ...made, attributes: { ...made.attributes, ...starting } };
   // a field placed says what it takes, in the page's language (an empty box asked nothing: the real-use pass of
   // 2026-10-22, an Email field placed was a blank white box)
   const hint = INPUT_PLACEHOLDERS[item.inputType];
   return { ...made, attributes: { ...made.attributes, inputType: item.inputType, ...(hint === undefined ? {} : { placeholder: make.pageWords(hint) }) } };
 }
+
+// the attributes an element placed from its tile starts with: an audio with no controls draws nothing (0 x 0), and
+// the person placed one they could neither see nor press
+const STARTING_ATTRIBUTES: Readonly<Record<string, DocNode['attributes']>> = { audio: { controls: true } };
 
 // the placeholder a new field of a kind starts with (the kinds a visitor types into)
 const INPUT_PLACEHOLDERS: Readonly<Record<string, MessageId>> = {
