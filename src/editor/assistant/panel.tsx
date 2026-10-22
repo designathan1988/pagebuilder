@@ -5,6 +5,7 @@ import type { DispatchResult } from '../../core/store/store.ts';
 import { doorSlots } from '../doors/placement.ts';
 import { DoorControl, useDoor } from '../doors/door.tsx';
 import { ViewTitle } from '../shell/view-title.tsx';
+import { FieldOptions } from '../shell/field-options.tsx';
 import type { DoorEntry } from '../../manifest/runtime.ts';
 import { useEditorState, useStore } from '../store.ts';
 import { useT } from '../text.ts';
@@ -19,7 +20,10 @@ const entryOf = (name: string): DoorEntry => {
   if (!entry) throw new Error(`Missing assistant control ${name}`);
   return entry;
 };
-function AssistantField({ entry, value, multiline = false, live = false }: { readonly entry: DoorEntry; readonly value: string; readonly multiline?: boolean; readonly live?: boolean }) {
+// the models the Assistant offers by name: the current ones, most capable first (a model's id had to be known)
+const ASSISTANT_MODELS: readonly string[] = ['claude-opus-5-5', 'claude-sonnet-5-5', 'claude-haiku-5-5', 'claude-fable-5-1'];
+
+function AssistantField({ entry, value, multiline = false, live = false, offered }: { readonly entry: DoorEntry; readonly value: string; readonly multiline?: boolean; readonly live?: boolean; readonly offered?: readonly string[] }) {
   const store = useStore(), t = useT();
   const field = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
   const label = t(entry.door.labelKey as MessageId);
@@ -38,7 +42,16 @@ function AssistantField({ entry, value, multiline = false, live = false }: { rea
     keep();
   }}>
     <label>{label}</label>
-    {multiline ? <textarea {...props} ref={field as React.RefObject<HTMLTextAreaElement>} rows={4} /> : <input {...props} ref={field as React.RefObject<HTMLInputElement>} />}
+    {multiline ? <textarea {...props} ref={field as React.RefObject<HTMLTextAreaElement>} rows={4} /> : offered === undefined ? <input {...props} ref={field as React.RefObject<HTMLInputElement>} /> : (
+      // the models offered, any other still typed
+      <span className="settings-field__value">
+        <input {...props} ref={field as React.RefObject<HTMLInputElement>} />
+        <FieldOptions field={field} options={offered} current={value} label={label} disabled={busy || !door.available} choose={(chosen) => {
+          if (field.current !== null) field.current.value = chosen;
+          keep();
+        }} />
+      </span>
+    )}
   </form>;
 }
 
@@ -56,7 +69,7 @@ export function AssistantPanel(): ReactNode {
     if (name === 'assistant-provider') return <p>{t('assistant.providerAnthropic')}</p>;
     const entry = entryOf(name);
     if (name === 'assistant-input') return <AssistantField entry={entry} value={state.draft} multiline live />;
-    if (name === 'assistant-model') return <AssistantField entry={entry} value={model} />;
+    if (name === 'assistant-model') return <AssistantField entry={entry} value={model} offered={ASSISTANT_MODELS} />;
     if (name === 'assistant-key') return <label className="assistant-field" data-door={entry.ref}>{t('assistant.key')}<input ref={key} className="input" type="password" autoComplete="off" aria-label={t('assistant.key')} disabled={state.busy} /></label>;
     if (name === 'assistant-save-key') return <button type="button" className="door door--button" data-door={entry.ref} disabled={state.busy} onClick={() => {
       assistantController(store)?.stageKey(key.current?.value ?? '');
