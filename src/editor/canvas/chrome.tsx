@@ -812,7 +812,9 @@ function useChromeLayout({ layer, label, bar, selection, targets, hovered, node,
           // window, above the page's edge too (an element at the page's top), so no layer clips it, and it hides where
           // it would stand over the rulers or the panels, its element's top panned out of the stage
           const topSeen = first.y >= Math.max(0, stage.y) - edge - 0.5 && first.y <= Math.min(origin.height, stage.y + stage.height) + 0.5;
-          const seen = topSeen && spot.box.x >= stage.x - 0.5 && spot.box.x + size.width <= stage.x + stage.width + 0.5 && spot.box.y >= stage.y - 0.5;
+          // (and its foot inside the stage too: a page-wide section under the tabs had its label placed under it, past the
+          // stage's foot, and drawn over the Timeline)
+          const seen = topSeen && spot.box.x >= stage.x - 0.5 && spot.box.x + size.width <= stage.x + stage.width + 0.5 && spot.box.y >= stage.y - 0.5 && spot.box.y + size.height <= stage.y + stage.height + 0.5;
           placed = { ...spot, seen, room: labelRoom(stage, chipWidth) };
           // the text toolbar in reach wherever the label is (DCS-089): above the label where that place is in the
           // stage and clear of the tabs, else under the element, else at the stage's nearest edge, never over the
