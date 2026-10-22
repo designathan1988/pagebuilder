@@ -956,7 +956,7 @@
                 {
                   "key": "status.export.done",
                   "params": {
-                    "file": "site.zip"
+                    "file": "landing-site.zip"
                   }
                 }
               ]

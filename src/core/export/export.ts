@@ -32,6 +32,7 @@ import type { NodeId } from '../../generated/commands.ts';
 import { walk, type Animation, type DocNode, type DocumentJson } from '../document/model.ts';
 import type { ModelRules } from '../document/validate.ts';
 import { zip, type ZipEntry } from '../project/zip.ts';
+import { siteFileStem } from '../project/archive.ts';
 import { appIdentity, PACKAGE_ARCHIVE, packageEntries, type PackageFormat } from './packages.ts';
 import { baseCss, capturedBaseCss, widgetStateCss } from '../render/base.ts';
 import { classesCss, elementAttributes, fileUrlsIn, linksToFile, mediaQuery, nodeCss, writesNode } from '../render/output.ts';
@@ -711,7 +712,10 @@ export function packageArchive(format: PackageFormat, document: DocumentJson, ru
 export const exportProject = registerHandler('project.export', ({ state, rules, siteScripts }, args) => {
   const format: PackageFormat = args.format ?? 'site';
   const bytes = packageArchive(format, state.document, rules, siteScripts);
-  const name = PACKAGE_ARCHIVE[format];
+  // named by the site (bluebird-shop-desktop.zip) where it has a title, so two projects' exports never take one
+  // name, and never the saved project's (bluebird-shop.zip); the format's own name otherwise
+  const stem = siteFileStem(state.document);
+  const name = stem === '' ? PACKAGE_ARCHIVE[format] : `${stem}-${format}.zip`;
   // an app says the name it was given, and, named after the start page alone (no Title set), where to name it: an
   // installed app called "Home" said nothing of why
   const identity = format === 'site' ? null : appIdentity(state.document);
