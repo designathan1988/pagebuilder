@@ -348,8 +348,13 @@ export function elementBoxes(iframe: HTMLIFrameElement): ElementBox[] {
 }
 
 // The screen box of a node's element, or null when the page does not draw it.
+// A part its parent draws (a select's option, a media's source or track) has no box of its own: the browser lays out
+// the parent alone, and the part measured 0 × 0 at the page's corner, its label and outline away from the select the
+// person was editing. Such a part stands at its parent's box.
+const DRAWN_BY_PARENT = new Set(['option', 'optgroup', 'source', 'track']);
 export function nodeBox(iframe: HTMLIFrameElement, id: string): { x: number; y: number; width: number; height: number } | null {
-  const element = iframe.contentDocument?.querySelector(nodeSelector(id as NodeId));
+  let element = iframe.contentDocument?.querySelector(nodeSelector(id as NodeId)) ?? null;
+  while (element !== null && DRAWN_BY_PARENT.has(element.localName) && element.getClientRects().length === 0) element = element.parentElement;
   return element ? screenBox(iframe, element) : null;
 }
 

@@ -2,7 +2,19 @@ import { useEffect, useId, useMemo, useRef, type ReactNode } from 'react';
 import type { DocNode } from '../../core/document/model.ts';
 import { walk } from '../../core/document/model.ts';
 import { pageLanguage } from '../../core/export/names.ts';
-import { acceptsTextMask, inputTypeOf, rulesOfControl } from '../../core/elements/inputs.ts';
+import { acceptsTextMask, attributeApplies, inputTypeOf, rulesOfControl } from '../../core/elements/inputs.ts';
+import { ATTRIBUTES } from '../inspector/attributes.ts';
+
+// The rules the element's own attributes already set (the Attributes section's Required, Pattern, lengths, Min, Max,
+// Step; the Input type for email, address and number): the form's runtime reads them as rules (forms/runtime.ts
+// nativeRules), and the Form section drew a second "Required" toggle, a second pattern and second lengths beside them,
+// two switches for one rule. The Form section keeps a rule of these only while it holds one (to be seen and taken away),
+// and the messages of every rule.
+const RULE_ATTRIBUTES: readonly (readonly [string, string])[] = [['required', 'required'], ['pattern', 'pattern'], ['tooShort', 'minLength'], ['tooLong', 'maxLength'], ['minimum', 'min'], ['maximum', 'max'], ['step', 'step'], ['type', 'inputType']];
+function rulesSetByAttributes(node: DocNode): ReturnType<typeof rulesOfControl> {
+  const byAttribute = (rule: string) => RULE_ATTRIBUTES.some(([code, attribute]) => code === rule && (ATTRIBUTES.get(attribute)?.elements.includes(node.type) ?? false) && attributeApplies(node, attribute));
+  return new Set([...rulesOfControl(node)].filter(byAttribute));
+}
 
 // the input types a text field with a mask can stand for (Use a text field for masks)
 const MASKABLE: ReadonlySet<string> = new Set(['number', 'date', 'datetime-local', 'month', 'week', 'time']);
@@ -181,6 +193,6 @@ export function FormsInspector({ node }: { readonly node: DocNode }): ReactNode 
     {!form && node.tag === 'input' && !acceptsTextMask(node) && MASKABLE.has(inputTypeOf(node)) && textForMasksDoor && <DoorControl entry={textForMasksDoor} />}
     {form
       ? <FormSubmissionSettings key={node.id} config={readFormConfig(node.attributes.formSubmit) ?? { destination: 'native' }} onChange={write} ports={ports} />
-      : <FieldFormSettings key={node.id} config={readFieldConfig(node.attributes.formField) ?? {}} onChange={write} ports={ports} maskAllowed={acceptsTextMask(node)} rules={rulesOfControl(node)} />}
+      : <FieldFormSettings key={node.id} config={readFieldConfig(node.attributes.formField) ?? {}} onChange={write} ports={ports} maskAllowed={acceptsTextMask(node)} rules={rulesOfControl(node)} setByAttributes={rulesSetByAttributes(node)} />}
   </section>;
 }

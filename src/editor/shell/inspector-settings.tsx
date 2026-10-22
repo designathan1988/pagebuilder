@@ -31,6 +31,9 @@ const TABLE_PART_DOORS = doorSlots('inspector-settings').filter((d) => d.door.ki
 // buttons of each part that stand for it (their command takes the part as its target: move up, move down, remove)
 const ADD_PART_DOORS = doorSlots('inspector-settings').filter((d) => d.door.kind === 'panel-control' && d.door.drawnAs === 'button' && typeof d.door.args.type === 'string');
 const PART_DOORS = doorSlots('inspector-settings').filter((d) => d.door.kind === 'panel-control' && d.door.drawnAs === 'icon-button' && d.command.args.target?.type === 'node');
+// a part's name opens it: selected, the part shows its own settings (an option's text and value, a source's file); the
+// row named a part the person could not reach from it
+const PART_OPEN = doorSlots('inspector-settings').find((d) => d.command.id === 'selection.select');
 // the person's own attributes (feature element-attributes-aria): the doors whose command takes an attribute's name
 // (and its value): in the manifest's order, the name field that adds one and the value field of each, both fields of
 // the command that sets a value; then the remove button
@@ -99,6 +102,8 @@ function ToggleField({ entry, node, attribute, label }: { readonly entry: DoorEn
 // tracks): each part by name with its move up, move down and remove buttons, then the buttons that add each type of
 // part the element takes. Drawn only for an element that takes parts.
 function PartsEditor({ node }: { readonly node: DocNode }) {
+  const store = useStore();
+  const t = useT();
   const takes = partTypesOf(MODEL_RULES, node);
   // one button a type: the picture's and the media's Add a source both add a source, and a video showed both
   const adds = ADD_PART_DOORS.filter((d, i) => takes(String(d.door.args.type)) && ADD_PART_DOORS.findIndex((other) => other.command.id === d.command.id && other.door.args.type === d.door.args.type) === i);
@@ -108,7 +113,13 @@ function PartsEditor({ node }: { readonly node: DocNode }) {
     <div className="parts-editor">
       {parts.map((part) => (
         <div key={part.id} className="field-row">
-          <span className="field-row__label">{part.name}</span>
+          {PART_OPEN === undefined ? (
+            <span className="field-row__label">{part.name}</span>
+          ) : (
+            <button type="button" className="field-row__label parts-editor__open" title={t(PART_OPEN.door.labelKey as MessageId)} data-door={PART_OPEN.ref} data-args={JSON.stringify({ target: part.id })} onClick={() => (store.dispatch as (id: CommandId, args: unknown) => DispatchResult)(PART_OPEN.command.id, { target: part.id })}>
+              {part.name}
+            </button>
+          )}
           {PART_DOORS.map((d) => (
             <DoorControl key={d.ref} entry={d} args={{ target: part.id }} />
           ))}

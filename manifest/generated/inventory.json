@@ -3,12 +3,12 @@
     "features": 218,
     "built": 218,
     "commands": 394,
-    "doors": 1445,
+    "doors": 1446,
     "scenarios": 1909,
     "modules": 533,
-    "lines": 98891,
+    "lines": 98924,
     "fields": 207,
-    "interactive": 309
+    "interactive": 310
   },
   "features": [
     {
@@ -45,7 +45,7 @@
         "selection.clear",
         "view.selectTool"
       ],
-      "doors": 13,
+      "doors": 14,
       "scenarios": 7
     },
     {
@@ -56,7 +56,7 @@
         "layers.setExpanded",
         "workspace.setPanelOpen"
       ],
-      "doors": 39,
+      "doors": 40,
       "scenarios": 5
     },
     {
@@ -1303,7 +1303,7 @@
         "layers.search",
         "selection.select"
       ],
-      "doors": 8,
+      "doors": 9,
       "scenarios": 4
     },
     {
@@ -1719,7 +1719,7 @@
         "view.setBreakpoint",
         "view.setStyleState"
       ],
-      "doors": 47,
+      "doors": 48,
       "scenarios": 2
     },
     {
@@ -1730,7 +1730,7 @@
         "workspace.setPanelOpen",
         "checks.applyFix"
       ],
-      "doors": 43,
+      "doors": 44,
       "scenarios": 8
     },
     {
@@ -1766,7 +1766,7 @@
         "layers.collapseOrFocusParent",
         "selection.range"
       ],
-      "doors": 63,
+      "doors": 64,
       "scenarios": 7
     },
     {
@@ -1882,7 +1882,7 @@
       "commands": [
         "selection.select"
       ],
-      "doors": 7,
+      "doors": 8,
       "scenarios": 2
     },
     {
@@ -2138,7 +2138,7 @@
         "selection.select",
         "classes.apply"
       ],
-      "doors": 13,
+      "doors": 14,
       "scenarios": 3
     },
     {
@@ -4155,7 +4155,7 @@
   ],
   "interactive": {
     "owners": {
-      "door": 96,
+      "door": 97,
       "inside-door": 46,
       "local": 20,
       "none": 117,
@@ -5967,6 +5967,15 @@
       },
       {
         "key": "src/editor/shell/inspector-settings.tsx|button|aria-disabled,aria-pressed,className,data-args,data-door,data-key-context,key,onClick,tabIndex,type|1",
+        "tag": "button",
+        "role": null,
+        "handlers": [
+          "onClick"
+        ],
+        "owner": "door"
+      },
+      {
+        "key": "src/editor/shell/inspector-settings.tsx|button|className,data-args,data-door,onClick,title,type|1",
         "tag": "button",
         "role": null,
         "handlers": [

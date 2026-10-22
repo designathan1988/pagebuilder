@@ -1139,6 +1139,7 @@ export const DOOR_IDS = [
   "project.captureUrl#capture-url-run",
   "selection.select#canvas-click-element-or-page",
   "selection.select#layers-row",
+  "selection.select#inspector-part-open",
   "selection.select#key-enter-in-layers-tree",
   "selection.select#status-bar-breadcrumb-item",
   "selection.select#checks-issue",
@@ -7662,5 +7663,6 @@ export const MESSAGE_IDS = [
   "canvas.badge.runsInPreview",
   "canvas.badge.logicInPreview",
   "canvas.badge.tryInPreview",
+  "inspector.parts.open",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];

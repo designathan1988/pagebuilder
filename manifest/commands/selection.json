@@ -72,6 +72,32 @@
           "args": {}
         },
         {
+          "id": "inspector-part-open",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "elements-form-controls",
+          "panel": "inspector",
+          "control": "part-open",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "inspector.parts.open",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-settings",
+            "order": 72
+          },
+          "adapter": {
+            "selection": "target",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
           "id": "key-enter-in-layers-tree",
           "kind": "shortcut",
           "feature": "layers-keyboard-navigation",

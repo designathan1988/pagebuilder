@@ -119,6 +119,28 @@
   gap: var(--space-1);
 }
 
+/* a part's name is the button that opens it (inspector-settings.tsx PART_OPEN): drawn as the row's label, a line under
+   it on hover and focus says it opens */
+[data-region='inspector-settings'] .parts-editor__open {
+  min-width: 0;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+[data-region='inspector-settings'] .parts-editor__open:hover,
+[data-region='inspector-settings'] .parts-editor__open:focus-visible {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
 [data-region='inspector-settings'] .parts-editor > .field-row:not(:has(> .field-row__label)) {
   display: flex;
   flex-wrap: wrap;

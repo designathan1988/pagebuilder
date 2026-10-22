@@ -32,7 +32,7 @@ const withoutEmpty = (value: Values): Values => Object.fromEntries(Object.entrie
 const strings = (value: string): string[] => value.split('\n').map((item) => item.trim()).filter(Boolean);
 const choiceValues = (ports: FormsSettingsPorts, stem: string, values: readonly string[]) => values.map((value) => ({ value, label: ports.t(`${stem}.${value}`) }));
 
-export function FieldFormSettings({ config, onChange: commit, ports, maskAllowed = true, rules: applies }: {
+export function FieldFormSettings({ config, onChange: commit, ports, maskAllowed = true, rules: applies, setByAttributes }: {
   readonly config: FieldConfig;
   readonly onChange: (next: FieldConfig) => void;
   readonly ports: FormsSettingsPorts;
@@ -40,6 +40,9 @@ export function FieldFormSettings({ config, onChange: commit, ports, maskAllowed
   // the rules the control's kind can break (core/elements/inputs.ts rulesOfControl): the others are not offered, nor
   // their messages, unless the field already holds one (it stays to be seen and taken away); every rule without it
   readonly rules?: ReadonlySet<RuleCode>;
+  // the rules the element's own attributes set (forms/inspector.tsx): their fields are the Attributes section's, and
+  // are drawn here only while the field holds one; their messages stay here
+  readonly setByAttributes?: ReadonlySet<RuleCode>;
 }): ReactNode {
   const onChange = (next: FieldConfig): FieldConfig => next;
   const [trial, setTrial] = useState('');
@@ -55,7 +58,7 @@ export function FieldFormSettings({ config, onChange: commit, ports, maskAllowed
     return { kind };
   };
   const rules = config.rules ?? {};
-  const held = (code: RuleCode): boolean => {
+  const ruleHeld = (code: RuleCode): boolean => {
     const r = rules as Readonly<Record<string, unknown>>;
     const file = (r.file ?? {}) as { readonly accept?: unknown; readonly maxBytes?: unknown; readonly maxTotalBytes?: unknown };
     const by: Readonly<Partial<Record<RuleCode, unknown>>> = {
@@ -63,9 +66,13 @@ export function FieldFormSettings({ config, onChange: commit, ports, maskAllowed
       maximum: r.maximum, step: r.step, equalTo: r.equalTo, allowed: r.allowed, password: r.password,
       dateMinimum: r.dateMinimum, dateMaximum: r.dateMaximum, fileType: file.accept, fileSize: file.maxBytes ?? file.maxTotalBytes,
     };
-    return (by[code] ?? '') !== '' || (config.messages?.[locale]?.[code] ?? '') !== '';
+    // a rule turned off (required: false) is not held
+    const value = by[code];
+    return value !== undefined && value !== '' && value !== false;
   };
+  const held = (code: RuleCode): boolean => ruleHeld(code) || (config.messages?.[locale]?.[code] ?? '') !== '';
   const shows = (code: RuleCode): boolean => applies === undefined || applies.has(code) || held(code);
+  const ruleShown = (code: RuleCode): boolean => shows(code) && (setByAttributes?.has(code) !== true || ruleHeld(code));
   const address = config.address;
   const changeMask = (patch: Values) => onChange({ ...config, mask: withoutEmpty({ ...mask, ...patch }) as unknown as MaskConfig });
   const changeRules = (patch: Values) => onChange({ ...config, rules: withoutEmpty({ ...rules, ...patch }) as ValidationRules });
@@ -125,13 +132,13 @@ export function FieldFormSettings({ config, onChange: commit, ports, maskAllowed
       {field('mask.autocorrect', 'boolean', mask.autocorrect ?? false, (value) => changeMask({ autocorrect: value === 'true' }))}
     </div>}
     {field('mask.submit', 'select', mask.submit ?? 'formatted', (value) => changeMask({ submit: value }), choiceValues(ports, 'forms.mask.submit', ['raw', 'formatted']))}
-    {field('preview.input', 'text', trial, setTrial)}{/* a preview, not a status: the status bar is the editor's one status region */}<span className="forms-preview">{preview}</span>
+    {field('preview.input', 'text', trial, setTrial)}{/* a preview, not a status: the status bar is the editor's one status region; with no value tried, nothing to show ("· Raw: · Valid") */}{trial === '' ? null : <span className="forms-preview">{preview}</span>}
     </>}
     {field('when', 'select', config.when ?? 'blur', (value) => onChange({ ...config, when: value as NonNullable<FieldConfig['when']> }), choiceValues(ports, 'forms.when', ['input', 'blur', 'submit']))}
-    {shows('required') && field('rules.required', 'boolean', rules.required ?? false, (value) => changeRules({ required: value === 'true' }))}
-    {shows('type') && field('rules.type', 'select', rules.type, (value) => changeRules({ type: value }), [{ value: '', label: ports.t('forms.none') }, ...choiceValues(ports, 'forms.rules.type', ['email', 'url', 'number'])])}
-    {shows('pattern') && field('rules.pattern', 'text', rules.pattern, (value) => changeRules({ pattern: value }))}
-    {shows('tooShort') && numberRule('minLength')}{shows('tooLong') && numberRule('maxLength')}{shows('minimum') && numberRule('minimum')}{shows('maximum') && numberRule('maximum')}{shows('step') && numberRule('step')}
+    {ruleShown('required') && field('rules.required', 'boolean', rules.required ?? false, (value) => changeRules({ required: value === 'true' }))}
+    {ruleShown('type') && field('rules.type', 'select', rules.type, (value) => changeRules({ type: value }), [{ value: '', label: ports.t('forms.none') }, ...choiceValues(ports, 'forms.rules.type', ['email', 'url', 'number'])])}
+    {ruleShown('pattern') && field('rules.pattern', 'text', rules.pattern, (value) => changeRules({ pattern: value }))}
+    {ruleShown('tooShort') && numberRule('minLength')}{ruleShown('tooLong') && numberRule('maxLength')}{ruleShown('minimum') && numberRule('minimum')}{ruleShown('maximum') && numberRule('maximum')}{ruleShown('step') && numberRule('step')}
     {shows('equalTo') && field('rules.equalTo', 'select', rules.equalTo, (value) => changeRules({ equalTo: value }), [{ value: '', label: ports.t('forms.none') }, ...ports.fields])}
     {shows('allowed') && field('rules.allowed', 'textarea', rules.allowed?.join('\n'), (value) => changeRules({ allowed: value ? strings(value) : undefined }), undefined, ports.t('forms.rules.onePerLine'))}
     {shows('password') && field('rules.password.enabled', 'boolean', rules.password !== undefined, (value) => changeRules({ password: value === 'true' ? { minLength: 8 } : undefined }))}
@@ -144,7 +151,7 @@ export function FieldFormSettings({ config, onChange: commit, ports, maskAllowed
     {shows('fileType') && field('rules.file.accept', 'textarea', rules.file?.accept?.join('\n'), (value) => changeRules({ file: withoutEmpty({ ...rules.file, accept: value ? strings(value) : undefined }) }), undefined, ports.t('forms.rules.fileTypesFormat'))}
     {shows('fileSize') && (['maxBytes', 'maxTotalBytes'] as const).map((key) => <div key={key}>{field(`rules.file.${key}`, 'number', rules.file?.[key], (value) => changeRules({ file: withoutEmpty({ ...rules.file, [key]: value === '' ? undefined : Number(value) }) }))}</div>)}
     {field('errorId', 'select', config.errorId, (value) => onChange(withoutEmpty({ ...config, errorId: value }) as FieldConfig), [{ value: '', label: ports.t('forms.error.automatic') }, ...ports.elements])}
-    {field('messages.locale', 'select', locale, setLocale, ports.locales.map((value) => ({ value, label: value })))}
+    {field('messages.locale', 'select', locale, setLocale, ports.locales.map((value) => ({ value, label: ports.t(`language.${value.replace('-', '')}`) })))}
     {/* each message named by when it shows (the user's review of 2026-10-05, LR2: each name was "Message: " and that
         whole message), in the language the messages are in; while it is empty, the message it shows then is written
         whole under it (as its placeholder it was cut in the one-line field: the audit of 2026-10-05) */}

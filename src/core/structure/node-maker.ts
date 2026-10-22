@@ -55,6 +55,16 @@ export function newElement(make: NodeMaker, type: string, children?: (make: Node
     classes: [],
     styles: Object.keys(element.defaultStyles).length > 0 ? ({ [rules.baseLayer.breakpoint]: { [rules.baseLayer.state]: element.defaultStyles } } as Styles) : {},
     text: holdsText ? (element.defaultTextKey === null ? '' : make.pageWords(element.defaultTextKey)) : null,
-    children: children === undefined ? element.naturalChildren.map((child) => newElement(make, child)) : children(make),
+    children: children === undefined ? naturalChildren(make, element.naturalChildren) : children(make),
   };
+}
+
+// The natural children made; several of one type with text are told apart by a number after it: a select's three
+// options all read "Option", and the person saw one word three times in the list and in the page
+function naturalChildren(make: NodeMaker, types: readonly string[]): DocNode[] {
+  return types.map((type, i) => {
+    const made = newElement(make, type);
+    if (made.text === null || made.text === '' || types.filter((one) => one === type).length < 2) return made;
+    return { ...made, text: `${made.text} ${String(types.slice(0, i + 1).filter((one) => one === type).length)}` };
+  });
 }

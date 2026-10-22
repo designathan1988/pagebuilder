@@ -192,6 +192,14 @@ export function placement(
   }
   if (primary?.parent) {
     const up = locate(document, primary.parent.id);
+    // a leaf whose parent does not take the new element (a select's option, a list's item) is followed by it after the
+    // nearest ancestor whose parent takes it: a select clicked with an option selected was refused, "<select> only
+    // accepts <option>…", and the person had to find the select's parent first
+    if (up && incoming !== undefined && placementRefusal(document, rules, up.node.id, [incoming]) !== null) {
+      for (let child: Location = up, above = up.parent ? locate(document, up.parent.id) : null; above !== null; child = above, above = above.parent ? locate(document, above.parent.id) : null) {
+        if (placementRefusal(document, rules, above.node.id, [incoming]) === null) return { parent: above, index: child.index + 1 };
+      }
+    }
     if (up) return { parent: up, index: primary.index + 1 };
   }
   const at = root === null ? null : locate(document, root.id);

@@ -305,7 +305,9 @@ export function generateHtml(): unknown {
         enum: a.enum !== undefined && values.length === a.enum.length ? values : null,
       };
     }
-    const content = list(m.permittedContent);
+    // html-validate lists the deprecated data-binding attributes of <select> (datasrc, datafld, dataformatas) among its
+    // permitted content: no element bears those names, and the editor's refusal named them as elements a select takes
+    const content = list(m.permittedContent)?.filter((entry) => typeof entry !== 'string' || entry.startsWith('@') || entry.replace(/[?*+]$/, '') in meta) ?? null;
     elements[tag] = {
       deprecated: m.deprecated !== undefined && m.deprecated !== false,
       void: m.void === true,
