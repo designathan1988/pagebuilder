@@ -48,8 +48,11 @@ function StyleClasses() {
       {rows.map(([name, count], at) => (
         <li key={at} className="style-classes__row">
           {rename !== undefined ? <ClassNameField entry={rename} name={name} /> : <span className="style-classes__name">.{name}</span>}
-          <span className="style-classes__count">{count === 1 ? t('styles.count.one') : t('styles.count.other', { count })}</span>
-          {remove !== undefined ? <DoorControl entry={remove} args={{ className: name }} label={t('styles.deleteClassUsedBy', { count })} /> : null}
+          {/* the count and the remove button go to the next line together when the name takes the row */}
+          <span className="style-classes__end">
+            <span className="style-classes__count">{count === 1 ? t('styles.count.one') : t('styles.count.other', { count })}</span>
+            {remove !== undefined ? <DoorControl entry={remove} args={{ className: name }} label={t('styles.deleteClassUsedBy', { count })} /> : null}
+          </span>
         </li>
       ))}
     </ul>

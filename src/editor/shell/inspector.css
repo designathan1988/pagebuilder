@@ -271,8 +271,11 @@
   list-style: none;
 }
 
+/* a long class name takes its whole width: the count and the remove button go to the next line (the names were cut,
+   "cta-button--outli") */
 .style-classes__row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-1);
   min-height: var(--size-row);
@@ -289,14 +292,18 @@
 }
 
 .style-classes__field {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
+  max-width: 100%;
   /* the name's field, framed while it holds the focus, keeps clear of the count beside it (its frame ran over "3") */
   margin-right: var(--space-2);
 }
 
 .style-classes__field .input {
+  field-sizing: content;
   width: 100%;
+  min-width: 100%;
+  max-width: 100%;
   height: var(--size-row);
   padding: 0 var(--space-1);
   border-color: transparent;
@@ -309,6 +316,14 @@
 .style-classes__field .input:focus {
   border-color: var(--color-focus);
   background: var(--color-surface-sunken);
+}
+
+.style-classes__end {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-1);
+  margin-left: auto;
 }
 
 .style-classes__name {
