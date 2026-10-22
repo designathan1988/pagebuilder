@@ -195,13 +195,20 @@ export const OPPOSITE_KEY = MODIFIER_MEANINGS.get('change-opposite-side');
 export function handleInPlace(handle: Element, box: { readonly x: number; readonly y: number; readonly width: number; readonly height: number }): boolean {
   const drawn = handle.getBoundingClientRect();
   const side = (handle.getAttribute('data-resize-handle') ?? '').split('-').pop() ?? '';
-  const edgeX = (value: number) => Math.abs(value - box.x) <= 1 || Math.abs(value - (box.x + box.width)) <= 1;
-  const edgeY = (value: number) => Math.abs(value - box.y) <= 1 || Math.abs(value - (box.y + box.height)) <= 1;
+  // the handle's box lies on its edge line, or within one handle of it: a neighbour right under a corner slides the box
+  // inside on both axes (handleHitBox), so its sides touched neither line, and the press on the drawn handle moved the
+  // element instead of resizing it (the real-use pass of 2026-10-22: an image above a button). A handle left where the
+  // element was before a change stands further off than its own size.
+  const near = (lo: number, hi: number, line: number) => (line < lo ? lo - line : line > hi ? line - hi : 0) <= hi - lo + 1;
+  const edgeX = (line: number) => near(drawn.left, drawn.right, line);
+  const edgeY = (line: number) => near(drawn.top, drawn.bottom, line);
   const wantX = box.x + box.width / 2;
   const wantY = box.y + box.height / 2;
   const acrossX = Math.abs(drawn.left + drawn.width / 2 - wantX) <= 1;
   const acrossY = Math.abs(drawn.top + drawn.height / 2 - wantY) <= 1;
-  return (side.includes('w') || side.includes('e') ? edgeX(drawn.left) || edgeX(drawn.right) : acrossX) && (side.includes('n') || side.includes('s') ? edgeY(drawn.top) || edgeY(drawn.bottom) : acrossY);
+  const xLine = side.includes('w') ? box.x : box.x + box.width;
+  const yLine = side.includes('n') ? box.y : box.y + box.height;
+  return (side.includes('w') || side.includes('e') ? edgeX(xLine) : acrossX) && (side.includes('n') || side.includes('s') ? edgeY(yLine) : acrossY);
 }
 // The drawn controls of the canvas chrome a press may take: the eight resize handles, the spacing and gap bands, the
 // rotation zones.
