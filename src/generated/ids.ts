@@ -6990,6 +6990,8 @@ export const MESSAGE_IDS = [
   "status.siteColours.replaced.one",
   "status.siteColours.madeVariable",
   "status.siteColours.madeVariable.one",
+  "status.siteColours.usedVariable",
+  "status.siteColours.usedVariable.one",
   "feature.siteColours",
   "command.classes.moveInto",
   "command.classes.moveInto.name",

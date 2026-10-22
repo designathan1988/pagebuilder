@@ -467,3 +467,7 @@
 ## DCS-095 — Ctrl+S salva o projeto
 - **Origem:** uso real de 2026-10-22: Ctrl+S fora do editor de código abria o "Salvar página como" do navegador, que grava o HTML do editor, não o projeto.
 - **Decidido (2026-10-22):** Ctrl+S, em qualquer lugar fora do editor de código, roda Arquivo › Salvar projeto (baixa o `.zip` com o nome do site), e o menu mostra o atalho. No editor de código, Ctrl+S continua salvando o arquivo aberto. O salvamento automático segue igual. **Para o dono:** se preferir que Ctrl+S só diga "salvo automaticamente", a troca é a porta `key-ctrl-s-in-global` em `manifest/commands/project.json`.
+
+## DCS-096 — Variável em uso não se apaga
+- **Origem:** uso real de 2026-10-22: apagar uma variável usada por elementos é recusado ("color-3 is used by 4 elements."), e o painel Estilos não oferece outro caminho para desfazer a variável.
+- **Decidido (2026-10-22):** mantém-se a recusa (comportamento atual). "Criar variável desta cor" passa a usar a variável que já tem a mesma cor, em vez de criar uma gêmea (`src/core/design/site-colours.ts`). **Para o dono:** a alternativa é apagar escrevendo o valor da variável em cada uso (como "desvincular"), em `deleteToken` (`src/core/design/tokens.ts`).

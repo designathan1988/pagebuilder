@@ -165,6 +165,15 @@ export const colourToVariableCommand = registerHandler('design.colourToVariable'
   const { state } = context;
   const from = knownColour(context, colour);
   if (from === null) return { kind: 'refused', message: message('status.siteColours.notUsed', { colour }) };
+  // a colour variable that holds this colour already: its uses take that variable, no twin is made (#2563eb, the
+  // value of brand, made a color-2 of the same value)
+  const same = tokensOf(state.document).find((t) => t.kind === COLOUR_KIND && colourKey(t.value) === from);
+  if (same !== undefined) {
+    const patches = replacing(state.document, from, `var(--${same.name})`, true);
+    const locked = lockedBy(state.document, patches);
+    if (locked !== null) return { kind: 'refused', message: locked };
+    return { kind: 'change', patches, message: message('status.siteColours.usedVariable', { colour: from, name: same.name, count: patches.length }) };
+  }
   const typed = name.trim();
   if (!new RegExp(`^${IDENTIFIER_SOURCE}$`, 'u').test(typed)) return { kind: 'refused', message: message('status.tokens.badName', { name: typed }) };
   if (tokensOf(state.document).some((t) => t.name === typed)) return { kind: 'refused', message: message('status.tokens.nameTaken', { name: typed }) };

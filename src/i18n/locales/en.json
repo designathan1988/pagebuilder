@@ -3775,6 +3775,8 @@
   "status.siteColours.replaced.one": "{colour} replaced by {value} in 1 value.",
   "status.siteColours.madeVariable": "Variable {name} made of {colour}, used by {count} values.",
   "status.siteColours.madeVariable.one": "Variable {name} made of {colour}, used by 1 value.",
+  "status.siteColours.usedVariable": "{colour} is the variable {name}: its {count} values use it now.",
+  "status.siteColours.usedVariable.one": "{colour} is the variable {name}: its 1 value uses it now.",
   "feature.siteColours": "Colours in use, replaced or made a variable across the site",
   "command.classes.moveInto": "Move this element’s styles into {selector}",
   "command.classes.moveInto.name": "Move styles into a class",

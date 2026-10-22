@@ -48,6 +48,10 @@
   min-width: 0;
   min-height: 0;
   overflow: hidden;
+  /* the column's width splitter takes presses over the column's last strip (splitter--column-end): the panels end
+     before it, so no control of theirs lies under it (the Styles panel's delete and "make a variable" buttons were
+     half under it, and a press on them grabbed the splitter), nor the scrollbar of a long one */
+  padding-right: calc(var(--space-3) * 2);
   background: var(--color-surface);
   border-right: 1px solid var(--color-border);
 }
