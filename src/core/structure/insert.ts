@@ -144,6 +144,7 @@ const PLAIN_CONTAINER = 'div';
 // media's fallback): an element clicked in Insert never goes in there but beside them; only their own parts do (a
 // source, a track, a picture's image). An Embedded frame clicked with an audio's source selected went inside the audio,
 // 0 x 0 and never seen.
+const CONTROLS: ReadonlySet<string> = new Set(['a', 'button', 'input', 'select', 'textarea', 'label', 'iframe', 'details', 'audio', 'video']);
 const OWN_PARTS: Readonly<Record<string, readonly string[]>> = { audio: ['source', 'track'], video: ['source', 'track'], picture: ['source', 'img'], canvas: [], object: [] };
 const sameKind = (selected: DocNode, incoming: DocNode): boolean => selected.type === incoming.type && incoming.type !== PLAIN_CONTAINER;
 
@@ -167,6 +168,9 @@ export function placement(
   const takes = (node: DocNode, arriving: DocNode): boolean => {
     const parts = node.tag === null ? undefined : OWN_PARTS[node.tag];
     if (parts !== undefined && !parts.includes(arriving.tag ?? '')) return false;
+    // a label that holds its control takes words, not another control: a link placed with a Radio with label selected
+    // went inside it, and a press on the link would tick the radio
+    if (node.tag === 'label' && node.children.some((child) => CONTROLS.has(child.tag ?? '')) && CONTROLS.has(arriving.tag ?? '')) return false;
     return placementRefusal(document, rules, node.id, [arriving]) === null;
   };
   if (parent !== undefined) {
