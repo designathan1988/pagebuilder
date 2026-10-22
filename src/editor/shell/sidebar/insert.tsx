@@ -114,14 +114,16 @@ export function Insert() {
   const searching = query.trim() !== '';
   // the entries that answer the search, the best answers first (palette.ts paletteRank): the name in the person's
   // language, then its English name and its synonyms (palette.keywords.<entry>, where the catalogue has them)
-  const groups = manifest.elements.palette.map((g) => ({
-    group: g,
-    entries: g.entries
+  const ranked = manifest.elements.palette.map((g) => {
+    const answers = g.entries
       .map((e) => ({ e, rank: paletteRank(query, t(e.labelKey as MessageId), tagOfElement(e.element), alsoNamed(locale, e.id, e.labelKey)) }))
       .filter((one): one is { e: (typeof g.entries)[number]; rank: number } => one.rank !== null)
-      .sort((a, b) => a.rank - b.rank)
-      .map((one) => one.e),
-  }));
+      .sort((a, b) => a.rank - b.rank);
+    return { group: g, entries: answers.map((one) => one.e), best: answers[0]?.rank ?? Number.POSITIVE_INFINITY };
+  });
+  // while searching, the group holding the best answer comes first ("section" put seven ready sections and sixteen
+  // components, matched by their tag, above the Section element itself, out of sight under the panel's fold)
+  const groups = searching ? [...ranked].sort((a, b) => a.best - b.best) : ranked;
   // the project's components the search matches (their tiles come after the element groups): a search that matches
   // only a component says so, never "No element matches" above its tile (the real-use audit's V-5)
   const componentText = useEditorState((s) => componentsOf(s.document).map((c) => c.name).join('\n'));

@@ -139,7 +139,7 @@ function StyleSections() {
   const borderValuesText = useEditorState((state) => {
     const id = state.selection.length === 1 ? state.selection[0] : undefined;
     const selected = id === undefined ? null : locate(state.document, id)?.node ?? null;
-    return selected === null ? null : JSON.stringify(declaredBorderValues(state.document, selected, layeredRules(state)));
+    return selected === null ? null : JSON.stringify(declaredBorderValues(state.document, selected, layeredRules(state), values));
   });
   const borderValues = useMemo(() => borderValuesText === null ? null : JSON.parse(borderValuesText) as Readonly<Record<string, string>>, [borderValuesText]);
   const node = useSingleNode();

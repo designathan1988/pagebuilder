@@ -199,8 +199,9 @@ export function summaryProperties(section: SectionId): readonly string[] {
 
 // A border's CSSOM width is rounded to device pixels in the scaled canvas frame. The inspector must instead report
 // the declarations in force: an element's own layer first, then its classes in stylesheet order. Missing longhands
-// take their CSS initial value, without measuring the page or its zoom.
-export function declaredBorderValues(document: DocumentJson, node: DocNode, rules: ModelRules): Readonly<Record<string, string>> {
+// take what the page draws (`drawn`: the canvas reader's values, whose widths come from the rules in force, so a button's
+// 1px line from the base stylesheet reads as such), else their CSS initial value.
+export function declaredBorderValues(document: DocumentJson, node: DocNode, rules: ModelRules, drawn?: Readonly<Record<string, string>> | null): Readonly<Record<string, string>> {
   // the holder and layer the cascade takes it from (style-target.ts cascadeSource: a class's state rule outranks the
   // element's own base rule)
   const declared = (property: string): string | undefined => {
@@ -212,6 +213,8 @@ export function declaredBorderValues(document: DocumentJson, node: DocNode, rule
   return Object.fromEntries(summaryProperties('border').map((property) => {
     const value = declared(property);
     if (value !== undefined) return [property, value];
+    const page = drawn?.[property];
+    if (page !== undefined && page !== '') return [property, page];
     if (property.endsWith('-style')) return [property, 'none'];
     if (property.endsWith('-width')) {
       const style = declared(property.slice(0, -'-width'.length) + '-style');

@@ -6786,6 +6786,7 @@ export const MESSAGE_IDS = [
   "preset.filter.blur",
   "preset.filter.strong",
   "preset.filter.grey",
+  "preset.border.none",
   "preset.border.thin",
   "preset.border.medium",
   "preset.border.thick",

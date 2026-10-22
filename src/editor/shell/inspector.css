@@ -1223,6 +1223,10 @@ textarea.input {
   line-height: var(--lh-caption);
 }
 [data-region='inspector-style'] .field-choice .door:has(.door__label) { width: auto; padding: 0 var(--space-2); }
+/* a row of icons stays one row: in a narrow column its buttons narrow around their icons instead of wrapping the last
+   one under the others (Text align's six in the 330-wide sidebar) */
+[data-region='inspector-style'] .field-choice .segmented--values:not(:has(.door__label)) { flex-wrap: nowrap; min-width: 0; }
+[data-region='inspector-style'] .field-choice .segmented--values:not(:has(.door__label)) .door:not(.overlay-backdrop) { flex: 0 1 var(--size-control); min-width: 0; padding: 0; }
 [data-region='inspector-style'] .field-choice .door.is-current,
 [data-region='inspector-style'] .field-choice .door.is-default {
   background: var(--color-surface);

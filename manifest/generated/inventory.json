@@ -5,10 +5,10 @@
     "commands": 394,
     "doors": 1439,
     "scenarios": 1909,
-    "modules": 526,
-    "lines": 96950,
+    "modules": 530,
+    "lines": 97776,
     "fields": 207,
-    "interactive": 279
+    "interactive": 305
   },
   "features": [
     {
@@ -4158,11 +4158,193 @@
       "door": 96,
       "inside-door": 46,
       "local": 20,
-      "none": 87,
+      "none": 113,
       "spread": 6,
       "wraps-door": 24
     },
     "elements": [
+      {
+        "key": "src/editor/app-panel/logic-binds.tsx|button|aria-label,className,onClick,title,type|1",
+        "tag": "button",
+        "role": null,
+        "handlers": [
+          "onClick"
+        ],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-binds.tsx|select|aria-label,className,onChange,value|1",
+        "tag": "select",
+        "role": null,
+        "handlers": [
+          "onChange"
+        ],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-binds.tsx|option|value|1",
+        "tag": "option",
+        "role": null,
+        "handlers": [],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-binds.tsx|option|key,value|1",
+        "tag": "option",
+        "role": null,
+        "handlers": [],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-binds.tsx|input|className,onChange,spellCheck,value|1",
+        "tag": "input",
+        "role": null,
+        "handlers": [
+          "onChange"
+        ],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-binds.tsx|select|className,onChange,value|1",
+        "tag": "select",
+        "role": null,
+        "handlers": [
+          "onChange"
+        ],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-binds.tsx|option|key,value|2",
+        "tag": "option",
+        "role": null,
+        "handlers": [],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-binds.tsx|button|className,disabled,onClick,type|1",
+        "tag": "button",
+        "role": null,
+        "handlers": [
+          "onClick"
+        ],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-binds.tsx|button|className,onClick,type|1",
+        "tag": "button",
+        "role": null,
+        "handlers": [
+          "onClick"
+        ],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-events.tsx|select|className,onChange,value|1",
+        "tag": "select",
+        "role": null,
+        "handlers": [
+          "onChange"
+        ],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-events.tsx|option|key,value|1",
+        "tag": "option",
+        "role": null,
+        "handlers": [],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-events.tsx|select|aria-label,className,onChange,value|1",
+        "tag": "select",
+        "role": null,
+        "handlers": [
+          "onChange"
+        ],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-events.tsx|option|value|1",
+        "tag": "option",
+        "role": null,
+        "handlers": [],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-events.tsx|option|key,value|2",
+        "tag": "option",
+        "role": null,
+        "handlers": [],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-events.tsx|input|className,onChange,spellCheck,value|1",
+        "tag": "input",
+        "role": null,
+        "handlers": [
+          "onChange"
+        ],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-events.tsx|input|className,onChange,value|1",
+        "tag": "input",
+        "role": null,
+        "handlers": [
+          "onChange"
+        ],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-events.tsx|button|className,disabled,onClick,type|1",
+        "tag": "button",
+        "role": null,
+        "handlers": [
+          "onClick"
+        ],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-events.tsx|select|aria-label,className,onChange,value|2",
+        "tag": "select",
+        "role": null,
+        "handlers": [
+          "onChange"
+        ],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-events.tsx|option|key,value|3",
+        "tag": "option",
+        "role": null,
+        "handlers": [],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-events.tsx|option|value|2",
+        "tag": "option",
+        "role": null,
+        "handlers": [],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-events.tsx|button|aria-label,className,onClick,title,type|1",
+        "tag": "button",
+        "role": null,
+        "handlers": [
+          "onClick"
+        ],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-events.tsx|button|className,onClick,type|1",
+        "tag": "button",
+        "role": null,
+        "handlers": [
+          "onClick"
+        ],
+        "owner": "none"
+      },
       {
         "key": "src/editor/app-panel/logic-field.tsx|form|className,data-args,data-door,onSubmit,ref,title|1",
         "tag": "form",
@@ -4181,6 +4363,29 @@
           "onBlur"
         ],
         "owner": "inside-door"
+      },
+      {
+        "key": "src/editor/app-panel/logic-tab.tsx|select|aria-label,className,onChange,value|1",
+        "tag": "select",
+        "role": null,
+        "handlers": [
+          "onChange"
+        ],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-tab.tsx|option|key,value|1",
+        "tag": "option",
+        "role": null,
+        "handlers": [],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/app-panel/logic-tab.tsx|option|value|1",
+        "tag": "option",
+        "role": null,
+        "handlers": [],
+        "owner": "none"
       },
       {
         "key": "src/editor/app-panel/logic-tab.tsx|input|aria-describedby,aria-label,autoComplete,className,name,spellCheck|1",
@@ -4841,6 +5046,15 @@
         "role": "separator",
         "handlers": [],
         "owner": "door"
+      },
+      {
+        "key": "src/editor/shell/canvas.tsx|button|className,onClick,type|1",
+        "tag": "button",
+        "role": null,
+        "handlers": [
+          "onClick"
+        ],
+        "owner": "none"
       },
       {
         "key": "src/editor/shell/capture-url.tsx|form|className,onSubmit|1",

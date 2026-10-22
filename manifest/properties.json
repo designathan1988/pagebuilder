@@ -4434,6 +4434,11 @@
       "essential": true,
       "presets": [
         {
+          "id": "none",
+          "labelKey": "preset.border.none",
+          "value": "none"
+        },
+        {
           "id": "thin",
           "labelKey": "preset.border.thin",
           "value": "1px solid currentcolor"
