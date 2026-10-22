@@ -50,7 +50,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "context-menu",
-            "order": 2
+            "order": 3
           },
           "adapter": {
             "selection": "roots",
@@ -172,7 +172,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "context-menu",
-            "order": 4
+            "order": 5
           },
           "adapter": {
             "selection": "primary",
@@ -280,7 +280,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "context-menu",
-            "order": 3
+            "order": 4
           },
           "adapter": {
             "selection": "roots",
@@ -383,7 +383,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "context-menu",
-            "order": 24
+            "order": 8
           },
           "adapter": {
             "selection": "primary",
@@ -499,7 +499,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "context-menu",
-            "order": 25
+            "order": 9
           },
           "adapter": {
             "selection": "all",

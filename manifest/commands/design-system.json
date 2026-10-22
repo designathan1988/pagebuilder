@@ -782,7 +782,7 @@
           "disabledReasonKey": "status.needsSingleSelection",
           "placement": {
             "region": "context-menu",
-            "order": 26
+            "order": 33
           },
           "adapter": {
             "selection": "single",
@@ -1063,7 +1063,7 @@
           "disabledReasonKey": "status.components.notInstance",
           "placement": {
             "region": "context-menu",
-            "order": 27
+            "order": 34
           },
           "adapter": {
             "selection": "single",
@@ -1185,7 +1185,7 @@
           "disabledReasonKey": "status.needsSingleSelection",
           "placement": {
             "region": "context-menu",
-            "order": 16
+            "order": 7
           },
           "adapter": {
             "selection": "single",

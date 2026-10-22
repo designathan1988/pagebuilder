@@ -3422,7 +3422,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "context-menu",
-            "order": 34
+            "order": 2
           },
           "adapter": {
             "selection": "all",

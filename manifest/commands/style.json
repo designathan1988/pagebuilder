@@ -11124,7 +11124,7 @@
           "disabledReasonKey": "status.swap.unavailable",
           "placement": {
             "region": "context-menu",
-            "order": 30
+            "order": 21
           },
           "adapter": {
             "selection": "roots",
@@ -11304,7 +11304,7 @@
           "disabledReasonKey": "status.stack.unavailable",
           "placement": {
             "region": "context-menu",
-            "order": 31
+            "order": 22
           },
           "adapter": {
             "selection": "roots",
@@ -11501,7 +11501,7 @@
           "disabledReasonKey": "status.organize.unavailable",
           "placement": {
             "region": "context-menu",
-            "order": 32
+            "order": 23
           },
           "adapter": {
             "selection": "single",

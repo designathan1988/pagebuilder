@@ -21,7 +21,7 @@ import { stateOf } from '../view/style-state.ts';
 import { Icon, useDoor, isDoorBuilt } from './door.tsx';
 import { useOutsideLayer } from '../shell/outside-layer.ts';
 import { floatBelow, floatBeside, followBelow, pointAnchor, type Placed } from '../shell/float.ts';
-import { GLYPHS, doorSlots, menuOf, slotsIn, type Anchor } from './placement.ts';
+import { GLYPHS, breaksIn, doorSlots, menuOf, slotsIn, type Anchor } from './placement.ts';
 import { usePointerValue, usePointerViews } from '../input/pointer/use-views.ts';
 
 // the orders of the items a line stands before, by menu (layout.json breaks)
@@ -287,6 +287,8 @@ export function MenuButton({ menu, anchor, children, indicator = false, classNam
 
 // The context menu's items: the doors the manifest places in the context-menu region, in their order.
 const CONTEXT_ITEMS = doorSlots('context-menu');
+const CONTEXT_BREAKS = breaksIn('context-menu');
+const orderOf = (entry: DoorEntry): number => (entry.door.placement !== null && typeof entry.door.placement === 'object' ? entry.door.placement.order : 0);
 
 // The context menu (spec context-menu), open while the editor state says so
 // (menus/context-menu.ts); each opening draws a new one.
@@ -328,9 +330,13 @@ function OpenContextMenu() {
   return (
     <div className="context-menu" data-context-menu>
       <div className="menu" role="menu" tabIndex={-1} ref={list} aria-label={t('contextMenu.label')} data-region="context-menu" data-key-context="menu" style={placedStyle(at)}>
-        {items.map((entry) => (
-          <MenuItem key={entry.ref} entry={entry} onDone={dismiss} keysIn="canvas" />
-        ))}
+        {/* a line between the menu's groups (layout.json breaks of the context-menu region: names, clipboard, style,
+            order, wrap and layout, table, lock and hide, component, delete), only between items drawn: the menu had 24
+            items in one run */}
+        {items.flatMap((entry, i) => [
+          ...(i > 0 && CONTEXT_BREAKS.some((at) => orderOf(entry) >= at && orderOf(items[i - 1] as DoorEntry) < at) ? [<div key={`break-${entry.ref}`} className="menu__separator" role="separator" />] : []),
+          <MenuItem key={entry.ref} entry={entry} onDone={dismiss} keysIn="canvas" />,
+        ])}
       </div>
     </div>
   );

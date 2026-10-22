@@ -6,9 +6,9 @@
     "doors": 1456,
     "scenarios": 1909,
     "modules": 534,
-    "lines": 99450,
+    "lines": 99491,
     "fields": 207,
-    "interactive": 312
+    "interactive": 313
   },
   "features": [
     {
@@ -4158,7 +4158,7 @@
       "door": 97,
       "inside-door": 46,
       "local": 20,
-      "none": 119,
+      "none": 120,
       "spread": 6,
       "wraps-door": 24
     },
@@ -4890,6 +4890,13 @@
         "key": "src/editor/doors/menu.tsx|div|aria-label,className,data-key-context,data-region,ref,role,style,tabIndex|2",
         "tag": "div",
         "role": "menu",
+        "handlers": [],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/doors/menu.tsx|div|className,key,role|2",
+        "tag": "div",
+        "role": "separator",
         "handlers": [],
         "owner": "none"
       },

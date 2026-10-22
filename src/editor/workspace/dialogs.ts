@@ -15,6 +15,8 @@ export const openDialog = registerHandler<'workspace.openDialog', EditorUi>('wor
   const { state } = context;
   if (dialog === BATCH_RENAME) {
     if (state.selection.length === 0) return { kind: 'refused', message: message('refusal.nothingSelected') };
+    // one element is renamed in place (Rename, F2): the context menu offered both side by side for a single card
+    if (state.selection.length === 1) return { kind: 'refused', message: message('batchRename.needsSeveral') };
     // each selected element keeping its own name: refused exactly where a batch would be
     const outcome = renameBatch(context as unknown as HandlerContext<never>, state.selection, '{name}', 1);
     if (outcome.kind === 'refused') return outcome;

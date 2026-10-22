@@ -5453,7 +5453,7 @@
           "disabledReasonKey": "status.table.selectCell",
           "placement": {
             "region": "context-menu",
-            "order": 18
+            "order": 25
           },
           "adapter": {
             "selection": "single",
@@ -5544,7 +5544,7 @@
           "disabledReasonKey": "status.table.selectPart",
           "placement": {
             "region": "context-menu",
-            "order": 19
+            "order": 26
           },
           "adapter": {
             "selection": "single",
@@ -5636,7 +5636,7 @@
           "disabledReasonKey": "status.table.selectCell",
           "placement": {
             "region": "context-menu",
-            "order": 20
+            "order": 27
           },
           "adapter": {
             "selection": "single",
@@ -5727,7 +5727,7 @@
           "disabledReasonKey": "status.table.selectCell",
           "placement": {
             "region": "context-menu",
-            "order": 21
+            "order": 28
           },
           "adapter": {
             "selection": "single",
@@ -5818,7 +5818,7 @@
           "disabledReasonKey": "status.table.selectPart",
           "placement": {
             "region": "context-menu",
-            "order": 23
+            "order": 29
           },
           "adapter": {
             "selection": "single",
@@ -5910,7 +5910,7 @@
           "disabledReasonKey": "status.table.selectCell",
           "placement": {
             "region": "context-menu",
-            "order": 22
+            "order": 30
           },
           "adapter": {
             "selection": "single",

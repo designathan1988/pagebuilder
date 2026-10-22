@@ -321,7 +321,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "context-menu",
-            "order": 14
+            "order": 31
           },
           "adapter": {
             "selection": "primary",
@@ -442,7 +442,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "context-menu",
-            "order": 15
+            "order": 32
           },
           "adapter": {
             "selection": "primary",

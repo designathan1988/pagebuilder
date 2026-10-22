@@ -4508,5 +4508,6 @@
   "inspector.needs.flexItem": "an item of a flex container",
   "inspector.needs.gridItem": "an item of a grid",
   "inspector.needs.flexOrGridItem": "an item of a flex container or a grid",
-  "status.clipboard.waiting": "Waiting to read the clipboard: allow it in the browser’s question by the address bar."
+  "status.clipboard.waiting": "Waiting to read the clipboard: allow it in the browser’s question by the address bar.",
+  "batchRename.needsSeveral": "Select several elements to rename them together; one is renamed with Rename (F2)."
 }

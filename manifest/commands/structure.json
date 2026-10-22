@@ -497,7 +497,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "context-menu",
-            "order": 6
+            "order": 10
           },
           "adapter": {
             "selection": "roots-same-parent",
@@ -628,7 +628,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "context-menu",
-            "order": 7
+            "order": 11
           },
           "adapter": {
             "selection": "roots-same-parent",
@@ -768,7 +768,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "context-menu",
-            "order": 8
+            "order": 16
           },
           "adapter": {
             "selection": "roots-same-parent",
@@ -908,7 +908,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "context-menu",
-            "order": 9
+            "order": 17
           },
           "adapter": {
             "selection": "roots-same-parent",
@@ -1107,7 +1107,7 @@
           "disabledReasonKey": "status.nest.noPrevious",
           "placement": {
             "region": "context-menu",
-            "order": 11
+            "order": 13
           },
           "adapter": {
             "selection": "single",
@@ -1395,7 +1395,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "context-menu",
-            "order": 5
+            "order": 6
           },
           "adapter": {
             "selection": "roots",
@@ -1680,7 +1680,7 @@
           "disabledReasonKey": "status.unwrap.unavailable",
           "placement": {
             "region": "context-menu",
-            "order": 10
+            "order": 20
           },
           "adapter": {
             "selection": "single",
@@ -1769,7 +1769,7 @@
           "disabledReasonKey": "status.naturalChild.none",
           "placement": {
             "region": "context-menu",
-            "order": 17
+            "order": 15
           },
           "adapter": {
             "selection": "single",
@@ -1872,7 +1872,7 @@
           "disabledReasonKey": "status.needsSingleSelection",
           "placement": {
             "region": "context-menu",
-            "order": 13
+            "order": 14
           },
           "adapter": {
             "selection": "single",
@@ -2258,7 +2258,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "context-menu",
-            "order": 28
+            "order": 18
           },
           "adapter": {
             "selection": "roots-same-parent",
@@ -2398,7 +2398,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "context-menu",
-            "order": 29
+            "order": 19
           },
           "adapter": {
             "selection": "roots-same-parent",

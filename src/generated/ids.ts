@@ -7718,5 +7718,6 @@ export const MESSAGE_IDS = [
   "inspector.needs.gridItem",
   "inspector.needs.flexOrGridItem",
   "status.clipboard.waiting",
+  "batchRename.needsSeveral",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];
