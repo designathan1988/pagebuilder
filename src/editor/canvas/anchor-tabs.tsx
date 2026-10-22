@@ -13,7 +13,7 @@ import { valuePredicateHolds } from '../../core/style/couplings.ts';
 import type { FeatureId } from '../../generated/ids.ts';
 import { manifest, numberConstant } from '../../manifest/runtime.ts';
 import { DoorControl } from '../doors/door.tsx';
-import { MODEL_RULES, useEditorState } from '../store.ts';
+import { layeredRules, useEditorState } from '../store.ts';
 import { canvasFrame, nodeBox } from './coordinates.ts';
 import { pageChanged } from './page-clock.ts';
 
@@ -56,7 +56,9 @@ export function AnchorTabs({ stage }: { readonly stage: RefObject<HTMLDivElement
   const id = useEditorState((s) => {
     const [only, ...others] = s.selection;
     const node = only === undefined || others.length > 0 ? null : (locate(s.document, only)?.node ?? null);
-    return node !== null && valuePredicateHolds(node, POSITIONED, MODEL_RULES) ? node.id : null;
+    // the predicate the anchor doors ask (position.ts positionedSelection), at the edited breakpoint: tabs drawn for a
+    // position the command did not see were all unavailable
+    return node !== null && valuePredicateHolds(node, POSITIONED, layeredRules(s), s.document.classes) ? node.id : null;
   });
   const [placed, setPlaced] = useState<readonly Box[] | null>(null);
   useEffect(() => {

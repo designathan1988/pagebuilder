@@ -78,6 +78,8 @@ export function baseCss(): string {
 :where([role="tab"][aria-selected="true"]) { background: #dbeafe; border-color: #93c5fd; }
 :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]):not([type="image"]):not([type="button"]):not([type="submit"]):not([type="reset"]), textarea, select) { max-width: 100%; min-height: 2.5rem; padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; background: #fff; color: #0f172a; }
 :where(button, input, select, textarea):focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+:where(dialog) { max-width: min(32rem, calc(100% - 2rem)); padding: 1.5rem; border: 1px solid #e2e8f0; border-radius: 12px; background: #fff; color: #0f172a; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25); }
+:where(dialog)::backdrop { background: rgba(15, 23, 42, 0.55); }
 :where(fieldset) { margin: 0 0 1rem; padding: 1rem; border: 1px solid #cbd5e1; border-radius: 6px; }
 :where(legend) { padding-inline: 0.25rem; font-weight: 600; }
 `;

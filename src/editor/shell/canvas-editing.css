@@ -25,6 +25,7 @@
   display: grid;
   place-items: center;
   width: 100%;
+  min-width: 0;
   height: 100%;
   padding: 0;
   border: 2px solid var(--color-canvas-selection);

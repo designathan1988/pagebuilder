@@ -25,6 +25,20 @@ export function storedStyleValue(styles: Styles, property: string, rules: ModelR
   return typeof value === 'string' ? value : undefined;
 }
 
+// The value in force for a property at the edited breakpoint (its state): the breakpoint's own, else the nearest wider
+// one's, as the page's cascade gives it, if it is one value. A fixed dialog set at Desktop is fixed at Phone too: read
+// at Phone alone it was not, and its anchors were refused while their tabs were drawn.
+export function inForceValue(styles: Styles, property: string, rules: ModelRules): string | undefined {
+  const breakpoints = [...rules.breakpoints];
+  const at = breakpoints.indexOf(rules.base.breakpoint);
+  const upward = (at < 0 ? breakpoints.slice(0, 1) : breakpoints.slice(0, at + 1)).reverse();
+  for (const breakpoint of upward) {
+    const value = heldIn(styles, property, { ...rules, base: { breakpoint, state: rules.base.state } });
+    if (value !== undefined) return typeof value === 'string' ? value : undefined;
+  }
+  return undefined;
+}
+
 export function heldAt(node: DocNode, property: string, rules: ModelRules): StoredValue | undefined {
   return heldIn(node.styles, property, rules);
 }

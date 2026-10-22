@@ -11,7 +11,7 @@ import { registerAction, registerCondition, type CouplingScene, type RegisteredA
 import type { DocNode, StyleClass } from '../document/model.ts';
 import type { ModelRules } from '../document/validate.ts';
 import { INITIAL_VALUES } from '../../generated/value-lists.ts';
-import { storedStyleValue, storedValue } from './stored.ts';
+import { inForceValue, storedValue } from './stored.ts';
 
 const valueIn = registerCondition('valueIn', (own, _parent, values) => own !== undefined && values.includes(own));
 const alwaysHolds = registerCondition('always', () => true);
@@ -59,8 +59,9 @@ const ACTIONS: ReadonlyMap<string, RegisteredAction> = new Map([setValue, swapWi
 export function valuePredicateHolds(node: DocNode, id: string, rules: ModelRules, classes: readonly StyleClass[] = []): boolean {
   const predicate = rules.valuePredicates.get(id);
   if (predicate === undefined) throw new Error(`properties.json names no value predicate ${id}`);
-  const own = storedValue(node, predicate.property, rules);
-  const fromClasses = classes.filter((one) => node.classes.includes(one.name)).map((one) => storedStyleValue(one.styles, predicate.property, rules)).filter((value) => value !== undefined).at(-1);
+  // the value in force at the edited breakpoint (a wider one's where it sets none), as the page shows it
+  const own = inForceValue(node.styles, predicate.property, rules);
+  const fromClasses = classes.filter((one) => node.classes.includes(one.name)).map((one) => inForceValue(one.styles, predicate.property, rules)).filter((value) => value !== undefined).at(-1);
   return valueIn.holds(own ?? fromClasses, undefined, predicate.values);
 }
 
