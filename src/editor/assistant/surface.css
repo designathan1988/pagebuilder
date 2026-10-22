@@ -4,6 +4,8 @@
 /* the model takes the whole line; the preferences button stands under it, so neither squeezes the other */
 .assistant-chat header { display:flex;flex-direction:column;align-items:stretch;gap:var(--space-2);padding:var(--space-2); }
 .assistant-chat__messages { overflow:auto;min-height:0;flex:1; }
+/* no message yet: the list (a live region, kept in the page) takes no room; it left a blank band under the model */
+.assistant-chat__messages:empty { flex:0 0 0;margin-top:calc(var(--space-2) * -1); }
 .assistant-chat__message { padding:var(--space-3);border-bottom:1px solid var(--color-border); }
 .assistant-chat__message p { white-space:pre-wrap;overflow-wrap:anywhere; }
 .assistant-chat__message img { max-width:100%;height:auto; }

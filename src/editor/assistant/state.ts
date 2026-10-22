@@ -65,7 +65,7 @@ export const deleteAssistantKey = registerHandler<'assistant.deleteKey', EditorU
 export const selectAssistantSession = registerHandler<'assistant.selectSession', EditorUi>('assistant.selectSession', ({ state }) => ({ kind: 'change', ui: request(state.ui, 'select-session') }));
 export const clearAssistantConversation = registerHandler<'assistant.clearConversation', EditorUi>('assistant.clearConversation', ({ state }) => {
   if (assistantOf(state.ui).busy) return { kind: 'refused', message: message('assistant.busy') };
-  return { kind: 'change', ui: request(nextUi(state.ui, { entries: [], draft: '', reference: null }), 'clear-conversation') };
+  return { kind: 'change', ui: request(nextUi(state.ui, { entries: [], draft: '', reference: null, inputTokens: 0, outputTokens: 0 }), 'clear-conversation') };
 });
 const reportSchema = z.strictObject({ busy: z.boolean().optional(), hasKey: z.boolean().optional(), connection: z.enum(['connecting', 'connected', 'disconnected']).optional(), session: z.string().optional(), entries: z.array(entrySchema).optional(), draft: z.string().optional(), inputTokens: z.number().nonnegative().optional(), outputTokens: z.number().nonnegative().optional() });
 export const reportAssistant: RegisteredHandler<'assistant.update', EditorUi> = registerHandler('assistant.update', ({ state }, { value }) => {
