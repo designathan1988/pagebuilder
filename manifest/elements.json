@@ -12293,7 +12293,8 @@
                 "attributes": {
                   "inputType": "checkbox",
                   "name": "agree"
-                }
+                },
+                "nameKey": "palette.entry.inputCheckbox"
               },
               {
                 "element": "paragraph",
@@ -12324,7 +12325,8 @@
                 "attributes": {
                   "inputType": "radio",
                   "name": "choice"
-                }
+                },
+                "nameKey": "palette.entry.inputRadio"
               },
               {
                 "element": "paragraph",

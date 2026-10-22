@@ -6,9 +6,9 @@
     "doors": 1455,
     "scenarios": 1909,
     "modules": 534,
-    "lines": 99150,
+    "lines": 99221,
     "fields": 207,
-    "interactive": 310
+    "interactive": 312
   },
   "features": [
     {
@@ -4158,7 +4158,7 @@
       "door": 97,
       "inside-door": 46,
       "local": 20,
-      "none": 117,
+      "none": 119,
       "spread": 6,
       "wraps-door": 24
     },
@@ -5553,6 +5553,15 @@
         "owner": "none"
       },
       {
+        "key": "src/editor/shell/field-face.tsx|span|aria-hidden,className,onMouseDown|1",
+        "tag": "span",
+        "role": null,
+        "handlers": [
+          "onMouseDown"
+        ],
+        "owner": "none"
+      },
+      {
         "key": "src/editor/shell/field-options.tsx|button|aria-expanded,aria-haspopup,aria-label,className,disabled,onClick,ref,title,type|1",
         "tag": "button",
         "role": null,
@@ -5694,6 +5703,15 @@
         "role": null,
         "handlers": [
           "onInput"
+        ],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/shell/field.tsx|span|aria-hidden,className,onMouseDown|1",
+        "tag": "span",
+        "role": null,
+        "handlers": [
+          "onMouseDown"
         ],
         "owner": "none"
       },
