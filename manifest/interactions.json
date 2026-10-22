@@ -1759,7 +1759,10 @@
   "checks": {
     "colourProperty": "color",
     "backgroundProperty": "background-color",
-    "backgroundImageProperty": "background-image"
+    "backgroundImageProperty": "background-image",
+    "displayProperty": "display",
+    "directionProperty": "flex-direction",
+    "wrapProperty": "flex-wrap"
   },
   "layerColours": [
     "--color-canvas-selection",

@@ -90,13 +90,13 @@ const hiddenWithin = (node: DocNode, hidden: boolean): boolean => node.hidden ==
 // phone its elements run past the screen's edge and the page scrolls sideways (WCAG 1.4.10, Reflow). A row placed
 // before rows wrapped by default (Wrap in a row) stayed so, and the person saw it only in the Phone preview.
 const ROW_WRAP_MINIMUM = 3;
-function rowNeverWraps(node: DocNode): boolean {
+function rowNeverWraps(node: DocNode, properties: CheckProperties): boolean {
   if (node.children.length < ROW_WRAP_MINIMUM) return false;
   const layers = Object.values(node.styles).flatMap((byState) => Object.values(byState ?? {})) as Readonly<Record<string, unknown>>[];
   const said = (property: string): string[] => layers.flatMap((layer) => (typeof layer[property] === 'string' ? [String(layer[property]).trim()] : []));
-  if (!said('display').some((value) => value === 'flex' || value === 'inline-flex')) return false;
-  if (said('flex-direction').some((value) => value.startsWith('column'))) return false;
-  return !said('flex-wrap').some((value) => value === 'wrap' || value === 'wrap-reverse');
+  if (!said(properties.displayProperty).some((value) => value === 'flex' || value === 'inline-flex')) return false;
+  if (said(properties.directionProperty).some((value) => value.startsWith('column'))) return false;
+  return !said(properties.wrapProperty).some((value) => value === 'wrap' || value === 'wrap-reverse');
 }
 
 // Every issue the page has, in document order: the checks of the report, each once, over every page of the project.
@@ -105,6 +105,10 @@ export interface CheckProperties {
   readonly colourProperty: string;
   readonly backgroundProperty: string;
   readonly backgroundImageProperty: string;
+  // the row check's: what lays a row out, its direction and its wrapping
+  readonly displayProperty: string;
+  readonly directionProperty: string;
+  readonly wrapProperty: string;
 }
 
 // whether a form holds a control that sends it: a button whose type is submit (the export writes submit for a button
@@ -132,8 +136,8 @@ function cartWithoutAddress(node: DocNode): boolean {
   return (custom['data-wc-whatsapp'] ?? '').replace(/\D/gu, '') === '' && (custom['data-wc-email'] ?? '').trim() === '';
 }
 
-// A form whose submission is the browser's own (the default) with no Form action: its Send reloads the page and what
-// the visitor typed goes nowhere (the Contact template's form shipped this way, with no check saying so)
+// A form whose submission is the browser's own (the default) with no Form action: its Send reloads the page and
+// what the visitor typed goes nowhere (the Contact template's form shipped this way, with no check saying so)
 function formWithoutDestination(node: DocNode): boolean {
   if (node.tag !== 'form') return false;
   const config = readFormConfig(node.attributes.formSubmit);
@@ -141,9 +145,9 @@ function formWithoutDestination(node: DocNode): boolean {
   return String(node.attributes.action ?? '').trim() === '';
 }
 
-// A form field a visitor types into or chooses in (an input but a hidden one or a button, a text area, a list) says what
-// it asks only by a name a screen reader reads: a label around it or pointing at it (its `for`), an accessible name, or a
-// tooltip. A placeholder is no name: it goes as the visitor types (WCAG 1.3.1 and 4.1.2).
+// A form field a visitor types into or chooses in (an input but a hidden one or a button, a text area, a list) says
+// what it asks only by a name a screen reader reads: a label around it or pointing at it (its `for`), an accessible
+// name, or a tooltip. A placeholder is no name: it goes as the visitor types (WCAG 1.3.1 and 4.1.2).
 const UNNAMED_INPUTS: ReadonlySet<string> = new Set(['hidden', 'submit', 'button', 'reset', 'image']);
 const needsName = (node: DocNode): boolean =>
   node.tag === 'textarea' || node.tag === 'select' || (node.tag === 'input' && !UNNAMED_INPUTS.has(String(node.attributes.inputType ?? 'text')));
@@ -197,7 +201,7 @@ export function checksOf(document: DocumentJson, properties: CheckProperties): r
       if (textWithin(node) === '') issues.push({ node: node.id, category: 'links', rule: 'checks.linkText', fix: 'checks.linkText.fix' });
       if (WHATSAPP_WITHOUT_NUMBER.test(String(node.attributes.href ?? ''))) issues.push({ node: node.id, category: 'links', rule: 'checks.whatsappLink', fix: 'checks.whatsappLink.fix' });
     }
-    if (rowNeverWraps(node)) issues.push({ node: node.id, category: 'accessibility', rule: 'checks.rowNoWrap', fix: 'checks.rowNoWrap.fix' });
+    if (rowNeverWraps(node, properties)) issues.push({ node: node.id, category: 'accessibility', rule: 'checks.rowNoWrap', fix: 'checks.rowNoWrap.fix' });
     if (formWithoutDestination(node)) issues.push({ node: node.id, category: 'export', rule: 'checks.formDestination', fix: 'checks.formDestination.fix' });
     if (cartWithoutAddress(node)) issues.push({ node: node.id, category: 'export', rule: 'checks.cartDestination', fix: 'checks.cartDestination.fix' });
     // text with a colour of its own over a background that is known: below the contrast WCAG asks for is an issue

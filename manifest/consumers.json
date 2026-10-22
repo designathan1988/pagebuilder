@@ -2217,6 +2217,18 @@
       "reader": "src/core/a11y/checks.ts"
     },
     {
+      "field": "interactions:checks.displayProperty",
+      "reader": "src/core/a11y/checks.ts"
+    },
+    {
+      "field": "interactions:checks.directionProperty",
+      "reader": "src/core/a11y/checks.ts"
+    },
+    {
+      "field": "interactions:checks.wrapProperty",
+      "reader": "src/core/a11y/checks.ts"
+    },
+    {
       "field": "interactions:layerColours",
       "reader": "src/editor/shell/sidebar.tsx"
     },
