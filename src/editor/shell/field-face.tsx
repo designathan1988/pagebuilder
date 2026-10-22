@@ -1,6 +1,6 @@
 // The compact resting face of a real field. The input keeps its full CSS value and its existing command wiring;
 // this presentation separates the number, unit and origin without squeezing the editable value in paired rows.
-import type { ReactNode } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import { formatColor, parseColor } from '../../core/style/color.ts';
 import { valueOrigin } from '../inspector/origin.ts';
 import { layeredRules, useEditorState } from '../store.ts';
@@ -57,6 +57,16 @@ export function FieldValueSlot({ children, value }: { readonly children: ReactNo
   return <span className="field__value-slot" title={value}>{children}<span className="field__rest-value" aria-hidden="true">{value}</span></span>;
 }
 
+// The words a field's face shows beside its value (its origin, "Inherited"; its unit, "px") stand in the field: a press
+// on them edits the value as a press on the value does. They took the press and nothing took the focus: a person who
+// clicked the inherited Text colour to set it here typed into nothing.
+export function focusFaceValue(event: MouseEvent<HTMLElement>): void {
+  const input = event.currentTarget.closest('.input-wrap')?.querySelector<HTMLElement>('.field__value-slot .input');
+  if (input === null || input === undefined) return;
+  event.preventDefault();
+  input.focus();
+}
+
 export function FieldOriginBadge({ label }: { readonly label: string | null }) {
-  return label === null ? null : <span className="field__origin-badge" aria-hidden="true">{label}</span>;
+  return label === null ? null : <span className="field__origin-badge" aria-hidden="true" onMouseDown={focusFaceValue}>{label}</span>;
 }

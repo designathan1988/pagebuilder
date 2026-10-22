@@ -441,7 +441,10 @@ export function writeStyle<Ui>(context: HandlerContext<Ui>, property: string, cs
   // real-use audit, item A3.12), so the person is told what the write changed beyond the element they picked
   const component = componentHolders(state.document, primary.node.id as NodeId);
   const root = instanceRootOf(state.document, primary.node.id as NodeId);
-  const copies = component === null || root?.component === undefined ? null : { name: root.component, count: component.length - 1 };
+  // a class targeted takes the write (holdersOf): it reaches the class's elements, never the component's copies (a
+  // variant's class said "it reaches CTA button and its 2 copies" while one element changed)
+  const classWrite = holders.length > 0 && holders.every((held) => held.path[0] === 'classes');
+  const copies = classWrite || component === null || root?.component === undefined ? null : { name: root.component, count: component.length - 1 };
   const said =
     copies !== null
       ? copies.count === 1

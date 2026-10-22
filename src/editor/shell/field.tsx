@@ -53,7 +53,7 @@ import { styleClassOf, styleSource } from '../inspector/style-target.ts';
 import { useMenuLayer } from '../doors/menu.tsx';
 import { useT, useValueLabel } from '../text.ts';
 import { createToken, tokenKindOf, tokensOf } from '../../core/design/tokens.ts';
-import { colourFieldText, compactFieldValue, FieldOriginBadge, FieldValueSlot, useFieldAppearance } from './field-face.tsx';
+import { colourFieldText, compactFieldValue, FieldOriginBadge, FieldValueSlot, focusFaceValue, useFieldAppearance } from './field-face.tsx';
 import { restoreFieldDraft } from '../persistence/drafts.ts';
 import { DRAFT_KEPT, markFieldKept, recordFieldInput } from '../input/drafts.ts';
 import { heldTyping, holdTyping, keepTyping, ownCommandRunning, releaseTyping } from '../input/pending.ts';
@@ -1292,7 +1292,7 @@ export function TextStyleField({
         ) : (
           <input key="input" ref={input} className="input" disabled={!available} aria-label={label} spellCheck={false} list={listed.length > 0 ? listId : undefined} data-key-context={NUMBER_FIELD_CONTEXT} placeholder={hint} aria-invalid={refused.text !== null ? true : undefined} onInput={refused.dismiss} />
         )}</FieldValueSlot>
-        {face.unit ? <span className="field__suffix" aria-hidden="true">{face.unit}</span> : null}
+        {face.unit ? <span className="field__suffix" aria-hidden="true" onMouseDown={focusFaceValue}>{face.unit}</span> : null}
         {bare ? null : <FieldOriginBadge label={appearance.label} />}
         <VariableSuggestions entry={entry} property={property} label={t('field.variables.of', { property: propertyWord(t, property) })} input={input} anchor={valueScope} variables={tokenSuggestions} choose={chooseVariable} />
         {listed.length > 0 ? (

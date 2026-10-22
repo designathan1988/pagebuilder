@@ -32,6 +32,7 @@ import { orderByGroup, pairRowOf, rowPrefixKey, type PairRow } from '../inspecto
 import { CONCEPT_ROWS, pairItem, rowClosed, rowOfItem, shortLabelOf } from '../inspector/concept-rows.ts';
 import { ConceptRowView } from './concept-row.tsx';
 import { valueOrigin } from '../inspector/origin.ts';
+import { styleClassOf } from '../inspector/style-target.ts';
 import { MODEL_RULES, useEditorState, useStore, layeredRules } from '../store.ts';
 import { FieldOrigin } from './field-origin.tsx';
 import './settings.css';
@@ -612,7 +613,10 @@ function ComponentNotice() {
   // compares them by identity)
   const document = useEditorState((s) => s.document);
   const only = useEditorState((s) => (s.selection.length === 1 ? (s.selection[0] ?? null) : null));
-  if (only === null) return null;
+  // a class targeted takes the edit, not the element: the edit reaches the elements of the class, which the class's own
+  // line says ("affects 1 element"); a variant's class said "reaches its 2 copies" beside it
+  const classTargeted = useEditorState((s) => styleClassOf(s) !== null);
+  if (only === null || classTargeted) return null;
   const root = instanceRootOf(document, only);
   const holders = componentHolders(document, only);
   if (root?.component === undefined || holders === null) return null;
