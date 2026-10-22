@@ -22,12 +22,16 @@ export function CaptureUrlDialog() {
   return open && RUN !== undefined ? <OpenCaptureUrl run={RUN} /> : null;
 }
 
+// the address and the page count last typed, for this session: a capture the Companion did not answer closed the
+// dialog, and the person who started it came back to an empty field
+const last = { url: '', pages: '1' };
+
 function OpenCaptureUrl({ run }: { readonly run: DoorEntry }) {
   const t = useT();
   const store = useStore();
   const door = useDoor(run, {}, undefined, isFeatureBuilt(run.door.feature as FeatureId));
-  const [url, setUrl] = useState('');
-  const [pages, setPages] = useState('1');
+  const [url, setUrl] = useState(last.url);
+  const [pages, setPages] = useState(last.pages);
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!door.available) return;
@@ -41,11 +45,17 @@ function OpenCaptureUrl({ run }: { readonly run: DoorEntry }) {
       <form className="dialog__body" onSubmit={submit}>
         <label className="guides-grids__field">
           <span className="guides-grids__label">{t('capture.url')}</span>
-          <input className="input" name="url" type="text" inputMode="url" placeholder={t('capture.placeholder')} spellCheck={false} value={url} data-autofocus data-key-context={DIALOG_KEYS} onChange={(event) => setUrl(event.target.value)} />
+          <input className="input" name="url" type="text" inputMode="url" placeholder={t('capture.placeholder')} spellCheck={false} value={url} data-autofocus data-key-context={DIALOG_KEYS} onChange={(event) => {
+            last.url = event.target.value;
+            setUrl(event.target.value);
+          }} />
         </label>
         <label className="guides-grids__field" title={t('capture.pagesHint')}>
           <span className="guides-grids__label">{t('capture.pages')}</span>
-          <input className="input" name="pages" inputMode="numeric" value={pages} data-key-context={DIALOG_KEYS} onChange={(event) => setPages(event.target.value)} />
+          <input className="input" name="pages" inputMode="numeric" value={pages} data-key-context={DIALOG_KEYS} onChange={(event) => {
+            last.pages = event.target.value;
+            setPages(event.target.value);
+          }} />
         </label>
         <p className="capture-url__hint">{t('capture.pagesHint')}</p>
         <p className="capture-url__notice">{t('capture.notice')}</p>
