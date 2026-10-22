@@ -4509,5 +4509,8 @@
   "inspector.needs.gridItem": "um item de grade",
   "inspector.needs.flexOrGridItem": "um item de contêiner flex ou de grade",
   "status.clipboard.waiting": "Aguardando para ler a área de transferência: permita na pergunta do navegador ao lado da barra de endereço.",
-  "batchRename.needsSeveral": "Selecione vários elementos para renomeá-los juntos; um só se renomeia com Renomear (F2)."
+  "batchRename.needsSeveral": "Selecione vários elementos para renomeá-los juntos; um só se renomeia com Renomear (F2).",
+  "data.cellImageHint": "img/foto.png ou https://…",
+  "data.cellVideoHint": "Um endereço ou arquivo de vídeo",
+  "data.cellFileHint": "Um arquivo do projeto ou https://…"
 }

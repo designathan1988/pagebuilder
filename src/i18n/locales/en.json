@@ -4509,5 +4509,8 @@
   "inspector.needs.gridItem": "an item of a grid",
   "inspector.needs.flexOrGridItem": "an item of a flex container or a grid",
   "status.clipboard.waiting": "Waiting to read the clipboard: allow it in the browser’s question by the address bar.",
-  "batchRename.needsSeveral": "Select several elements to rename them together; one is renamed with Rename (F2)."
+  "batchRename.needsSeveral": "Select several elements to rename them together; one is renamed with Rename (F2).",
+  "data.cellImageHint": "img/photo.png or https://…",
+  "data.cellVideoHint": "A video address or file",
+  "data.cellFileHint": "A file of the project or https://…"
 }

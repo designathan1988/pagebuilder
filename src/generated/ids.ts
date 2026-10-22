@@ -7719,5 +7719,8 @@ export const MESSAGE_IDS = [
   "inspector.needs.flexOrGridItem",
   "status.clipboard.waiting",
   "batchRename.needsSeveral",
+  "data.cellImageHint",
+  "data.cellVideoHint",
+  "data.cellFileHint",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];

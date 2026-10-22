@@ -6,9 +6,9 @@
     "doors": 1456,
     "scenarios": 1909,
     "modules": 534,
-    "lines": 99491,
+    "lines": 99516,
     "fields": 207,
-    "interactive": 313
+    "interactive": 314
   },
   "features": [
     {
@@ -4158,7 +4158,7 @@
       "door": 97,
       "inside-door": 46,
       "local": 20,
-      "none": 120,
+      "none": 121,
       "spread": 6,
       "wraps-door": 24
     },
@@ -4727,6 +4727,13 @@
         "handlers": [
           "onBlur"
         ],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/data/controls.tsx|option|key,value|2",
+        "tag": "option",
+        "role": null,
+        "handlers": [],
         "owner": "none"
       },
       {

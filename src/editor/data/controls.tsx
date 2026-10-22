@@ -4,7 +4,7 @@
 // each one dispatch of the door's command with the arguments the door, its place and its value give. Nothing here
 // listens to the pointer or the keys: presses and drags belong to the pointer owner (input/pointer.ts), keys to the
 // keymap.
-import { useEffect, useRef, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useId, useRef, type FormEvent, type ReactNode } from 'react';
 import { isFeatureBuilt } from '../../core/commands/registry.ts';
 import type { DispatchResult } from '../../core/store/store.ts';
 import type { CommandId, FeatureId, RegionId } from '../../generated/ids.ts';
@@ -35,7 +35,7 @@ export interface Option {
 // A field door: a text, a number or a menu, labelled by its door, standing for the arguments its place gives
 // (data-args), and keeping its value in the argument `name` — on Enter or when it loses the focus for a text, on the
 // choice for a menu. It shows what the document holds again after any change (an undo, a refusal).
-export function DoorField({ entry, args, name, value, options, kind = 'text', label, className, transform }: {
+export function DoorField({ entry, args, name, value, options, kind = 'text', label, className, transform, suggestions, placeholder }: {
   readonly entry: DoorEntry;
   readonly args: Readonly<Record<string, unknown>>;
   readonly name: string;
@@ -46,7 +46,11 @@ export function DoorField({ entry, args, name, value, options, kind = 'text', la
   readonly className?: string;
   // the argument the typed or chosen text stands for (a query made of it); the text itself when absent
   readonly transform?: (typed: string) => unknown;
+  // what a typed field offers as it is typed (the project's images for an image cell), and what it shows empty
+  readonly suggestions?: readonly string[];
+  readonly placeholder?: string;
 }): ReactNode {
+  const listId = useId();
   const door = useDoor(entry, args, label, isFeatureBuilt(entry.door.feature as FeatureId));
   const run = useRun(entry);
   const said = useEditorState((state) => state.message);
@@ -82,7 +86,16 @@ export function DoorField({ entry, args, name, value, options, kind = 'text', la
     ) : kind === 'textarea' ? (
       <textarea {...common} ref={field} rows={3} onBlur={(event) => keep(event.currentTarget.value)} />
     ) : (
-      <input {...common} ref={field} type={kind === 'number' ? 'number' : 'text'} spellCheck={false} autoComplete="off" onBlur={(event) => keep(event.currentTarget.value)} />
+      <>
+        <input {...common} ref={field} type={kind === 'number' ? 'number' : 'text'} spellCheck={false} autoComplete="off" onBlur={(event) => keep(event.currentTarget.value)} {...(placeholder === undefined ? {} : { placeholder })} {...(suggestions === undefined ? {} : { list: listId })} />
+        {suggestions === undefined ? null : (
+          <datalist id={listId}>
+            {suggestions.map((one) => (
+              <option key={one} value={one} />
+            ))}
+          </datalist>
+        )}
+      </>
     );
   return (
     <form

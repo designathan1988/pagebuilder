@@ -6,6 +6,7 @@ import type { ReactNode } from 'react';
 import { collectionsOf, fieldText, itemTitle, lookupIn, MAX_DECIMALS, queryItems } from '../../core/data/collections.ts';
 import { FIELD_TYPES, FILTER_OPERATORS, PAGINGS, isReferenceType, type Collection, type Field, type Query } from '../../core/data/model.ts';
 import type { MessageId } from '../../generated/ids.ts';
+import { filesOf } from '../../core/document/model.ts';
 import { DoorControl } from '../doors/door.tsx';
 import { useEditorState } from '../store.ts';
 import { useT } from '../text.ts';
@@ -142,9 +143,17 @@ function Grid({ collection, query }: { readonly collection: Collection; readonly
     const target = field.type === 'reference' && field.collection !== undefined ? lookup(field.collection) : undefined;
     return target === undefined ? undefined : [{ value: '', label: t('data.none') }, ...target.items.map((item) => ({ value: item.id, label: itemTitle(target, item, language) }))];
   };
+  // an image, a video or a file cell offers the project's files of its kind as it is typed, and says what it takes:
+  // it was an empty box, and nothing told the person to write "img/photo.png" or where the project's images were
+  const fileKinds: Readonly<Partial<Record<Field['type'], string>>> = { image: 'image/', video: 'video/', file: '' };
+  const suggested = (field: Field): readonly string[] | undefined => {
+    const kind = fileKinds[field.type];
+    return kind === undefined ? undefined : filesOf(document).filter((one) => one.type.startsWith(kind)).map((one) => one.path);
+  };
   const cell = (field: Field, value: string, item: string) => {
     const options = choices(field);
-    return <DoorField entry={CELL} args={{ collection: collection.name, item, field: field.key }} name="value" value={value} {...(options === undefined ? {} : { options })} label={t('data.cellLabel', { column: field.label, row: collection.items.findIndex((one) => one.id === item) + 1 })} />;
+    const files = options === undefined ? suggested(field) : undefined;
+    return <DoorField entry={CELL} args={{ collection: collection.name, item, field: field.key }} name="value" value={value} {...(options === undefined ? {} : { options })} {...(files === undefined ? {} : { suggestions: files, placeholder: t(field.type === 'image' ? 'data.cellImageHint' : field.type === 'video' ? 'data.cellVideoHint' : 'data.cellFileHint') })} label={t('data.cellLabel', { column: field.label, row: collection.items.findIndex((one) => one.id === item) + 1 })} />;
   };
   return (
     <div className="data-grid" data-region="data-grid">
