@@ -860,13 +860,34 @@ export class PageRenderer {
     // order of 2026-10-05); the document and the export keep the markup as it is
     if (this.model.elements.get(node.type)?.content === 'markup') {
       const frame = element.firstElementChild?.localName === 'iframe' ? element.firstElementChild : null;
-      const markup = withoutScripts(this.target, node.text ?? '');
+      // The export writes the markup in the page, where it takes the text's look of where it stands and grows with
+      // what it holds; the frame drew it in the browser's defaults (a serif text) at a fixed height. The frame's page
+      // takes the font, size, line height and colour of the embed's place, and the frame its content's height once
+      // drawn: same origin with no scripts lets the editor read and measure it, and still runs nothing of the markup.
+      // Both are read once the frame has loaded, the embed's element in the page by then (before, it has no style).
+      const markup = `<style>html,body{margin:0}body{display:flow-root}</style>${withoutScripts(this.target, node.text ?? '')}`;
       if (frame !== null && frame.getAttribute('srcdoc') === markup) return;
-      const shown = frame ?? this.target.createElement('iframe');
-      shown.setAttribute('sandbox', '');
+      const shown = (frame ?? this.target.createElement('iframe')) as HTMLIFrameElement;
+      shown.setAttribute('sandbox', 'allow-same-origin');
       shown.setAttribute('srcdoc', markup);
       shown.setAttribute(EMBED_FRAME_ATTRIBUTE, '');
-      if (frame === null) element.replaceChildren(shown);
+      if (frame === null) {
+        shown.addEventListener('load', () => {
+          const inside = shown.contentDocument;
+          const look = this.target.defaultView?.getComputedStyle(element);
+          if (inside === null) return;
+          if (look !== undefined) {
+            const root = inside.documentElement.style;
+            root.fontFamily = look.fontFamily;
+            root.fontSize = look.fontSize;
+            root.lineHeight = look.lineHeight;
+            root.color = look.color;
+          }
+          const height = Math.ceil(inside.body.getBoundingClientRect().height);
+          if (height > 0) shown.style.height = `${String(height)}px`;
+        });
+        element.replaceChildren(shown);
+      }
       return;
     }
     if (this.model.elements.get(node.type)?.content !== 'text' || edited) return;
