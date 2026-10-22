@@ -3760,6 +3760,8 @@
         "behaviour": {
           "type": "enum",
           "values": [
+            "sticky",
+            "scroll-snap",
             "smooth-scroll",
             "parallax",
             "marquee",

@@ -174,14 +174,34 @@ function Card({ node, interaction, index, timelines }: { readonly node: DocNode;
 function Behaviours({ node }: { readonly node: DocNode }) {
   const t = useT();
   const held = behavioursOf(node);
+  // a plain-CSS behaviour is on while the element's own style holds it (the first property its button writes: the
+  // position sticky, a scroll-snap type): its button showed nothing once pressed, and nothing said where it went
+  const styleOn = (kind: (typeof STYLE_BEHAVIOURS)[number]): boolean => {
+    const property = motionDoor(MOTION_DOORS.behaviour(kind)).door.adapter.writes[0];
+    if (property === undefined) return false;
+    return Object.values(node.styles).some((byState) => Object.values(byState ?? {}).some((declarations) => {
+      const value = (declarations as Readonly<Record<string, unknown>> | undefined)?.[property];
+      return typeof value === 'string' && value.trim() !== '' && (kind !== 'sticky' || value.trim() === 'sticky');
+    }));
+  };
+  const stylesOn = STYLE_BEHAVIOURS.filter(styleOn);
+  const isOn = (kind: string): boolean => (STYLE_BEHAVIOURS as readonly string[]).includes(kind) ? stylesOn.some((one) => one === kind) : held.some((one) => one.kind === kind);
   return (
     <section className="motion-behaviours" aria-label={t('motion.behaviours.title')}>
       <p className="motion-behaviours__title">{t('motion.behaviours.title')}</p>
       <div className="motion-behaviours__add" role="group" aria-label={t('motion.behaviours.add')}>
         {[...STYLE_BEHAVIOURS, ...RUNTIME_BEHAVIOURS].map((kind) => (
-          <PanelButton key={kind} entry={motionDoor(MOTION_DOORS.behaviour(kind))} args={{ behaviour: kind }} label={t(`motion.behaviour.${camel(kind)}` as MessageId)} />
+          <PanelButton key={kind} entry={motionDoor(MOTION_DOORS.behaviour(kind))} args={{ behaviour: kind }} label={t(`motion.behaviour.${camel(kind)}` as MessageId)} pressed={isOn(kind)} />
         ))}
       </div>
+      {/* sticky and scroll snap held: listed with their removal as the other behaviours are (their values live in the
+          element's style, and Remove takes every value their button wrote) */}
+      {stylesOn.map((kind) => (
+        <div key={kind} className="motion-behaviours__item" data-motion-behaviour={kind}>
+          <span className="motion-behaviours__name">{t(`motion.behaviour.${camel(kind)}` as MessageId)}</span>
+          <PanelButton entry={motionDoor(MOTION_DOORS.behaviourRemove)} args={{ behaviour: kind }} label={t('command.motion.removeBehaviour')} icon={<Icon name="trash" size="sm" />} />
+        </div>
+      ))}
       {held.map((behaviour) => (
         <div key={behaviour.kind} className="motion-behaviours__item" data-motion-behaviour={behaviour.kind}>
           <span className="motion-behaviours__name">{t(`motion.behaviour.${camel(behaviour.kind)}` as MessageId)}</span>

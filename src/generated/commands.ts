@@ -262,7 +262,7 @@ export interface CommandArgs {
   "motion.preview": { readonly operation: "play" | "pause" | "stop" };
   "motion.toggleRun": Record<string, never>;
   "motion.setBehaviour": { readonly behaviour: "sticky" | "scroll-snap" | "smooth-scroll" | "parallax" | "marquee" | "cursor-follow"; readonly amount?: number; readonly axis?: "x" | "y" };
-  "motion.removeBehaviour": { readonly behaviour: "smooth-scroll" | "parallax" | "marquee" | "cursor-follow" };
+  "motion.removeBehaviour": { readonly behaviour: "sticky" | "scroll-snap" | "smooth-scroll" | "parallax" | "marquee" | "cursor-follow" };
   "motion.setParallaxRange": { readonly field: "start" | "end" | "max"; readonly value?: JsonValue };
   "motion.setPageTransition": { readonly field: "kind" | "duration"; readonly value?: JsonValue };
   "motion.setLinkTransition": { readonly transition: "" | "fade" | "slide" | "none" };

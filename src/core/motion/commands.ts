@@ -930,9 +930,50 @@ export const setBehaviourCommand = registerHandler('motion.setBehaviour', (conte
   return { kind: 'change', patches: writeBehaviours(found.node, found.path, next), message: message('status.motion.behaviourSet', { name: { key: behaviourLabel(kind) }, element: found.node.name }) };
 });
 
+// The styles of a node without these properties, at every breakpoint and state (an emptied state or breakpoint goes),
+// or null when it holds none of them
+function withoutProperties(node: DocNode, names: readonly string[]): DocNode['styles'] | null {
+  let changed = false;
+  const styles: Record<string, Record<string, Record<string, unknown>>> = {};
+  for (const [breakpoint, states] of Object.entries(node.styles as Record<string, Record<string, Record<string, unknown>> | undefined>)) {
+    const kept: Record<string, Record<string, unknown>> = {};
+    for (const [state, declarations] of Object.entries(states ?? {})) {
+      const left = Object.fromEntries(Object.entries(declarations).filter(([property]) => !names.includes(property)));
+      if (Object.keys(left).length !== Object.keys(declarations).length) changed = true;
+      if (Object.keys(left).length > 0) kept[state] = left;
+    }
+    if (Object.keys(kept).length > 0) styles[breakpoint] = kept;
+  }
+  return changed ? (styles as DocNode['styles']) : null;
+}
+
+// Sticky and scroll snap taken away: every property their button wrote (the position and its top; the snap type,
+// the overflow and, on each child, its snap alignment), at every breakpoint and state. Reset Position left the sticky
+// top behind, hidden with the position static and found by no search.
+function removeStyleBehaviour(found: Located, kind: 'sticky' | 'scroll-snap'): Patch[] {
+  const written = writesOf(kind === 'sticky' ? 'inspector-motion-behaviour-sticky' : 'inspector-motion-behaviour-scroll-snap');
+  const own = kind === 'sticky' ? written : written.slice(0, 3);
+  const onChildren = kind === 'sticky' ? [] : written.slice(3);
+  const patches: Patch[] = [];
+  const styles = withoutProperties(found.node, own);
+  if (styles !== null) patches.push({ op: 'replace', path: [...found.path, 'styles'], value: styles });
+  found.node.children.forEach((child, i) => {
+    const childStyles = onChildren.length === 0 ? null : withoutProperties(child, onChildren);
+    if (childStyles !== null) patches.push({ op: 'replace', path: [...found.path, 'children', i, 'styles'], value: childStyles });
+  });
+  return patches;
+}
+
 export const removeBehaviourCommand = registerHandler('motion.removeBehaviour', (context, { behaviour }): Outcome<never> => {
   const found = primaryNode(context.state.document, context.state.selection);
   if (found === null) return { kind: 'change' };
+  if (behaviour === 'sticky' || behaviour === 'scroll-snap') {
+    const patches = removeStyleBehaviour(found, behaviour);
+    if (patches.length === 0) return { kind: 'change' };
+    const locked = lockedRefusal(context, found.node);
+    if (locked !== null) return { kind: 'refused', message: locked };
+    return { kind: 'change', patches, message: message('status.motion.behaviourRemoved', { name: { key: behaviourLabel(behaviour) }, element: found.node.name }) };
+  }
   if (!behavioursOf(found.node).some((one) => one.kind === behaviour)) return { kind: 'change' };
   const locked = lockedRefusal(context, found.node);
   if (locked !== null) return { kind: 'refused', message: locked };
