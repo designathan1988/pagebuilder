@@ -42,6 +42,12 @@ export function BreakpointsDialog() {
   return open ? <OpenBreakpoints /> : null;
 }
 
+function AddRefusal({ entry }: { readonly entry: DoorEntry }) {
+  const t = useT();
+  const door = useDoor(entry, {}, undefined, built(entry));
+  return door.built && !door.available && door.reason !== null ? <p className="breakpoints-dialog__hint" role="status">{t(door.reason, door.reasonParams ?? {})}</p> : null;
+}
+
 function OpenBreakpoints() {
   const t = useT();
   const table = useEditorState((s) => breakpointsOf(s.document));
@@ -66,9 +72,12 @@ function OpenBreakpoints() {
             <ViewportWidth entry={SHOWN} />
           </label>
         )}
+        {/* why a breakpoint cannot be added at this width (the base's, one a breakpoint holds): said here, not only in the
+            status bar behind the dialog */}
+        {ADD === undefined ? null : <AddRefusal entry={ADD} />}
         <footer className="dialog__footer">
           {ADD === undefined ? null : (
-            <DoorControl entry={ADD} ready={built(ADD)} title={t('command.breakpoints.add')}>
+            <DoorControl entry={ADD} ready={built(ADD)}>
               <span className="door__label">{t('breakpoints.addAt', { width })}</span>
             </DoorControl>
           )}

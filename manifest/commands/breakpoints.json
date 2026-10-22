@@ -19,8 +19,8 @@
         }
       },
       "availability": {
-        "predicate": "always",
-        "refusalKey": null
+        "predicate": "breakpointAddable",
+        "refusalKey": "status.breakpoints.widthRange"
       },
       "refusals": [
         "status.breakpoints.widthRange",

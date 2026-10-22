@@ -110,7 +110,7 @@ import { toggleEqualSpacing, toggleGuidesVisible, toggleOutlines, toggleRulers, 
 import { openDialog } from '../editor/workspace/dialogs.ts';
 import { setBreakpoint, setViewportWidth } from '../editor/view/breakpoints.ts';
 import { resizeViewport } from '../editor/view/frame-edge.ts';
-import { addBreakpoint, removeBreakpoint, renameBreakpoint, setBreakpointWidth } from '../editor/view/breakpoint-table.ts';
+import { addBreakpoint, breakpointAddable, removeBreakpoint, renameBreakpoint, setBreakpointWidth } from '../editor/view/breakpoint-table.ts';
 import { setStyleState } from '../editor/view/style-state.ts';
 import { enterPreview, exitPreview } from '../editor/view/preview.ts';
 import { newBlankPage } from '../core/project/project.ts';
@@ -557,6 +557,7 @@ export const PREDICATES = {
   mapSelected,
   importDestinationReady,
   openPageNotHome,
+  breakpointAddable,
   hasNaturalChild,
   flexOrGridContainer,
   instanceSelected,

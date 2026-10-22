@@ -3,7 +3,7 @@
 // the styles set at it. The table is the document's (core/document/breakpoints.ts holds what each change makes of it);
 // the first change writes the project's own table, the default's copy with the change. Each change is one undo step,
 // and the breakpoint the editor shows follows it: a new one is shown, a removed one gives way to the base.
-import { message, registerHandler, type Message, type Outcome } from '../../core/commands/registry.ts';
+import { message, registerHandler, registerPredicate, type Message, type Outcome } from '../../core/commands/registry.ts';
 import { addedTable, breakpointById, breakpointsOf, breakpointWords, documentWithout, isRefusal, renamedTable, resizedTable, type ProjectBreakpoint, type TableRefusal } from '../../core/document/breakpoints.ts';
 import type { DocumentJson } from '../../core/document/model.ts';
 import type { Patch } from '../../core/history/transaction.ts';
@@ -17,6 +17,24 @@ const refused = (refusal: TableRefusal): Outcome<EditorUi> => ({ kind: 'refused'
 const tablePatch = (document: DocumentJson, table: readonly ProjectBreakpoint[]): Patch => ({ op: document.breakpoints === undefined ? 'add' : 'replace', path: ['breakpoints'], value: table });
 
 const unknown = (): Outcome<EditorUi> => ({ kind: 'refused', message: message('status.breakpoints.unknown') });
+
+// Whether a breakpoint can be added at the width asked (the canvas's when none): the base's width, or one a breakpoint
+// holds already, refuses it. The Breakpoints dialog offered "Add a breakpoint at this width (1440 px)" at the base's
+// width, and said why only in the status bar behind it.
+const additionAt = (state: Parameters<typeof viewportWidth>[0], args: unknown): TableRefusal | null => {
+  const asked = (args as { readonly width?: unknown } | undefined)?.width;
+  const at = typeof asked === 'number' && Number.isFinite(asked) ? Math.round(asked) : viewportWidth(state);
+  const made = addedTable(breakpointsOf(state.document), at, null, '', (key) => key);
+  return isRefusal(made) ? made : null;
+};
+export const breakpointAddable = registerPredicate<EditorUi>(
+  'breakpointAddable',
+  (state, _rules, args) => additionAt(state, args) === null,
+  (state, _rules, args) => {
+    const refusal = additionAt(state, args);
+    return refusal === null ? message('status.breakpoints.unknown') : message(`status.breakpoints.${refusal.refused}` as MessageId, refusal.params);
+  },
+);
 
 export const addBreakpoint = registerHandler<'breakpoints.add', EditorUi>('breakpoints.add', ({ state, words }, { width, name }) => {
   // the width the canvas shows, unless the door names one
