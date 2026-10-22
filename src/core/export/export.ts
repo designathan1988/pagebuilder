@@ -32,7 +32,7 @@ import type { NodeId } from '../../generated/commands.ts';
 import { walk, type Animation, type DocNode, type DocumentJson } from '../document/model.ts';
 import type { ModelRules } from '../document/validate.ts';
 import { zip, type ZipEntry } from '../project/zip.ts';
-import { PACKAGE_ARCHIVE, packageEntries, type PackageFormat } from './packages.ts';
+import { appIdentity, PACKAGE_ARCHIVE, packageEntries, type PackageFormat } from './packages.ts';
 import { baseCss, capturedBaseCss, widgetStateCss } from '../render/base.ts';
 import { classesCss, elementAttributes, fileUrlsIn, linksToFile, mediaQuery, nodeCss, writesNode } from '../render/output.ts';
 import { svgMarkupOf } from '../elements/svg.ts';
@@ -692,5 +692,10 @@ export const exportProject = registerHandler('project.export', ({ state, rules, 
   const format: PackageFormat = args.format ?? 'site';
   const bytes = packageArchive(format, state.document, rules, siteScripts);
   const name = PACKAGE_ARCHIVE[format];
-  return { kind: 'change' as const, message: message('status.export.done', { file: name }), download: { name, type: 'application/zip', bytes } };
+  // an app says the name it was given, and, named after the start page alone (no Title set), where to name it: an
+  // installed app called "Home" said nothing of why
+  const identity = format === 'site' ? null : appIdentity(state.document);
+  const titled = identity !== null && String((state.document.pages.find((page) => page.file === identity.start)?.tree.attributes as Readonly<Record<string, unknown>> | undefined)?.pageTitle ?? '').trim() !== '';
+  const said = identity === null ? message('status.export.done', { file: name }) : message(titled ? 'status.export.app' : 'status.export.appUntitled', { file: name, name: identity.appName });
+  return { kind: 'change' as const, message: said, download: { name, type: 'application/zip', bytes } };
 });

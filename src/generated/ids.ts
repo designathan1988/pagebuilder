@@ -4953,6 +4953,8 @@ export const MESSAGE_IDS = [
   "status.elementCount.other",
   "status.embed.set",
   "status.export.done",
+  "status.export.app",
+  "status.export.appUntitled",
   "status.field.cancelled",
   "status.files.badName",
   "status.files.closed",

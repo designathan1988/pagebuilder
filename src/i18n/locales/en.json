@@ -1761,6 +1761,8 @@
   "status.elementCount.other": "{count} elements",
   "status.embed.set": "Markup of {name} kept.",
   "status.export.done": "Exported the site as {file}.",
+  "status.export.app": "Exported the app {name} as {file}.",
+  "status.export.appUntitled": "Exported the app as {file}, named {name} after the start page: to name it, select the start page and write its Page title in Settings.",
   "status.field.cancelled": "{property} of {name} left as it was.",
   "status.files.badName": "{name} is no name a file can take: a name holds no slash and is not . or ..",
   "status.files.closed": "Closed {path}.",

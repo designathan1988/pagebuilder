@@ -1761,6 +1761,8 @@
   "status.elementCount.other": "{count} elementos",
   "status.embed.set": "Marcação de {name} guardada.",
   "status.export.done": "Site exportado como {file}.",
+  "status.export.app": "App {name} exportado como {file}.",
+  "status.export.appUntitled": "App exportado como {file}, com o nome {name} da página inicial: para dar um nome, selecione a página inicial e escreva o Título da página em Configurações.",
   "status.field.cancelled": "{property} de {name} ficou como estava.",
   "status.files.badName": "{name} não é um nome que um arquivo possa ter: o nome não tem barra e não é . nem ..",
   "status.files.closed": "Arquivo {path} fechado.",
