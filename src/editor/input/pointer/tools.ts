@@ -2,7 +2,7 @@
 import type { DispatchResult } from '../../../core/store/store.ts';
 import type { CommandId } from '../../../generated/ids.ts';
 import type { DoorEntry } from '../../../manifest/runtime.ts';
-import { WHEEL_DOORS, WHEEL_FACTOR, WHEEL_LINE, onStage, CANCEL_PICKER, finishPickerSession } from './common.ts';
+import { WHEEL_DOORS, WHEEL_FACTOR, WHEEL_LINE, onStage, CANCEL_PICKER, finishPickerSession, pressAt } from './common.ts';
 import type { PointerOwner } from './owner.ts';
 
 export function pointerTools(p: PointerOwner): Pick<PointerOwner, 'dropTool' | 'followPicker' | 'dispatchPan' | 'onWheel'> {
@@ -63,6 +63,13 @@ export function pointerTools(p: PointerOwner): Pick<PointerOwner, 'dropTool' | '
     if ('factor' in entry.command.args) p.dispatchPan(entry, { factor: Math.exp(-dy * WHEEL_FACTOR), point: { x: event.clientX, y: event.clientY } });
     else if (modifier === 'Shift') p.dispatchPan(entry, { dx: -(dx !== 0 ? dx : dy), dy: 0 });
     else p.dispatchPan(entry, { dx: -dx, dy: -dy });
+    // the page moved under a still pointer: what it hovers is read again once the frame has moved, as a move reads it
+    // (the hover outline stayed on the element the wheel had carried away until the mouse moved)
+    requestAnimationFrame(() => {
+      if (ps.machine.phase !== 'idle') return;
+      const press = pressAt(event, p.isRoot, target.document.elementFromPoint(event.clientX, event.clientY));
+      p.views.setHovered(press !== null && press !== 'elsewhere' && press.on === 'node' ? press.node : null);
+    });
   };
   return { dropTool, followPicker, dispatchPan, onWheel };
 }
