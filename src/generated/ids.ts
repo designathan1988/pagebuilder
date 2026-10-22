@@ -3846,6 +3846,8 @@ export const MESSAGE_IDS = [
   "element.track.label",
   "element.video.label",
   "explorer.deleteRow",
+  "explorer.pageTemplate",
+  "explorer.pageTemplateOf",
   "explorer.files",
   "explorer.moveInto",
   "explorer.moveTo",

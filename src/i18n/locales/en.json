@@ -653,6 +653,8 @@
   "element.track.label": "Track",
   "element.video.label": "Video",
   "explorer.deleteRow": "Delete {name}",
+  "explorer.pageTemplate": "template",
+  "explorer.pageTemplateOf": "The template of every item of {collection}: the export writes one page per item",
   "explorer.files": "Files",
   "explorer.moveInto": "Move into this folder",
   "explorer.moveTo": "Move {name} to…",

@@ -39,11 +39,18 @@ const PAGE_ACTIONS = doorSlots('explorer-pages').filter((d) => drawnAs(d) === 'i
 
 // the current page's row is marked by its door's own current state (pages.switch), none before that command exists
 function PageRow({ page }: { readonly page: Page }) {
+  const t = useT();
   return (
     <div className="row row--page">
       <DoorControl entry={PAGE_ROW} args={{ page: page.tree.id }} className="row__main">
         <Icon name={elementIcon('page') ?? GLYPHS.folder} size="sm" />
-        <span className="row__meta" title={page.file}>{page.file}</span>
+        {/* a template page is written once per item of its collection, never as its own file: it says so (it named
+            about.html, a file the export no longer writes) */}
+        {page.tree.dataItem?.template === true ? (
+          <span className="row__meta" title={t('explorer.pageTemplateOf', { collection: page.tree.dataItem.collection })}>{t('explorer.pageTemplate', { collection: page.tree.dataItem.collection })}</span>
+        ) : (
+          <span className="row__meta" title={page.file}>{page.file}</span>
+        )}
       </DoorControl>
       <PageNameField page={page} />
       <span className="row__actions">

@@ -653,6 +653,8 @@
   "element.track.label": "Faixa de texto",
   "element.video.label": "Vídeo",
   "explorer.deleteRow": "Excluir {name}",
+  "explorer.pageTemplate": "modelo",
+  "explorer.pageTemplateOf": "O modelo de cada item de {collection}: a exportação escreve uma página por item",
   "explorer.files": "Arquivos",
   "explorer.moveInto": "Mover para esta pasta",
   "explorer.moveTo": "Mover {name} para…",
