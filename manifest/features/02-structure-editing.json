@@ -12183,7 +12183,7 @@
           "Select the Paragraph, press M, move the aim and press Escape."
         ],
         "expected": [
-          "After M the status bar reads 'Holding <name>. Arrows aim, Enter places, Esc drops.' [status.hand.holding] and the canvas shows the same insertion indicator a mouse drag shows.",
+          "After M the status bar reads 'Moving <name>. Arrows aim, Enter places, Esc cancels.' [status.hand.holding] and the canvas shows the same insertion indicator a mouse drag shows.",
           "ArrowDown/ArrowRight aim at the next position, ArrowUp climbs a receiver level, ArrowLeft descends; the status bar names the receiver, position and level after each key.",
           "Enter moves the element to the aimed place in the document JSON (one undo step).",
           "Escape drops the hand and leaves the document JSON unchanged."
