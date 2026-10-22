@@ -510,6 +510,40 @@
    pushes the page down instead of lying over its top-right corner, where it hid the element being edited (G4); a name,
    not a control, so it takes no press (DEF-0536). Its words at the band's end, as the breakpoint band's: the selection
    label of an element at the page's top starts at the element's left edge (DEC-70), so the two do not meet */
+/* the band of a page with logic or interactions: they run in the Preview, and Try it opens it */
+.canvas-run-badge {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: var(--size-target-min);
+  padding: 0 var(--space-2) 0 var(--space-4);
+  background: var(--color-accent-soft, var(--color-surface-raised));
+  color: var(--color-text);
+  font: var(--fw-label) var(--fs-label) / var(--lh-label, 1.3) var(--font-ui);
+}
+
+.canvas-run-badge__words {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.canvas-run-badge__try {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-2);
+  height: calc(var(--size-target-min) - var(--space-2));
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
 .canvas-state-badge {
   display: flex;
   flex: none;

@@ -13,8 +13,11 @@ import { DoorControl, Icon } from '../doors/door.tsx';
 import { MenuButton } from '../doors/menu.tsx';
 import { GLYPHS, doorSlots, slotsIn } from '../doors/placement.ts';
 import { codeTabs } from '../explorer/file-tabs.ts';
-import { useEditorState } from '../store.ts';
-import { isEmptyProject } from '../../core/document/model.ts';
+import { useEditorState, useStore } from '../store.ts';
+import { isEmptyProject, walk } from '../../core/document/model.ts';
+import { openedPage } from '../../core/project/pages.ts';
+import type { DispatchResult } from '../../core/store/store.ts';
+import type { CommandId } from '../../generated/ids.ts';
 import { fitZoom, frameLeftOf, frameTopOf, registerStage, reportFrame, topOf } from '../view/camera.ts';
 import { activeBreakpoint, viewportWidth } from '../view/breakpoints.ts';
 import { activeState, stateName } from '../view/style-state.ts';
@@ -309,6 +312,28 @@ function BreakpointBadge() {
   );
 }
 
+// A page whose elements hold application logic or interactions runs them in the Preview and on the site, never on the
+// canvas, which shows the page as it is written (a list's one model row and its "nothing here" text both at once): a
+// band says so, with the way to try them. Without it the logic read as broken.
+function RunsInPreviewBadge() {
+  const t = useT();
+  const store = useStore();
+  const runs = useEditorState((s) => {
+    const page = s.document.pages[openedPage(s)];
+    return page !== undefined && [...walk(page.tree)].some((node) => node.logic !== undefined || (node.interactions ?? []).length > 0);
+  });
+  if (!runs) return null;
+  return (
+    <div className="canvas-run-badge" data-canvas-badge="runs">
+      <span className="canvas-run-badge__words">{t('canvas.badge.runsInPreview')}</span>
+      <button type="button" className="canvas-run-badge__try" onClick={() => (store.dispatch as (id: CommandId, a: unknown) => DispatchResult)('view.enterPreview' as CommandId, {})}>
+        <Icon name="play" size="sm" />
+        <span>{t('canvas.badge.tryInPreview')}</span>
+      </button>
+    </div>
+  );
+}
+
 export function CanvasColumn() {
   const stage = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
@@ -396,6 +421,7 @@ export function CanvasColumn() {
                           then the state's (window-overlays.css) */}
                       <BreakpointBadge />
                       <StateBadge />
+                      <RunsInPreviewBadge />
                     </div>
                     {/* the edge first: the page's overlay (its handles at the page's edge) is drawn over it */}
                     <FrameEdge width={pageWidth} />

@@ -7614,5 +7614,7 @@ export const MESSAGE_IDS = [
   "logic.bind.remove",
   "logic.bind.asCode",
   "logic.bind.hideCode",
+  "canvas.badge.runsInPreview",
+  "canvas.badge.tryInPreview",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];

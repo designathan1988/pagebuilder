@@ -4426,5 +4426,7 @@
   "logic.bind.add": "Adicionar a mudança",
   "logic.bind.remove": "Remover esta mudança",
   "logic.bind.asCode": "Adicionar como código",
-  "logic.bind.hideCode": "Esconder o formulário de código"
+  "logic.bind.hideCode": "Esconder o formulário de código",
+  "canvas.badge.runsInPreview": "Esta página tem lógica e interações: elas rodam na pré-visualização, não no canvas.",
+  "canvas.badge.tryInPreview": "Testar"
 }
