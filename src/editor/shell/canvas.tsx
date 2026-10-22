@@ -3,7 +3,7 @@
 // and the page's iframe (src/editor/canvas/frame.tsx) at the camera's zoom (src/editor/view/camera.ts): the chosen one,
 // or in Fit mode the one that fits the frame to the stage; the frame, as tall as the whole page (DCS-035: the canvas is
 // an artboard), is placed on the stage where the camera puts it, on both axes.
-import { Fragment, useCallback, useContext, useLayoutEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { MessageId } from '../../generated/ids.ts';
 import { manifest, type DoorEntry } from '../../manifest/runtime.ts';
 import { CanvasFrame } from '../canvas/frame.tsx';
@@ -242,22 +242,43 @@ function BreakpointTabs({ seen }: { readonly seen: { readonly from: number; read
   const t = useT();
   const row = useRef<HTMLDivElement>(null);
   const [compact, setCompact] = useState(false);
-  const whole = useRef<{ readonly words: string; readonly width: number } | null>(null);
+  const whole = useRef<{ readonly words: string; readonly width: number; readonly fonts: number } | null>(null);
   const room = Math.max(0, seen.to - seen.from);
   // what the tabs say: the project's breakpoints, the one in view and the words of the interface's language
   const said = useEditorState((s) => JSON.stringify([breakpointsOf(s.document), activeBreakpoint(s).id]));
+  // the interface's font, once loaded, draws the names narrower than the fallback a first measure read them in: the
+  // tabs are measured again then (a Phone frame kept its tabs as icons after a reload, its names fitting)
+  const [fonts, setFonts] = useState(0);
+  useEffect(() => {
+    const set = window.document.fonts;
+    let live = true;
+    const again = () => {
+      if (live) setFonts((n) => n + 1);
+    };
+    void set.ready.then(again);
+    set.addEventListener('loadingdone', again);
+    return () => {
+      live = false;
+      set.removeEventListener('loadingdone', again);
+    };
+  }, []);
   useLayoutEffect(() => {
     const element = row.current;
     if (element === null) return;
     const words = [...element.querySelectorAll('.frame-tab')].map((tab) => `${tab.textContent ?? ''}${tab.classList.contains('is-current') ? '*' : ''}`).join('|');
+    if (compact && fonts !== whole.current?.fonts) {
+      // measured again in the font now drawn
+      setCompact(false);
+      return;
+    }
     if (!compact) {
-      whole.current = { words, width: element.scrollWidth };
+      whole.current = { words, width: element.scrollWidth, fonts };
       if (element.scrollWidth > room + 0.5) setCompact(true);
     } else if (whole.current === null || whole.current.words !== words || whole.current.width <= room + 0.5) {
       // other names, or room enough again: drawn whole once more, and measured
       setCompact(false);
     }
-  }, [compact, room, said, t]);
+  }, [compact, room, said, t, fonts]);
   return (
     <div ref={row} className={`frame-tabs${compact ? ' is-compact' : ''}`} data-region="canvas-breakpoints" role="tablist" style={{ marginLeft: seen.from, width: compact ? undefined : room }}>
       <Slots

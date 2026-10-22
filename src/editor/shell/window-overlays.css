@@ -517,7 +517,8 @@
   align-items: center;
   gap: var(--space-4);
   min-height: var(--size-target-min);
-  padding: 0 var(--space-2) 0 var(--space-4);
+  /* room above and below: in a phone's narrow frame its words take two lines, which sat on its edges */
+  padding: var(--space-1) var(--space-2) var(--space-1) var(--space-4);
   background: var(--color-accent-soft, var(--color-surface-raised));
   color: var(--color-text);
   font: var(--fw-label) var(--fs-label) / var(--lh-label, 1.3) var(--font-ui);
