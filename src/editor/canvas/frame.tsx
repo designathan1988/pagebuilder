@@ -124,7 +124,10 @@ export function CanvasFrame({ width, screen, zoom, onExtent }: { readonly width:
       };
       // a box of the page resized (an image sized, a text grown): the page's own observer, in its own window, so its
       // notices come with the page's own layout
+      // (the page's readers too: a breakpoint's width lays the page out a few frames after the store changed, and the
+      // status bar's size and the box model's centre kept the last width's size until something else moved)
       const resized = new pageWindow.ResizeObserver(() => {
+        pageChanged();
         if (probing === 0) probing = requestAnimationFrame(probe);
       });
       resized.observe(target.body);
