@@ -7185,7 +7185,9 @@
                         "base": {
                           "display": "flex",
                           "flex-direction": "row",
-                          "column-gap": "16px"
+                          "column-gap": "16px",
+                          "flex-wrap": "wrap",
+                          "row-gap": "16px"
                         }
                       }
                     },
@@ -8344,7 +8346,9 @@
                         "base": {
                           "display": "flex",
                           "flex-direction": "row",
-                          "column-gap": "16px"
+                          "column-gap": "16px",
+                          "flex-wrap": "wrap",
+                          "row-gap": "16px"
                         }
                       }
                     },
@@ -16533,7 +16537,9 @@
                         "base": {
                           "display": "flex",
                           "flex-direction": "row",
-                          "column-gap": "16px"
+                          "column-gap": "16px",
+                          "flex-wrap": "wrap",
+                          "row-gap": "16px"
                         }
                       }
                     },

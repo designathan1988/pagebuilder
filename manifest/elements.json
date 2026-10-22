@@ -12877,7 +12877,9 @@
       "styles": {
         "display": "flex",
         "flex-direction": "row",
-        "column-gap": "16px"
+        "flex-wrap": "wrap",
+        "column-gap": "16px",
+        "row-gap": "16px"
       },
       "childStyles": {
         "flex-grow": "1",
