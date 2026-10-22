@@ -140,6 +140,11 @@ createNaturalChildCommand.labelParams = (state, rules) => {
 // Whether a new element is of a selected element's own kind, so it goes beside it rather than inside: the same type,
 // other than a plain container (a container clicked in a container is a nested one, the layouts' way)
 const PLAIN_CONTAINER = 'div';
+// The elements that draw their own content and show what is inside them only where they cannot play or draw (a
+// media's fallback): an element clicked in Insert never goes in there but beside them; only their own parts do (a
+// source, a track, a picture's image). An Embedded frame clicked with an audio's source selected went inside the audio,
+// 0 x 0 and never seen.
+const OWN_PARTS: Readonly<Record<string, readonly string[]>> = { audio: ['source', 'track'], video: ['source', 'track'], picture: ['source', 'img'], canvas: [], object: [] };
 const sameKind = (selected: DocNode, incoming: DocNode): boolean => selected.type === incoming.type && incoming.type !== PLAIN_CONTAINER;
 
 // Where the new element goes: the parent and the index among its children; null when the parent given is no node.
@@ -158,6 +163,12 @@ export function placement(
 ): { readonly parent: Location; readonly index: number } | null {
   const document = state.document;
   const root = pageShown(state)?.tree ?? null;
+  // whether the new element may go inside a node: the content model's word, and a media takes only its parts
+  const takes = (node: DocNode, arriving: DocNode): boolean => {
+    const parts = node.tag === null ? undefined : OWN_PARTS[node.tag];
+    if (parts !== undefined && !parts.includes(arriving.tag ?? '')) return false;
+    return placementRefusal(document, rules, node.id, [arriving]) === null;
+  };
   if (parent !== undefined) {
     const at = locate(document, parent);
     if (!at) return null;
@@ -184,7 +195,7 @@ export function placement(
     // leaf is, where its parent takes it: a table clicked with a list selected was refused, "<ul> only accepts <li>"
     // (DEF-0601); a saved component is placed by this same rule (components.insertInstance, USE-7)
     const up = incoming !== undefined && primary.parent ? locate(document, primary.parent.id) : null;
-    if (up && incoming !== undefined && placementRefusal(document, rules, primary.node.id, [incoming]) !== null && placementRefusal(document, rules, up.node.id, [incoming]) === null) {
+    if (up && incoming !== undefined && !takes(primary.node, incoming) && takes(up.node, incoming)) {
       return { parent: up, index: primary.index + 1 };
     }
     // the page root selected takes the element at the page's end, as with nothing selected (pageEnd)
@@ -195,9 +206,9 @@ export function placement(
     // a leaf whose parent does not take the new element (a select's option, a list's item) is followed by it after the
     // nearest ancestor whose parent takes it: a select clicked with an option selected was refused, "<select> only
     // accepts <option>…", and the person had to find the select's parent first
-    if (up && incoming !== undefined && placementRefusal(document, rules, up.node.id, [incoming]) !== null) {
+    if (up && incoming !== undefined && !takes(up.node, incoming)) {
       for (let child: Location = up, above = up.parent ? locate(document, up.parent.id) : null; above !== null; child = above, above = above.parent ? locate(document, above.parent.id) : null) {
-        if (placementRefusal(document, rules, above.node.id, [incoming]) === null) return { parent: above, index: child.index + 1 };
+        if (takes(above.node, incoming)) return { parent: above, index: child.index + 1 };
       }
     }
     if (up) return { parent: up, index: primary.index + 1 };

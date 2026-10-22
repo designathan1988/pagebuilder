@@ -105,9 +105,9 @@ function framePlaceholder(address: string, title: string): string {
   // the host of an absolute or protocol-relative address (the caller passes only those); one no URL reads ("https://")
   // is shown as it is written
   const base = 'https://site.invalid/';
-  const host = URL.canParse(address, base) ? new URL(address, base).host : address;
+  const host = address === '' ? '' : URL.canParse(address, base) ? new URL(address, base).host : address;
   const icon = /map/i.test(address) ? MAP_ICON : FRAME_ICON;
-  return `<!doctype html><html><head><meta charset="utf-8"><style>${PLACEHOLDER_STYLE}</style></head><body><svg viewBox="0 0 48 48" fill="none" stroke="#64748b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icon}</svg><strong>${escapeHtml(title)}</strong><span>${escapeHtml(host)}</span></body></html>`;
+  return `<!doctype html><html><head><meta charset="utf-8"><style>${PLACEHOLDER_STYLE}</style></head><body><svg viewBox="0 0 48 48" fill="none" stroke="#64748b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icon}</svg><strong>${escapeHtml(title)}</strong>${host === '' ? '' : `<span>${escapeHtml(host)}</span>`}</body></html>`;
 }
 // the style element of the project's design tokens (core/design/tokens.ts): the :root rule of its variables, after the
 // editor's, before every node's (the export writes the same rule first in its stylesheet)
@@ -834,6 +834,8 @@ export class PageRenderer {
     // canvas shows a placeholder with its icon, its title and the address's host instead; the export writes the frame
     const away = tag === 'iframe' && !wanted.has('srcdoc') ? wanted.get('src') : undefined;
     if (away !== undefined && /^(https?:)?\/\//i.test(away)) wanted.set('srcdoc', framePlaceholder(away, wanted.get('title') ?? node.name));
+    // a frame with no address yet drew a blank white box that said nothing of what it was: the same panel, its name
+    else if (tag === 'iframe' && !wanted.has('srcdoc') && (away ?? '') === '') wanted.set('srcdoc', framePlaceholder('', wanted.get('title') ?? node.name));
     if (this.revealed.has(node.id)) {
       if (tag === 'details' || tag === 'dialog') wanted.set('open', '');
       // a part's own data-wc-open (a popup's opener naming its dialog) is never written over

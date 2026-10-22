@@ -105,7 +105,18 @@ export function RevealSelection({ stage }: { readonly stage: RefObject<HTMLDivEl
       duringDrag = false;
       decide(store.getState().selection[0] ?? null);
     });
+    // the row of the element already selected, pressed in the Layers: the selection does not change, and the person
+    // who pressed it to find the element away from the stage was told nothing; the button says where it is as for a
+    // row just chosen
+    const pressedRow = (event: PointerEvent) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if ((target?.closest('[role="treeitem"][aria-selected="true"]') ?? null) === null || views.pressRegion() !== 'layers') return;
+      const primary = store.getState().selection[0] ?? null;
+      if (primary !== null && primary === previous && views.drag.get() === null) reveal(primary, 'say');
+    };
+    document.addEventListener('pointerup', pressedRow, true);
     return () => {
+      document.removeEventListener('pointerup', pressedRow, true);
       unsubscribe();
       unsubscribeDrag();
       cancelAnimationFrame(request);
