@@ -354,9 +354,14 @@ export const removeMotionCommand = registerHandler('motion.remove', (context, { 
   if (held === undefined) return { kind: 'change' };
   const locked = lockedRefusal(context, found.node);
   if (locked !== null) return { kind: 'refused', message: locked };
-  // the timeline stays in the project's library, reusable by name
+  // the timeline stays in the project's library, reusable by name; an entrance effect's own timeline (the one its
+  // preset made) goes with it when nothing else plays or controls it, as picking another effect already takes it:
+  // removed, Fade in left "Image fade in" behind, played by nothing
   const motions = motionsOf(found.node).filter((_one, index) => index !== interaction);
-  return { kind: 'change', patches: writeMotions(found.node, found.path, motions), message: message('status.motion.removed', { name: { key: triggerLabel(held.trigger.kind) }, element: found.node.name }) };
+  const uses = timelineUses(context.state.document, held.timeline);
+  const orphan = isEntryEffect(held) && uses.actions === 0 && uses.interactions === 1;
+  const timelines = orphan ? writeTimelines(context.state.document, timelinesOf(context.state.document).filter((one) => one.name !== held.timeline)) : [];
+  return { kind: 'change', patches: [...writeMotions(found.node, found.path, motions), ...timelines], message: message('status.motion.removed', { name: { key: triggerLabel(held.trigger.kind) }, element: found.node.name }) };
 });
 
 // ---------------------------------------------------------------- timelines
