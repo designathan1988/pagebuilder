@@ -219,7 +219,9 @@ export function pageAt(pages: readonly Page[], from: string, address: string): P
   return pages.find((page) => new URL(page.file, root).pathname === resolved.pathname);
 }
 
-const withKeyRelay =(html: string): string => (html.includes('</body>') ? html.replace('</body>', `${KEY_RELAY}</body>`) : html + KEY_RELAY);
+// the page says it runs in the preview (data-builder-preview on its root): an interaction that opens a page of the
+// site asks the editor for it (core/events/script.ts), as the page's links do
+const withKeyRelay = (html: string): string => (html.includes('</body>') ? html.replace('</body>', `${KEY_RELAY}</body>`) : html + KEY_RELAY).replace('<html', '<html data-builder-preview');
 
 // The store the preview lends its page (the user's final-use audit, USE-8): the page runs sandboxed in an opaque
 // origin, where localStorage throws, so the site's runtimes (js/widgets.js, js/app-layer/runtime.js) logged that this

@@ -259,12 +259,14 @@ function changedByText(node: DocNode, interaction: Interaction, field: string, t
   }
   if (field === 'action') {
     if (!applicableActions(node).includes(typed)) return { refused: message('status.interactions.notApplicable', { name: { key: actionLabel(typed) }, element: node.name }) };
-    // a new action keeps the values it needs too (Add class → Remove class keeps the class typed); the rest goes
-    const { className, animation, address, newTab, ...rest } = interaction;
+    // a new action keeps the values it needs too (Add class → Remove class keeps the class typed); the rest goes, the
+    // target with it when the new action acts on no other element (Open a link)
+    const { className, animation, address, newTab, target, ...rest } = interaction;
     return {
       next: {
         ...rest,
         action: typed,
+        ...(needsTarget(typed) && target !== undefined ? { target } : {}),
         ...(needsClassName(typed) && className !== undefined ? { className } : {}),
         ...(needsAnimation(typed) && animation !== undefined ? { animation } : {}),
         ...(needsAddress(typed) && address !== undefined ? { address } : {}),

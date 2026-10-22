@@ -61,9 +61,13 @@ function actionJs(node: DocNode, interaction: Interaction, selectorOf: SelectorO
     if (interaction.action === 'scroll-to') return `if (target) target.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });`;
     if (needsAddress(interaction.action)) {
       if (interaction.address === undefined) return null;
+      // in the editor's Preview (one page written into a frame, data-builder-preview) a page of the site is asked of
+      // the editor, which shows it, as a link of the page is (preview.tsx builderPreviewPage): loaded from the frame's
+      // address, it was the editor's own address and drew a blank page
+      const preview = `if (document.documentElement.hasAttribute('data-builder-preview') && !/^[a-z][a-z0-9+.-]*:/i.test(${quoted(interaction.address)})) parent.postMessage({ builderPreviewPage: ${quoted(interaction.address)} }, '*'); else`;
       return interaction.newTab === true
-        ? `window.open(${quoted(interaction.address)}, '_blank', 'noopener,noreferrer');`
-        : `window.location.assign(${quoted(interaction.address)});`;
+        ? `${preview} window.open(${quoted(interaction.address)}, '_blank', 'noopener,noreferrer');`
+        : `${preview} window.location.assign(${quoted(interaction.address)});`;
     }
     return null;
   })();

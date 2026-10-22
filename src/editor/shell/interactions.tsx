@@ -104,6 +104,8 @@ function Card({ node, interaction, index }: { readonly node: DocNode; readonly i
   const animations = animationsOf(node).map((animation) => animation.name);
   const classes = [...node.classes];
   const projectClasses = useEditorState((s) => classesOf(s.document)).map((one) => one.name);
+  // the pages of the project an address can name (a link's Open a link: a page picked, not typed)
+  const pageFiles = useEditorState((s) => s.document.pages.map((page) => page.file).join('\n')).split('\n');
   const [expanded, setExpanded] = useState(index === 0);
   // Escape stops picking wherever the focus is (the Target button in the inspector kept it: Escape did nothing there)
   useEffect(() => {
@@ -147,7 +149,7 @@ function Card({ node, interaction, index }: { readonly node: DocNode; readonly i
             label={t(valueKey)}
             // a class to add, remove or toggle is any class of the project (the element's own classes alone left out the
             // class the action is for: one the target does not hold yet)
-            offered={needsClassName(interaction.action) ? projectClasses : needsAnimation(interaction.action) ? animations : undefined}
+            offered={needsClassName(interaction.action) ? projectClasses : needsAnimation(interaction.action) ? animations : needsAddress(interaction.action) ? pageFiles : undefined}
           />
         ) : null}
         {NEW_TAB !== null && needsAddress(interaction.action) ? (
@@ -161,7 +163,8 @@ function Card({ node, interaction, index }: { readonly node: DocNode; readonly i
             />
           </div>
         ) : null}
-        <div className="field-row interaction-card__target" data-interaction-target={index}>
+        {/* an action on another element (show, a class, a dialog…) names it; one that opens an address names none */}
+        {needsTarget(interaction.action) ? <div className="field-row interaction-card__target" data-interaction-target={index}>
           <span className="field-row__label">{t('interactions.field.target')}</span>
           {TARGET_FIELD !== null ? (
             // pressed again while picking, it stops picking (the target stays as it was)
@@ -169,7 +172,7 @@ function Card({ node, interaction, index }: { readonly node: DocNode; readonly i
               {picking ? t('interactions.picking') : (target?.name ?? t('interactions.target.none'))}
             </PanelButton>
           ) : null}
-        </div>
+        </div> : null}
         {/* the options in the default ink while the event keeps its trigger's own way (the canonical card's o-def) */}
         {OPTIONS_FIELD !== null ? (
           <span className={interaction.once === undefined && interaction.delay === undefined ? 'interaction-card__default' : 'interaction-card__set'}>
