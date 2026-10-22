@@ -103,6 +103,7 @@ export function AssistantPanel(): ReactNode {
     </div>
     {state.reference && <div className="assistant-reference"><img src={`data:${state.reference.type};base64,${state.reference.bytes}`} alt={t('assistant.referenceImage')} /><DoorControl entry={entryOf('assistant-clear-reference')} ready={!state.busy} /></div>}
     <DoorControl entry={entryOf('assistant-clear-conversation')} ready={!state.busy} />
-    <p className="assistant-help">{t('assistant.usage', { input: state.inputTokens, output: state.outputTokens })}</p>
+    {/* the tokens of the last turn, once there is one ("0 input tokens" stood under a conversation never begun) */}
+    {state.inputTokens + state.outputTokens > 0 ? <p className="assistant-help">{t('assistant.usage', { input: state.inputTokens, output: state.outputTokens })}</p> : null}
   </div>;
 }
