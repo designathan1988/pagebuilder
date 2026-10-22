@@ -34,6 +34,8 @@ const WIDTH = FIELDS.find(isNumber);
 // the trash: the door that takes the breakpoint and a choice; Add: the one that takes nothing it must have
 const REMOVE = DOORS.find((d) => Object.values(d.command.args).some((a) => a.type === 'enum') && Object.values(d.command.args).some((a) => a.type === 'breakpoint'));
 const ADD = DOORS.find((d) => Object.values(d.command.args).every((a) => a.optional));
+// what the table's commands refuse (the manifest's refusals of the dialog's doors): said in the dialog too
+const REFUSALS: ReadonlySet<string> = new Set(DOORS.flatMap((d) => d.command.refusals));
 
 const built = (entry: DoorEntry | undefined): boolean => entry !== undefined && isFeatureBuilt(entry.door.feature as FeatureId);
 
@@ -52,6 +54,8 @@ function OpenBreakpoints() {
   const t = useT();
   const table = useEditorState((s) => breakpointsOf(s.document));
   const width = useEditorState((s) => viewportWidth(s));
+  const said = useEditorState((s) => s.message);
+  const refusal = said !== null && REFUSALS.has(said.key) ? said : null;
   return (
     <ModalDialog region={REGION} titleKey="breakpoints.title" className="breakpoints-dialog">
       <div className="dialog__body">
@@ -72,6 +76,9 @@ function OpenBreakpoints() {
             <ViewportWidth entry={SHOWN} />
           </label>
         )}
+        {/* a change of the table refused (a width outside its neighbours, a name taken): said here too, the status bar
+            behind the dialog was the only place, and the field simply went back to its value */}
+        {refusal === null ? null : <p className="breakpoints-dialog__hint" role="alert">{t(refusal.key, refusal.params)}</p>}
         {/* why a breakpoint cannot be added at this width (the base's, one a breakpoint holds): said here, not only in the
             status bar behind the dialog */}
         {ADD === undefined ? null : <AddRefusal entry={ADD} />}
