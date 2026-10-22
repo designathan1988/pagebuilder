@@ -4512,5 +4512,7 @@
   "batchRename.needsSeveral": "Select several elements to rename them together; one is renamed with Rename (F2).",
   "data.cellImageHint": "img/photo.png or https://…",
   "data.cellVideoHint": "A video address or file",
-  "data.cellFileHint": "A file of the project or https://…"
+  "data.cellFileHint": "A file of the project or https://…",
+  "data.cellLinkHint": "about.html or https://…",
+  "data.cellColourHint": "#2563eb"
 }

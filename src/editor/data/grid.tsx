@@ -140,20 +140,27 @@ function Grid({ collection, query }: { readonly collection: Collection; readonly
   // title); every other value is typed (a multireference: the titles parted by commas)
   const choices = (field: Field): Option[] | undefined => {
     if (field.type === 'option') return [{ value: '', label: t('data.none') }, ...(field.options ?? []).map((option) => ({ value: option, label: option }))];
+    // a yes or no is chosen, as the grid shows it (it was a text box that took "yes", "sim", "1"… with nothing saying so)
+    if (field.type === 'boolean') return [{ value: '', label: t('data.none') }, { value: words.yes, label: words.yes }, { value: words.no, label: words.no }];
     const target = field.type === 'reference' && field.collection !== undefined ? lookup(field.collection) : undefined;
     return target === undefined ? undefined : [{ value: '', label: t('data.none') }, ...target.items.map((item) => ({ value: item.id, label: itemTitle(target, item, language) }))];
   };
   // an image, a video or a file cell offers the project's files of its kind as it is typed, and says what it takes:
   // it was an empty box, and nothing told the person to write "img/photo.png" or where the project's images were
   const fileKinds: Readonly<Partial<Record<Field['type'], string>>> = { image: 'image/', video: 'video/', file: '' };
+  const CELL_HINTS: Readonly<Partial<Record<Field['type'], MessageId>>> = { image: 'data.cellImageHint', video: 'data.cellVideoHint', file: 'data.cellFileHint', link: 'data.cellLinkHint', colour: 'data.cellColourHint' };
   const suggested = (field: Field): readonly string[] | undefined => {
+    // a link offers the site's pages (a web address is typed)
+    if (field.type === 'link') return document.pages.filter((one) => one.tree.dataItem?.template !== true).map((one) => one.file);
+    // a colour offers the hex colours of the project's variables (a cell holds a hex colour)
+    if (field.type === 'colour') return [...new Set((document.tokens ?? []).map((one) => one.value.trim().toLowerCase()).filter((value) => /^#[0-9a-f]{3,8}$/u.test(value)))];
     const kind = fileKinds[field.type];
     return kind === undefined ? undefined : filesOf(document).filter((one) => one.type.startsWith(kind)).map((one) => one.path);
   };
   const cell = (field: Field, value: string, item: string) => {
     const options = choices(field);
     const files = options === undefined ? suggested(field) : undefined;
-    return <DoorField entry={CELL} args={{ collection: collection.name, item, field: field.key }} name="value" value={value} {...(options === undefined ? {} : { options })} {...(field.type === 'date' ? { kind: 'date' as const } : {})} {...(files === undefined ? {} : { suggestions: files, placeholder: t(field.type === 'image' ? 'data.cellImageHint' : field.type === 'video' ? 'data.cellVideoHint' : 'data.cellFileHint') })} label={t('data.cellLabel', { column: field.label, row: collection.items.findIndex((one) => one.id === item) + 1 })} />;
+    return <DoorField entry={CELL} args={{ collection: collection.name, item, field: field.key }} name="value" value={value} {...(options === undefined ? {} : { options })} {...(field.type === 'date' ? { kind: 'date' as const } : {})} {...(files === undefined ? {} : { suggestions: files, placeholder: t(CELL_HINTS[field.type] ?? 'data.cellFileHint') })} label={t('data.cellLabel', { column: field.label, row: collection.items.findIndex((one) => one.id === item) + 1 })} />;
   };
   return (
     <div className="data-grid" data-region="data-grid">
