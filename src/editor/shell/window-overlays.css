@@ -1648,7 +1648,7 @@
 
 .chrome__grid-line-number {
   position: absolute;
-  transform: translateY(-100%);
+  transform: translateY(calc(-100% - var(--space-1)));
   padding: 0 var(--space-1);
   border-radius: var(--radius-sm);
   background: color-mix(in srgb, var(--color-canvas-selection) 18%, var(--color-surface));

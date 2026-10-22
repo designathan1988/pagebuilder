@@ -40,9 +40,13 @@ export const enterGridEdit = registerHandler<'grid.enterEdit', EditorUi>('grid.e
   const node = (target as NodeId | undefined) ?? state.selection[0];
   const found = node === undefined ? null : locate(state.document, node);
   if (found === null) return { kind: 'change' };
-  if (!isGridContainer(found.node, rules, state.document.classes)) return { kind: 'refused', message: message('status.gridEdit.notGrid', { name: found.node.name }) };
-  if (state.ui.gridEdit === found.node.id) return { kind: 'change' };
-  return { kind: 'change', ui: { ...state.ui, gridEdit: found.node.id as NodeId } };
+  // an item of a grid opens the grid it stands in, the item kept selected (its span grip is drawn on it): with a card
+  // selected the Arrange menu offered "Edit this grid on the canvas" and refused it, the card being no grid itself
+  const parent = found.parent === null ? null : (locate(state.document, found.parent.id)?.node ?? null);
+  const grid = isGridContainer(found.node, rules, state.document.classes) ? found.node : isGridContainer(parent, rules, state.document.classes) ? parent : null;
+  if (grid === null) return { kind: 'refused', message: message('status.gridEdit.notGrid', { name: found.node.name }) };
+  if (state.ui.gridEdit === grid.id) return { kind: 'change' };
+  return { kind: 'change', ui: { ...state.ui, gridEdit: grid.id as NodeId } };
 });
 
 export const exitGridEdit = registerHandler<'grid.exitEdit', EditorUi>('grid.exitEdit', ({ state }) => {

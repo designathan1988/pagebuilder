@@ -64,8 +64,10 @@ export const GridEditor = memo(function GridEditor() {
   const active = drawn !== null && editing !== null;
   return (
     <div className="chrome__grid-edit" ref={layer}>
+      {/* the column numbers inside the grid's foot: above its top they stood where the selection's label stands (DEC-70),
+          under it and its chip; under the grid they covered the text after it */}
       {!active || drawn === null ? null : drawn.tracks.map((track, i) => (
-        <span key={`n${String(i)}`} className="chrome__grid-line-number" style={{ left: track.x, top: track.y }} data-chrome="grid-line-number" {...(i === 0 ? { 'data-region': 'grid-edit-chrome' } : {})}>
+        <span key={`n${String(i)}`} className="chrome__grid-line-number" style={{ left: track.x, top: track.y + track.height }} data-chrome="grid-line-number" {...(i === 0 ? { 'data-region': 'grid-edit-chrome' } : {})}>
           {i + 1}
         </span>
       ))}

@@ -2265,7 +2265,7 @@
   "command.grid.trackSize": "Size this column",
   "keyContext.gridEdit": "Grid editor",
   "status.gridEdit.unavailable": "Open the grid editor on a grid container first.",
-  "status.gridEdit.notGrid": "{name} is no grid container.",
+  "status.gridEdit.notGrid": "{name} is not a grid, nor inside one.",
   "status.gridEdit.cellTaken": "The next cell holds {name}.",
   "status.gridEdit.nothingToSplit": "{name} covers one cell.",
   "feature.canvasGridEditor": "Edit a grid on the canvas: its tracks, its cells and the items in them",
