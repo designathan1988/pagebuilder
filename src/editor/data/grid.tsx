@@ -65,12 +65,13 @@ function Fields({ collection }: { readonly collection: Collection }): ReactNode 
       {collection.fields.map((field) => (
         <div key={field.key} className="data-fields__row">
           <DoorField entry={FIELD_LABEL} args={{ collection: collection.name, field: field.key }} name="label" value={field.label} />
+          {/* Delete beside the name it removes: the type menu, as wide as its longest type, takes the next line */}
+          <DoorControl entry={FIELD_REMOVE} args={{ collection: collection.name, field: field.key }} label={t('data.removeFieldNamed', { label: field.label })} />
           <DoorField entry={FIELD_TYPE} args={{ collection: collection.name, field: field.key }} name="type" value={field.type} options={types} className="data-field--type" />
           {field.type === 'number' ? <DoorField entry={FIELD_DECIMALS} args={{ collection: collection.name, field: field.key }} name="decimals" value={String(field.decimals ?? 0)} options={DECIMAL_PLACES} transform={Number} className="data-field--decimals" /> : null}
           {isReferenceType(field.type) ? part(t('data.fieldTarget'), <DoorField entry={FIELD_TARGET} args={{ collection: collection.name, field: field.key }} name="target" value={field.collection ?? ''} options={targets} />, true) : null}
           {field.type === 'option' ? part(t('data.fieldOptions'), <DoorField entry={FIELD_OPTIONS} args={{ collection: collection.name, field: field.key }} name="options" value={(field.options ?? []).join(', ')} />, true) : null}
           {field.type === 'slug' ? part(t('data.fieldFrom'), <DoorField entry={FIELD_FROM} args={{ collection: collection.name, field: field.key }} name="from" value={field.from ?? ''} options={sources} />, true) : null}
-          <DoorControl entry={FIELD_REMOVE} args={{ collection: collection.name, field: field.key }} label={t('data.removeFieldNamed', { label: field.label })} />
         </div>
       ))}
       <DoorForm entry={FIELD_ADD} args={{ collection: collection.name }} className="data-fields__add">

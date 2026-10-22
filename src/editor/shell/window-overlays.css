@@ -1481,11 +1481,13 @@
   font: var(--fw-caption) var(--fs-caption) / var(--lh-caption) var(--font-ui);
 }
 
+/* a panel's field wears the inspector's value face (the code face at the panel's size): the dialogs' 15 px input face
+   made the Interactions tab's "Between pages" read larger than every value around it */
 .panel-field__text {
   width: 100%;
   padding: 0 var(--space-2);
   height: var(--size-control);
-  font: var(--fw-input) var(--fs-input) / var(--lh-input) var(--font-ui);
+  font: var(--fw-code) var(--fs-code) / var(--lh-code) var(--font-mono);
   color: var(--color-text);
   background: var(--color-surface);
   border: 1px solid var(--color-border);

@@ -2874,3 +2874,69 @@
 - Sintoma: abrir o painel Estilos pelo trilho (título "ESTILOS") mostrava na barra de status "Painel Variáveis aberto." (pt-BR, 1280×720, foto `floating/06-pt-styles`); a janela flutuante do painel levava o mesmo nome.
 - Causa: `manifest/layout.json:660` dava ao painel `variables` o rótulo `panel.variables`, enquanto trilho e título (`src/editor/shell/sidebar/styles.tsx:21`) usam `activity.styles`; `panelName` (`src/editor/workspace/panel-catalogue.ts:24`) lê o rótulo do catálogo.
 - Prova: o catálogo agora dá `activity.styles`, e todo anúncio, janela e título que nomeia o painel por `panelName` diz "Estilos"/"Styles". O item do menu Exibir tem rótulo próprio (DCS-091).
+
+## DEF-0866 — Nome da página cortado na barra de cima com a busca sobrando
+- Status: corrigido (commit deste lote)
+- Sintoma: a 1100 px a caixa Comandos ficava com 217 px (precisa de 140) e o seletor de página já mostrava "Iníci… index.ht…"; a 1000 px, "In… i…" (pt-BR, fotos `menus/03-pt-top-bar-*`).
+- Causa: `src/editor/shell/top-bar.css:76` dava à busca largura fixa que encolhia na mesma proporção que o seletor (`:42`), e o arquivo cedia só 4 vezes mais que o nome (`:70`).
+- Prova: a busca parte das próprias palavras e cresce até 240 px só com espaço sobrando (`flex: 1 0 auto`, `max-width`), então o seletor só cede quando nem a busca mínima cabe; o arquivo cede todo antes do nome. Uso: 1100 px "Início index.html" inteiro, 1000 px "Início ind…" com a busca inteira, 1180 px igual a antes.
+
+## DEF-0867 — Lixeira do campo sozinha numa terceira linha no painel Dados
+- Status: corrigido (não commitado)
+- Sintoma: Dados › Nova coleção, pt-BR 1280×720: em cada campo, nome numa linha, tipo na segunda e a lixeira sozinha na terceira (foto `final-use/oct22/p21-new-collection`).
+- Causa: `src/editor/data/panel.css:94` (antes) punha tipo e Excluir na mesma linha; com os tipos novos o menu tem a largura de "Itens de uma coleção" (175 px) e, com a lixeira (28 + 4), passava dos 199 px da barra.
+- Prova: Excluir fica ao lado do nome (`src/editor/data/grid.tsx:68`, também na ordem de tabulação) e o nome deixa o espaço dela (`panel.css:96`); o tipo vai inteiro na linha de baixo, em toda largura de barra e todo idioma. Uso: fotos `p24-after-reload-fields` (pt) e `e27-data-fields-en` (en).
+
+## DEF-0868 — Formulários do painel Dados não esvaziavam depois de adicionar
+- Status: corrigido (não commitado)
+- Sintoma: Dados, "Nome do novo campo": "Autor" › Adicionar campo, o nome continuava na caixa; digitar "Categoria" fazia o campo "AutorCategoria" (e "AutorCategoriSluga"); o mesmo em Criar páginas e nas bibliotecas do App.
+- Causa: `src/editor/data/controls.tsx:131` (antes) `DoorForm` despachava o comando e deixava os campos como estavam, para todo formulário.
+- Prova: `DoorForm` limpa o formulário quando o comando foi aceito e mudou o documento (`controls.tsx:131-132`); recusa mantém o que foi digitado para corrigir. Uso: três campos seguidos com nomes certos e caixa vazia (foto `p25-posts-fields-ok`); Criar páginas deixa a caixa vazia (foto `p42-page-created`).
+
+## DEF-0869 — "O primeiro campo de texto" cortado no campo Slug
+- Status: corrigido (não commitado)
+- Sintoma: campo do tipo Slug, "Feito a partir de", pt-BR 1280×720: o menu mostrava "O primeiro campo de text" (foto `p25-posts-fields-ok`).
+- Causa: `src/i18n/locales/pt-BR.json:3315` tinha 176 px de texto num menu de 165 px úteis; em inglês ("The first text field") cabe.
+- Prova: "Primeiro campo de texto", igualmente claro e sem abreviação (CLAUDE.md seção 4), 162 px. Foto `p26-slug-source`: o texto inteiro ao lado da seta.
+
+## DEF-0870 — Mover e Excluir da linha de itens cortados pela borda do painel
+- Status: corrigido (não commitado)
+- Sintoma: Dados › Adicionar item, pt-BR 1280×720: com um só campo, a lixeira da linha aparecia pela metade na borda da barra (foto `p27-item-added`); com mais campos só rolando de lado.
+- Causa: `src/editor/data/panel.css:200` a célula das ações era a última da tabela de 216 px numa barra de 199 px.
+- Prova: as ações ficam presas à borda direita (`position: sticky`, `panel.css:203`) com o fundo e uma linha de borda; os campos rolam por baixo, em toda tabela do painel. Fotos `p29-row-actions-after-reload`, `p36-paging-select`, `e26-data-en`.
+
+## DEF-0871 — "Entre páginas" em letra maior que todo valor da aba Interações
+- Status: corrigido (não commitado)
+- Sintoma: aba Interações, Transições de página, en 1440×900: "None" em 15 px Source Sans, os demais valores em 12 px monoespaçada (foto `e08-interactions-tab`).
+- Causa: `src/editor/shell/window-overlays.css:1488` dava a `.panel-field__text` a letra dos diálogos (`--fs-input`); só os campos com regra própria (cartões, linha do tempo) a trocavam.
+- Prova: a base de `.panel-field__text` é a letra de valor do inspetor (`window-overlays.css:1490`), então todo campo de painel sem regra própria já nasce igual. Foto `e14-parallax`/`e15-page-transition`: "None"/"Fade" iguais aos vizinhos.
+
+## DEF-0872 — Condição e breakpoints do movimento mostravam ids ("laptop")
+- Status: corrigido (não commitado)
+- Sintoma: cartão de movimento › "Só executa se: O breakpoint é" mostrava "laptop" (a aba diz "Laptop", em pt-BR "Notebook"); o campo Breakpoints oferecia "desktop, laptop, tablet, phone" (foto `e12-condition-breakpoint`).
+- Causa: `src/editor/motion/ui/interactions.tsx:55` só dava palavras ao nome da condição de estado; breakpoints e condição de breakpoint mostravam o valor guardado.
+- Prova: `breakpointWords` (`interactions.tsx:57`) mostra cada id pelo nome das abas (`breakpointName`) e lê de volta nome ou id, também em listas; usado em `breakpoints`, `breakpoint` e na condição de breakpoint (`:129`). Uso: "Desktop" gravado como `desktop`, "Laptop, Tablet" como `["laptop","tablet"]` (foto `e13-condition-names`); em pt-BR a lista oferece Desktop, Notebook, Tablet, Celular.
+
+## DEF-0873 — Paralaxe e seus campos 4 px fora da coluna dos comportamentos
+- Status: corrigido (não commitado)
+- Sintoma: aba Interações › Paralaxe: "Parallax" e seus rótulos começavam 4 px à esquerda de "BEHAVIOURS" e dos botões; Horizontal/Vertical 8 px à direita (foto `e14-parallax`).
+- Causa: `src/editor/motion/ui/motion.css:110` o item usava margem de 8 px e o grupo do eixo somava a própria margem de 12 px.
+- Prova: o item usa a margem de 12 px do título e dos botões e o eixo dentro dele não soma margem (`motion.css:110`, `:116`), em todo comportamento. Foto `e16-behaviour-aligned`.
+
+## DEF-0874 — Paralaxe saía da seção e pulava na primeira rolagem
+- Status: corrigido (não commitado)
+- Sintoma: Pré-visualizar, imagem do destaque com Paralaxe ("Dentro da seção"): no topo da página ela estava 125 px abaixo do lugar, pulava 80 px na primeira rolagem e chegava a passar 89 px por cima da seção seguinte (foto `e17-preview-motion`).
+- Causa: `src/editor/motion/runtime/behaviours.ts:69` (antes) limitava pela caixa do pai, e a imagem enche a coluna dela: sem limite; e a primeira medida era feita antes de a página assentar, sem nova medida até rolar.
+- Prova: o limite é a primeira caixa em volta maior que o elemento, abaixo do body (`roomAround`, `behaviours.ts:47`); um `ResizeObserver` no documento remede quando o layout muda (`:108`). Medido: 13, 43, 73, 96, 96, 96 px nas rolagens 0 a 600, a base da imagem parando na base da seção (foto `e19-parallax-inside-section`).
+
+## DEF-0875 — Faixas da linha do tempo com nomes CSS em inglês
+- Status: corrigido (não commitado)
+- Sintoma: Movimento, pt-BR 1280×720: as faixas de "Título surgir" diziam "opacity" e "translate-y" (foto `p50-motion-pt`).
+- Causa: `src/editor/motion/ui/timeline.tsx:210` (antes) escrevia `lane.property` como rótulo.
+- Prova: `laneWords` (`timeline.tsx:211`) dá o nome do inspetor (`property.*`, `inspector.transform.*`), com o nome CSS no título; propriedade sem nome no inspetor segue pelo nome CSS. Foto `p52-dock-taller`: "Opacidade".
+
+## DEF-0876 — Valor inicial da variável sem rótulo visível
+- Status: corrigido (não commitado)
+- Sintoma: App › Nova variável, pt-BR: abaixo da linha da variável, uma caixa vazia sem palavra nenhuma (foto `p57-new-variable`).
+- Causa: `src/editor/app-panel/panel.tsx:78` (antes) o campo só tinha `aria-label`.
+- Prova: a legenda "Valor inicial"/"First value" fica acima do campo (`panel.tsx:80`), no estilo das legendas do painel Dados, escondida do leitor de tela (o campo já se nomeia). Foto `p58-variable-caption`.

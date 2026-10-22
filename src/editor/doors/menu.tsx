@@ -20,7 +20,7 @@ import { useT } from '../text.ts';
 import { stateOf } from '../view/style-state.ts';
 import { Icon, useDoor, isDoorBuilt } from './door.tsx';
 import { useOutsideLayer } from '../shell/outside-layer.ts';
-import { floatBelow, floatBeside, pointAnchor, type Placed } from '../shell/float.ts';
+import { floatBelow, floatBeside, followBelow, pointAnchor, type Placed } from '../shell/float.ts';
 import { GLYPHS, doorSlots, menuOf, slotsIn, type Anchor } from './placement.ts';
 import { usePointerValue, usePointerViews } from '../input/pointer/use-views.ts';
 
@@ -103,9 +103,9 @@ function MenuList({ menu, onDone, focusFirst, anchor, beside }: MenuListProps) {
     const own = list.current;
     if (!button || !own) return;
     const edge = parseFloat(getComputedStyle(own).getPropertyValue('--space-4')) || 0;
-    const { width } = own.getBoundingClientRect();
-    // under the button, inside the window, above it when there is no room below (a menu of the status bar): float.ts
-    setAt(floatBelow(button.getBoundingClientRect(), { width, height: naturalHeight(own) }, { width: window.innerWidth, height: window.innerHeight }, edge));
+    // under the button, inside the room above the status bar, above the button when there is no room below (a menu of
+    // the status bar), placed again while it is open (the window resizes, a panel scrolls): float.ts followBelow
+    return followBelow(button, own, edge, 0, setAt);
   }, [anchor]);
   // a submenu, each time it shows (no box while hidden, a size once shown: a resize observer sees it, after the layout
   // and before the paint): beside its item, measured as it is drawn, placed before it is painted

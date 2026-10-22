@@ -3312,7 +3312,7 @@
   "data.fieldTarget": "Coleção que ele indica",
   "data.fieldOptions": "Opções (uma por linha ou separadas por vírgulas)",
   "data.fieldFrom": "Feito a partir de",
-  "data.fieldFromFirst": "O primeiro campo de texto",
+  "data.fieldFromFirst": "Primeiro campo de texto",
   "data.pageSize": "Itens por página",
   "data.paging": "Próximas páginas",
   "data.paging.more": "Botão Carregar mais",

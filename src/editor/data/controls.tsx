@@ -113,10 +113,11 @@ export function DoorForm({ entry, args, children, className, label }: {
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!door.available) return;
-    const form = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const data = new FormData(form);
     const values: Record<string, unknown> = {};
-    for (const key of new Set(form.keys())) {
-      const all = form.getAll(key).map(String);
+    for (const key of new Set(data.keys())) {
+      const all = data.getAll(key).map(String);
       // an argument several checkboxes stand for is the list of the ticked ones' values; any other, its one value
       values[key] = event.currentTarget.querySelectorAll(`[name="${CSS.escape(key)}"][type="checkbox"]`).length > 0 ? all : all[0];
     }
@@ -124,7 +125,11 @@ export function DoorForm({ entry, args, children, className, label }: {
     event.currentTarget.querySelectorAll<HTMLInputElement>('input[type="checkbox"][name]').forEach((box) => {
       if (!(box.name in values)) values[box.name] = [];
     });
-    run({ ...args, ...values });
+    // what was typed is in once the command took it: the form starts empty again for the next one (the new field's
+    // name was left in its box, and the next name typed joined it: "Autor" then "Categoria" made "AutorCategoria");
+    // a refusal keeps what was typed, to correct
+    const result = run({ ...args, ...values });
+    if (result.status === 'done' && result.changed) form.reset();
   };
   const drawn = entry.door.kind === 'panel-control' ? entry.door.drawnAs : 'button';
   return (

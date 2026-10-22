@@ -451,3 +451,7 @@
 ## DCS-091 — Nome do painel Estilos no menu Exibir
 - **Origem:** DEF-0865. O painel que o trilho e o título chamam de "Estilos" se anunciava como "Variáveis".
 - **Decidido (2026-10-22):** o painel se nomeia "Estilos"/"Styles" em todo lugar que usa o catálogo (barra de status, janela flutuante, título). O item do menu Exibir que liga e desliga o painel continua "Variáveis"/"Variables", como fixa o requisito 03 do manifesto ("Variables [panel.variables]"), preservando o comportamento atual. **Para o dono:** renomear também o item do menu para "Estilos" exige mudar esse requisito.
+
+## DCS-092 — Filtro, ordem e páginas do painel Dados valem para a lista no próximo Preencher
+- **Origem:** uso real de 2026-10-22 (CMS): com a lista ligada já preenchida, trocar "Próximas páginas" para "Links de páginas" no painel não mudou a lista (a exportação seguiu com "Carregar mais"); só um novo Preencher aplicou.
+- **Decidido (preserva o comportamento atual):** a consulta do painel (filtro, ordem, pular, máximo, itens por página, próximas páginas) é o rascunho do que o Preencher repete; a lista guarda a consulta do último Preencher. **Para o dono:** fazer a consulta da lista selecionada ser editada direto (sem novo Preencher) muda o modelo do painel.

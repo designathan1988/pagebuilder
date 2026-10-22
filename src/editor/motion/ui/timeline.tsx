@@ -14,7 +14,7 @@ import type { MotionTarget, MotionTimeline, TimelineAction } from '../../../core
 import { actionEnd, timelineDuration } from '../../../core/motion/timeline.ts';
 import { lanes, readout, seconds, ticks, timeToX, type Lane } from '../../../core/motion/view.ts';
 import type { MessageId } from '../../../generated/ids.ts';
-import { numberConstant } from '../../../manifest/runtime.ts';
+import { manifest, numberConstant } from '../../../manifest/runtime.ts';
 import { Icon, useDoor } from '../../doors/door.tsx';
 import { PanelButton, PanelField } from '../../shell/panel-field.tsx';
 import { useEditorState } from '../../store.ts';
@@ -197,6 +197,22 @@ function TargetLane({ timeline, actions, name, motion, t }: { readonly timeline:
   );
 }
 
+// The words a lane is named by: the inspector's name of its property ("Opacidade", "Mover Y"), its CSS name in its
+// title; a property the inspector has no name for (a custom property, a rare transform part) by its CSS name. The CSS
+// names read "opacity" and "translate-y" in the pt-BR timeline.
+const TRANSFORM_PART_WORDS: Readonly<Record<string, MessageId>> = {
+  'translate-x': 'inspector.transform.moveX',
+  'translate-y': 'inspector.transform.moveY',
+  'rotate-z': 'inspector.transform.rotate',
+  'skew-x': 'inspector.transform.skewX',
+  'skew-y': 'inspector.transform.skewY',
+};
+const PROPERTY_WORDS = new Map<string, MessageId>(manifest.properties.properties.map((property) => [property.id, property.labelKey as MessageId] as const));
+const laneWords = (property: string, t: ReturnType<typeof useT>): string => {
+  const key = TRANSFORM_PART_WORDS[property] ?? PROPERTY_WORDS.get(property);
+  return key === undefined ? property : t(key);
+};
+
 function PropertyLane({ timeline, lane, motion }: { readonly timeline: MotionTimeline; readonly lane: Extract<Lane, { kind: 'property' }>; readonly motion: MotionUiState }) {
   const t = useT();
   const view = viewOf(motion);
@@ -206,8 +222,8 @@ function PropertyLane({ timeline, lane, motion }: { readonly timeline: MotionTim
   const coveringAt = covering === undefined ? -1 : timeline.actions.indexOf(covering);
   return (
     <div className="motion-lane motion-lane--property" data-motion-property={lane.property}>
-      <span className="motion-lane__label">
-        {lane.property}
+      <span className="motion-lane__label" title={lane.property}>
+        {laneWords(lane.property, t)}
         {covering === undefined ? null : (
           <PanelButton entry={motionDoor(MOTION_DOORS.addKeyframe)} args={{ timeline: timeline.name, action: covering.id, at: coveringAt, property: lane.property, value: '' }} label={t('command.motion.setKeyframe')} icon={<Icon name="diamond-plus" size="sm" />} />
         )}

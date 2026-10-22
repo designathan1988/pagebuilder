@@ -58,7 +58,7 @@ import { restoreFieldDraft } from '../persistence/drafts.ts';
 import { DRAFT_KEPT, markFieldKept, recordFieldInput } from '../input/drafts.ts';
 import { heldTyping, holdTyping, keepTyping, ownCommandRunning, releaseTyping } from '../input/pending.ts';
 import { heldDraft, type HeldDraft } from '../input/held-draft.ts';
-import { floatBelow, type Placed } from './float.ts';
+import { followBelow, type Placed } from './float.ts';
 import { onPageChange } from '../canvas/page-clock.ts';
 import { VariableSuggestions } from './variable-suggestions.tsx';
 
@@ -94,22 +94,22 @@ const FAMILY_CODEC = 'font-family-list';
 export const TEXT_COLOUR_PARTS: readonly [string] = [manifest.interactions.checks.colourProperty];
 
 // A field's values menu (the audit's J15: drawn inside the inspector, a long font list was cut by the panel's edge):
-// a layer on the body, under the field's value cell (float.ts, as every floating layer), inside the window.
+// a layer on the body, under the field's value cell (float.ts, as every floating layer), inside the window, kept there
+// while it is open.
 // Its id is the one its button names (aria-controls, the WAI-ARIA menu button): the menu is part of its field.
 function FieldMenu({ id, anchor, list, label, children }: { readonly id: string; readonly anchor: RefObject<HTMLElement | null>; readonly list: RefObject<HTMLDivElement | null>; readonly label: string; readonly children: ReactNode }) {
   const [at, setAt] = useState<Placed | null>(null);
+  // placed again while it is open: the inspector scrolls, the window resizes (float.ts followBelow)
   useLayoutEffect(() => {
-    const from = anchor.current?.getBoundingClientRect();
+    const from = anchor.current;
     const panel = list.current;
-    if (from === undefined || panel === null) return;
-    const style = getComputedStyle(panel);
-    const edge = parseFloat(style.getPropertyValue('--space-4')) || 0;
-    const { width, height } = panel.getBoundingClientRect();
-    setAt(floatBelow(from, { width, height }, { width: window.innerWidth, height: window.innerHeight }, edge));
+    if (from === null || panel === null) return;
+    const edge = parseFloat(getComputedStyle(panel).getPropertyValue('--space-4')) || 0;
+    return followBelow(from, panel, edge, 0, setAt);
   }, [anchor, list]);
   // unplaced for its first frame it is transparent, not hidden: the layer puts the focus in its first item then, and a
   // hidden item takes no focus (Escape then went to another key context and closed nothing)
-  const style: CSSProperties = at === null ? { opacity: 0, left: 0, top: 0 } : { left: at.left, top: at.top };
+  const style: CSSProperties = at === null ? { opacity: 0, left: 0, top: 0 } : { left: at.left, top: at.top, maxHeight: at.maxHeight, overflowY: 'auto' };
   return createPortal(
     <div id={id} className="menu field__menu field__menu--floating" role="menu" tabIndex={-1} ref={list} aria-label={label} data-key-context="menu" style={style}>
       {children}

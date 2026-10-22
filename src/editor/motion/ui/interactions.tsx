@@ -7,7 +7,7 @@
 // it hands to its command as the value itself.
 import { useState } from 'react';
 import type { DocNode, DocumentJson } from '../../../core/document/model.ts';
-import { breakpointsOf } from '../../../core/document/breakpoints.ts';
+import { breakpointName, breakpointsOf } from '../../../core/document/breakpoints.ts';
 import { TRIGGERS, applicableTriggers, type TriggerCategory } from '../../../core/motion/catalog.ts';
 import { behavioursOf, motionsOf, timelinesOf } from '../../../core/motion/document.ts';
 import type { MotionInteraction } from '../../../core/motion/model.ts';
@@ -51,7 +51,21 @@ function wordsOf(field: string, t: Translate): ((value: string) => string) | und
   return undefined;
 }
 
-// the words of a condition's name: a state by its words, anything else as it is named
+// A field of breakpoints (one, or a list split by commas) in the names the breakpoint tabs show ("Laptop", in pt-BR
+// "Notebook"), never their ids ("laptop" read in the card of either language), and a typed name or id read back as the
+// id: the words a card shows and the value its command takes.
+function breakpointWords(document: DocumentJson, t: Translate): { readonly display: (value: string) => string; readonly accept: (typed: string) => string } {
+  const breakpoints = breakpointsOf(document);
+  const parts = (text: string) => text.split(',').map((part) => part.trim()).filter((part) => part !== '');
+  const nameOf = (id: string) => {
+    const found = breakpoints.find((breakpoint) => breakpoint.id === id);
+    return found === undefined ? id : breakpointName(found, t);
+  };
+  const idOf = (typed: string) => breakpoints.find((breakpoint) => breakpoint.id.toLowerCase() === typed.toLowerCase() || breakpointName(breakpoint, t).toLowerCase() === typed.toLowerCase())?.id ?? typed;
+  return { display: (value) => parts(value).map(nameOf).join(', '), accept: (typed) => parts(typed).map(idOf).join(', ') };
+}
+
+// the words of a condition's name: a state by its words, anything else as it is named (a breakpoint by breakpointWords)
 const conditionNameWords = (t: Translate, interaction: MotionInteraction) =>
   interaction.condition?.kind === 'state' ? (value: string) => t(`motion.condition.state.${value}` as MessageId) : undefined;
 
@@ -103,6 +117,7 @@ function Card({ node, interaction, index, timelines }: { readonly node: DocNode;
   const field = (name: string) => {
     const words = name === 'conditionName' ? conditionNameWords(t, interaction) : wordsOf(name, t);
     const offered = offeredFor(name, node, interaction, timelines, document);
+    const breakpoints = name === 'breakpoints' || name === 'breakpoint' || (name === 'conditionName' && interaction.condition?.kind === 'breakpoint') ? breakpointWords(document, t) : null;
     return (
       <PanelField
         key={name}
@@ -111,7 +126,7 @@ function Card({ node, interaction, index, timelines }: { readonly node: DocNode;
         value={shown(interaction, name)}
         label={t(`motion.field.${name}` as MessageId)}
         offered={offered}
-        {...(words === undefined ? {} : { display: words, accept: chosenOf(offered ?? [], words) })}
+        {...(breakpoints !== null ? breakpoints : words === undefined ? {} : { display: words, accept: chosenOf(offered ?? [], words) })}
         {...(name === 'scope' ? { placeholder: t('motion.scope.element') } : name === 'breakpoints' ? { placeholder: t('motion.breakpoints.all') } : {})}
       />
     );

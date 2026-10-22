@@ -1,7 +1,7 @@
 {
   "$generated": {
     "by": "tools/ui-fit/measure.spec.ts",
-    "css": "9873294b684538051f4158e0ff6ada02b725ec360cd332c2cd2d6e6e75c65c37"
+    "css": "6c36daa9ebcaaf923257324f4761dcb86b509f7b249171e67c9ee62521958ae4"
   },
   "regions": {
     "activity-bar": {
@@ -766,7 +766,7 @@
         "fontWeight": 400
       },
       "windows": {
-        "width": 238,
+        "width": 228,
         "fontSize": 12,
         "fontWeight": 400
       },
@@ -5423,7 +5423,7 @@
     },
     "pages.switch#toolbar-top-bar-page-switcher": {
       "default": {
-        "width": 621.59375,
+        "width": 580.703125,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -5431,7 +5431,7 @@
         "text": "index.html"
       },
       "windows": {
-        "width": 621.59375,
+        "width": 580.703125,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -5439,7 +5439,7 @@
         "text": "index.html"
       },
       "ptbr": {
-        "width": 378.109375,
+        "width": 309.359375,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -9063,7 +9063,7 @@
     },
     "style.set#quick-panel-font-family": {
       "default": {
-        "width": 64.25,
+        "width": 171.484375,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,

@@ -18,7 +18,7 @@ import { dragMessages } from '../canvas/chrome.tsx';
 import { DoorControl, Icon, useDoor } from '../doors/door.tsx';
 import { elementIcon, type DoorEntry } from '../../manifest/runtime.ts';
 import { MenuButton, useMenuLayer } from '../doors/menu.tsx';
-import { floatBelow, type Placed } from './float.ts';
+import { followBelow, type Placed } from './float.ts';
 import { crumbsAfterFold } from './crumb-fold.ts';
 import { drawnAsOf } from '../doors/placement.ts';
 import { useEditorState } from '../store.ts';
@@ -217,8 +217,8 @@ function FoldedLevels({ entry, levels }: { readonly entry: DoorEntry; readonly l
     const own = list.current;
     if (!layer.open || from === null || own === null) return;
     const edge = parseFloat(getComputedStyle(own).getPropertyValue('--space-4')) || 0;
-    const { width, height } = own.getBoundingClientRect();
-    setAt(floatBelow(from.getBoundingClientRect(), { width, height }, { width: window.innerWidth, height: window.innerHeight }, edge));
+    // above the bar (its room ends at the bar's top), kept by its button while open: float.ts followBelow
+    return followBelow(from, own, edge, 0, setAt);
   }, [layer.open]);
   const name = t(`statusBar.foldedLevels.${pluralForm(locale, levels.length)}` as MessageId, { count: levels.length });
   const placed = at === null

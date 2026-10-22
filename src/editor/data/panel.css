@@ -88,11 +88,12 @@
   min-width: max-content;
 }
 
-/* the name's box takes the whole line, and the type and Delete go together on the line under it: started from nothing
+/* the name's box and its Delete take the first line, and the type goes on the line under it: started from nothing
    beside them, the name kept only what the widest type and Delete left ("descricao" read "descrica" in a 224 px
-   sidebar), and a 76 px basis sent Delete alone under the other two */
+   sidebar); with the type and Delete sharing the second line, a type menu as wide as "Itens de uma coleção" (175 px)
+   sent Delete alone to a third line in a 199 px sidebar */
 .data-fields__row:has(> .data-field--type) > .data-field:not(.data-field--type, .data-field--decimals) {
-  flex: 1 1 100%;
+  flex: 1 1 calc(100% - var(--size-control-lg) - var(--space-2));
 }
 
 .data-field--type select.input {
@@ -196,9 +197,16 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* a row's Move and Delete stay at the panel's right edge while the row's fields scroll sideways beneath them: at the
+   table's end they were cut by the panel's edge even with one field (a 216 px table in a 199 px sidebar) */
 .data-grid__actions {
+  position: sticky;
+  right: 0;
   display: flex;
   gap: var(--space-1);
+  background: var(--color-surface);
+  /* the edge the fields scroll under */
+  border-left: 1px solid var(--color-border);
 }
 
 /* a column: the handle a column is dragged by onto an element (the pointer owner runs the drag) */

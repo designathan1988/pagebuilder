@@ -75,6 +75,11 @@ function Variables({ variables }: { readonly variables: readonly AppVariable[] }
               <DoorControl entry={VARIABLE_PERSIST} args={{ ...args, persist: variable.persist !== true }} label={t('app.variable.persist')} />
               <DoorControl entry={VARIABLE_REMOVE} args={{ name: variable.name }} label={`${t('command.app.removeVariable')} ${variable.name}`} />
             </div>
+            {/* the first value's field says what it is above it, as the Data panel's fields do: alone under the row it
+                was an empty box with no words (its name only for a screen reader) */}
+            <span className="data-part__caption" aria-hidden="true">
+              {t('app.variable.initial')}
+            </span>
             <DoorField entry={VARIABLE_INITIAL} args={args} name="initial" value={initialText(variable)} label={`${t('app.variable.initial')} (${variable.name})`} className="app-variable__initial" />
           </div>
         );

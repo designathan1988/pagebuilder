@@ -32,7 +32,8 @@
 
 /* The page switcher is what gives the bar's room away: a page with a long name and file took 640 px at 1280 and the
    bar's actions shrank under one another, Preview's words under Export's (DEF-0613). Its name and its file end in an
-   ellipsis, the file first; the actions keep their size. */
+   ellipsis, the file first; the actions keep their size. The Commands box gives its room before them, down to its own
+   words: at 1100 px it kept 60 px it did not need while the page's name read "Inici..." (DEF-0866). */
 .top-bar > :not(.top-bar__pages, .top-bar__search) {
   flex-shrink: 0;
 }
@@ -65,14 +66,18 @@
   flex-shrink: 1;
 }
 
+/* the file gives all its room before the name gives any */
 .top-bar__file {
-  flex-shrink: 4;
+  flex-shrink: 1000;
   font-family: var(--font-mono);
   color: var(--color-text-subtle);
 }
 
+/* as wide as its words, grown up to its width while the bar has room, never narrower than its words: the page's name
+   gives no room while the box still has some to give */
 .top-bar__search {
-  width: calc(var(--size-target-min) * 10);
+  flex: 1 0 auto;
+  max-width: calc(var(--size-target-min) * 10);
   margin: 0 auto;
   padding: 0 var(--space-5);
   justify-content: flex-start;

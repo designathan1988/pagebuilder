@@ -43,6 +43,16 @@ export function createBehaviours(win: Window, kit: MotionKit): BehaviourKit {
     };
   }
 
+  // The nearest box around an element that is larger than it along the axis, under the body; null when none is.
+  function roomAround(element: HTMLElement, size: number, vertical: boolean): DOMRect | null {
+    const body = element.ownerDocument.body;
+    for (let around = element.parentElement; around !== null && around !== body && around !== element.ownerDocument.documentElement; around = around.parentElement) {
+      const box = around.getBoundingClientRect();
+      if (size < (vertical ? box.height : box.width)) return box;
+    }
+    return null;
+  }
+
   function parallax(element: HTMLElement, behaviour: Behaviour): () => void {
     const restore = keep(element, ['translate', 'will-change']);
     let frame = 0;
@@ -70,13 +80,15 @@ export function createBehaviours(win: Window, kit: MotionKit): BehaviourKit {
       if (behaviour.max !== undefined) {
         shift = Math.min(behaviour.max, Math.max(-behaviour.max, shift));
       } else {
-        // as far as its parent's box lets it, so it never moves over the section after it (or before it); an element
-        // as large as its parent or larger (a hero's picture filling its section, a layer overflowing a clipping
-        // frame) has no room inside it, and moves as it always did, the parent's own clipping its limit
-        const parent = element.parentElement?.getBoundingClientRect();
-        if (parent !== undefined && size < (vertical ? parent.height : parent.width)) {
-          const before = vertical ? box.top - parent.top : box.left - parent.left;
-          const after = vertical ? parent.bottom - box.bottom : parent.right - box.right;
+        // as far as the box around it lets it ("Inside its section"), so it never moves over the section after it (or
+        // before it): the nearest box around it larger than it is, under the body. A picture filling its column moved
+        // 89 px over the next section, its column's box giving it no room and no limit; an element as large as every
+        // box around it (a hero's picture filling its section, a layer overflowing a clipping frame) has no room, and
+        // moves as it always did, the clipping its limit
+        const room = roomAround(element, size, vertical);
+        if (room !== null) {
+          const before = vertical ? box.top - room.top : box.left - room.left;
+          const after = vertical ? room.bottom - box.bottom : room.right - box.right;
           shift = Math.min(Math.max(0, after), Math.max(-Math.max(0, before), shift));
         }
       }
@@ -89,8 +101,14 @@ export function createBehaviours(win: Window, kit: MotionKit): BehaviourKit {
     element.style.setProperty('will-change', 'translate');
     win.addEventListener('scroll', schedule, { passive: true });
     win.addEventListener('resize', schedule, { passive: true });
+    // the page's layout settling after the first measure (fonts, pictures, a list filled) moves the element too:
+    // measured before, a hero's picture stood 125 px low at the top of the page and jumped 80 px at the first scroll
+    const Observer = (win as Window & { ResizeObserver?: typeof ResizeObserver }).ResizeObserver;
+    const settled = Observer === undefined ? null : new Observer(schedule);
+    settled?.observe(element.ownerDocument.documentElement);
     update();
     return () => {
+      settled?.disconnect();
       win.removeEventListener('scroll', schedule);
       win.removeEventListener('resize', schedule);
       if (frame !== 0) win.cancelAnimationFrame(frame);

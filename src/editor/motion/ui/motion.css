@@ -107,8 +107,14 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
+  padding: var(--space-2) var(--space-6);
   border-top: 1px solid var(--color-border);
+}
+
+/* a behaviour's name, fields and axis start where the title and the buttons above them start (12 px): at 8 px the
+   name stood 4 px left of them, and the axis buttons, with a margin of their own, 8 px right */
+.motion-behaviours__item > .motion-behaviours__axis {
+  padding-inline: 0;
 }
 
 /* the page transitions' fields, lined up with the behaviours' buttons above them (their 12 px margin) */
