@@ -5798,6 +5798,7 @@ export const MESSAGE_IDS = [
   "assistant.emptyInput",
   "assistant.started",
   "assistant.finished",
+  "assistant.finishedUnchanged",
   "assistant.storageFailed",
   "assistant.keyRemoved",
   "assistant.invalidConnection",

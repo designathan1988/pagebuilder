@@ -197,9 +197,12 @@ export function installAssistant(store: EditorStore): () => void {
       replyId = null;
       failure = null;
       const active = session ?? buildSession();
+      // the document the turn began on: the notice offers Undo only when the turn changed it (a reply that changed
+      // nothing said "Undo restores the previous page" with nothing to undo)
+      const before = store.getState().document;
       const result = await active.send(current.draft, reference ? { bytes: Uint8Array.from(atob(reference.bytes), char => char.charCodeAt(0)), mime: reference.type as 'image/png' } : undefined);
       report({ inputTokens: result.inputTokens, outputTokens: result.outputTokens });
-      notice('assistant.finished');
+      notice(store.getState().document === before ? 'assistant.finishedUnchanged' : 'assistant.finished');
     }
   }
   const controller: AssistantController = {

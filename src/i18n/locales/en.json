@@ -2583,6 +2583,7 @@
   "assistant.emptyInput": "Write a message or choose a reference image.",
   "assistant.started": "The assistant is working.",
   "assistant.finished": "Assistant turn completed. Undo restores the previous page.",
+  "assistant.finishedUnchanged": "Assistant turn completed: the page was not changed.",
   "assistant.storageFailed": "Credential storage is unavailable. Check this browser’s storage permissions.",
   "assistant.keyRemoved": "Saved service key removed.",
   "assistant.invalidConnection": "Choose the connection file created by Companion.",

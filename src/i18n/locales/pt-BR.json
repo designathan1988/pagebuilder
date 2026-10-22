@@ -2583,6 +2583,7 @@
   "assistant.emptyInput": "Escreva uma mensagem ou escolha uma imagem de referência.",
   "assistant.started": "O assistente está trabalhando.",
   "assistant.finished": "Turno do assistente concluído. Desfazer restaura a página anterior.",
+  "assistant.finishedUnchanged": "Turno do assistente concluído: a página não foi alterada.",
   "assistant.storageFailed": "O armazenamento da chave está indisponível. Confira as permissões deste navegador.",
   "assistant.keyRemoved": "Chave do serviço removida.",
   "assistant.invalidConnection": "Escolha o arquivo de conexão criado pelo Companion.",
