@@ -3,7 +3,7 @@
 // receiver, the receiver's outline, the drop label, the held element dashed and unlabelled; nothing once the hand
 // drops); what the status bar says after every key (the receiver, the position and the level) and Enter into a
 // nested container, one undo step; an aim the move refuses (announced with its refusal, drawn refused, Enter there
-// changes nothing and the hand still holds); Arrange › Take into the hand; a hidden element refused; and a new
+// changes nothing and the hand still holds); Arrange › Move with the keyboard; a hidden element refused; and a new
 // selection ends the hand, so the arrows walk the tree again. The document, the selection and the history are read
 // through the read-only test port; the drawing is measured against the elements' boxes inside the frame, mapped to
 // the screen through its CSS zoom.
@@ -157,7 +157,7 @@ test('the canvas draws the aim as a mouse drag draws its drop: the line where th
   // Escape: the indicator is gone, the outline is solid again, and nothing changed
   await runDoor(page, DROP);
   await expect(drop(page)).toHaveCount(0);
-  await expect(status(page)).toHaveText('Dropped. Nothing changed.');
+  await expect(status(page)).toHaveText('Move cancelled. Nothing changed.');
   expect(await page.locator('[data-chrome="selection"]').evaluate((el) => getComputedStyle(el).outlineStyle)).toBe('solid');
   expect(await port(page)).toEqual({ document: FIXTURE_DOCUMENT, selection: ['n-title'], undoSteps: 0 });
 });
@@ -165,7 +165,7 @@ test('the canvas draws the aim as a mouse drag draws its drop: the line where th
 test('the status bar names the receiver, the position and the level after every key; Enter places the element inside a nested container, one undo step', runs(OPEN, SELECT, TAKE, NEXT, PREVIOUS, CLIMB, DESCEND, PLACE, UNDO), async ({ page }) => {
   await clickNode(page, 'n-title');
   await runDoor(page, TAKE);
-  await expect(status(page)).toHaveText('Holding Title. Arrows aim, Enter places, Esc drops.');
+  await expect(status(page)).toHaveText('Moving Title. Arrows aim, Enter places, Esc cancels.');
   await runDoor(page, NEXT);
   await expect(status(page)).toHaveText('Hero will receive. Position 2 of 3. Level 1 of 2.');
   await runDoor(page, CLIMB);
@@ -220,10 +220,10 @@ test('an aim the move refuses is announced with its refusal and drawn refused; E
   expect(await port(page)).toMatchObject({ selection: ['n-note'], undoSteps: 1 });
 });
 
-test('Arrange › Take into the hand takes the selected element; the keys then aim and place it', runs(OPEN, SELECT, TAKE_MENU, NEXT, PLACE), async ({ page }) => {
+test('Arrange › Move with the keyboard takes the selected element; the keys then aim and place it', runs(OPEN, SELECT, TAKE_MENU, NEXT, PLACE), async ({ page }) => {
   await clickNode(page, 'n-title');
   await runDoor(page, TAKE_MENU);
-  await expect(status(page)).toHaveText('Holding Title. Arrows aim, Enter places, Esc drops.');
+  await expect(status(page)).toHaveText('Moving Title. Arrows aim, Enter places, Esc cancels.');
   await expect(dropLabel(page)).toHaveText('Before Intro · Page › Hero');
   await runDoor(page, NEXT);
   await runDoor(page, PLACE);
@@ -236,7 +236,7 @@ test('Arrange › Take into the hand takes the selected element; the keys then a
 test('taken from a Layers row\'s context menu, the hand\'s keys act with the focus back in Layers: they aim and place it', runs(OPEN, ROW_MENU, TAKE_CONTEXT, NEXT, PLACE), async ({ page }) => {
   await runDoor(page, ROW_MENU, { args: { target: 'n-title' } });
   await runDoor(page, TAKE_CONTEXT);
-  await expect(status(page)).toHaveText('Holding Title. Arrows aim, Enter places, Esc drops.');
+  await expect(status(page)).toHaveText('Moving Title. Arrows aim, Enter places, Esc cancels.');
   expect(await page.evaluate(() => document.activeElement?.closest('[data-key-context="layers-tree"]') !== null), 'the focus is back in the Layers tree').toBe(true);
   await runDoor(page, NEXT);
   await expect(status(page)).toHaveText('Hero will receive. Position 2 of 3. Level 1 of 2.');
