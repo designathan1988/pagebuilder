@@ -7,7 +7,8 @@ import { checksOf, type CheckIssue } from '../../core/a11y/checks.ts';
 import { manifest } from '../../manifest/runtime.ts';
 import type { DoorId, FeatureId, MessageId } from '../../generated/ids.ts';
 import { isFeatureBuilt } from '../../core/commands/registry.ts';
-import { locate } from '../../core/document/model.ts';
+import { locate, walk } from '../../core/document/model.ts';
+import { openedPage } from '../../core/project/pages.ts';
 import { TimelinePanel } from '../timeline/panel.tsx';
 import { MotionTimelinePanel } from '../motion/ui/timeline.tsx';
 import { DoorControl, Icon } from '../doors/door.tsx';
@@ -101,6 +102,14 @@ function Checks() {
   const t = useT();
   const issues = useIssues();
   const words = useIssueWords();
+  const document = useEditorState((s) => s.document);
+  const opened = useEditorState((s) => openedPage(s));
+  // the page an issue's element is on, named when it is not the page open: the list covers every page, and a line
+  // about another page's form read as one of this page
+  const otherPage = (node: string | undefined): string | null => {
+    const at = document.pages.findIndex((page) => [...walk(page.tree)].some((one) => one.id === node));
+    return at < 0 || at === opened ? null : (document.pages[at]?.name ?? null);
+  };
   return (
     <div className="dock-region" data-region="dock-checks">
       {issues.length === 0 || ISSUE === undefined ? (
@@ -113,6 +122,7 @@ function Checks() {
                 {/* a problem's mark: the warning triangle, as the status bar's incidents wear it; the tab's check mark reads
                     "passed" (the user's review of 2026-10-05, LR2) */}
                 <Icon name="triangle-alert" size="sm" />
+                {otherPage(held[0]?.node) === null ? null : <span className="dock-checks__page">{t('checks.onPage', { page: otherPage(held[0]?.node) ?? '' })}</span>}
                 <span className="dock-checks__issues">
                   {held.map((issue) => (
                     <span key={issue.rule} className="dock-checks__issue">

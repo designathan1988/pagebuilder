@@ -229,6 +229,7 @@
   "checks.linkText": "{category} · Link without text in {name}",
   "checks.linkText.fix": "Write the text of the link",
   "checks.none": "No issues",
+  "checks.onPage": "On {page}",
   "checks.title": "Checks",
   "codePanel.copyPane": "Copy this pane",
   "codePanel.downloadPane": "Download this pane",

@@ -229,6 +229,7 @@
   "checks.linkText": "{category} · Link sem texto em {name}",
   "checks.linkText.fix": "Escreva o texto do link",
   "checks.none": "Nenhum problema",
+  "checks.onPage": "Em {page}",
   "checks.title": "Verificações",
   "codePanel.copyPane": "Copiar este painel",
   "codePanel.downloadPane": "Baixar este painel",

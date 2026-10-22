@@ -248,6 +248,17 @@
   color: var(--color-text-subtle);
 }
 
+/* the page of an issue on another page than the one open: a tag before its words */
+.dock-checks__page {
+  flex: none;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xs);
+  color: var(--color-text-muted);
+  font-size: var(--fs-caption);
+  white-space: nowrap;
+}
+
 /* an element's issues, one under the other in its row (spec accessibility-checks, Problems 3) */
 .dock-checks__issues {
   display: flex;

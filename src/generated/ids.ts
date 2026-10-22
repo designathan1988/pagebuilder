@@ -3444,6 +3444,7 @@ export const MESSAGE_IDS = [
   "checks.linkText",
   "checks.linkText.fix",
   "checks.none",
+  "checks.onPage",
   "checks.title",
   "codePanel.copyPane",
   "codePanel.downloadPane",
