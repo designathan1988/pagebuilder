@@ -224,6 +224,8 @@
   "checks.whatsappLink.fix": "In the Link address field, type the business’s number right after wa.me/, with the country and area codes, digits only",
   "checks.cartDestination": "{category} · Cart with nowhere to send the order in {name}: its checkout button does nothing",
   "checks.cartDestination.fix": "In the Settings tab, under Shop cart, type the business’s WhatsApp number in “WhatsApp number for orders” (country and area codes), or add an e-mail address in the custom attribute data-wc-email",
+  "checks.formDestination": "{category} · Form with nowhere to send what visitors type in {name}: its button reloads the page",
+  "checks.formDestination.fix": "In the Settings tab, under Submission, choose its Destination (a service endpoint, an e-mail service or a webhook), or type the address that receives it in “Form action”",
   "checks.linkText": "{category} · Link without text in {name}",
   "checks.linkText.fix": "Write the text of the link",
   "checks.none": "No issues",

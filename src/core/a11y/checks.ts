@@ -20,6 +20,7 @@
 import type { MessageId } from '../../generated/ids.ts';
 import type { DocNode, DocumentJson, NodeId } from '../document/model.ts';
 import { resolvedVariables } from '../style/swatch.ts';
+import { readFormConfig } from '../forms/config.ts';
 
 export interface CheckIssue {
   // the node the issue is about
@@ -131,6 +132,15 @@ function cartWithoutAddress(node: DocNode): boolean {
   return (custom['data-wc-whatsapp'] ?? '').replace(/\D/gu, '') === '' && (custom['data-wc-email'] ?? '').trim() === '';
 }
 
+// A form whose submission is the browser's own (the default) with no Form action: its Send reloads the page and what
+// the visitor typed goes nowhere (the Contact template's form shipped this way, with no check saying so)
+function formWithoutDestination(node: DocNode): boolean {
+  if (node.tag !== 'form') return false;
+  const config = readFormConfig(node.attributes.formSubmit);
+  if (config !== null && config.destination !== 'native') return false;
+  return String(node.attributes.action ?? '').trim() === '';
+}
+
 // A form field a visitor types into or chooses in (an input but a hidden one or a button, a text area, a list) says what
 // it asks only by a name a screen reader reads: a label around it or pointing at it (its `for`), an accessible name, or a
 // tooltip. A placeholder is no name: it goes as the visitor types (WCAG 1.3.1 and 4.1.2).
@@ -188,6 +198,7 @@ export function checksOf(document: DocumentJson, properties: CheckProperties): r
       if (WHATSAPP_WITHOUT_NUMBER.test(String(node.attributes.href ?? ''))) issues.push({ node: node.id, category: 'links', rule: 'checks.whatsappLink', fix: 'checks.whatsappLink.fix' });
     }
     if (rowNeverWraps(node)) issues.push({ node: node.id, category: 'accessibility', rule: 'checks.rowNoWrap', fix: 'checks.rowNoWrap.fix' });
+    if (formWithoutDestination(node)) issues.push({ node: node.id, category: 'export', rule: 'checks.formDestination', fix: 'checks.formDestination.fix' });
     if (cartWithoutAddress(node)) issues.push({ node: node.id, category: 'export', rule: 'checks.cartDestination', fix: 'checks.cartDestination.fix' });
     // text with a colour of its own over a background that is known: below the contrast WCAG asks for is an issue
     const colour = colourOf(baseValue(node, properties.colourProperty) ?? '');

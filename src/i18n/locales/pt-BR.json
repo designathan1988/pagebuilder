@@ -224,6 +224,8 @@
   "checks.whatsappLink.fix": "No campo Endereço do link, digite o número da empresa logo depois de wa.me/, com o código do país e o DDD, só os dígitos",
   "checks.cartDestination": "{category} · Carrinho sem destino para o pedido em {name}: o botão de finalizar não faz nada",
   "checks.cartDestination.fix": "Na aba Configurações, em Carrinho da loja, digite o número de WhatsApp da empresa em “WhatsApp que recebe os pedidos” (com código do país e DDD) ou acrescente um e-mail no atributo personalizado data-wc-email",
+  "checks.formDestination": "{category} · Formulário sem destino para o que o visitante digita em {name}: o botão recarrega a página",
+  "checks.formDestination.fix": "Na aba Configurações, em Envio, escolha o Destino (um endereço de serviço, um serviço de e-mail ou um webhook) ou digite em “Ação do formulário” o endereço que recebe o envio",
   "checks.linkText": "{category} · Link sem texto em {name}",
   "checks.linkText.fix": "Escreva o texto do link",
   "checks.none": "Nenhum problema",

@@ -3439,6 +3439,8 @@ export const MESSAGE_IDS = [
   "checks.whatsappLink.fix",
   "checks.cartDestination",
   "checks.cartDestination.fix",
+  "checks.formDestination",
+  "checks.formDestination.fix",
   "checks.linkText",
   "checks.linkText.fix",
   "checks.none",
