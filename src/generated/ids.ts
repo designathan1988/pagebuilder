@@ -3306,6 +3306,8 @@ export const MESSAGE_IDS = [
   "breakpoint.phone",
   "breakpoint.tablet",
   "canvas.badge.editingState",
+  "canvas.selectionBelow",
+  "canvas.selectionAbove",
   "canvas.base",
   "canvas.baseTip",
   "canvas.drag.duplicating",

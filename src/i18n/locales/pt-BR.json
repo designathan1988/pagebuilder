@@ -119,6 +119,8 @@
   "breakpoint.phone": "Celular",
   "breakpoint.tablet": "Tablet",
   "canvas.badge.editingState": "Editando: {state}",
+  "canvas.selectionBelow": "{name} está mais abaixo — mostrar",
+  "canvas.selectionAbove": "{name} está mais acima — mostrar",
   "canvas.base": "base",
   "canvas.baseTip": "O breakpoint base: os outros herdam dele",
   "canvas.drag.duplicating": "Duplicar",
