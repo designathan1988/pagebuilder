@@ -191,7 +191,7 @@ export function PanelField({
     }
   };
   return (
-    <div ref={row} className={`field-row panel-field${ready ? '' : ' is-unavailable'}`} data-door={entry.ref} data-args={JSON.stringify({ ...entry.door.args, ...args })} title={door.title}>
+    <div ref={row} className={`field-row panel-field${display === undefined ? '' : ' panel-field--words'}${ready ? '' : ' is-unavailable'}`} data-door={entry.ref} data-args={JSON.stringify({ ...entry.door.args, ...args })} title={door.title}>
       <label className="field-row__label" htmlFor={`${id}-input`}>
         {label}
       </label>

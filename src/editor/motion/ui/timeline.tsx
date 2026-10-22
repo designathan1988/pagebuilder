@@ -10,13 +10,14 @@ import { useState, type CSSProperties, type MouseEvent } from 'react';
 import { EFFECTS, EFFECT_KINDS, TARGET_KINDS } from '../../../core/motion/catalog.ts';
 import { createEasing } from '../../../core/motion/easing.ts';
 import { findTimeline, timelinesOf, timelineUses } from '../../../core/motion/document.ts';
-import type { MotionTarget, MotionTimeline, TimelineAction } from '../../../core/motion/model.ts';
+import { TRANSFORM_PARTS, type MotionTarget, type MotionTimeline, type TimelineAction } from '../../../core/motion/model.ts';
 import { actionEnd, timelineDuration } from '../../../core/motion/timeline.ts';
 import { lanes, readout, seconds, ticks, timeToX, type Lane } from '../../../core/motion/view.ts';
 import type { MessageId } from '../../../generated/ids.ts';
 import { manifest, numberConstant } from '../../../manifest/runtime.ts';
 import { Icon, useDoor } from '../../doors/door.tsx';
 import { PanelButton, PanelField } from '../../shell/panel-field.tsx';
+import { propertyWord } from '../../shell/field.tsx';
 import { useEditorState } from '../../store.ts';
 import { useT } from '../../text.ts';
 import { motionUiOf, shownTimeline, viewOf, type MotionUiState } from '../state.ts';
@@ -362,12 +363,21 @@ function ActionFields({ timeline, action, at }: { readonly timeline: MotionTimel
         <PanelField key={option} entry={motionDoor(MOTION_DOORS.effectOption)} args={{ ...args, option }} value={optionText(action.effect, option)} label={t(`motion.option.${option}` as MessageId)} {...optionField(t, option, kind)} />
       ))}
       {action.effect.kind === 'animate' || action.effect.kind === 'split-text' ? (
-        <PanelField entry={motionDoor(MOTION_DOORS.addProperty)} args={{ ...args, value: '' }} value="" label={t('motion.timeline.addProperty')} />
+        <PanelField entry={motionDoor(MOTION_DOORS.addProperty)} args={{ ...args, value: '' }} value="" label={t('motion.timeline.addProperty')} offered={ANIMATED_PROPERTIES} display={(value) => motionPropertyWord(t, value)} accept={chosenOf(ANIMATED_PROPERTIES, (value) => motionPropertyWord(t, value))} />
       ) : null}
       <PanelButton entry={motionDoor(MOTION_DOORS.actionsDelete)} args={{ timeline: timeline.name, actions: [action.id], at }} label={t('command.motion.removeActions')} icon={<Icon name="trash" size="sm" />} />
     </div>
   );
 }
+
+// the properties an Animate step offers to animate: the transform's parts the runtime keys apart, then the paint and
+// size a person animates most (any other CSS property can still be typed). An empty field with nothing offered left the
+// person to know the names.
+// a property an animation keys, in words: a transform's part by its own (Move across, Rotate), any other by the
+// inspector's name of it (Opacity, Background), else as written
+const PARTS: ReadonlySet<string> = new Set(TRANSFORM_PARTS);
+const motionPropertyWord = (t: ReturnType<typeof useT>, property: string): string => (PARTS.has(property) ? t(`motion.part.${property}` as MessageId) : propertyWord(t, property) || property);
+const ANIMATED_PROPERTIES: readonly string[] = ['opacity', ...TRANSFORM_PARTS, 'background-color', 'color', 'border-color', 'border-radius', 'width', 'height', 'filter', 'box-shadow'];
 
 function KeyframeFields({ timeline, motion }: { readonly timeline: MotionTimeline; readonly motion: MotionUiState }) {
   const t = useT();

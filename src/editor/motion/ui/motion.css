@@ -481,3 +481,10 @@
   font: var(--fw-code) var(--fs-code) / var(--lh-code) var(--font-mono);
   text-overflow: ellipsis;
 }
+
+/* a field whose values are words (an action, a target, where a stagger starts: panel-field.tsx display) is read in the
+   interface's font: in the code font "This element" read as code */
+.motion-timeline .panel-field--words .panel-field__text,
+.timeline__side .panel-field--words .panel-field__text {
+  font: var(--fw-label) var(--fs-label) / var(--lh-label, 1.3) var(--font-ui);
+}

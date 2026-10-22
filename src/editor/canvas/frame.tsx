@@ -111,7 +111,9 @@ export function CanvasFrame({ width, screen, zoom, onExtent }: { readonly width:
         // screen, so read back in the page's px it may miss up to one screen px, 1 / zoom page px (a 900 px screen read
         // 899 at 51 % and 898 at 27 %), which is rounding, not a short frame
         const roundingSlack = Math.max(1, Math.ceil(1 / (frame.currentCSSZoom || 1)));
-        if (import.meta.env.DEV && inside.innerHeight < screen - roundingSlack) reportCanvas('the canvas frame is shorter than the screen', `the frame shows ${String(inside.innerHeight)} px of a ${String(screen)} px screen`);
+        // (a frame not laid out at all, 0 px, is a canvas the person hid: the bottom panel maximised over it, not a short
+        // frame)
+        if (import.meta.env.DEV && inside.innerHeight > 0 && inside.innerHeight < screen - roundingSlack) reportCanvas('the canvas frame is shorter than the screen', `the frame shows ${String(inside.innerHeight)} px of a ${String(screen)} px screen`);
       };
       const probeSoon = () => {
         caused = true;
