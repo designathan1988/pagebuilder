@@ -92,6 +92,10 @@
   flex: none;
   height: 0;
   margin-left: calc(var(--space-2) + min(var(--depth), 8) * var(--space-5));
+  /* its line lies on the row's foot and takes no room: under the last row it made the tree 2 px taller than its rows,
+     and scroll */
+  position: relative;
+  margin-top: -2px;
   border-top: 2px dashed var(--color-accent);
 }
 
@@ -533,8 +537,10 @@
   fill: currentColor;
 }
 
+/* closed, the palette is not drawn at all: drawn see-through under the row, it still made the tree scroll, and a page of
+   one element showed its row scrolled out of the tree (the real-use pass of 2026-10-22) */
 .row__swatches {
-  display: flex;
+  display: none;
   flex-wrap: nowrap;
   align-items: center;
   gap: var(--space-1);
@@ -557,6 +563,7 @@
 .row__palette.is-open .row__swatches,
 .row__palette:hover .row__swatches,
 .row__palette:focus-within .row__swatches {
+  display: flex;
   opacity: 1;
   pointer-events: auto;
 }
