@@ -4415,5 +4415,16 @@
   "logic.events.editCode": "Edit as code",
   "logic.events.hideCode": "Hide the code",
   "logic.events.code": "Code: {code}",
-  "logic.events.noActions": "No action yet: pick one below."
+  "logic.events.noActions": "No action yet: pick one below.",
+  "logic.bind.words": "{condition} → {property} is {value}",
+  "logic.bind.classOn": "{condition} → class .{name} is on",
+  "logic.bind.property": "Change",
+  "logic.bind.value": "To",
+  "logic.bind.when": "When",
+  "logic.bind.choose": "Change a style or a class when…",
+  "logic.bind.class": "Class .{name}",
+  "logic.bind.add": "Add the change",
+  "logic.bind.remove": "Remove this change",
+  "logic.bind.asCode": "Add as code",
+  "logic.bind.hideCode": "Hide the code form"
 }

@@ -7603,5 +7603,16 @@ export const MESSAGE_IDS = [
   "logic.events.hideCode",
   "logic.events.code",
   "logic.events.noActions",
+  "logic.bind.words",
+  "logic.bind.classOn",
+  "logic.bind.property",
+  "logic.bind.value",
+  "logic.bind.when",
+  "logic.bind.choose",
+  "logic.bind.class",
+  "logic.bind.add",
+  "logic.bind.remove",
+  "logic.bind.asCode",
+  "logic.bind.hideCode",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];

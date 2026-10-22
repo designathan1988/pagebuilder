@@ -4415,5 +4415,16 @@
   "logic.events.editCode": "Editar como código",
   "logic.events.hideCode": "Esconder o código",
   "logic.events.code": "Código: {code}",
-  "logic.events.noActions": "Nenhuma ação ainda: escolha uma abaixo."
+  "logic.events.noActions": "Nenhuma ação ainda: escolha uma abaixo.",
+  "logic.bind.words": "{condition} → {property} fica {value}",
+  "logic.bind.classOn": "{condition} → classe .{name} ligada",
+  "logic.bind.property": "Mudar",
+  "logic.bind.value": "Para",
+  "logic.bind.when": "Quando",
+  "logic.bind.choose": "Mudar um estilo ou uma classe quando…",
+  "logic.bind.class": "Classe .{name}",
+  "logic.bind.add": "Adicionar a mudança",
+  "logic.bind.remove": "Remover esta mudança",
+  "logic.bind.asCode": "Adicionar como código",
+  "logic.bind.hideCode": "Esconder o formulário de código"
 }

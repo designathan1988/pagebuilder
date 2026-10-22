@@ -20,6 +20,7 @@ import { LogicTextField } from './logic-field.tsx';
 import { localsAt, projectScope } from './scope.ts';
 import { logicChoices, repeatAround, type Choice } from './logic-choices.ts';
 import { LogicEvents } from './logic-events.tsx';
+import { BindingRows } from './logic-binds.tsx';
 import './panel.css';
 
 const REGION = 'inspector-logic';
@@ -150,23 +151,33 @@ export function LogicTab(): ReactNode {
           <Row label={t('logic.field.key')}>{expression('key', inside)}</Row>
         </Group>
         <Group title={t('logic.section.bindings')}>
-          {binds.map(([binding, code]) => (
-            <div key={binding} className="logic-binding">
-              <LogicTextField entry={BINDING} args={{ previous: binding, value: code }} name="binding" value={binding} target={node.id} className="logic-binding__name" />
-              <DoorCode entry={BINDING} args={{ binding }} name="value" value={code} kind="expression" scope={inside} target={node.id} label={`${t('logic.binding.value')} · ${binding}`} />
-            </div>
-          ))}
-          {/* the add row starts empty again once its binding is in (its key is the element's bindings, so a binding added
-              draws it anew; a refusal or a binding already there as typed keeps what was typed to correct): pressed
-              again it no longer adds the same binding and leaves the last message standing as if it had (the real-use
-              audit's V-7) */}
-          <DoorForm key={JSON.stringify(binds)} entry={ADD_BINDING} args={{}} className="logic-binding__add">
-            {/* the example of a binding's name stands in a line of its own under the field, wrapping in any width: as the
-                field's placeholder it was cut mid-word (the real-use audit, USE-12) */}
-            <input className="input" name="binding" aria-label={t('command.logic.addBinding')} aria-describedby={example} autoComplete="off" spellCheck={false} />
-            <small id={example} className="logic-binding__example">{t('logic.binding.new')}</small>
-            <input className="input input--code" name="value" aria-label={t('logic.binding.value')} placeholder={t('logic.binding.value')} autoComplete="off" spellCheck={false} />
-          </DoorForm>
+          <BindingRows
+            document={document}
+            nodeId={node.id}
+            binds={binds}
+            door={BINDING}
+            codeRow={(binding, code) => (
+              <div key={binding} className="logic-binding">
+                <LogicTextField entry={BINDING} args={{ previous: binding, value: code }} name="binding" value={binding} target={node.id} className="logic-binding__name" />
+                <DoorCode entry={BINDING} args={{ binding }} name="value" value={code} kind="expression" scope={inside} target={node.id} label={`${t('logic.binding.value')} · ${binding}`} />
+              </div>
+            )}
+            codeForm={
+              <>
+                {/* the add row starts empty again once its binding is in (its key is the element's bindings, so a binding added
+                    draws it anew; a refusal or a binding already there as typed keeps what was typed to correct): pressed
+                    again it no longer adds the same binding and leaves the last message standing as if it had (the real-use
+                    audit's V-7) */}
+                <DoorForm key={JSON.stringify(binds)} entry={ADD_BINDING} args={{}} className="logic-binding__add">
+                  {/* the example of a binding's name stands in a line of its own under the field, wrapping in any width: as the
+                      field's placeholder it was cut mid-word (the real-use audit, USE-12) */}
+                  <input className="input" name="binding" aria-label={t('command.logic.addBinding')} aria-describedby={example} autoComplete="off" spellCheck={false} />
+                  <small id={example} className="logic-binding__example">{t('logic.binding.new')}</small>
+                  <input className="input input--code" name="value" aria-label={t('logic.binding.value')} placeholder={t('logic.binding.value')} autoComplete="off" spellCheck={false} />
+                </DoorForm>
+              </>
+            }
+          />
         </Group>
         <Group title={t('logic.section.events')}>
           <LogicEvents
