@@ -24,10 +24,16 @@ import { isCurrent, labelParamsOf } from './current.ts';
 import { GLYPHS } from './placement.ts';
 import { readPickedDataFile } from '../data/read-file.ts';
 import { manifest } from '../../manifest/runtime.ts';
+import { describeText } from '../../i18n/index.ts';
 
 // a step named by its command's own label (manifest labelKey), when the command has one
 const COMMAND_LABELS = new Map(manifest.commands.map((command) => [command.id, command.labelKey]));
-const hasCommandWords = (step: string | null): boolean => step !== null && COMMAND_LABELS.has(step as CommandId);
+// a label that names the values it was run with ("Set {property} to {value}") has none to fill here: the history keeps
+// the command, not its words, and filling none threw while the toolbar was drawn
+const hasCommandWords = (step: string | null): boolean => {
+  const key = step === null ? undefined : COMMAND_LABELS.get(step as CommandId);
+  return key !== undefined && !describeText('en', key as MessageId).includes('<');
+};
 
 export function Icon({ name, size = 'md' }: { readonly name: string; readonly size?: 'xs' | 'sm' | 'md' | 'lg' }) {
   return (
@@ -102,7 +108,7 @@ export function useDoor(entry: DoorEntry, args: Readonly<Record<string, unknown>
     const last = entries[entries.length - 1];
     return last === undefined ? null : last.command;
   });
-  const named = step === null ? label : t('common.historyStep', { label, step: { key: (COMMAND_LABELS.get(step as CommandId) ?? 'command.undo') as MessageId, params: {} } });
+  const named = !hasCommandWords(step) || step === null ? label : t('common.historyStep', { label, step: { key: (COMMAND_LABELS.get(step as CommandId) ?? 'command.undo') as MessageId, params: {} } });
   const shown = hasCommandWords(step) ? named : label;
   const title = reason !== null ? t('common.disabledTitle', { label, reason: { key: reason, params: said?.params ?? {} } }) : chord !== null ? t('common.withShortcut', { label: shown, shortcut: chord }) : shown;
   const run = () => {
