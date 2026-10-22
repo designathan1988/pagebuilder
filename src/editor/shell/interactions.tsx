@@ -169,7 +169,8 @@ function Card({ node, interaction, index }: { readonly node: DocNode; readonly i
           {TARGET_FIELD !== null ? (
             // pressed again while picking, it stops picking (the target stays as it was)
             <PanelButton entry={TARGET_FIELD} args={picking ? { interaction: index, changes: { pick: false } } : { interaction: index }} pressed={picking} icon={<Icon name="locate-fixed" size="sm" />}>
-              {picking ? t('interactions.picking') : (target?.name ?? t('interactions.target.none'))}
+              {/* no target: the action acts on the element itself (core/events/interactions.ts actionTarget) */}
+              {picking ? t('interactions.picking') : (target?.name ?? t('interactions.target.self'))}
             </PanelButton>
           ) : null}
         </div> : null}
@@ -182,7 +183,6 @@ function Card({ node, interaction, index }: { readonly node: DocNode; readonly i
       </div> : null}
       {!expanded ? <p className="interaction-card__note">
         {interaction.scope === undefined ? t('interactions.scope.element') : t('interactions.scope.classCount', { class: interaction.scope, count: countWithClass(store.getState().document, interaction.scope) })}
-        {needsTarget(interaction.action) && interaction.target === undefined ? ` · ${t('interactions.target.none')}` : ''}
       </p> : null}
     </article>
   );

@@ -6,9 +6,9 @@
     "doors": 1439,
     "scenarios": 1909,
     "modules": 531,
-    "lines": 97983,
+    "lines": 98074,
     "fields": 207,
-    "interactive": 306
+    "interactive": 307
   },
   "features": [
     {
@@ -4158,7 +4158,7 @@
       "door": 96,
       "inside-door": 45,
       "local": 20,
-      "none": 115,
+      "none": 116,
       "spread": 6,
       "wraps-door": 24
     },
@@ -4577,6 +4577,15 @@
         "role": "button",
         "handlers": [],
         "owner": "door"
+      },
+      {
+        "key": "src/editor/canvas/reveal-selection.tsx|button|className,onClick,type|1",
+        "tag": "button",
+        "role": null,
+        "handlers": [
+          "onClick"
+        ],
+        "owner": "none"
       },
       {
         "key": "src/editor/canvas/side-frame.tsx|button|aria-disabled,className,data-args,data-door,onClick,title,type|1",

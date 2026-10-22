@@ -15,6 +15,7 @@ import { layeredRules, useEditorState } from '../store.ts';
 import { useT } from '../text.ts';
 import { breakpointById, breakpointName as nameOf } from '../../core/document/breakpoints.ts';
 import { stateName, styleStateOf } from '../view/style-state.ts';
+import { keyframeTarget } from '../timeline/playhead.ts';
 
 // whether the focus is inside the field whose door is this one (the focus is the page's, not the store's)
 const focusInside = (ref: string) => document.activeElement instanceof Element && document.activeElement.closest(`[data-door="${CSS.escape(ref)}"]`) !== null;
@@ -54,6 +55,12 @@ export function FieldOrigin({ entry, target }: { readonly entry: DoorEntry; read
     const name = cls !== null ? `.${cls}` : primary === undefined ? '' : (locate(s.document, primary)?.node.name ?? '');
     return `${name}|${rules.base.breakpoint}|${rules.base.state}|${rules.baseLayer.state}`;
   });
+  // the keyframe under the Timeline's playhead, which a style write goes to (timeline/playhead.ts): a value set there
+  // is said as the keyframe's, never as the breakpoint's ("Set at Phone" said where it was not)
+  const keyframe = useEditorState((s) => {
+    const at = keyframeTarget(s);
+    return at === null ? '' : `${at.animation}|${String(at.keyframe)}`;
+  });
   const focused = useFocusWithin(entry.ref);
   const [kind = '', first = '', second = ''] = said.split('|');
   const table = useEditorState((s) => s.document.breakpoints);
@@ -64,7 +71,9 @@ export function FieldOrigin({ entry, target }: { readonly entry: DoorEntry; read
   // a state of properties.json, a child position or a parent state, by its name (view/style-state.ts)
   const nameOfState = (id: string) => stateName(styleStateOf(id), t);
   const note =
-    kind === 'here'
+    kind === 'here' && keyframe !== ''
+      ? t('inspector.origin.keyframe', { animation: keyframe.split('|')[0] ?? '', offset: keyframe.split('|')[1] ?? '' })
+      : kind === 'here'
       ? t('inspector.origin.here', { breakpoint: breakpointName(first) })
       : kind === 'breakpoint' || kind === 'state'
         ? t('inspector.origin.from', { source: kind === 'state' ? `${breakpointName(first)} · ${nameOfState(second)}` : breakpointName(first) })
