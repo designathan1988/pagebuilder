@@ -41,7 +41,7 @@ export function DoorField({ entry, args, name, value, options, kind = 'text', la
   readonly name: string;
   readonly value: string;
   readonly options?: readonly Option[];
-  readonly kind?: 'text' | 'number' | 'textarea';
+  readonly kind?: 'text' | 'number' | 'textarea' | 'date';
   readonly label?: string;
   readonly className?: string;
   // the argument the typed or chosen text stands for (a query made of it); the text itself when absent
@@ -87,7 +87,7 @@ export function DoorField({ entry, args, name, value, options, kind = 'text', la
       <textarea {...common} ref={field} rows={3} onBlur={(event) => keep(event.currentTarget.value)} />
     ) : (
       <>
-        <input {...common} ref={field} type={kind === 'number' ? 'number' : 'text'} spellCheck={false} autoComplete="off" onBlur={(event) => keep(event.currentTarget.value)} {...(placeholder === undefined ? {} : { placeholder })} {...(suggestions === undefined ? {} : { list: listId })} />
+        <input {...common} ref={field} type={kind === 'number' ? 'number' : kind === 'date' ? 'date' : 'text'} spellCheck={false} autoComplete="off" onBlur={(event) => keep(event.currentTarget.value)} {...(placeholder === undefined ? {} : { placeholder })} {...(suggestions === undefined ? {} : { list: listId })} />
         {suggestions === undefined ? null : (
           <datalist id={listId}>
             {suggestions.map((one) => (

@@ -153,7 +153,7 @@ function Grid({ collection, query }: { readonly collection: Collection; readonly
   const cell = (field: Field, value: string, item: string) => {
     const options = choices(field);
     const files = options === undefined ? suggested(field) : undefined;
-    return <DoorField entry={CELL} args={{ collection: collection.name, item, field: field.key }} name="value" value={value} {...(options === undefined ? {} : { options })} {...(files === undefined ? {} : { suggestions: files, placeholder: t(field.type === 'image' ? 'data.cellImageHint' : field.type === 'video' ? 'data.cellVideoHint' : 'data.cellFileHint') })} label={t('data.cellLabel', { column: field.label, row: collection.items.findIndex((one) => one.id === item) + 1 })} />;
+    return <DoorField entry={CELL} args={{ collection: collection.name, item, field: field.key }} name="value" value={value} {...(options === undefined ? {} : { options })} {...(field.type === 'date' ? { kind: 'date' as const } : {})} {...(files === undefined ? {} : { suggestions: files, placeholder: t(field.type === 'image' ? 'data.cellImageHint' : field.type === 'video' ? 'data.cellVideoHint' : 'data.cellFileHint') })} label={t('data.cellLabel', { column: field.label, row: collection.items.findIndex((one) => one.id === item) + 1 })} />;
   };
   return (
     <div className="data-grid" data-region="data-grid">
