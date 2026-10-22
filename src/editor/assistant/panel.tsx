@@ -95,10 +95,11 @@ export function AssistantPanel(): ReactNode {
       }).catch(() => store.notice(message('assistant.invalidConnection')));
     }} />
     {state.preferences ? <>
+      {/* the way back first, where the preferences begin: under the setup's words it was found only by scrolling */}
+      <DoorControl entry={entryOf('assistant-close-preferences')} className="assistant-back" />
       <AssistantPreferences model={model} hasKey={state.hasKey} keyDraft="" connected={state.connection === 'connected'} door={door} t={key => t(key as MessageId)} />
       <p className="assistant-help">{t('assistant.setupHelp')}</p>
       <code>{t('assistant.setupCommand')}</code>
-      <DoorControl entry={entryOf('assistant-close-preferences')} />
     </> : <ChatSurface entries={state.entries} draft={state.draft} busy={state.busy} configured={state.hasKey && state.connection === 'connected'} setup={setupNote(state.hasKey, state.connection === 'connected')} model={model} door={door} t={key => t(key as MessageId)} />}
     <div className="assistant-connection" role="group" aria-label={t('assistant.status')}>
       <span className="assistant-connection__state">{t(`assistant.connection.${state.connection}` as MessageId)}</span>
