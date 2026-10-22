@@ -430,15 +430,16 @@
   /* never wider than the room the name leaves it (.row__page-name's margin, less a gap): a long file name ends in an
      ellipsis instead of running back over the page's name (journey03 plan, stage 5: row__meta); half the row was
      wider than that room, and "about-us-and-our…" lay over the name (DEF-0610) */
-  max-width: calc(var(--space-10) * 2 + var(--space-3) - var(--space-2));
+  max-width: calc(45% - var(--space-2));
   /* the gap from the name is the width's own (less a gap): no inner gap besides, or "index.html" read "index.htm…" */
   padding-left: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* the file's share of the row: "contact.html" read "contact.h…" in a fixed 66 px while the name left room */
 .row--page .row__page-name {
-  margin-right: calc(var(--space-10) * 2 + var(--space-3));
+  margin-right: 45%;
 }
 .row--page .row__name-field {
   border-color: transparent;

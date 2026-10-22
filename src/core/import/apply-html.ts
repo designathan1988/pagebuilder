@@ -50,11 +50,16 @@ export const applyHtmlCommand = registerHandler('element.applyHtml', (context, {
   if (at === null) throw new Error(`element.applyHtml: the document has no node ${id as NodeId}`);
   const locked = lockRefusal(state.document, at.node.id, 'status.locked.edit');
   if (locked !== null) return { kind: 'refused' as const, message: locked };
-  const imported = nodesFromMarkup(String(html ?? ''), nodeMaker(state.document, rules, ids, words), context as HandlerContext<never>);
+  // The page's root is its <body>: a markup fragment drops the body's own tags, so "<body><h1>…</h1></body>" read as
+  // an <h1> root and was refused as an invalid page. What the body holds is the root's children; markup with no body
+  // around it, written for the root, is what it holds as well.
+  const text = String(html ?? '');
+  const body = at.parent === null ? (/^\s*<body\b[^>]*>([\s\S]*)<\/body>\s*$/i.exec(text)?.[1] ?? text) : null;
+  const imported = nodesFromMarkup(body ?? text, nodeMaker(state.document, rules, ids, words), context as HandlerContext<never>);
   if ('line' in imported) return { kind: 'refused' as const, message: imported.message };
-  const root = imported.nodes[0];
+  const root = body === null ? imported.nodes[0] : { ...at.node, children: imported.nodes };
   // the markup of an element is that one element: none, or more than one, is markup for something else
-  if (root === undefined || imported.nodes.length !== 1) return { kind: 'refused' as const, message: message('status.html.invalidAt', { line: 1, reason: { key: 'status.html.oneElement' } }) };
+  if (root === undefined || (body === null && imported.nodes.length !== 1)) return { kind: 'refused' as const, message: message('status.html.invalidAt', { line: 1, reason: { key: 'status.html.oneElement' } }) };
   // the root is the element itself: its own markup may not say it is something the element's parent refuses
   if (at.parent !== null) {
     const refusal = placementRefusal(state.document, rules, at.parent.id, [root]);
