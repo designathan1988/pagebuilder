@@ -422,3 +422,28 @@
 
 ## DCS-084 — Listas aninhadas e campos de referência
 - **Decidido (2026-10-22):** a lista aninhada (via campo multirreferência) repete todos os filhos do seu contêiner, que deve conter só o elemento a repetir; não vira componente (instância não fica dentro de instância), as cópias guardam a parte do componente. Referência guarda o id; item apagado solta a referência; coleção apagada faz o campo virar texto com os títulos. O slug é criado do título só quando vazio (mudar o título não muda o endereço). Coluna importada como Opção ganha as escolhas que contém; Item(ns) de coleção não aparecem no tipo da importação (o campo é convertido depois, pelos títulos).
+
+## DCS-085 — Nome de arquivo mais largo que a linha do Explorador
+- **Origem:** lote explorador e régua (2026-10-22), fotos `en-e1` e `pt-e1`: a 1280, com a barra lateral de 224 px, `posts/cafe-coado-perfeito.html` e `posts/uma-semana-em-lisboa.html` (176 px de nome, 152 de espaço na linha) terminam em reticências.
+- **Decidido (preserva o comportamento atual):** vale a regra de `name-first.ts`: o selo "gerado" cede o espaço ao nome, e o nome só termina em reticências quando não cabe nem na linha sozinho, com o nome inteiro na dica (`title`). Alargar a barra lateral ou quebrar o nome em duas linhas fica para o dono.
+- **Resolvido (2026-10-22, DEF-0860):** a G5 não admite corte. Na lista de arquivos do Explorador, o nome que não cabe nem sozinho na linha quebra depois dos hífens e pontos, em quantas linhas precisar, e a linha cresce; o selo "gerado" continua cedendo o espaço ao nome antes disso (`name-first.ts`, que julga numa linha só).
+
+## DCS-086 — Classe nomeada por um estado do pai não se exclui
+- **Origem:** revisão de 5f94474e (R-1): excluir a classe deixava `parent:<classe>:<estado>` sem classe.
+- **Decidido (2026-10-22):** a exclusão é recusada enquanto um estado do pai nomeia a classe, como já acontece com interações e ações de movimento (`status.classes.inUseByInteractions`); a mensagem diz quantos são e o primeiro elemento ou classe que o tem. Renomear leva as chaves junto. Uma classe "existe" quando está na lista de classes do projeto ou quando algum elemento a usa (a importação deixa classes só nos elementos).
+
+## DCS-087 — Link para a página modelo leva à página do primeiro item
+- **Origem:** revisão de 5f94474e (R-3): o modelo não é arquivo do site, e um link para ele dava 404.
+- **Decidido (2026-10-22):** na exportação, todo endereço que nomeia o arquivo de uma página modelo é escrito como o da página do primeiro item da coleção (`lists.ts` `templateAddresses`). Na tela e na Pré-visualização o link continua abrindo o modelo. Um modelo de coleção sem itens não gera página, e o endereço fica como está. Recusar o modelo como destino de link foi descartado: o link pode existir antes de a página virar modelo.
+
+## DCS-088 — A cabeça de cada página de item
+- **Origem:** revisão de 5f94474e (R-4).
+- **Decidido (2026-10-22):** título: o do item; um título do modelo que tem o nome da página modelo entre separadores ("Post — Meu blog") troca esse nome pelo do item; outro título do modelo é lido como o nome do site e vem depois ("Bolo de cenoura — Meu blog"); o título social segue a mesma regra quando o modelo o define. Descrição: o campo de texto da coleção chamado descrição, resumo, summary ou excerpt, quando o item o preenche, senão o título do item (sempre escrita). Canônico: o endereço do próprio arquivo do item, na raiz que o canônico do modelo indica; sem canônico no modelo, nenhum.
+
+## DCS-089 — Barra de texto e rótulo somem ao editar texto no alto da página
+- **Origem:** lote da revisão de exportação (2026-10-22), foto `t3-top-link-editing`: Restaurante, 1280×720, editar o link "Gallery" do menu (topo da página). Selecionado, o rótulo fica na linha das abas, depois da última (exceção da DEC-70). Editando, a barra de texto (B, I, link) vai para cima do rótulo, sobre a régua, fora do palco, e `chrome.tsx` esconde os dois (`is-away`): quem edita não vê a barra de formatação.
+- **Decidido pelo dono (2026-10-22, a melhor opção):** o rótulo segue a DEC-70 e a exceção dela, no mesmo lugar de quando o elemento está só selecionado. A barra de texto fica sempre ao alcance: sobre o rótulo quando cabe no palco e fora das abas; senão logo abaixo do elemento; senão acima da moldura; senão dentro do palco, na borda mais próxima. Nunca cobre a linha do cursor, o rótulo nem as abas. Ponto único: `textToolbarPlace` (`src/editor/canvas/placement.ts`), DEF-0861; fotos `final-batch/pt-t1-nav-editing` e `en-t1-nav-editing`.
+
+## DCS-090 — Bibliotecas prontas no lugar de código caseiro frágil
+- **Origem:** pesquisa de 2026-10-22 (`reports/Soluções prontas para os problemas recorrentes.md`), pedido do dono: "Procure por soluções prontas, bibliotecas, frameworks… Quero a solução efetiva."
+- **Decidido (2026-10-22):** adotar só bibliotecas de licença permissiva, cada uma no ponto único que já existe. O DOMPurify 3.4.17 (Apache-2.0) limpa o HTML do campo rico do site exportado (`safeHtml` em `runtime.js`), embutido no runtime por `app-runtime/script.ts`, sem global. A regra própria de endereços (`unsafeAttribute`) segue como gancho. O Floating UI (MIT) é o próximo, no posicionamento dos painéis flutuantes (`float.ts`). Ficam fora: o tldraw (licença paga), o editor do Plasmic (AGPL), o GSAP (a licença pode excluir concorrentes da Webflow) e o Yjs (só compensa com colaboração simultânea). A base própria continua: nenhum construtor pronto cobre breakpoints com estados, quadros-chave e CMS.

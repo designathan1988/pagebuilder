@@ -14,6 +14,7 @@ import type {CommandId} from '../../generated/ids.ts';
 import type {CommandArgs} from '../../generated/commands.ts';
 import {manualClock} from '../../core/ports/clock.ts';
 import {sequentialIds} from '../../core/ports/ids.ts';
+import {clearIncidents,incidents} from '../../core/incidents.ts';
 import {editorTools} from '../../editor/assistant/editor.ts';
 import {createAssistantSession} from '../../editor/assistant/session.ts';
 const read=(name:string)=>JSON.parse(readFileSync(new URL(`../../../manifest/${name}.json`,import.meta.url),'utf8'));
@@ -108,6 +109,9 @@ test('refusal, throw and invalid-state failure roll back every prior command ato
    assert.deepEqual(store.getState().history,before.history);
    assert.equal(group.active(),false);
  }
+ // the invalid state is the feed's to report (an invariant incident); the case consumes it, so no later file reads it
+ assert.ok(incidents().some(incident=>incident.kind==='invariant'));
+ clearIncidents();
  const store=setup();
  const before=store.getState();
  const group=store.commandGroup(busy);

@@ -12,6 +12,7 @@
 import { locate, walk, type DocNode, type DocumentJson, type NodeId, type Location } from './model.ts';
 import { referenceNamesLeaving, referencesOf } from '../elements/references.ts';
 import { releaseMotionTargets } from '../motion/document.ts';
+import { parentKeyClass } from '../style/state-keys.ts';
 import type { Patch, Path } from '../history/transaction.ts';
 
 // The path children of a node take: the parent's own path, then the index among its children.
@@ -97,6 +98,50 @@ export function releaseReferencesPatch(document: DocumentJson, leaving: Readonly
   });
   // a motion action that acts on a picked element that is leaving goes with it (core/motion/document.ts)
   patches.push(...releaseMotionTargets(document, leaving));
+  return patches;
+}
+
+// The classes worn by the elements of the pages and of the components' definitions.
+function wornClasses(document: DocumentJson): ReadonlySet<string> {
+  const worn = new Set<string>();
+  for (const one of [...document.pages, ...(document.components ?? [])]) for (const node of walk(one.tree)) for (const name of node.classes) worn.add(name);
+  return worn;
+}
+
+// The patches that release every parent state (`parent:card:hover`, core/style/state-keys.ts) naming a class a change
+// took out of the project: a class no rule registered (an imported page's elements wear classes of their own) is the
+// project's only while an element wears it, so once a change leaves none wearing it — the last one deleted, cut,
+// replaced, unwrapped or written anew, or the class taken off it — the export's `.card:hover .title` matches nothing
+// and the validator refuses the key (validate.ts orphanParentStates). Read from the documents before and after the
+// change, so it holds whatever command made it and whatever it wrote back. A registered class is never released here:
+// it leaves only through its own commands, which rename or refuse its parent states (design/classes.ts).
+// `after` is the document the patches apply to; a breakpoint left with no state goes too.
+export function releasedParentStates(before: DocumentJson, after: DocumentJson): Patch[] {
+  if (before === after) return [];
+  const registered = new Set((before.classes ?? []).map((one) => one.name));
+  const stays = new Set([...(after.classes ?? []).map((one) => one.name), ...wornClasses(after)]);
+  const gone = new Set([...wornClasses(before)].filter((name) => !registered.has(name) && !stays.has(name)));
+  if (gone.size === 0) return [];
+  const patches: Patch[] = [];
+  const release = (styles: DocNode['styles'] | undefined, path: Path): void => {
+    for (const [breakpoint, states] of Object.entries(styles ?? {})) {
+      const keys = Object.keys(states ?? {});
+      const going = keys.filter((key) => {
+        const className = parentKeyClass(key);
+        return className !== null && gone.has(className);
+      });
+      if (going.length === 0) continue;
+      if (going.length === keys.length) patches.push({ op: 'remove', path: [...path, 'styles', breakpoint] });
+      else for (const key of going) patches.push({ op: 'remove', path: [...path, 'styles', breakpoint, key] });
+    }
+  };
+  const visit = (node: DocNode, path: Path): void => {
+    release(node.styles, path);
+    node.children.forEach((child, i) => visit(child, childPath(path, i)));
+  };
+  after.pages.forEach((page, i) => visit(page.tree, ['pages', i, 'tree']));
+  (after.components ?? []).forEach((component, i) => visit(component.tree, ['components', i, 'tree']));
+  (after.classes ?? []).forEach((one, i) => release(one.styles, ['classes', i]));
   return patches;
 }
 

@@ -150,8 +150,14 @@ export function CanvasFrame({ width, screen, zoom, onExtent }: { readonly width:
       // a value read while the page's own transition ran is read again once it ends
       target.addEventListener('transitionend', loaded);
       target.addEventListener('animationend', loaded);
-      // a text typed in place grows its element before the document holds it
-      target.addEventListener('input', probeSoon);
+      // a text typed in place grows its element (and moves the ones after it) before the document holds it: the page's
+      // readers measure again (the selection's chrome, the outlines, the rulers, the size readout, the quick panel),
+      // as for any other change of the page — the store does not change while the text is typed
+      const typed = () => {
+        pageChanged();
+        probeSoon();
+      };
+      target.addEventListener('input', typed);
       pageChanged();
       probeSoon();
       // A text edited in place (text-edit.ts): the renderer marks, focuses and reads the edited element, and while the
@@ -245,7 +251,7 @@ export function CanvasFrame({ width, screen, zoom, onExtent }: { readonly width:
         target.fonts.removeEventListener('loadingdone', loaded);
         target.removeEventListener('transitionend', loaded);
         target.removeEventListener('animationend', loaded);
-        target.removeEventListener('input', probeSoon);
+        target.removeEventListener('input', typed);
         stopDraftCapture();
         target.removeEventListener('input', captureDraft);
         target.removeEventListener('selectionchange', captureDraft);

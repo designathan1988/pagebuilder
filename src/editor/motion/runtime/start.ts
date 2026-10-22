@@ -141,6 +141,35 @@ export function startMotion(win: Window, config: RuntimeConfig, factories: Facto
   // keyframe first (core/motion/first-paint.ts writes no first state for it either)
   const ENTRANCES = ['page-load', 'scroll-into-view', 'timer'];
 
+  // A condition on a variable is read once the application's bridge is there: the site's application starts after
+  // this script (a later deferred script, then its modules), so a page-load entrance read it as unset. What waits runs
+  // when the runtime says its bridge is up (app-runtime/runtime.js, app:bridge), or at the page's load, which waits
+  // for the application's modules, when the page has no application or it never started. The canvas has none.
+  const BRIDGE_READY = 'app:bridge';
+  const waiting: (() => void)[] = [];
+  const bridgeUp = (): boolean => options.mode !== 'page' || (win as Window & { __builderApp?: unknown }).__builderApp !== undefined || win.document.readyState === 'complete';
+  const flush = (): void => {
+    win.document.removeEventListener(BRIDGE_READY, flush);
+    win.removeEventListener('load', flush);
+    for (const act of waiting.splice(0)) act();
+  };
+  const whenReadable = (condition: RuntimeConfig['bindings'][number]['interaction']['condition'], act: () => void): void => {
+    if (condition?.kind !== 'variable' || bridgeUp()) {
+      act();
+      return;
+    }
+    if (waiting.length === 0) {
+      win.document.addEventListener(BRIDGE_READY, flush);
+      win.addEventListener('load', flush);
+    }
+    waiting.push(act);
+  };
+  disposers.push(() => {
+    waiting.length = 0;
+    win.document.removeEventListener(BRIDGE_READY, flush);
+    win.removeEventListener('load', flush);
+  });
+
   for (const binding of options.triggers === false ? [] : config.bindings) {
     const interaction = binding.interaction;
     const respect = interaction.reducedMotion !== 'ignore';
@@ -151,7 +180,10 @@ export function startMotion(win: Window, config: RuntimeConfig, factories: Facto
       if (run === null) continue;
       const applies = (): boolean =>
         (interaction.breakpoints === undefined || interaction.breakpoints.includes(kit.activeBreakpoint())) && (interaction.condition === undefined || holds(interaction.condition, source));
-      if (respect && kit.reducedMotion() && ENTRANCES.includes(interaction.trigger.kind) && (interaction.control === 'play' || interaction.control === 'restart') && applies()) kit.player.apply(run, 'play', true);
+      // an entrance holds its first keyframe until it plays: one that does not run (its condition or its breakpoint
+      // does not hold when it fires) leaves its element in its own end state, never hidden at its first keyframe
+      const entrance = ENTRANCES.includes(interaction.trigger.kind) && (interaction.control === 'play' || interaction.control === 'restart');
+      if (entrance && respect && kit.reducedMotion()) whenReadable(interaction.condition, () => (applies() ? kit.player.apply(run, 'play', true) : run.settle()));
       let fired = false;
       let pending = 0;
       const later = (act: () => void): void => {
@@ -160,11 +192,16 @@ export function startMotion(win: Window, config: RuntimeConfig, factories: Facto
         else pending = win.setTimeout(act, interaction.delay);
       };
       const handlers = {
-        fire: (): void => {
-          if (!applies() || (interaction.once === true && fired)) return;
-          fired = true;
-          later(() => kit.player.apply(run, interaction.control, respect));
-        },
+        fire: (): void =>
+          whenReadable(interaction.condition, () => {
+            if (interaction.once === true && fired) return;
+            if (!applies()) {
+              if (entrance && run.time() < 0) run.settle();
+              return;
+            }
+            fired = true;
+            later(() => kit.player.apply(run, interaction.control, respect));
+          }),
         leave: (): void => {
           const leave = interaction.leave ?? 'none';
           if (!applies() || leave === 'none') return;

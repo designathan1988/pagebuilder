@@ -70,9 +70,11 @@ export function createBehaviours(win: Window, kit: MotionKit): BehaviourKit {
       if (behaviour.max !== undefined) {
         shift = Math.min(behaviour.max, Math.max(-behaviour.max, shift));
       } else {
-        // as far as its parent's box lets it, so it never moves over the section after it (or before it)
+        // as far as its parent's box lets it, so it never moves over the section after it (or before it); an element
+        // as large as its parent or larger (a hero's picture filling its section, a layer overflowing a clipping
+        // frame) has no room inside it, and moves as it always did, the parent's own clipping its limit
         const parent = element.parentElement?.getBoundingClientRect();
-        if (parent !== undefined) {
+        if (parent !== undefined && size < (vertical ? parent.height : parent.width)) {
           const before = vertical ? box.top - parent.top : box.left - parent.left;
           const after = vertical ? parent.bottom - box.bottom : parent.right - box.right;
           shift = Math.min(Math.max(0, after), Math.max(-Math.max(0, before), shift));

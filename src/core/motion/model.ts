@@ -248,6 +248,7 @@ export interface Behaviour {
   readonly start?: number;
   readonly end?: number;
   // parallax: the most it moves either way, in px; absent: as far as its parent's box lets it, so it never leaves the
-  // section it stands in (the audit's photo 18: an image slid over the next section's heading)
+  // section it stands in (the audit's photo 18: an image slid over the next section's heading); an element as large as
+  // its parent or larger moves unclamped, as before ranges existed (its parent's clipping is the limit)
   readonly max?: number;
 }

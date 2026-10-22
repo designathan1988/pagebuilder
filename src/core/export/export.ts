@@ -53,9 +53,9 @@ import { rulesForDocument } from '../document/breakpoint-rules.ts';
 import { capturedExportHtml, exportedCapturedRoot, type CapturedHead } from '../render/captured.ts';
 import { captureSnapshotPath, type CapturedSnapshotPackage } from '../document/captured.ts';
 import { APP_MAIN_SCRIPT, APP_RUNTIME_SCRIPT, APP_START_SCRIPT, FORMS_SCRIPT, INTERACTIONS_SCRIPT, LISTS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, STYLESHEET, WIDGETS_SCRIPT } from './paths.ts';
-import { compileApp, siteUsesApp } from '../logic/compile.ts';
+import { appPaths, compileApp, siteUsesApp } from '../logic/compile.ts';
 import { appStartScript } from './app-start.ts';
-import { LISTS_CSS, LISTS_JS, pageUsesLists, siteDocument } from './lists.ts';
+import { LISTS_CSS, LISTS_JS, pageUsesLists, siteDocument, sitePages, sitePagesLists } from './lists.ts';
 
 // the generated files' paths (paths.ts, the one list the file tree reads too), published here for the editor
 export { FORMS_SCRIPT, INTERACTIONS_SCRIPT, LISTS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, STYLESHEET, WIDGETS_SCRIPT } from './paths.ts';
@@ -510,14 +510,14 @@ export function siteFiles(
 // their stylesheet — the selectors a script names change its text, never whether it is written (every element an
 // interaction or a motion addresses takes a generated class). The Explorer lists the generated files at every change of
 // the document (the audit's AUD-36: listing them through siteFiles wrote the whole site at every undo).
-// The paged lists' script is read from the site as the archive writes it (lists.ts siteDocument): a list is paged on
-// the site only while it holds more items than a page, which only its materialized copy tells; a project with no
-// collection is the document itself, so nothing is materialized for it.
+// The paged lists' script is read from the site's lists (lists.ts sitePagesLists): a list is paged on the site only
+// while it holds more items than a page, which only its materialized copy tells; a project with no collection is the
+// document itself, so nothing is materialized for it, and no item's page is written out to tell it.
 export type SiteScriptPart = 'interactions' | 'forms' | 'motion' | 'lottie' | 'widgets' | 'lists' | 'app';
-export function siteScriptsWritten(document: DocumentJson, manifestRules: ModelRules): ReadonlySet<SiteScriptPart> {
+export function siteScriptsWritten(document: DocumentJson, manifestRules: ModelRules, lists: boolean = sitePagesLists(document, manifestRules)): ReadonlySet<SiteScriptPart> {
   const written = new Set<SiteScriptPart>();
   const anywhere = () => '.';
-  if (siteDocument(document, manifestRules, true).pages.some((page) => pageUsesLists(page.tree))) written.add('lists');
+  if (lists) written.add('lists');
   if (interactionsJs(document, anywhere) !== null) written.add('interactions');
   if (document.pages.some((page) => pageUsesForms(page.tree))) written.add('forms');
   if (document.pages.some((page) => pageUsesWidgets(page.tree))) written.add('widgets');
@@ -528,6 +528,44 @@ export function siteScriptsWritten(document: DocumentJson, manifestRules: ModelR
     if (siteUsesLottie(document)) written.add('lottie');
   }
   return written;
+}
+
+// The files the export writes from the document (siteEntries, the project's stored files apart), by path and in the
+// archive's order, read without writing them: what the Explorer lists as generated, so it lists exactly the archive's
+// files. A template page is no file of the site: each of its items' pages is (lists.ts sitePages, read from the
+// collections: no page is written to list them), and `page` names the page of the document a file is written from (the
+// template, for an item's page); `item` tells an item's page, whose path follows its item and is no page's own address.
+export type WrittenPart = 'page' | 'stylesheet' | 'snapshot' | SiteScriptPart;
+export interface WrittenFile {
+  readonly path: string;
+  readonly part: WrittenPart;
+  readonly page: string | null;
+  readonly item: boolean;
+}
+const SCRIPT_PATH: Readonly<Record<Exclude<SiteScriptPart, 'app'>, string>> = {
+  interactions: INTERACTIONS_SCRIPT, forms: FORMS_SCRIPT, motion: MOTION_SCRIPT, lottie: LOTTIE_SCRIPT, widgets: WIDGETS_SCRIPT, lists: LISTS_SCRIPT,
+};
+export function siteFilesWritten(document: DocumentJson, manifestRules: ModelRules): readonly WrittenFile[] {
+  const scripts = siteScriptsWritten(document, manifestRules);
+  const pages = sitePages(document).map((one): WrittenFile => ({ path: one.file, part: 'page', page: one.page.id, item: one.item !== null }));
+  const snapshots = document.pages.flatMap((page): WrittenFile[] => (page.capture === undefined ? [] : [{ path: captureSnapshotPath(page.file), part: 'snapshot', page: page.id, item: false }]));
+  const named = (['interactions', 'forms', 'motion', 'lottie', 'widgets', 'lists'] as const).flatMap((part): WrittenFile[] => (scripts.has(part) ? [{ path: SCRIPT_PATH[part], part, page: null, item: false }] : []));
+  // the application: its start script, its main script, the runtime and each module (compile.ts appPaths)
+  const app = scripts.has('app') ? appPaths(document).map((path): WrittenFile => ({ path, part: 'app', page: null, item: false })) : [];
+  return [...pages, { path: STYLESHEET, part: 'stylesheet', page: null, item: false }, ...snapshots, ...named, ...app];
+}
+
+// A captured page's snapshot as the archive holds it (spec import-capture): its widths, its root as exported and its
+// resource problems.
+export function capturedSnapshotText(document: DocumentJson, page: DocumentJson['pages'][number]): string | null {
+  if (page.capture === undefined) return null;
+  const packageData: CapturedSnapshotPackage = {
+    format: 2,
+    widths: page.capture.widths,
+    root: exportedCapturedRoot(page.capture.root, capturedHeadOf(document, page)),
+    ...(page.capture.resourceProblems === undefined ? {} : { resourceProblems: page.capture.resourceProblems }),
+  };
+  return JSON.stringify(packageData);
 }
 
 // A page as the preview shows it (spec preview-mode): the exported page itself, its stylesheet written in its head in
@@ -624,14 +662,8 @@ export function siteEntries(document: DocumentJson, rules: ModelRules, siteScrip
   // exported page shows it
   const assets = filesOf(document).map((file) => ({ path: file.path, bytes: fileBytes(file) }));
   const capturedSnapshots = document.pages.flatMap((page) => {
-    if (page.capture === undefined) return [];
-    const packageData: CapturedSnapshotPackage = {
-      format: 2,
-      widths: page.capture.widths,
-      root: exportedCapturedRoot(page.capture.root, capturedHeadOf(document, page)),
-      ...(page.capture.resourceProblems === undefined ? {} : { resourceProblems: page.capture.resourceProblems }),
-    };
-    return [{ path: captureSnapshotPath(page.file), bytes: encoder.encode(JSON.stringify(packageData)) }];
+    const text = capturedSnapshotText(document, page);
+    return text === null ? [] : [{ path: captureSnapshotPath(page.file), bytes: encoder.encode(text) }];
   });
   // the interactions' script, at the path the pages link it by, while the project holds interactions (spec
   // export-events-js)

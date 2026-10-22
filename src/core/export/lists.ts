@@ -11,37 +11,135 @@ import type { DocNode, DocumentJson, Page } from '../document/model.ts';
 import type { ModelRules } from '../document/validate.ts';
 import { walk } from '../document/model.ts';
 import { sequentialIds } from '../ports/ids.ts';
-import { collectionNamed, collectionsOf, itemTitle } from '../data/collections.ts';
-import { siteWord, templatePaths, type DataContext } from '../data/bindings.ts';
+import { applyPatches } from '../history/transaction.ts';
+import { addressAttributes, followPaths } from '../files/references.ts';
+import { fold, slug } from '../text/fold.ts';
+import { collectionNamed, collectionsOf, fieldText, itemTitle, lookupIn, titleField } from '../data/collections.ts';
+import { siteWord, siteYesNo, templatePaths, type DataContext } from '../data/bindings.ts';
 import { LIST_ATTRIBUTE, materialize } from '../data/materialize.ts';
+import type { Collection, Item } from '../data/model.ts';
 
-// The pages of the site: each template page replaced by its items' pages, in its place.
-function expandedPages(document: DocumentJson): readonly Page[] {
+// The pages the site writes, in the pages' order, read from the collections alone (no page is materialized): each
+// page's own file, and in a template page's place its items' files (templatePaths), each with the page it comes from.
+// What the Explorer lists, and the order the export writes them in.
+export interface SitePage {
+  readonly file: string;
+  readonly page: Page;
+  // the item an item page shows (the template is `page`)
+  readonly item: string | null;
+}
+export function sitePages(document: DocumentJson): readonly SitePage[] {
   const paths = templatePaths(document);
-  return document.pages.flatMap((page) => {
+  return document.pages.flatMap((page): SitePage[] => {
     const mark = page.tree.dataItem;
-    if (mark?.template !== true) return [page];
+    if (mark?.template !== true) return [{ file: page.file, page, item: null }];
     const collection = collectionNamed(document, mark.collection);
     const files = paths.get(mark.collection);
     if (collection === undefined || files === undefined) return [];
-    return collection.items.map((item) => ({
-      ...page,
-      id: `${page.id}~${item.id}`,
-      name: itemTitle(collection, item, document.language),
-      file: files.get(item.id) ?? page.file,
-      tree: { ...page.tree, dataItem: { ...mark, item: item.id } },
-    }));
+    return collection.items.map((item) => ({ file: files.get(item.id) ?? page.file, page, item: item.id }));
   });
+}
+
+// The site's addresses of the template pages: a template writes no file of its own (its items' pages are the site's),
+// so an address that names it — a menu's link to "post.html" — leads to its collection's first item's page, written
+// as every other address to a page (DCS-087). A template whose collection holds no item writes no page, and its
+// address stays as it is.
+function templateAddresses(pages: readonly SitePage[]): ReadonlyMap<string, string> {
+  const first = new Map<string, string>();
+  for (const one of pages) if (one.item !== null && !first.has(one.page.file)) first.set(one.page.file, one.file);
+  return first;
+}
+
+// The head an item's page writes (the review's R-4: every item page carried the template's title, description and
+// canonical address), from the template's own settings (DCS-088):
+//  - the title: the item's title; a template title that names the template page ("Post — My blog", the page "Post")
+//    takes the item's title in that place, and any other template title is read as the site's name after it
+//    ("Carrot cake — My blog"). The social title follows the same rule while the template sets one.
+//  - the description: the item's description field (a text field named description, summary, excerpt, or their
+//    Portuguese words) while the item holds one, else the item's title.
+//  - the canonical address: the item page's own, at the place the template's canonical names for the template's file.
+const DESCRIPTION_WORDS: ReadonlySet<string> = new Set(['description', 'descricao', 'summary', 'resumo', 'excerpt', 'sumario']);
+const TITLE_SETTING = 'pageTitle';
+const SEPARATED = /(\s+[—–|·-]\s+)/u;
+function itemHeadTitle(stored: unknown, templateName: string, title: string): string {
+  if (typeof stored !== 'string' || stored.trim() === '') return title;
+  const parts = stored.split(SEPARATED);
+  const at = parts.findIndex((part, i) => i % 2 === 0 && fold(part.trim()) === fold(templateName.trim()));
+  if (at < 0) return `${title} — ${stored.trim()}`;
+  return parts.map((part, i) => (i === at ? title : part)).join('');
+}
+function itemCanonical(stored: unknown, templateFile: string, itemFile: string): string | undefined {
+  if (typeof stored !== 'string' || stored.trim() === '') return undefined;
+  // the site's root, from the template's canonical address: as many folders up as the template's file stands in
+  const depth = templateFile.split('/').length - 1;
+  if (!URL.canParse(stored.trim())) return itemFile.split('/').pop() ?? itemFile;
+  const root = new URL(`./${'../'.repeat(depth)}`, stored.trim());
+  return new URL(itemFile, root).href;
+}
+function itemHead(document: DocumentJson, rules: ModelRules, page: Page, collection: Collection, item: Item, file: string): DocNode['attributes'] {
+  const title = itemTitle(collection, item, document.language);
+  const ids = (head: string): readonly string[] => [...rules.attributeValues].filter(([, facts]) => facts.head === head).map(([id]) => id);
+  const held = page.tree.attributes as Readonly<Record<string, unknown>>;
+  const next: Record<string, unknown> = { ...held, [TITLE_SETTING]: itemHeadTitle(held[TITLE_SETTING], page.name, title) };
+  const own = titleField(collection);
+  const described = collection.fields.find((field) => field !== own && (field.type === 'text' || field.type === 'richtext') && (DESCRIPTION_WORDS.has(slug(field.key)) || DESCRIPTION_WORDS.has(slug(field.label))));
+  const words = described === undefined ? '' : fieldText(described, item.values[described.key], siteYesNo(document.language), { language: document.language, decimals: described.decimals }, lookupIn(document)).trim();
+  for (const id of ids('meta:description')) next[id] = words === '' ? title : words;
+  for (const id of ids('meta:og:title')) if (typeof held[id] === 'string' && held[id] !== '') next[id] = itemHeadTitle(held[id], page.name, title);
+  for (const id of ids('link:canonical')) {
+    const canonical = itemCanonical(held[id], page.file, file);
+    if (canonical === undefined) Reflect.deleteProperty(next, id);
+    else next[id] = canonical;
+  }
+  return next as DocNode['attributes'];
+}
+
+// The pages of the site: each template page replaced by its items' pages, in its place, each with its item's head;
+// every address that names a template page leads to its first item's page (followPaths, the one rule of the places a
+// path is written).
+function expandedPages(document: DocumentJson, rules: ModelRules): DocumentJson {
+  const pages = sitePages(document);
+  if (pages.every((one) => one.item === null)) return document;
+  const addresses = templateAddresses(pages);
+  const followed = addresses.size === 0 ? document : applyPatches(document, followPaths(document, (path) => addresses.get(path) ?? path, undefined, addressAttributes(rules))).document;
+  const expanded = sitePages(followed).map((one): Page => {
+    if (one.item === null) return one.page;
+    const mark = one.page.tree.dataItem;
+    const collection = mark === undefined ? undefined : collectionNamed(followed, mark.collection);
+    const item = collection?.items.find((each) => each.id === one.item);
+    if (mark === undefined || collection === undefined || item === undefined) throw new Error('export: an item page lost its item');
+    return {
+      ...one.page,
+      id: `${one.page.id}~${item.id}`,
+      name: itemTitle(collection, item, followed.language),
+      file: one.file,
+      tree: { ...one.page.tree, attributes: itemHead(followed, rules, one.page, collection, item, one.file), dataItem: { ...mark, item: item.id } },
+    };
+  });
+  return { ...followed, pages: expanded };
 }
 
 // The document as the site holds it: the item pages written out (itemPages) and every list whole. A project with no
 // collection is the document itself.
+// the ids the site's own copies take: counted, so two exports of one document are the same bytes
+const siteContext = (document: DocumentJson, rules: ModelRules): DataContext => ({ ids: sequentialIds('site-item-'), rules, words: (key) => siteWord(document.language, key) });
 export function siteDocument(document: DocumentJson, rules: ModelRules, itemPages: boolean): DocumentJson {
   if (collectionsOf(document).length === 0) return document;
-  // the ids the site's own copies take: counted, so two exports of one document are the same bytes
-  const context: DataContext = { ids: sequentialIds('site-item-'), rules, words: (key) => siteWord(document.language, key) };
-  const pages = itemPages ? expandedPages(document) : document.pages;
-  return materialize(pages === document.pages ? document : { ...document, pages }, context, { site: true });
+  return materialize(itemPages ? expandedPages(document, rules) : document, siteContext(document, rules), { site: true });
+}
+
+// Whether the site holds a paged list (the export writes js/lists.js), found without writing every item's page: a
+// list's pages are the same on every item page — its rows are its collection's, never the page's item — except a
+// nested list's (DataList.via), whose rows are the ones its item names. So only a template that holds a nested list
+// (in its tree, or in a component a list may copy) is written out item by item; any other shows its item, as on the
+// canvas, and the site's lists are materialized once.
+export function sitePagesLists(document: DocumentJson, rules: ModelRules): boolean {
+  if (collectionsOf(document).length === 0) return document.pages.some((page) => pageUsesLists(page.tree));
+  const nested = (tree: DocNode): boolean => [...walk(tree)].some((node) => node.dataList?.via !== undefined);
+  const inComponents = (document.components ?? []).some((definition) => nested(definition.tree));
+  const whole = document.pages.some((page) => page.tree.dataItem?.template === true && (inComponents || nested(page.tree)));
+  const site = whole ? siteDocument(document, rules, true) : materialize(document, siteContext(document, rules), { site: true });
+  return site.pages.some((page) => pageUsesLists(page.tree));
 }
 
 // Whether a page holds a paged list (it links js/lists.js).

@@ -71,4 +71,17 @@ describe('the document format versions', () => {
     if (!('document' in read)) throw new Error(JSON.stringify(read));
     expect(read.document.components?.[0]?.tree.children[0]?.interactions).toEqual([{ trigger: 'click', action: 'show', target: 'Def' }]);
   });
+
+  it('opens a project holding a parent state of a class it no longer has, the key dropped (R-1)', () => {
+    const empty = createEmptyDocument(sequentialIds('s'), { page: 'Home', root: 'Page' }, RULES.root);
+    const box = (id: string, extra: Record<string, unknown> = {}) => ({ id, type: 'div', name: id, tag: 'div', attributes: {}, classes: [], styles: {}, text: null, children: [], ...extra });
+    const orphan = { desktop: { 'parent:gone:hover': { color: '#ff0000' } }, phone: { base: { color: '#00ff00' }, 'parent:card:hover': { color: '#0000ff' } } };
+    const tree = { ...empty.pages[0]?.tree, children: [box('Card', { classes: ['card'], children: [box('Title', { styles: orphan })] })] };
+    const saved = { ...empty, pages: [{ ...empty.pages[0], tree }], classes: [{ name: 'title', styles: orphan }] };
+    const read = readProject(saved, RULES);
+    if (!('document' in read)) throw new Error(JSON.stringify(read));
+    const kept = { phone: { base: { color: '#00ff00' }, 'parent:card:hover': { color: '#0000ff' } } };
+    expect(read.document.pages[0]?.tree.children[0]?.children[0]?.styles).toEqual(kept);
+    expect(read.document.classes?.[0]?.styles).toEqual(kept);
+  });
 });

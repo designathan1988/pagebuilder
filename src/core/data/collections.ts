@@ -739,8 +739,23 @@ export function queryItems(collection: Collection, query: Query, lookup: Lookup 
   return sorted.slice(offset, query.limit === undefined ? undefined : offset + query.limit);
 }
 
-// The items of a list's first page: what the canvas shows of a paged list (all of them while it has no page size).
-export const firstPage = <T>(rows: readonly T[], query: Query): readonly T[] => (query.pageSize === undefined ? rows : rows.slice(0, query.pageSize));
+// The one rule of what a page of a list holds (the review's R-2): a page has `pageSize` items that show, counted after
+// the show filter (`shows`: the repeated item's show binding holds for it), as a visitor sees the list. The first page
+// is the rows up to the last of its items that show, the ones the show binding hides among them included (they stay
+// hidden): what the canvas shows, and what the site shows before the list script reveals more (materialize.ts marks
+// the rows past it, core/export/lists.ts counts only the items that show). `more`: an item that shows lies past it.
+// Every row is on the first page while the list has no page size.
+export function firstPage<T>(rows: readonly T[], query: Query, shows: (row: T) => boolean): { readonly rows: readonly T[]; readonly more: boolean } {
+  const size = query.pageSize;
+  if (size === undefined) return { rows, more: false };
+  let counted = 0;
+  for (let i = 0; i < rows.length; i += 1) {
+    if (!shows(rows[i] as T)) continue;
+    counted += 1;
+    if (counted === size) return { rows: rows.slice(0, i + 1), more: rows.slice(i + 1).some(shows) };
+  }
+  return { rows, more: false };
+}
 
 // A query in its canonical form: no empty list, no default, so two equal queries are the same JSON.
 export function canonicalQuery(query: Query): Query {

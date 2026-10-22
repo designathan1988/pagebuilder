@@ -28,3 +28,35 @@ export function onPageChange(listener: Listener): () => void {
   listeners.add(listener);
   return () => listeners.delete(listener);
 }
+
+// A reader that follows the page by its clock: `measure` runs when the page may have changed (and at once), then at
+// every frame while it reads something new (it says so) or the page moves on its own (`animating`: a transition, an
+// animation of the page), stopping after a few still frames — what it draws from a measure is committed a frame later
+// and may be read back by the next. `tick` asks for a measure for a cause the clock does not hear (a control of the
+// stage moved, a box of the reader's own resized); `stop` ends it.
+const STILL_FRAMES = 4;
+export function followPage(measure: () => boolean, animating: () => boolean): { readonly tick: () => void; readonly stop: () => void } {
+  let request = 0;
+  let running = false;
+  let still = 0;
+  const follow = () => {
+    still = measure() ? 0 : still + 1;
+    if (still < STILL_FRAMES || animating()) request = requestAnimationFrame(follow);
+    else running = false;
+  };
+  const tick = () => {
+    still = 0;
+    if (running) return;
+    running = true;
+    request = requestAnimationFrame(follow);
+  };
+  tick();
+  const unlisten = onPageChange(tick);
+  return {
+    tick,
+    stop: () => {
+      cancelAnimationFrame(request);
+      unlisten();
+    },
+  };
+}

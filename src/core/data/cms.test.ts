@@ -10,7 +10,7 @@ import { walk } from '../document/model.ts';
 import { rulesFromManifest, validateDocument } from '../document/validate.ts';
 import { sequentialIds } from '../ports/ids.ts';
 import { filledSlugs, guessType, itemNamed, lookupIn, readCell, readFieldCell, setCell, setField, type Lookup } from './collections.ts';
-import { formattedText, itemPagesOf, placeOf, showHolds, templatePaths, type DataContext } from './bindings.ts';
+import { formatsOf, formattedText, itemPagesOf, placeOf, readBack, showHolds, templatePaths, type DataContext } from './bindings.ts';
 import { derivedDocument } from './derive.ts';
 import { materialize } from './materialize.ts';
 import { DataRefusal } from './collections.ts';
@@ -119,6 +119,23 @@ describe('the formats of bound values', () => {
     expect(formattedText(flag, false, { format: 'on-off' }, 'pt-BR', none)).toBe('Desligado');
     expect(formattedText(flag, true, { format: 'true-false' }, 'en', none)).toBe('True');
   });
+  // the review of 5f94474e (R-10): what the canvas shows in a format, typed back, is the value it shows
+  it('reads back every date style and every pair of words it writes, in the site language', () => {
+    const date: Field = { key: 'data', label: 'Data', type: 'date' };
+    const flag: Field = { key: 'd', label: 'D', type: 'boolean' };
+    for (const language of ['en', 'pt-BR', 'de', 'fr', 'ja', undefined]) {
+      for (const format of formatsOf(date)) {
+        for (const value of ['2026-10-01', '1999-02-28', '2030-12-31']) {
+          const expected = format === 'month-year' ? `${value.slice(0, 8)}01` : value;
+          expect([language, format, readBack(date, formattedText(date, value, { format }, language, none), { format }, language, none)]).toEqual([language, format, expected]);
+        }
+      }
+      for (const format of formatsOf(flag)) for (const value of [true, false]) expect(readBack(flag, formattedText(flag, value, { format }, language, none), { format }, language, none)).toBe(value);
+    }
+    expect(readBack(date, '31 de fevereiro de 2026', { format: 'date-long' }, 'pt-BR', none)).toBeNull();
+    expect(readBack(date, '2 DE OUTUBRO DE 2026', { format: 'date-long' }, 'pt-BR', none)).toBe('2026-10-02');
+    expect(readBack(flag, 'Talvez', { format: 'on-off' }, 'pt-BR', none)).toBeNull();
+  });
 });
 
 describe('show bindings, nested lists, paged lists and the item template', () => {
@@ -147,6 +164,25 @@ describe('show bindings, nested lists, paged lists and the item template', () =>
     const list = nodesNamed(site, 0, /^Lista$/)[0] as DocNode;
     expect(list.customAttributes).toMatchObject({ 'data-list-paging': 'more', 'data-list-page-size': '2', 'data-list-more': 'Carregar mais' });
     expect(list.children.filter((child) => child.component === 'Cartao').map((child) => child.dataHidden === true)).toEqual([false, false, true, true, true]);
+  });
+
+  // the review of 5f94474e (R-2): a page holds the items that show, after the show filter, on the canvas as on the site
+  it('shows on the canvas the first page the site shows, counted after a show binding of the cards', () => {
+    const shownCards = (when: 'filled' | 'empty') => {
+      const source = blog();
+      const show = (node: DocNode): DocNode => (node.component === 'Cartao' ? { ...node, bind: [{ field: 'destaque', to: 'show', when }] } : { ...node, children: node.children.map(show) });
+      const marked: DocumentJson = { ...source, components: (source.components ?? []).map((c) => (c.name === 'Cartao' ? { ...c, tree: { ...c.tree, bind: [{ field: 'destaque', to: 'show', when }] } } : c)), pages: source.pages.map((page) => ({ ...page, tree: show(page.tree) })) };
+      const canvas = derivedDocument(source, marked, context());
+      const cards = (document: DocumentJson) => (nodesNamed(document, 0, /^Lista$/)[0] as DocNode).children.filter((child) => child.component === 'Cartao');
+      const title = (card: DocNode) => [...walk(card)].find((node) => /^Titulo/.test(node.name))?.text;
+      const site = cards(siteDocument(canvas, RULES, false));
+      return { canvas: cards(canvas).filter((card) => card.dataHidden !== true).map(title), site: site.filter((card) => card.dataHidden !== true).map(title), marked: site.filter((card) => card.customAttributes?.['data-list-item'] !== undefined).length };
+    };
+    expect(shownCards('filled')).toEqual({ canvas: ['Bolo de cenoura', 'Pão de queijo'], site: ['Bolo de cenoura', 'Pão de queijo'], marked: 0 });
+    const empty = shownCards('empty');
+    expect(empty.canvas).toHaveLength(2);
+    expect(empty.site).toEqual(empty.canvas);
+    expect(empty.marked).toBe(3);
   });
 
   it('repeats a nested list for the items a multireference names, its first item kept hidden while it names none', () => {

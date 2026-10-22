@@ -1,5 +1,6 @@
 // The motion gaps of 2026-10-22: timeline names in the person's language, interaction conditions, a variable of the
 // application set from a timeline, the parallax range, page transitions, and the first paint of an entering element.
+import { Window } from 'happy-dom';
 import { describe, expect, it } from 'vitest';
 import type { HandlerContext, Outcome } from '../commands/registry.ts';
 import type { DocNode, DocumentJson } from '../document/model.ts';
@@ -142,6 +143,65 @@ describe('page transitions', () => {
     expect(pageTransitionOf(linksOnly)).toEqual({ kind: 'fade', duration: 300 });
     expect(pageTransitionScript(linksOnly, { kind: 'fade', duration: 300 })).toContain("var SITE = 'none'");
     expect(pageTransitionOf(site())).toBeNull();
+  });
+
+  // the script run on a page of its own: its links, its timers held by the test, what it sends the editor
+  const running = (url: string) => {
+    const win = new Window({ url });
+    const doc = win.document as unknown as Document;
+    doc.body.innerHTML = '<a id="here" href="index.html#contact">Contact</a><a id="other" href="about.html">About</a><section id="contact"></section>';
+    const timers: (() => void)[] = [];
+    const sent: unknown[] = [];
+    Object.defineProperty(win, 'parent', { value: { postMessage: (message: unknown) => sent.push(message) } });
+    const script = pageTransitionScript(chain(site(), [[setPageTransitionCommand, { field: 'kind', value: 'fade' }]]).document, { kind: 'fade', duration: 300 });
+    new Function('window', 'document', 'location', 'setTimeout', script)(win, doc, win.location, (run: () => void) => timers.push(run));
+    // what the page did with the click: whether the script took the navigation over
+    const click = (id: string): boolean => {
+      const event = new win.MouseEvent('click', { bubbles: true, cancelable: true, button: 0 });
+      let taken = false;
+      win.addEventListener('click', (seen) => {
+        taken = seen.defaultPrevented;
+        seen.preventDefault();
+      }, { once: true });
+      (doc.getElementById(id) as HTMLElement).dispatchEvent(event as unknown as Event);
+      return taken;
+    };
+    const hidden = (): boolean => doc.documentElement.classList.contains('bm-page-out-fade');
+    return { win, doc, timers, sent, click, hidden };
+  };
+  it('leaves a link to a place of the same page alone on a site opened from disk, and fades out for another page', () => {
+    const page = running('file:///site/index.html');
+    expect(page.click('here')).toBe(false);
+    expect(page.hidden()).toBe(false);
+    expect(page.click('other')).toBe(true);
+    expect(page.hidden()).toBe(true);
+  });
+  it('in the preview, leaves only when the editor answers that it opens the page, and shows itself again when it stays', () => {
+    const page = running('about:srcdoc');
+    expect(page.click('here')).toBe(true);
+    expect(page.sent).toEqual([{ builderPreviewGoes: 'index.html#contact' }]);
+    expect(page.hidden()).toBe(false);
+    const answer = (value: unknown): void => {
+      const event = new page.win.MessageEvent('message', { data: { builderPreviewAnswer: value } });
+      Object.defineProperty(event, 'source', { value: (page.win as unknown as { parent: unknown }).parent });
+      page.win.dispatchEvent(event);
+    };
+    // the open page: it stays shown, at the fragment
+    let scrolled = false;
+    (page.doc.getElementById('contact') as HTMLElement).scrollIntoView = () => {
+      scrolled = true;
+    };
+    answer({ goes: false, fragment: 'contact' });
+    expect([page.hidden(), scrolled, page.timers.length]).toEqual([false, true, 0]);
+    // another page: it fades out, then asks for it
+    page.click('other');
+    answer({ goes: true });
+    expect(page.hidden()).toBe(true);
+    page.timers.splice(0).forEach((run) => run());
+    expect(page.sent.at(-1)).toEqual({ builderPreviewPage: 'about.html' });
+    // the editor did not open it after all (the page went missing meanwhile): shown again
+    answer({ goes: false, fragment: '' });
+    expect(page.hidden()).toBe(false);
   });
 });
 

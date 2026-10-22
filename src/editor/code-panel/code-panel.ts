@@ -15,7 +15,7 @@ import { declarationTexts, replacedDeclarations } from '../../core/style/set.ts'
 import type { EditorUi } from '../state.ts';
 import { activeLayer } from '../view/style-state.ts';
 import { activeFile } from '../explorer/file-tabs.ts';
-import { generatedScripts, isGenerated, kindOf, type FileKind } from '../explorer/explorer.ts';
+import { generatedScripts, isGenerated, kindOf, writtenPageText, type FileKind } from '../explorer/explorer.ts';
 
 // The text the pane shows for a path: a generated file rendered from the document, a project file's own bytes as
 // text, and null for a file that is neither (an image, a font): the pane shows its name and type instead.
@@ -24,8 +24,9 @@ export function paneText(path: string, document: DocumentJson, rules: ModelRules
   if (page !== undefined) return siteFiles(document, rules, true, siteScripts).pages.find((one) => one.file === path)?.html ?? null;
   if (path === STYLESHEET) return siteFiles(document, rules, true, siteScripts).css;
   const file = fileAt(document, path);
-  // a script the export writes: the text it writes (explorer.ts generatedScripts)
-  if (file === null) return generatedScripts(document, rules).find((one) => one.path === path)?.text ?? null;
+  // a script the export writes, an item's page or a captured page's snapshot: the text it writes (explorer.ts
+  // generatedScripts, writtenPageText)
+  if (file === null) return generatedScripts(document, rules).find((one) => one.path === path)?.text ?? writtenPageText(path, document, rules);
   return isText(path, file.type) ? new TextDecoder().decode(fileBytes(file)) : null;
 }
 
@@ -126,7 +127,7 @@ export function paneLines(ui: EditorUi, document: DocumentJson, rules: ModelRule
 export function shownPane(ui: EditorUi, document: DocumentJson, rules: ModelRules): { readonly path: string; readonly kind: FileKind; readonly generated: boolean; readonly text: string | null } | null {
   const path = activeFile(ui) ?? paneFile(paneKind(ui), document, ui);
   if (path === null) return null;
-  return { path, kind: kindOf(path), generated: isGenerated(path, document), text: paneText(path, document, rules) };
+  return { path, kind: kindOf(path), generated: isGenerated(path, document, rules), text: paneText(path, document, rules) };
 }
 
 // Which part of the code the pane shows (codePanel.setPane, the pane's own tabs): the page's markup, the stylesheet,

@@ -28,13 +28,24 @@ export function useFieldAppearance(properties: readonly string[], mixed = false)
   return { kind: mixed ? 'mixed' : kind, label: mixed ? null : label };
 }
 
+// The one text a colour field shows of a colour, focused (the text it holds, the value the page computes as its
+// placeholder) and at rest (compactFieldValue): the colour as the picker writes it (formatColor: #rrggbb, rgba() while
+// not opaque), the word transparent when it is wholly clear; a text that names no colour it reads (a variable,
+// currentcolor) as it is. Focused the field read rgb(0, 0, 0) where its face read #000000.
+export function colourFieldText(text: string): string {
+  const parsed = parseColor(text);
+  if (parsed === null) return text;
+  return Math.round(parsed.a * 100) === 0 ? 'transparent' : formatColor(parsed);
+}
+
 export function compactFieldValue(text: string, numeric = false, colour = false): { value: string; unit: string } {
-  // a colour's face (the audit's S-026: Background read rgba(0, 0, 0, 0)): its hex, a colour not fully opaque with its
-  // opacity after it in the unit's place (#1A1A1A 50%), one fully clear the word transparent
+  // a colour's face (the audit's S-026: Background read rgba(0, 0, 0, 0)): its text (colourFieldText), a colour not
+  // fully opaque as its hex with its opacity after it in the unit's place (#1a1a1a 50%)
   if (colour) {
     const parsed = parseColor(text);
-    if (parsed !== null && parsed.a === 0) return { value: 'transparent', unit: '' };
-    if (parsed !== null) return { value: formatColor({ ...parsed, a: 1 }).toUpperCase(), unit: parsed.a === 1 ? '' : `${Math.round(parsed.a * 100)}%` };
+    const percent = parsed === null ? 0 : Math.round(parsed.a * 100);
+    if (parsed !== null && percent > 0 && percent < 100) return { value: formatColor({ ...parsed, a: 1 }), unit: `${percent}%` };
+    if (parsed !== null) return { value: colourFieldText(text), unit: '' };
   }
   const token = /^var\((--[^,)]+)\)$/.exec(text.trim());
   if (token !== null) return { value: token[1] ?? text, unit: '' };

@@ -11,6 +11,7 @@ Leia por inteiro antes de começar; atualize ao fim de cada lote. Regras de ritm
 - **Verificação:** um comando só, `npm run verify` (`tools/verify/run.ts`); com `--all`, cerca de 63 s no 7b2a2a71. `ui-widths.json` medido de novo nas três condições depois da DCS-065.
 - **Código em inglês:** comentários, identificadores, nomes de arquivo, títulos de teste e mensagens de ferramentas.
 - **Lote de 2026-10-22 (sem commit):** estados de estilo (DCS-073), CMS (DEF-0830 a 0835, DCS-080 a 084), lacunas de movimento (DEF-0816 a 0823, DCS-074 a 078), atritos (DEF-0810 a 0813, DCS-069 a 072), arraste (OTM-004) e a integração (DEF-0836 a 0842, OTM-005: contornos pelo relógio da página); o cenário `a-link-points-at-a-page-of-the-project` passou a esperar `aria-current="page"` (link para a própria página). `verify --all` sem falha, `ui-widths.json` medido nas três condições, uso real em pt-BR 1280×720 e en 1440×900 com o feed vazio.
+- **Revisão de 5f94474e e lote final (2026-10-22, sem commit):** correções da revisão (exportação, dados, movimento, estado pai órfão) até DEF-0860; neste lote DEF-0861 (barra de texto ao alcance, DCS-089 decidida pelo dono), DEF-0862 (campo de cor igual em foco e em repouso), DEF-0863 (erro de console a cada letra no texto em edição) e OTM-009 (lista paginada sem conferência a cada edição); `ui-widths.json` medido nas três condições, `verify --all` sem falha, uso real pt-BR 1280×720 e en 1440×900 com feed e console vazios.
 
 ## Estado anterior (2026-10-10)
 - **Prontidão para uso (2026-10-10):** `auditoria/prontidao.md`. O veredito é "pronto, com ressalvas". Um site de 3 páginas foi feito do zero no build de produção, salvo, reaberto e exportado, no Chrome e no Edge. Ficaram 7 defeitos abertos (DEF-0615 a DEF-0621); dois dão resultado errado: DEF-0615 (componente) e DEF-0620 (preço do CSV).
@@ -137,7 +138,7 @@ Leia por inteiro antes de começar; atualize ao fim de cada lote. Regras de ritm
 - **Fim da etapa dos lotes 7 a 10 (2026-10-09):** catálogo inteiro de mutantes, 152, com 149 acusados e 3 equivalentes com motivo (M19, M25, M30), 100 % dos não equivalentes, em 294 s. A suíte inteira de navegador não rodou: o pedido do dono desta rodada a proíbe; cada lote rodou os specs da sua área nas duas condições.
 
 ## Próximo passo
-Commit e push do lote de 2026-10-22 (estados, CMS, movimento, atritos, desempenho e integração), depois a conferência cética por subagente e a passada de fim de etapa (varredura exaustiva, plantas do `manifest:check`) sobre esse commit.
+Passada final de uso real nos recursos novos e checagens de fim de etapa.
 
 ## Para uma próxima rodada (fora dos lotes 1 a 5)
 - Os contornos medidos a cada quadro (`ViewOverlays`): `otimizacoes.md`, "O que fica para uma próxima rodada". O trabalho do arraste citado no quadro de `onUp` foi reduzido na OTM-004.

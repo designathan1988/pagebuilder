@@ -13,6 +13,7 @@ import { isBuilt, message, type CommandTable, type HandlerContext, type Keyframe
 import type { MotionEditorContext } from '../motion/record.ts';
 import { locate, type DocumentJson, type Selection } from '../document/model.ts';
 import { validateDocument, type Invalid, type ModelRules } from '../document/validate.ts';
+import { releasedParentStates } from '../document/tree.ts';
 import { EMPTY_HISTORY, LAST_CHANGE, record, redo, redone, undo, undone, type HistoryState, type Restorable } from '../history/history.ts';
 import { applyPatches, deepEqual, type Patch, type Transaction } from '../history/transaction.ts';
 import type { Clock } from '../ports/clock.ts';
@@ -538,7 +539,12 @@ export function createStore<Ui>(options: StoreOptions<Ui>): Store<Ui> {
       return { status: 'refused', message: derived.refused };
     }
     const followed = derived === null || derived.patches.length === 0 ? null : applyPatches(own.document, derived.patches);
-    const applied = followed === null ? own : { document: followed.document, applied: [...own.applied, ...followed.applied], inverses: [...followed.inverses, ...own.inverses] };
+    const changes = followed === null ? own : { document: followed.document, applied: [...own.applied, ...followed.applied], inverses: [...followed.inverses, ...own.inverses] };
+    // a class the change took out of the project takes the parent states naming it (document/tree.ts
+    // releasedParentStates), in the same transaction: one undo gives both back
+    const released = changes.applied.length === 0 ? null : releasedParentStates(before.document, changes.document);
+    const letGo = released === null || released.length === 0 ? null : applyPatches(changes.document, released);
+    const applied = letGo === null ? changes : { document: letGo.document, applied: [...changes.applied, ...letGo.applied], inverses: [...letGo.inverses, ...changes.inverses] };
     const documentChanged = applied.applied.length > 0 && !deepEqual(before.document, applied.document);
     if (!documentChanged && (outcome.patches ?? []).some(structural)) reportEmptyChange(id, outcome.message === undefined ? null : JSON.stringify(outcome.message));
     if (documentChanged && !command.history.undoable) throw new Error(`${id} is not undoable in the manifest but changed the document`);

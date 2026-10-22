@@ -2,11 +2,23 @@
 // js/app-layer/main.js starts (js/app-layer/runtime.js) and the parser that says which expression or handler of the
 // project does not parse, so the export writes it as a function that reports it (core/logic/compile.ts).
 import runtimeSource from './runtime.js?raw';
+import purifySource from 'dompurify/dist/purify.min.js?raw';
 import { htmlCommentIn, type CodeKind } from '../../core/logic/compile.ts';
 import { withSiteWords } from './words.ts';
 
+const PURIFY_MARKER = '/* site purify */ null';
+
+// DOMPurify's browser build (a UMD script) run as a function of the runtime's module: it finds `module` and gives its
+// sanitizer back there, so nothing is put on the window. Its licence comment stays; its source-map line goes, since
+// the site has no map beside it.
+function withPurify(source: string): string {
+  if (!source.includes(PURIFY_MARKER)) throw new Error(`The runtime source has no "${PURIFY_MARKER}" for DOMPurify.`);
+  const build = purifySource.replace(/\n\/\/# sourceMappingURL=\S+\s*$/, '\n');
+  return source.replace(PURIFY_MARKER, () => `(() => {\nconst module = { exports: {} };\nconst exports = module.exports;\n${build}\nreturn module.exports;\n})()`);
+}
+
 // the visitor's words of the runtime (its WORDS): the error box's hint and the messages of app.db and app.auth's codes
-const runtime = withSiteWords(runtimeSource, {
+const runtime = withSiteWords(withPurify(runtimeSource), {
   closeErrors: 'siteRuntime.app.closeErrors',
   'error.login_required': 'siteRuntime.app.error.loginRequired',
   'error.forbidden': 'siteRuntime.app.error.forbidden',

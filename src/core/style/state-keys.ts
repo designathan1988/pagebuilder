@@ -8,7 +8,9 @@
 // - a parent state, `parent:<class>:<state>` ("parent:card:hover"): the element styled while an ancestor wearing the
 //   class is in a state that may be an ancestor's (properties.json `ancestor`), written `.card:hover <selector>`.
 // The validator, the writers' arguments, the canvas, the export and the import read keys here, so a key the document
-// holds always writes the rule it stands for. Old projects hold only states of properties.json: nothing to migrate.
+// holds always writes the rule it stands for. A parent state names a class of the project (validate.ts): a class
+// renamed takes its parent states with it, and one a parent state names is not deleted (core/design/classes.ts); a
+// project saved holding a parent state of a class it no longer has loses that key when it is opened (migrations.ts).
 import { isIdentifier } from '../text/identifier.ts';
 
 // what a key reads of the states of properties.json: by id, their pseudo-class (or pseudo-element, or attribute test),
@@ -58,6 +60,21 @@ export function nthKey(text: string, table: StateTable): string | null {
 // The key of a parent state, or null when the class is no class name or the state is none an ancestor may be in.
 export function parentKey(className: string, state: string, table: StateTable): string | null {
   return isIdentifier(className) && table.get(state)?.ancestor === true ? `${PARENT}${className}:${state}` : null;
+}
+
+// The class a parent state's key names (`parent:card:hover` → card), read by its spelling alone; null for any other
+// key. A class name holds no colon (isIdentifier), so the state is what follows the last one.
+export function parentKeyClass(key: string): string | null {
+  if (!key.startsWith(PARENT)) return null;
+  const rest = key.slice(PARENT.length);
+  const colon = rest.lastIndexOf(':');
+  return colon <= 0 ? null : rest.slice(0, colon);
+}
+
+// A parent state's key with its class renamed (`parent:card:hover`, card → tile: `parent:tile:hover`); any other key
+// as it is.
+export function renamedParentKey(key: string, className: string, nextName: string): string {
+  return parentKeyClass(key) === className ? `${PARENT}${nextName}${key.slice(PARENT.length + className.length)}` : key;
 }
 
 // What a key stands for, or null for a key that is no style state.

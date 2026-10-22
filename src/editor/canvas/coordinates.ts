@@ -353,6 +353,18 @@ export function nodeBox(iframe: HTMLIFrameElement, id: string): { x: number; y: 
   return element ? screenBox(iframe, element) : null;
 }
 
+// The screen box of the line the caret stands on in the page (a text edited in place), as wide as the range's line:
+// its first client rect, which a collapsed caret has too where the browser draws it. Null with no range in the page or
+// none drawn (a caret between two elements reports no rect).
+export function caretLine(iframe: HTMLIFrameElement): { x: number; y: number; width: number; height: number } | null {
+  const selection = iframe.contentWindow?.getSelection();
+  const g = geometryOf(iframe);
+  if (!selection || selection.rangeCount === 0 || !g) return null;
+  const range = selection.getRangeAt(0);
+  const rect = range.getClientRects()[0] ?? range.getBoundingClientRect();
+  return rect.height > 0 ? placed(rect, g) : null;
+}
+
 // A node's size in the page's own CSS px: its box as the page lays it out, whatever the canvas's zoom (spec
 // hover-measure: the size a hover shows is the measured geometry in the iframe at any zoom; the screen box divided by
 // the zoom drifts by a pixel with the zoom's rounding).

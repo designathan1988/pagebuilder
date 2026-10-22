@@ -51,16 +51,15 @@ describe('the application runtime', () => {
     expect(seen.at(-1)).toBe(5);
   });
 
-  it('writes no address that runs code, and a plain-text editable field as text (LOGIC-5)', async () => {
+  it('writes no address that runs code, and a plain-text editable field as text (LOGIC-5; the rich field: runtime-rich.test.ts)', async () => {
     const runtime = await fresh();
-    page('<a data-app="a"></a><img data-app="i"><div data-app="e" contenteditable="plaintext-only"></div><div data-app="r" contenteditable="true"></div>');
+    page('<a data-app="a"></a><img data-app="i"><div data-app="e" contenteditable="plaintext-only"></div>');
     await runtime.start({
       variables: [{ name: 'site', type: 'text', initial: ' javascript:alert(1)' }, { name: 'note', type: 'text', initial: '<img src=x onerror=alert(1)><b>bold</b>' }],
       nodes: {
         a: { name: 'Link', attrs: [['href', read((s) => s.site)], ['srcdoc', read(() => '<p>x</p>')]] },
         i: { name: 'Photo', attrs: [['src', read(() => 'data:image/png;base64,AAAA')]] },
         e: { name: 'Plain', model: [read((s) => s.note), (s: Record<string, unknown>, _l: unknown, v: unknown) => (s.note = v)] },
-        r: { name: 'Rich', model: [read((s) => s.note), (s: Record<string, unknown>, _l: unknown, v: unknown) => (s.note = v)] },
       },
     });
     const link = document.querySelector('a');
@@ -68,9 +67,6 @@ describe('the application runtime', () => {
     expect(link?.hasAttribute('srcdoc')).toBe(false);
     expect(document.querySelector('img')?.getAttribute('src')).toBe('data:image/png;base64,AAAA');
     expect(document.querySelector('[data-app="e"]')?.textContent).toBe('<img src=x onerror=alert(1)><b>bold</b>');
-    const rich = document.querySelector('[data-app="r"]');
-    expect(rich?.querySelector('b')?.textContent).toBe('bold');
-    expect(rich?.querySelector('img')?.hasAttribute('onerror')).toBe(false);
     runtime.state.site = 'https://example.com/';
     await settle();
     expect(link?.getAttribute('href')).toBe('https://example.com/');

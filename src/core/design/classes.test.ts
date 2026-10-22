@@ -86,3 +86,31 @@ describe('a class an interaction or a motion names', () => {
     expect(outcome).toMatchObject({ kind: 'refused', message: { key: 'status.classes.inUseByInteractions' } });
   });
 });
+
+// The review of 5f94474e (R-1): a parent state (`parent:card:hover`) names its class; it follows the class renamed, on
+// the elements, the components' definitions and the classes, and keeps the class from being deleted.
+describe('a class a parent state names', () => {
+  const hover = (color: string) => ({ desktop: { 'parent:card:hover': { color } } }) as DocNode['styles'];
+  const stated = (): DocumentJson => ({
+    ...project([node('Box', { classes: ['card'], children: [node('Title', { styles: hover('#ff0000') })] })]),
+    components: [{ name: 'Tile', tree: node('Def', { classes: ['card'], children: [node('Def-t', { styles: hover('#00ff00') })] }) }],
+    classes: [{ name: 'card', styles: {} }, { name: 'title', styles: hover('#0000ff') }],
+  });
+  it('follows the class renamed, and the export writes the new name', () => {
+    const outcome = renameClassCommand.run(context(stated(), []), { className: 'card', nextName: 'tile' });
+    if (outcome.kind !== 'change') throw new Error(JSON.stringify(outcome));
+    const next = applyPatches(stated(), outcome.patches ?? []).document;
+    expect(validateDocument(next, [], RULES)).toEqual([]);
+    expect(next.pages[0]?.tree.children[0]?.children[0]?.styles).toEqual({ desktop: { 'parent:tile:hover': { color: '#ff0000' } } });
+    expect(next.components?.[0]?.tree.children[0]?.styles).toEqual({ desktop: { 'parent:tile:hover': { color: '#00ff00' } } });
+    expect(next.classes?.[1]?.styles).toEqual({ desktop: { 'parent:tile:hover': { color: '#0000ff' } } });
+  });
+  it('refuses the class deleted while one names it, naming where', () => {
+    const outcome = deleteClassCommand.run({ ...context(stated(), []), confirmed: true }, { className: 'card' });
+    expect(outcome).toMatchObject({ kind: 'refused', message: { key: 'status.classes.inUseByParentStates', params: { name: 'card', holder: 'Title', count: 3 } } });
+  });
+  it('is refused by the validator when it names a class the project has not', () => {
+    const orphan: DocumentJson = { ...project([node('Title', { styles: hover('#ff0000') })]), classes: [{ name: 'title', styles: {} }] };
+    expect(validateDocument(orphan, [], RULES).map((problem) => problem.path)).toEqual(['/pages/0/tree/children/0/styles/desktop/parent:card:hover']);
+  });
+});

@@ -35,7 +35,7 @@ function pageFile(name: string): string {
 }
 
 // The home page: a page the project cannot lose, and the file a rename never hands to another page.
-const HOME = 'index.html';
+export const HOME = 'index.html';
 
 // The first free name and file for a base: "About", "About 2", "About 3"…. The file is free by the one rule of the
 // project's paths (files.ts pathTaken, which files.createFile, files.rename and pages.rename ask too): no page, project

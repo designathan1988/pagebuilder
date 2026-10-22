@@ -13,10 +13,11 @@
 // stays, hidden (dataHidden), so the list keeps its look for the items that name some.
 //
 // A paged list (Query.pageSize) shows its first page on the canvas; on the site (`site`) it holds every item, the ones
-// past the first page hidden, and says how the site's list script reaches them (core/export/lists.ts).
+// past the first page hidden, and says how the site's list script reaches them (core/export/lists.ts). A page holds
+// the items that show, counted after the show filter, on both (listFirstPage).
 import type { NodeId } from '../../generated/commands.ts';
 import { refreshCopiedIdentities } from '../document/clone.ts';
-import { locate, walk, type ComponentDefinition, type DocNode, type DocumentJson } from '../document/model.ts';
+import { locate, walk, type ComponentDefinition, type DocNode, type DocumentJson, type Page } from '../document/model.ts';
 import { releaseReferencesPatch } from '../document/tree.ts';
 import { copied, marked } from '../design/components.ts';
 import { placementRefusal } from '../elements/content-model.ts';
@@ -25,7 +26,7 @@ import { copyName } from '../structure/duplicate.ts';
 import { nodeMaker, type NodeMaker } from '../structure/node-maker.ts';
 import { sequentialIds } from '../ports/ids.ts';
 import { collectionNamed, firstPage, lookupIn, queryItems, referencedIds, refuse, DataRefusal } from './collections.ts';
-import { fillTree, itemPagesOf, placeOf, repeats, siteWord, type DataContext, type ItemPages, type Place } from './bindings.ts';
+import { fillTree, itemPagesOf, placeOf, repeats, showsFor, siteWord, type DataContext, type ItemPages, type Place } from './bindings.ts';
 import type { Collection, DataList, Item } from './model.ts';
 
 // A new repeated item: a copy of the component's definition with new ids, its root named after the item before it (a
@@ -57,6 +58,14 @@ function newCopy(document: DocumentJson, template: DocNode, make: NodeMaker): Do
 // How the materialization writes the lists: for the canvas (a paged list shows its first page), or for the site.
 export interface Materializing {
   readonly site?: boolean;
+  // the addresses of the items' pages, when the caller holds them already (a template's check of its other items reads
+  // the whole document's, never its own copy's)
+  readonly pages?: ItemPages;
+  // a template page whose other items need no check now: what they show reads nothing the change touched (derive.ts)
+  readonly checked?: (page: Page) => boolean;
+  // a list (its element; a query's list, never a nested one, whose rows follow the item it stands in) whose items past
+  // its first page need no check now: what they show reads nothing the change touched (derive.ts)
+  readonly listChecked?: (list: DocNode) => boolean;
 }
 
 // The items a list shows for a place (a nested list's place is the item it stands in), in its query's order, or null
@@ -69,6 +78,24 @@ function listRows(document: DocumentJson, list: DataList, collection: Collection
   const ids = referencedIds(place.item.values[list.via]);
   const named = ids.map((id) => collection.items.find((item) => item.id === id)).filter((item): item is Item => item !== undefined);
   return queryItems({ ...collection, items: named }, list.query, lookup);
+}
+
+// A list's first page (collections.ts firstPage, the one rule of what a page holds), its items counted after the show
+// filter: the n-th row counts when the show binding of the repeated item that would show it holds for it (the list's
+// n-th repeated item, or the one a new row is made from: the component's definition, a nested list's first item).
+// Shared by the canvas and the site (materialize) and by what the canvas's items show (derive.ts shownItems).
+export function listFirstPage(document: DocumentJson, list: DataList, collection: Collection, rows: readonly Item[], children: readonly DocNode[]): { readonly rows: readonly Item[]; readonly more: boolean } {
+  const instances = children.filter((child) => repeats(list, child));
+  const made = list.component === undefined ? instances[0] : document.components?.find((c) => c.name === list.component)?.tree;
+  const page = firstPage(
+    rows.map((item, k) => ({ item, k })),
+    list.query,
+    ({ item, k }) => {
+      const shower = instances[k] ?? made;
+      return shower === undefined || showsFor(document, shower, { collection, item, row: collection.items.indexOf(item) + 1 });
+    },
+  );
+  return { rows: page.rows.map(({ item }) => item), more: page.more };
 }
 
 // The site's words and marks on a paged list: its page size, its way to the next pages and the words of its controls
@@ -94,17 +121,19 @@ const markedItem = (node: DocNode, hidden: boolean): DocNode => {
 // is gone, and a page whose item is gone, lose their mark and keep what they show. A template page whose item is gone
 // shows its collection's first item. A change inside a locked element is refused, as any command's is.
 export function materialize(document: DocumentJson, context: DataContext, mode: Materializing = {}): DocumentJson {
-  const pages: ItemPages = itemPagesOf(document);
+  const pages: ItemPages = mode.pages ?? itemPagesOf(document);
   const make = nodeMaker(document, context.rules, context.ids, context.words);
   const removed = new Set<NodeId>();
   const site = mode.site === true;
 
   // The list element's children once the list shows its rows, each repeated item with the place it shows.
-  const listChildren = (node: DocNode, list: DataList, collection: Collection, rows: readonly Item[], within: string | undefined): { readonly children: readonly DocNode[]; readonly places: ReadonlyMap<string, Place> } => {
-    const shown = site ? rows : firstPage(rows, list.query);
+  const listChildren = (node: DocNode, list: DataList, collection: Collection, rows: readonly Item[], within: string | undefined): { readonly children: readonly DocNode[]; readonly places: ReadonlyMap<string, Place>; readonly paged: boolean } => {
+    const page = listFirstPage(document, list, collection, rows, node.children);
+    const shown = site ? rows : page.rows;
     // the items past the first page are on the site only, yet what they would show is checked now, as the canvas's
-    // are: an export never meets a value its element cannot show (an image no file answers to)
-    const sample = node.children.find((child) => repeats(list, child));
+    // are: an export never meets a value its element cannot show (an image no file answers to) — unless the change
+    // touched nothing such a check reads (mode.listChecked), so an edit elsewhere costs no pass over those items
+    const sample = list.via === undefined && mode.listChecked?.(node) === true ? undefined : node.children.find((child) => repeats(list, child));
     if (sample !== undefined) for (const item of rows.slice(shown.length)) fillTree(document, sample, { collection, item, row: collection.items.indexOf(item) + 1 }, pages, within);
     const places = new Map<string, Place>();
     const filled = (instance: DocNode, row: number): DocNode => {
@@ -155,18 +184,17 @@ export function materialize(document: DocumentJson, context: DataContext, mode: 
       if (refused !== null) throw new DataRefusal(refused);
       kept.splice(last < 0 ? kept.length : last + 1, 0, ...added);
     }
-    // on the site, the items past the first page are hidden until the list script shows them; an item its show binding
-    // hides is no item of a page
-    const pageSize = list.query.pageSize;
-    let shownCount = 0;
+    // on the site, the items past the first page (listFirstPage, the canvas's) are hidden until the list script shows
+    // them; an item its show binding hides is no item of a page, and stays unmarked
+    let row = 0;
     const paged = (child: DocNode): DocNode => {
-      if (!repeats(list, child) || !places.has(child.id) || child.dataHidden === true) return child;
-      shownCount += 1;
-      return markedItem(child, shownCount > (pageSize ?? 0));
+      if (!repeats(list, child) || !places.has(child.id)) return child;
+      row += 1;
+      return child.dataHidden === true ? child : markedItem(child, row > page.rows.length);
     };
-    const children = site && pageSize !== undefined && shown.length > pageSize ? kept.map(paged) : kept;
+    const children = site && page.more ? kept.map(paged) : kept;
     const same = children.length === node.children.length && children.every((child, i) => child === node.children[i]);
-    return { children: same ? node.children : children, places };
+    return { children: same ? node.children : children, places, paged: site && page.more };
   };
 
   // `unplaced`: the element stands outside any item, so nothing in it is hidden for one (a definition's element, an
@@ -200,7 +228,7 @@ export function materialize(document: DocumentJson, context: DataContext, mode: 
             for (const child of node.children) if (!kept.has(child.id)) for (const inner of walk(child)) removed.add(inner.id as NodeId);
             next = { ...next, children: shown.children };
           }
-          if (site && list.query.pageSize !== undefined && rows.length > list.query.pageSize) next = pagedList(document, next, list);
+          if (shown.paged) next = pagedList(document, next, list);
         }
       }
     }
@@ -237,12 +265,14 @@ export function materialize(document: DocumentJson, context: DataContext, mode: 
           tree = { ...tree, dataItem: place === null ? kept : { ...kept, item: place.item.id } };
         }
         if (place !== null) tree = fillTree(document, tree, place, pages);
-        // a template's other items are pages of the site: what each would show is checked now, as the item shown is
-        if (mark.template === true && collection !== undefined && !site) {
+        // a template's other items are pages of the site: what each would show is checked now, as the item shown is —
+        // unless the change touched nothing such a check reads (mode.checked), so an edit elsewhere costs no pass over
+        // the items; each check reads the addresses of the items' pages found once above
+        if (mark.template === true && collection !== undefined && !site && mode.checked?.(page) !== true) {
           for (const item of collection.items) {
             if (item.id === place?.item.id) continue;
             const other = { ...page, tree: { ...page.tree, dataItem: { ...mark, item: item.id } } };
-            materialize({ ...document, pages: [other] }, { ...context, ids: sequentialIds('check-') }, { site: true });
+            materialize({ ...document, pages: [other] }, { ...context, ids: sequentialIds('check-') }, { site: true, pages });
           }
         }
       }

@@ -13,7 +13,7 @@
 // (core/structure/hand.ts), the same indicator stands at the hand's aim, with the refusal the move would meet there
 // (spec hand-keyboard-move, "Visual feedback"). While a text is edited in place, its outline and label ("Editing
 // text · Intro") wear the text editing mode colour instead of the selection's, and the text toolbar (text-toolbar.tsx)
-// sits above the label, at its start; the toolbar's controls take presses of their own.
+// stands above the label, or where it is in reach (textToolbarPlace, DCS-089); its controls take presses of their own.
 // The label of the one selected element is the one part of the chrome that takes a
 // press: pointer.ts reads it (data-label-for) as a press on that element (spec select-click, "Hit zones"). Where a
 // node is on the screen comes from the
@@ -44,7 +44,7 @@ import { type DragView, type GhostReturn, type Inserting, type SideView } from '
 import { MODEL_RULES, useEditorState, useStore } from '../store.ts';
 import { openedPage } from '../../core/project/pages.ts';
 import { useT } from '../text.ts';
-import { canvasFrame, capturedBox, contentBoxes, flowAxis, flowReversed, holdsNode, innerBox, nodeBox, nodeSize, pageAnimating, resizeBasis, elementRotation, type Point } from './coordinates.ts';
+import { canvasFrame, capturedBox, caretLine, contentBoxes, flowAxis, flowReversed, holdsNode, innerBox, nodeBox, nodeSize, pageAnimating, resizeBasis, elementRotation, type Point } from './coordinates.ts';
 import { onPageChange } from './page-clock.ts';
 import { TextToolbar } from './text-toolbar.tsx';
 import { GridEditor } from './grid-editor.tsx';
@@ -58,7 +58,7 @@ const LEAVE_MODE = manifest.doors.find((d) => d.door.kind === 'shortcut' && d.do
 import { ViewOverlays } from './view-overlays.tsx';
 import { GridOverlay } from './grid-overlay.tsx';
 // where a label and a resize handle may be drawn (canvas/placement.ts): the rules moved out of this file, which draws
-import { clearedLabel, controlBoxes, handleHitBox, heldInStage, labelRoom, overlaps as overlapsBox, placeLabel, selectionLabelBox, shownWords, turnedFrame, visibleCanvas, type Box, type Placement } from './placement.ts';
+import { clearedLabel, controlBoxes, handleHitBox, heldInStage, labelRoom, overlaps as overlapsBox, placeLabel, selectionLabelBox, shownWords, textToolbarPlace, turnedFrame, visibleCanvas, type Box, type Placement } from './placement.ts';
 import { ARRANGED, ARRANGED_SELECTOR, ROTATION_SIDES, placeRotationZones, yieldingAt, type Arranged } from './arrangement.ts';
 import { distancesOf, type Distance } from './distances.ts';
 import { altDistances, hoverSizeOf, type HoverSize } from './hover-measure.ts';
@@ -268,7 +268,8 @@ interface Layout {
   // is drawn fixed in the window (canvas.css), so nothing clips it and it hides itself where it would stand out of view
   // `room`: the widest the label may be drawn, so it and the chip beside it stand whole in the stage (labelRoom)
   readonly label: { readonly box: Box; readonly placement: Placement; readonly covers?: boolean; readonly seen?: boolean; readonly room?: number } | null;
-  // where the text toolbar goes while a text is edited in place: above the edit's label, placed with it as one
+  // where the text toolbar goes while a text is edited in place (textToolbarPlace): above the edit's label, or where
+  // it is in reach; null where the stage holds no place for it
   readonly toolbar: { readonly x: number; readonly y: number } | null;
   // the marquee's band while one is drawn (pointer.ts)
   readonly band: Box | null;
@@ -783,7 +784,10 @@ function useChromeLayout({ layer, label, bar, selection, targets, hovered, node,
         });
         const tabs = [...[...document.querySelectorAll(EDITOR_CONTROLS)].map((el) => local(el.getBoundingClientRect())).filter((b): b is Box => b !== null && b.width > 0 && b.height > 0), ...words];
         const placedTabs = tabs.map((b) => [Math.round(b.x), Math.round(b.y), Math.round(b.width)]);
-        const key = JSON.stringify([first, size, tools, mode, edge, turn, chipWidth, chipRise, Math.round(origin.x), Math.round(origin.y), Math.round(origin.width), Math.round(origin.height), placedTabs]);
+        // the line the caret is on while a text is edited: the text toolbar never covers it (textToolbarPlace), so a
+        // caret moved to another line places the toolbar again
+        const caret = tools === null ? null : local(caretLine(iframe));
+        const key = JSON.stringify([first, size, tools, mode, edge, turn, chipWidth, chipRise, Math.round(origin.x), Math.round(origin.y), Math.round(origin.width), Math.round(origin.height), placedTabs, caret === null ? null : Math.round(caret.y)]);
         if (first === undefined || size === null) {
           placed = null;
           placedToolbar = null;
@@ -791,7 +795,8 @@ function useChromeLayout({ layer, label, bar, selection, targets, hovered, node,
           // The selection's label has one place (the user's rule of 2026-10-05, DEC-70): above its element, touching
           // the top of the frame's line, at its left edge — whatever lies there, for one element or several, at every
           // zoom, scroll and breakpoint. Over page text it takes no press (`covers`, journey03 J16). While a text is
-          // edited in place, its toolbar sits above the label, at the same start.
+          // edited in place, its toolbar is placed after it, on its own (textToolbarPlace, DCS-089): the label stands
+          // where it stood selected, and the toolbar where it is in reach.
           const gap = parseFloat(getComputedStyle(layer.current as HTMLDivElement).getPropertyValue('--space-1')) || 0;
           const content = contentBoxes(iframe).map((b) => local(b) as Box);
           pageText = content;
@@ -799,20 +804,21 @@ function useChromeLayout({ layer, label, bar, selection, targets, hovered, node,
           // the stage: what the person sees of the canvas (DCS-035: the frame is the whole page tall)
           const shown = document.querySelector('[data-canvas-stage]')?.getBoundingClientRect();
           const stage = shown === undefined ? { x: 0, y: 0, width: origin.width, height: origin.height } : { x: shown.x - origin.x, y: shown.y - origin.y, width: shown.width, height: shown.height };
-          const groupWidth = Math.max(size.width + chipWidth, tools?.width ?? 0);
+          const groupWidth = size.width + chipWidth;
           // near the stage's right edge the label moves left along the frame's top to stay in view (heldInStage)
           const one = heldInStage(selectionLabelBox(labelFrame, size, edge, content), labelFrame, groupWidth, stage, content);
-          const spot = clearedLabel(one, labelFrame, edge, { above: Math.max(tools === null ? 0 : gap + tools.height, chipRise), width: groupWidth }, tabs, content);
+          const spot = clearedLabel(one, labelFrame, edge, { above: chipRise, width: groupWidth }, tabs, content);
           // in view while the element's top is inside the stage and the label inside it: the label is fixed in the
           // window, above the page's edge too (an element at the page's top), so no layer clips it, and it hides where
           // it would stand over the rulers or the panels, its element's top panned out of the stage
-          // the text toolbar above the label; under it where the label stands under its element (clearedLabel)
-          const under = spot.placement === 'below';
-          const top = tools === null || under ? spot.box.y : spot.box.y - gap - tools.height;
           const topSeen = first.y >= Math.max(0, stage.y) - edge - 0.5 && first.y <= Math.min(origin.height, stage.y + stage.height) + 0.5;
-          const seen = topSeen && spot.box.x >= stage.x - 0.5 && spot.box.x + Math.max(size.width, tools?.width ?? 0) <= stage.x + stage.width + 0.5 && top >= stage.y - 0.5;
+          const seen = topSeen && spot.box.x >= stage.x - 0.5 && spot.box.x + size.width <= stage.x + stage.width + 0.5 && spot.box.y >= stage.y - 0.5;
           placed = { ...spot, seen, room: labelRoom(stage, chipWidth) };
-          placedToolbar = tools === null ? null : { x: spot.box.x, y: under ? spot.box.y + size.height + gap : top };
+          // the text toolbar in reach wherever the label is (DCS-089): above the label where that place is in the
+          // stage and clear of the tabs, else under the element, else at the stage's nearest edge, never over the
+          // caret's line (the line across the edited element's width; the whole element while no caret is drawn)
+          const caretRow = caret === null ? labelFrame : { x: labelFrame.x, y: caret.y, width: labelFrame.width, height: caret.height };
+          placedToolbar = tools === null ? null : textToolbarPlace(spot, labelFrame, edge, tools, gap, stage, tabs, caretRow);
         }
         placedFor = key;
         const hoveredBox = hovered !== null && !selection.includes(hovered as (typeof selection)[number]) ? local(nodeBox(iframe, hovered)) : null;
@@ -1244,7 +1250,9 @@ export function CanvasChrome() {
           element when it holds a rotation */}
       {resizable && shown.selected[0] && !dropping && !editing && !editingOnCanvas && ROTATE_HANDLE !== null && isDoorBuilt(ROTATE_HANDLE) && shown.rotate !== null ? <RotateZones door={ROTATE_HANDLE} spots={shown.rotate} /> : null}
       <SelectionLabel labelRef={label} selection={selection} node={node} targets={targets} shown={shown} dropping={dropping} editing={editing} styleClass={styleClass} state={state} breakpoint={breakpoint} origin={origin} />
-      {editing && node !== null ? <TextToolbar bar={bar} className={shown.toolbar ? (shown.label?.seen === false ? 'is-away' : '') : 'is-measuring'} style={shown.toolbar ? { left: origin.x + shown.toolbar.x, top: origin.y + shown.toolbar.y } : undefined} /> : null}
+      {/* the text toolbar is placed on its own, always in reach (textToolbarPlace, DCS-089): measured until placed,
+          hidden only where the stage holds no place for it */}
+      {editing && node !== null ? <TextToolbar bar={bar} className={shown.toolbar ? '' : shown.label !== null ? 'is-away' : 'is-measuring'} style={shown.toolbar ? { left: origin.x + shown.toolbar.x, top: origin.y + shown.toolbar.y } : undefined} /> : null}
     </div>
   );
 }

@@ -12,7 +12,7 @@ import { refreshCopiedIdentities } from '../document/clone.ts';
 import { componentName, copied, createRefusal, marked } from '../design/components.ts';
 import { componentHolders } from '../design/instances.ts';
 import { lockRefusal } from '../nodes/flags.ts';
-import { copyPage, openedPage, type WithPage } from '../project/pages.ts';
+import { HOME as HOME_FILE, copyPage, openedPage, type WithPage } from '../project/pages.ts';
 import { copiedCaptureSheet } from '../files/files.ts';
 import type { Patch } from '../history/transaction.ts';
 import { bindablePaths, boundIn, pathField, pathUses, repeats, targetsOf, templateOf, type DataContext } from './bindings.ts';
@@ -608,6 +608,10 @@ export function pagesFromCollectionCommand<Ui extends WithPage>() {
       const source = document.pages[at] as Page;
       const held = named(document, collection);
       if (source.tree.dataItem !== undefined && source.tree.dataItem.template !== true) refuse('status.data.templateIsItemPage', { name: source.name });
+      // the site's start page (index.html, else the first page: where the site opens) writes its own file, never one
+      // per item: made a template, the site would have no home page (the review's R-3)
+      const home = document.pages.findIndex((page) => page.file === HOME_FILE);
+      if (at === (home < 0 ? 0 : home)) refuse('status.data.templateIsHome', { name: source.name });
       const field = held.fields.find((f) => f.key === nameField);
       if (field === undefined) refuse('status.stale');
       const other = templateOf(document, held.name);

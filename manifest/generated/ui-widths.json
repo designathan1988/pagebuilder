@@ -1,7 +1,7 @@
 {
   "$generated": {
     "by": "tools/ui-fit/measure.spec.ts",
-    "css": "be87387e19af8dcdd7596c34a46e04dcd390e739999935e1f157fbd6eb70820c"
+    "css": "9873294b684538051f4158e0ff6ada02b725ec360cd332c2cd2d6e6e75c65c37"
   },
   "regions": {
     "activity-bar": {
@@ -4487,7 +4487,7 @@
     },
     "files.move#panel-drag-explorer-row-folder": {
       "default": {
-        "width": 76.140625,
+        "width": 70.3125,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -4495,7 +4495,7 @@
         "text": "index.html"
       },
       "windows": {
-        "width": 76.140625,
+        "width": 63.28125,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -4503,7 +4503,7 @@
         "text": "index.html"
       },
       "ptbr": {
-        "width": 89.6875,
+        "width": 77.34375,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -9053,7 +9053,7 @@
         "text": "transparent"
       },
       "ptbr": {
-        "width": 165.46875,
+        "width": 65.734375,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,
@@ -9063,7 +9063,7 @@
     },
     "style.set#quick-panel-font-family": {
       "default": {
-        "width": 171.484375,
+        "width": 64.25,
         "fontSize": 12,
         "fontWeight": 400,
         "letterSpacing": 0,

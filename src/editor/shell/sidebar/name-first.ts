@@ -1,8 +1,10 @@
 // A Layers row whose name does not fit beside its details (its tag, id or classes), or an Explorer file's row beside
 // its folder and size, gives the details' room to the name:
 // they leave that row, and the name ends in an ellipsis only where it does not fit the row alone (the audit of
-// 2026-10-05: "Cartão Assinatura título" read "Cartão Assi…" beside "article"). The details' width is kept when they
-// leave, so a row is judged the same either way and nothing flickers: they come back once the name and they fit again.
+// 2026-10-05: "Cartão Assinatura título" read "Cartão Assi…" beside "article"); an Explorer file's name wraps
+// there instead (sidebar.css, DCS-085), and is judged here on one line, the list at rest. The details' width is
+// kept when they leave, so a row is judged the same either way and nothing flickers: they come back once the name
+// and they fit again.
 // Before them, an instance's chip naming its component gives way: it keeps only its icon, the component's name in its
 // tooltip and read out, and is drawn whole again only after the details are back (the last check's L11: "Site h…").
 // a Layers row, and an Explorer file's main area, with the name and the details each holds

@@ -13,13 +13,13 @@
 // patches join the command's own in one history entry, so one undo takes the whole change back. A refusal here is a
 // predictable one, said in the status bar; the command's change is then not applied at all.
 import type { Message } from '../commands/registry.ts';
-import type { DocNode, DocumentJson } from '../document/model.ts';
+import type { DocNode, DocumentJson, Page } from '../document/model.ts';
 import { walk } from '../document/model.ts';
 import { deepEqual, type Patch } from '../history/transaction.ts';
 import type { MessageId } from '../../generated/ids.ts';
 import { filledFor, itemPagesOf, placeOf, reached, reachedBy, readBack, repeats, shownBy, targetsOf, type DataContext, type ItemPages, type Place } from './bindings.ts';
-import { DataRefusal, collectionNamed, collectionsOf, filledSlugs, firstPage, lookupIn, queryItems, readFieldCell, referencedIds, refuse } from './collections.ts';
-import { materialize } from './materialize.ts';
+import { DataRefusal, collectionNamed, collectionsOf, filledSlugs, lookupIn, queryItems, readFieldCell, referencedIds, refuse } from './collections.ts';
+import { listFirstPage, materialize } from './materialize.ts';
 import { ITEM_PAGE, SHOW, isReferenceType, type Cell, type Collection, type Item } from './model.ts';
 import { documentPatches } from './patches.ts';
 import { syncRegions } from './regions.ts';
@@ -49,7 +49,7 @@ function shownItems(document: DocumentJson): Shown[] {
       let rows: readonly Item[] = [];
       try {
         const own = list.via === undefined || place === null ? collection.items : referencedIds(place.item.values[list.via]).flatMap((id) => collection.items.filter((item) => item.id === id));
-        rows = firstPage(queryItems({ ...collection, items: own }, list.query, lookup), list.query);
+        rows = listFirstPage(document, list, collection, queryItems({ ...collection, items: own }, list.query, lookup), node.children).rows;
       } catch (error) {
         if (!(error instanceof DataRefusal)) throw error;
       }
@@ -246,7 +246,34 @@ export function derivedDocument(before: DocumentJson, changed: DocumentJson, con
   listEdit(before, after);
   const written = settled(writeBack(before, after, itemPagesOf(after)));
   const regions = syncRegions(before, written, context);
-  return materialize(regions, context);
+  return materialize(regions, context, { checked: checkedBefore(before, regions), listChecked: listsCheckedBefore(before, regions) });
+}
+
+// A template page whose other items' pages need no check in this change (materialize.ts): its tree is the one the
+// document held before, and so is everything else the check reads (the collections, the components, the project's
+// files, the site's language: every part of the document but its pages). The document before held only what a change
+// that checked them left, so they were checked then; an edit elsewhere costs no pass over the items.
+function checkedBefore(before: DocumentJson, now: DocumentJson): (page: Page) => boolean {
+  const keys = new Set([...Object.keys(before), ...Object.keys(now)] as (keyof DocumentJson)[]);
+  const same = [...keys].every((key) => key === 'pages' || before[key] === now[key]);
+  const trees = new Set<DocNode>(before.pages.map((page) => page.tree));
+  return (page) => same && trees.has(page.tree);
+}
+
+// A query's list whose items past its first page need no check in this change (materialize.ts listChildren): its
+// element is the one the document held before (its query, its repeated items: the sample a check fills), and so is
+// everything else the check reads (the collections, the components, the project's files, the site's language: every
+// part of the document but its pages). A nested list is never one: its rows follow the item it stands in. The lists of
+// the document before are gathered once, on the first list asked about.
+function listsCheckedBefore(before: DocumentJson, now: DocumentJson): (list: DocNode) => boolean {
+  const keys = new Set([...Object.keys(before), ...Object.keys(now)] as (keyof DocumentJson)[]);
+  const same = [...keys].every((key) => key === 'pages' || before[key] === now[key]);
+  let lists: ReadonlySet<DocNode> | null = null;
+  return (list) => {
+    if (!same) return false;
+    lists ??= new Set([...before.pages.map((page) => page.tree), ...(before.components ?? []).map((definition) => definition.tree)].flatMap((tree) => [...walk(tree)].filter((node) => node.dataList !== undefined)));
+    return lists.has(list);
+  };
 }
 
 // The derivation as the store asks for it: the patches that follow the command's, or the refusal that stops it.

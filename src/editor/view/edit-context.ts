@@ -8,7 +8,7 @@ import { baseBreakpointOf, breakpointById } from '../../core/document/breakpoint
 import type { EditorUi } from '../state.ts';
 import { atKeyframe } from '../timeline/playhead.ts';
 import { activeBreakpoint, choosing } from './breakpoints.ts';
-import { BASE_STATE } from './style-state.ts';
+import { BASE_STATE, goneParentClass } from './style-state.ts';
 
 export function restoreEditContext(state: StoreState<EditorUi>, context: EditContext): EditorUi {
   let ui = state.ui;
@@ -22,7 +22,8 @@ export function restoreEditContext(state: StoreState<EditorUi>, context: EditCon
     }
     const { styleState: _state, ...stateless } = ui;
     void _state;
-    ui = context.layer.state === BASE_STATE.id ? stateless : { ...stateless, styleState: context.layer.state };
+    // a parent state whose class the step took out of the project (a redone delete of its last element) gives Base
+    ui = context.layer.state === BASE_STATE.id || goneParentClass(state.document, context.layer.state) !== null ? stateless : { ...stateless, styleState: context.layer.state };
   }
   if ('styleClass' in context) {
     const { styleTarget: _target, ...untargeted } = ui;

@@ -12,7 +12,7 @@ import { hasIncompatibleMask } from '../elements/inputs.ts';
 import { IDENTIFIER_SOURCE, isIdentifier } from '../text/identifier.ts';
 import { languageTagAllowed } from '../text/language-tag.ts';
 import { stateStandsOn } from '../style/state-elements.ts';
-import { isStyleState } from '../style/state-keys.ts';
+import { isStyleState, parentKeyClass } from '../style/state-keys.ts';
 import type { ElementType, MessageId } from '../../generated/ids.ts';
 import { boxSizeOf, outputModelFromManifest, type OutputModel } from '../render/output.ts';
 import type { Attribute, Coupling, ElementsFile, GeneratedHtml, PropertiesFile, TemplateNode } from '../../manifest/schema.ts';
@@ -433,6 +433,7 @@ export function validateDocument(doc: DocumentJson, selection: Selection, given:
       });
     }
   }
+  for (const problem of orphanParentStates(doc)) bad(problem.path, problem.message);
   if (doc.swatches !== undefined && (!Array.isArray(doc.swatches) || doc.swatches.length === 0 || doc.swatches.some((c) => typeof c !== 'string' || c.trim() === ''))) bad('/swatches', 'the saved colours are a list of colour texts');
   // the project's folders (spec explorer-file-system): a path each, no empty segment (the root is '')
   if (doc.folders !== undefined && (!Array.isArray(doc.folders) || doc.folders.some((one) => typeof one !== 'string' || one.trim() === '' || projectPathProblem(one) !== null))) bad('/folders', 'the folders are a list of paths');
@@ -530,6 +531,44 @@ export function validateDocument(doc: DocumentJson, selection: Selection, given:
   }
   for (const problem of definitionReferenceProblems(doc, nodeIds)) bad(problem.path, problem.message);
   return problems;
+}
+
+// The classes a project has: the ones of its list (the document's `classes`) and every one an element of a page or of a
+// component's definition wears (an imported page's elements wear classes no rule of its sheets defined).
+export function projectClassNames(doc: DocumentJson): ReadonlySet<string> {
+  const names = new Set<string>();
+  for (const one of Array.isArray(doc.classes) ? doc.classes : []) if (isRecord(one) && typeof one.name === 'string') names.add(one.name);
+  const trees = [...(Array.isArray(doc.pages) ? doc.pages : []), ...(Array.isArray(doc.components) ? doc.components : [])].map((one) => (isRecord(one) && isRecord(one.tree) ? (one.tree as unknown as DocNode) : null));
+  for (const tree of trees) if (tree !== null) for (const node of walk(tree)) for (const name of Array.isArray(node.classes) ? node.classes : []) names.add(name);
+  return names;
+}
+
+// A parent state names a class of the project (the review's R-1): the export writes `parent:card:hover` as
+// `.card:hover .title`, so a key naming a class the project lacks (renamed or deleted without it) is a rule that never
+// matches. Read on the pages' elements, the components' definitions' and the classes' styles.
+function orphanParentStates(doc: DocumentJson): { readonly path: string; readonly message: string }[] {
+  const found: { path: string; message: string }[] = [];
+  const known = projectClassNames(doc);
+  const check = (styles: unknown, at: string): void => {
+    if (!isRecord(styles)) return;
+    for (const [breakpoint, byState] of Object.entries(styles)) {
+      if (!isRecord(byState)) continue;
+      for (const key of Object.keys(byState)) {
+        const className = parentKeyClass(key);
+        if (className !== null && !known.has(className)) found.push({ path: `${at}/styles/${breakpoint}/${key}`, message: `the parent state "${key}" names the class ${className}, which the project does not have` });
+      }
+    }
+  };
+  const visit = (node: DocNode, at: string): void => {
+    check(node.styles, at);
+    if (Array.isArray(node.children)) node.children.forEach((child, i) => visit(child, `${at}/children/${i}`));
+  };
+  (Array.isArray(doc.pages) ? doc.pages : []).forEach((page, i) => visit(page.tree, `/pages/${i}/tree`));
+  (Array.isArray(doc.components) ? doc.components : []).forEach((component, i) => visit(component.tree, `/components/${i}/tree`));
+  (Array.isArray(doc.classes) ? doc.classes : []).forEach((one, i) => {
+    if (isRecord(one)) check(one.styles, `/classes/${i}`);
+  });
+  return found;
 }
 
 // What a component's definition points at that is not there (the audit's STRUCT-6): an interaction's target or a

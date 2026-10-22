@@ -11,6 +11,7 @@
 //  - targetClass: the class a style write goes to (core/style/set.ts styleHolders): the class the editor names as the
 //    style target (HandlerContext.styleClass), while the project has it and every selected element lists it.
 import { isIdentifier } from '../text/identifier.ts';
+import { parentKeyClass, renamedParentKey } from '../style/state-keys.ts';
 import { message, registerHandler, type HandlerContext, type Outcome } from '../commands/registry.ts';
 import { locate, walk, type DocNode, type DocumentJson, type NodeId, type Selection, type StyleClass } from '../document/model.ts';
 import type { Patch } from '../history/transaction.ts';
@@ -164,14 +165,56 @@ export function classBindings(document: DocumentJson, className: string): readon
   return found;
 }
 
+// Every styles object that holds a parent state naming a class (`parent:card:hover`, core/style/state-keys.ts), with
+// its path and the words that name its holder: the pages' elements, the components' definitions' and the classes'.
+// The export writes such a key `.card:hover .title`, so a class renamed without them left the hover styling on a class
+// no element wears (the review's R-1).
+interface ParentStateHolder {
+  readonly path: readonly (string | number)[];
+  readonly styles: StyleClass['styles'];
+  readonly holder: string;
+}
+const namesClass = (styles: StyleClass['styles'], className: string): boolean =>
+  Object.values(styles ?? {}).some((states) => Object.keys(states ?? {}).some((key) => parentKeyClass(key) === className));
+export function parentStateHolders(document: DocumentJson, className: string): readonly ParentStateHolder[] {
+  const found: ParentStateHolder[] = [];
+  const visit = (node: DocNode, path: readonly (string | number)[]): void => {
+    if (namesClass(node.styles, className)) found.push({ path: [...path, 'styles'], styles: node.styles, holder: node.name });
+    node.children.forEach((child, i) => visit(child, [...path, 'children', i]));
+  };
+  document.pages.forEach((page, i) => visit(page.tree, ['pages', i, 'tree']));
+  (document.components ?? []).forEach((component, i) => visit(component.tree, ['components', i, 'tree']));
+  classesOf(document).forEach((one, i) => {
+    if (namesClass(one.styles, className)) found.push({ path: ['classes', i, 'styles'], styles: one.styles, holder: `.${one.name}` });
+  });
+  return found;
+}
+
+// A styles object with every parent state of a class named after the class's new name; a key the new name already
+// holds (left by nothing this app writes) takes the renamed one's declarations over its own.
+function parentStatesRenamed(styles: StyleClass['styles'], className: string, nextName: string): StyleClass['styles'] {
+  const renamed: Record<string, Record<string, Record<string, unknown>>> = {};
+  for (const [breakpoint, states] of Object.entries(styles ?? {})) {
+    const byState: Record<string, Record<string, unknown>> = {};
+    for (const [key, declarations] of Object.entries(states ?? {})) {
+      const next = renamedParentKey(key, className, nextName);
+      byState[next] = next === key ? { ...declarations, ...(byState[next] ?? {}) } : { ...(byState[next] ?? {}), ...declarations };
+    }
+    renamed[breakpoint] = byState;
+  }
+  return renamed as StyleClass['styles'];
+}
+
 // Shared by class renaming and collision isolation of an imported group: the class, every element and definition that
-// lists it, and every interaction and motion that names it (classBindings).
+// lists it, every interaction and motion that names it (classBindings), and every parent state that names it
+// (parentStateHolders).
 export function renameClassPatches(document: DocumentJson, className: string, nextName: string): Patch[] {
   const index = classesOf(document).findIndex(c => c.name === className);
   return [
     ...(index < 0 ? [] : [{ op: 'replace' as const, path: ['classes', index, 'name'], value: nextName }]),
     ...classListers(document, className).map((at): Patch => ({ op: 'replace', path: [...at.path, 'classes'], value: at.node.classes.map(name => name === className ? nextName : name) })),
     ...classBindings(document, className).map((binding): Patch => ({ op: 'replace', path: binding.path, value: binding.renamed(nextName) })),
+    ...parentStateHolders(document, className).map((at): Patch => ({ op: 'replace', path: at.path, value: parentStatesRenamed(at.styles, className, nextName) })),
   ];
 }
 
@@ -199,6 +242,11 @@ export const deleteClassCommand = registerHandler('classes.delete', ({ state, co
   // toggled a class no element holds, and the trigger never fired (the audit's STYLE-6)
   const bindings = classBindings(state.document, className).length;
   if (bindings > 0) return { kind: 'refused', message: message('status.classes.inUseByInteractions', { name: className, count: bindings }) };
+  // a class a parent state names stays the same way (DCS of R-1): deleted, the key named a class no element wears and
+  // the export wrote a rule that never matched; the refusal names the first holder, so the person finds it
+  const holders = parentStateHolders(state.document, className);
+  const first = holders[0];
+  if (first !== undefined) return { kind: 'refused', message: message('status.classes.inUseByParentStates', { name: className, holder: first.holder, count: holders.length }) };
   if (!confirmed) return { kind: 'confirm', params: { count: uses.length } };
   const patches: Patch[] = [
     ...classListers(state.document, className).map((at): Patch => ({ op: 'replace', path: [...at.path, 'classes'], value: at.node.classes.filter((name) => name !== className) })),

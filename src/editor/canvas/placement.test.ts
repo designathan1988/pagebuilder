@@ -4,7 +4,7 @@
 // button's label over a card's price selected the button). A drop label takes the first free place around its element,
 // and where none is free it covers the least it can and says so.
 import { describe, expect, it } from 'vitest';
-import { clearedLabel, heldInStage, labelRoom, placeLabel, selectionLabelBox, shownWords, turnedFrame, type Box } from './placement.ts';
+import { clearedLabel, heldInStage, labelRoom, placeLabel, selectionLabelBox, shownWords, textToolbarPlace, turnedFrame, type Box } from './placement.ts';
 
 const box = (x: number, y: number, width: number, height: number): Box => ({ x, y, width, height });
 const CANVAS = box(0, 0, 1000, 1000);
@@ -175,5 +175,36 @@ describe('a turned frame', () => {
     expect(turned.width).toBeCloseTo(20);
     expect(turned.height).toBeCloseTo(100);
     expect(selectionLabelBox(turned, SIZE, 2, []).box.y).toBeCloseTo(-58);
+  });
+});
+
+// the text toolbar while a text is edited in place is always in reach (DCS-089): above the label where that place is
+// in the stage and clear of the tabs, else under the element, else at the stage's nearest edge, never over the caret
+describe('the text toolbar', () => {
+  const STAGE = box(0, 0, 1000, 600);
+  const TOOLS = { width: 90, height: 30 };
+  const TABS = [box(0, -30, 90, 26), box(92, -30, 90, 26)];
+  it('stands above the label where that place is in the stage', () => {
+    const element = box(100, 200, 300, 40);
+    const label = selectionLabelBox(element, SIZE, 2, []);
+    expect(textToolbarPlace(label, element, 2, TOOLS, 4, STAGE, TABS, null)).toEqual({ x: 98, y: 148 });
+  });
+  it('stands under the element where the place above the label leaves the stage, the label kept in its place', () => {
+    const link = box(400, 20, 60, 20);
+    const label = selectionLabelBox(link, SIZE, 2, []);
+    const caret = box(400, 22, 60, 16);
+    expect(textToolbarPlace(label, link, 2, TOOLS, 4, STAGE, TABS, caret)).toEqual({ x: 398, y: 46 });
+  });
+  it('stands at the stage edge clear of the caret line where the element fills the stage', () => {
+    const tall = box(0, -100, 1000, 900);
+    const label = selectionLabelBox(tall, SIZE, 2, []);
+    const caret = box(0, 10, 1000, 20);
+    const placed = textToolbarPlace(label, tall, 2, TOOLS, 4, STAGE, [], caret);
+    expect(placed).toEqual({ x: 0, y: 566 });
+  });
+  it('is moved along the stage to stand whole in it', () => {
+    const element = box(950, 200, 40, 40);
+    const label = selectionLabelBox(element, SIZE, 2, []);
+    expect(textToolbarPlace(label, element, 2, TOOLS, 4, STAGE, [], null)?.x).toBe(910);
   });
 });

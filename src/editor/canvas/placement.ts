@@ -142,7 +142,7 @@ export function turnedFrame(box: Box, degrees: number, edge: number): Box {
 }
 
 // The selection's label kept clear of the editor's own controls about the page (the breakpoint tabs attached to its
-// top, D-1): `group` is what stands with it — the text toolbar above it while a text is edited and the quick panel's
+// top, D-1): `group` is what stands with it — the quick panel's
 // chip beside it, taller than the label (`above`: how far they rise over the label's top; `width`: how far they reach
 // across). Where the group's place lies over a control, the label keeps to the frame's top line and moves along it just
 // past the controls it lay over, while the whole group still stands over its element (a wide element at the page's
@@ -181,6 +181,43 @@ export function clearedLabel(
   return { box, placement: 'below', covers: content.some((c) => overlaps(inner, c)) };
 }
 
+// The text toolbar's place while a text is edited in place (the owner's choice of 2026-10-22, DCS-089): it is always
+// within reach. Its first place is above the selection's label (under it where the label stands under its element);
+// where that place leaves the stage (`stage`, what the person sees of the canvas) or lies over the editor's own
+// controls about the page (the breakpoint tabs and the words of their bands, `controls`), it stands under its element,
+// then above the element's frame, and last inside the stage at its nearest edge, top or bottom. Every place keeps clear
+// of the label and of the line the caret is on (`caret`: the edited text's line, never covered while typing), and is
+// moved along the stage's width to stand whole in it. `frame` is the edited element's box, `edge` the width of its
+// frame's line drawn outside it, `gap` the room between the toolbar and what it stands by. Null where the stage holds
+// no place for it (a stage smaller than the toolbar).
+export function textToolbarPlace(
+  label: { readonly box: Box; readonly placement: Placement },
+  frame: Box,
+  edge: number,
+  size: { readonly width: number; readonly height: number },
+  gap: number,
+  stage: Box,
+  controls: readonly Box[],
+  caret: Box | null,
+): { readonly x: number; readonly y: number } | null {
+  const x = Math.max(stage.x, Math.min(label.box.x, stage.x + stage.width - size.width));
+  const under = label.placement === 'below';
+  const first = under ? label.box.y + label.box.height + gap : label.box.y - gap - size.height;
+  const belowFrame = (under ? label.box.y + label.box.height : frame.y + frame.height + edge) + gap;
+  const aboveFrame = (under ? frame.y - edge : label.box.y) - gap - size.height;
+  // the stage's edge nearer the element first: the toolbar stays as close to the edit as the stage lets it
+  const nearTop = Math.abs(frame.y - stage.y) <= Math.abs(stage.y + stage.height - (frame.y + frame.height));
+  const edges = [stage.y + gap, stage.y + stage.height - gap - size.height];
+  const tries = [first, belowFrame, aboveFrame, ...(nearTop ? edges : [...edges].reverse())];
+  const meets = (a: Box, b: Box) => overlaps({ x: a.x + SLACK, y: a.y + SLACK, width: a.width - 2 * SLACK, height: a.height - 2 * SLACK }, b);
+  const free = (y: number): boolean => {
+    const box = { x, y, ...size };
+    return within(box, stage) && !controls.some((c) => meets(box, c)) && !meets(box, label.box) && (caret === null || !meets(box, caret));
+  };
+  const y = tries.find(free);
+  return y === undefined ? null : { x, y };
+}
+
 // The words of a band about the page (the breakpoint's band and the state's, under the breakpoint tabs; canvas.tsx) as
 // the selection's label keeps clear of them (the owner's extension of DEC-70's exception, 2026-10-21, DCS-064): each
 // word's box cut to what its band shows of it. Words the band wraps under its height are out of sight (overflow
@@ -198,7 +235,7 @@ export function shownWords(words: readonly Box[], band: Box): Box[] {
 
 // The selection's label kept in what the person sees of the canvas (`stage`), above its element still (DEC-70): where
 // its one place runs past the stage's right edge (a long name over an element near that edge), the label and what
-// stands with it (`width`: the chip beside it, the text toolbar above it) move left along the frame's top line just
+// stands with it (`width`: the chip beside it) move left along the frame's top line just
 // enough to end at the edge, and no further left than the stage's own left edge; hidden for running past the edge, the
 // label of a long-named button near the canvas's right edge vanished (the real-use audit, USE-4). A group wider than
 // the whole stage starts at the stage's left edge, and the label's name gives way (labelRoom). Only while the element

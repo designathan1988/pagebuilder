@@ -383,7 +383,7 @@ export function installKeymap(store: EditorStore, target: Window = window): () =
   let burstKeys = '';
   let told = false;
   const endBurst = () => {
-    target.clearTimeout(burstTimer);
+    window.clearTimeout(burstTimer);
     burstSequence?.commit();
     burstSequence = null;
     lastLetterAt = Number.NEGATIVE_INFINITY;
@@ -410,8 +410,11 @@ export function installKeymap(store: EditorStore, target: Window = window): () =
     const inBurst = letter && typing;
     if (letter) {
       lastLetterAt = event.timeStamp;
-      target.clearTimeout(burstTimer);
-      burstTimer = target.setTimeout(endBurst, TYPING_BURST);
+      window.clearTimeout(burstTimer);
+      // the editor's own timer, never the target's: a keymap on the canvas frame (a text edited in place) has the
+      // frame's window, whose sandbox runs no script, so its timer never ran (the console said "Blocked script
+      // execution in about:srcdoc" at every letter typed) and the burst never ended by itself
+      burstTimer = window.setTimeout(endBurst, TYPING_BURST);
     }
     // A modal owns Escape even when a press on its shield has left focus on the page body. Resolve its manifest door
     // before the canvas/global context can clear the selection, and do not let another key listener see that Escape.

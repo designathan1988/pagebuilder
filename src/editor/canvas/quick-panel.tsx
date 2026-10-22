@@ -30,7 +30,9 @@ import { EDIT_MODES, modeBuilt, modeRefusal, type EditMode } from './edit-mode.t
 import { MODEL_RULES, useEditorState, useStore } from '../store.ts';
 import type { MessageId } from '../../generated/ids.ts';
 import { useT } from '../text.ts';
-import { canvasFrame, nodeBox } from './coordinates.ts';
+import { canvasFrame, nodeBox, pageAnimating } from './coordinates.ts';
+import { followPage } from './page-clock.ts';
+import { floatView } from '../shell/float.ts';
 import { visiblePage } from './reveal.ts';
 import { breakpointWords, wordsOf } from '../../core/document/breakpoints.ts';
 import { usePointerSelect } from '../input/pointer/use-views.ts';
@@ -325,8 +327,9 @@ interface Placed {
   readonly element: Box;
   // the widest the panel may be: the stage less its inset on both sides
   readonly widest: number;
-  // the tallest it may be: down to the window's bottom less the inset, from where it stands beside the label (DEC-70),
-  // what it holds scrolled inside it (it reached past the window: the audit of 2026-10-05)
+  // the tallest it may be: down to the status bar's top less the inset (shell/float.ts floatView: it lay 4 px over the
+  // bar at 1280 × 720), from where it stands beside the label (DEC-70), what it holds scrolled inside it (it reached
+  // past the window: the audit of 2026-10-05)
   readonly tallest: number;
 }
 
@@ -390,11 +393,18 @@ export function QuickPanel({ stage }: { readonly stage: RefObject<HTMLDivElement
   // a field whose value does not fit its half takes the group's whole row (chip-fit.ts)
   useEffect(() => (shown && open && panel.current !== null ? installChipFit(panel.current) : undefined), [shown, open, id]);
 
-  // placed at every frame (the element moves with the page's layout, a scroll, a zoom), set only when it moves
+  // Placed by the page clock (page-clock.ts), as the selection's chrome is: when the page may have changed (a store
+  // change, the camera's included; a scroll, a load, a typed text), when a control of the stage moves (the selection's
+  // label, which the chip and the panel follow), when the chip or the panel changes size (chip-fit.ts settles the
+  // panel's rows) and when the window is resized (both are fixed in it); then at every frame while the placing still
+  // moves, the opening still fits the panel or the page moves on its own, stopping once all are still. It read the
+  // element's box at every frame for as long as an element was selected (OTM-007). Set only when it moves.
   useEffect(() => {
     if (!shown || id === null) return;
-    let request = 0;
-    const measure = () => {
+    // what the last measure read (the placing and the label's box): a measure that reads another is followed by another
+    let last: string | null = null;
+    const measure = (): boolean => {
+      let moved = false;
       const area = stage.current;
       const frame = canvasFrame();
       const drawn = open ? panel.current : chip.current;
@@ -441,22 +451,43 @@ export function QuickPanel({ stage }: { readonly stage: RefObject<HTMLDivElement
           // what the panel holds, scrolled or not, with its borders (its height counts them), at most its share of the
           // window
           const tall = Math.min(drawn.scrollHeight + drawn.offsetHeight - drawn.clientHeight, window.innerHeight * TALLEST_SHARE);
-          const over = Math.ceil(at.top + dy + tall - (window.innerHeight - inset));
+          const over = Math.ceil(at.top + dy + tall - (floatView().height - inset));
           // moved up no further than leaves the label at the top of the view
           if (fitFrames.current > 0 && over > 0) dy = Math.max(dy - over, top + inset - at.top);
           if (Math.round(dx) !== 0 || Math.round(dy) !== 0) {
             fitFrom.current = { left: at.left, top: at.top };
+            moved = true;
             if (PAN !== undefined) (store.dispatch as (command: CommandId, args: unknown) => unknown)(PAN.command.id, { dx: Math.round(dx), dy: Math.round(dy) });
           }
         }
         const placedBox = at === undefined || !seen ? null : placeQuickPanel({ x: at.x, y: at.y, width: at.width, height: at.height }, element, size, open, whole, inset, offset, label?.getAttribute('data-placement') === 'below');
-        const next = placedBox === null ? null : { id, open, box: placedBox, element, widest: Math.max(0, window.innerWidth - 2 * inset), tallest: Math.max(0, window.innerHeight - placedBox.y - inset) };
+        const next = placedBox === null ? null : { id, open, box: placedBox, element, widest: Math.max(0, window.innerWidth - 2 * inset), tallest: Math.max(0, floatView().height - placedBox.y - inset) };
         setPlaced((before) => (JSON.stringify(before) === JSON.stringify(next) ? before : next));
+        // the opening's fitting counts frames, so it is followed frame by frame until it ends
+        const read = JSON.stringify([next, at?.left, at?.top, at?.width, at?.height, size]);
+        if (read !== last || fitFrames.current > 0) moved = true;
+        last = read;
       }
-      request = requestAnimationFrame(measure);
+      return moved;
     };
-    request = requestAnimationFrame(measure);
-    return () => cancelAnimationFrame(request);
+    const { tick, stop } = followPage(measure, pageAnimating);
+    // a control of the stage drawn, removed or moved (the selection's label above all); the chip and the panel placed
+    // by this measure are no cause
+    const own = (target: Node): boolean => (panel.current?.contains(target) ?? false) || (chip.current?.contains(target) ?? false);
+    const drawn = new MutationObserver((records) => {
+      if (records.some((record) => !own(record.target))) tick();
+    });
+    if (stage.current) drawn.observe(stage.current, { subtree: true, childList: true, attributes: true, attributeFilter: ['style', 'class'] });
+    // the chip's or the panel's own size, and the window's (both are fixed in it)
+    const sized = new ResizeObserver(tick);
+    if (panel.current) sized.observe(panel.current);
+    if (chip.current) sized.observe(chip.current);
+    sized.observe(document.documentElement);
+    return () => {
+      stop();
+      drawn.disconnect();
+      sized.disconnect();
+    };
   }, [shown, id, open, offset, stage, store]);
 
   // a placing made for the element and state drawn now: until one is made the panel is drawn hidden while it is

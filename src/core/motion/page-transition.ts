@@ -7,8 +7,11 @@
 //  - Elsewhere (a page opened from disk, a browser without them) the script plays the leaving animation on the page,
 //    then follows the link; the arriving page plays its entering animation from its first paint (the window's name
 //    carries the kind across, as nothing else of the leaving page reaches the next one from file://).
-//  - In the editor's Preview (one page in a frame), a link to another page of the site plays the leaving animation,
-//    then asks the editor for that page (preview.tsx builderPreviewPage), which arrives entering.
+//  - In the editor's Preview (one page in a frame), a link asks the editor whether it opens a page (preview.tsx
+//    builderPreviewGoes): another page of the site, or an item page, plays the leaving animation, then asks the editor
+//    for that page (builderPreviewPage), which arrives entering; the open page itself, or a page the site does not
+//    have, is answered with a stay (builderPreviewAnswer), and the page stays shown (scrolled to the link's fragment).
+//  - A link to a place of the same page (its own address with a fragment) is no page change: nothing animates.
 //  - Less motion asked: no animation at all, the link followed at once.
 //  - Nothing stays hidden: the entering animation runs from CSS alone and ends visible, and a page shown again from
 //    the back-forward cache drops the leaving state.
@@ -86,7 +89,28 @@ export function pageTransitionScript(document: DocumentJson, transition: PageTra
     '  };',
     "  window.addEventListener('pagereveal', function (event) { typed(event, arrived || SITE); });",
     "  window.addEventListener('pageswap', function (event) { typed(event, chosen || SITE); });",
-    "  window.addEventListener('pageshow', function (event) { if (event.persisted) root.classList.remove('bm-page-out-fade', 'bm-page-out-slide'); });",
+    "  var shown = function () { root.classList.remove('bm-page-out-fade', 'bm-page-out-slide'); };",
+    "  window.addEventListener('pageshow', function (event) { if (event.persisted) shown(); });",
+    '  // the preview: the editor answers whether it opens the page a link names (another page, an item page) or stays (the',
+    '  // open page, a page the site does not have); the page leaves only for a page that opens, and is shown again, at the',
+    "  // link's fragment, when the editor stays",
+    '  var leaving = null;',
+    "  var post = function (message) { window.parent.postMessage(message, '*'); };",
+    "  if (preview) window.addEventListener('message', function (event) {",
+    '    var answer = event.source === window.parent && event.data ? event.data.builderPreviewAnswer : null;',
+    "    if (!answer || typeof answer !== 'object') return;",
+    '    var left = leaving;',
+    '    leaving = null;',
+    '    if (answer.goes === true && left !== null) {',
+    "      root.classList.add('bm-page-out-' + left.kind);",
+    '      setTimeout(function () { post({ builderPreviewPage: left.address }); }, TIME);',
+    '      return;',
+    '    }',
+    "    window.name = '';",
+    '    shown();',
+    "    var target = typeof answer.fragment === 'string' && answer.fragment !== '' ? document.getElementById(answer.fragment) : null;",
+    '    if (target) target.scrollIntoView();',
+    '  });',
     "  document.addEventListener('click', function (event) {",
     '    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;',
     "    var link = event.target && event.target.closest ? event.target.closest('a[href]') : null;",
@@ -94,13 +118,18 @@ export function pageTransitionScript(document: DocumentJson, transition: PageTra
     "    var address = link.getAttribute('href');",
     "    if (!address || address.charAt(0) === '#' || /^[a-z][a-z0-9+.-]*:/i.test(address) || address.indexOf('//') === 0) return;",
     "    if (!preview && link.target && link.target !== '_self') return;",
+    '    // a link to a place of this same page (its address and a fragment) is no page change: the browser only scrolls',
+    "    if (!preview && link.hash !== '' && link.pathname === location.pathname && link.search === location.search) return;",
     '    var kind = link.getAttribute(ATTRIBUTE) || SITE;',
     '    chosen = kind;',
     '    window.name = NAME + kind;',
     '    if (preview) {',
     '      event.preventDefault();',
-    "      var ask = function () { window.parent.postMessage({ builderPreviewPage: address }, '*'); };",
-    "      if (reduced || !kinds[kind]) ask(); else { root.classList.add('bm-page-out-' + kind); setTimeout(ask, TIME); }",
+    '      if (reduced || !kinds[kind]) post({ builderPreviewPage: address });',
+    '      else {',
+    '        leaving = { address: address, kind: kind };',
+    '        post({ builderPreviewGoes: address });',
+    '      }',
     '      return;',
     '    }',
     '    if (crossDocument || reduced || !kinds[kind]) return;',

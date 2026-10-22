@@ -86,6 +86,14 @@ describe('the parallax range', () => {
     startOn(page.win as unknown as Window, config({ behaviours: [{ selector: '#layer', behaviour: { kind: 'parallax', amount: 0.5, axis: 'y' } }] }), { mode: 'page' });
     expect(layer.style.getPropertyValue('translate')).toBe('0 -40px');
   });
+  it('moves an element as large as its section or larger as it always did, unclamped', () => {
+    // its centre 700 against the viewport's 450, half of it: 125 px up, whether it fills its section or overflows it
+    for (const parent of [{ top: 650, bottom: 750 }, { top: 660, bottom: 740 }]) {
+      const { page, layer } = placed('<section><div id="layer"></div></section>', 650, parent);
+      startOn(page.win as unknown as Window, config({ behaviours: [{ selector: '#layer', behaviour: { kind: 'parallax', amount: 0.5, axis: 'y' } }] }), { mode: 'page' });
+      expect(layer.style.getPropertyValue('translate')).toBe('0 -125px');
+    }
+  });
   it('moves at most its travel, and only inside the part of the way it is set to', () => {
     const { page, layer } = placed('<section><div id="layer"></div></section>', 650, { top: 0, bottom: 2000 });
     startOn(page.win as unknown as Window, config({ behaviours: [{ selector: '#layer', behaviour: { kind: 'parallax', amount: 0.5, axis: 'y', max: 60 } }] }), { mode: 'page' });
@@ -115,5 +123,54 @@ describe('the first paint handed over', () => {
     const moving = page.animations.filter((one) => one.keyframes !== null);
     expect(moving.length).toBeGreaterThan(0);
     expect(moving.every((one) => one.currentTime === 700)).toBe(true);
+  });
+});
+
+describe('an entrance that does not run', () => {
+  const entering: RuntimeConfig['timelines'] = {
+    In: { name: 'In', markers: [], actions: [{ id: 'a', target: { kind: 'self' }, start: 0, duration: 700, effect: { kind: 'animate', tracks: [{ id: 'o', property: 'opacity', keyframes: [{ id: 'k', time: 0, value: '0' }, { id: 'l', time: 700, value: '1' }] }] } }] },
+  };
+  const fired = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 5));
+  const moving = (page: ReturnType<typeof fakePage>) => page.animations.filter((one) => one.keyframes !== null);
+  const onLoad = (condition: NonNullable<RuntimeConfig['bindings'][number]['interaction']['condition']>): RuntimeConfig =>
+    config({ timelines: entering, bindings: [{ selector: '#t', interaction: { trigger: { kind: 'page-load' }, timeline: 'In', control: 'play', condition } }] });
+
+  it('shows its element at its end when its condition does not hold, never held at its first keyframe', async () => {
+    const page = fakePage('<h1 id="t">Hi</h1>');
+    startOn(page.win as unknown as Window, onLoad({ kind: 'class', name: 'ready' }), { mode: 'page' });
+    expect(moving(page).every((one) => one.currentTime === 0)).toBe(true);
+    await fired();
+    expect(moving(page).every((one) => one.currentTime === 700 && one.playState === 'paused')).toBe(true);
+    // a condition that holds plays it from its start
+    const playing = fakePage('<h1 id="t" class="ready">Hi</h1>');
+    startOn(playing.win as unknown as Window, onLoad({ kind: 'class', name: 'ready' }), { mode: 'page' });
+    await fired();
+    expect(moving(playing).every((one) => one.currentTime === 0 && one.playState === 'running')).toBe(true);
+  });
+
+  it('shows its end at once with less motion asked, whether its condition holds or not', () => {
+    const page = fakePage('<h1 id="t">Hi</h1>');
+    page.reduceMotion(true);
+    startOn(page.win as unknown as Window, onLoad({ kind: 'class', name: 'ready' }), { mode: 'page' });
+    expect(moving(page).every((one) => one.currentTime === 700)).toBe(true);
+  });
+
+  it('reads a variable once the application\'s bridge is up, or at the page\'s load when it never comes', async () => {
+    const page = fakePage('<h1 id="t">Hi</h1>');
+    Object.defineProperty(page.document, 'readyState', { value: 'loading', configurable: true });
+    startOn(page.win as unknown as Window, onLoad({ kind: 'variable', name: 'loggedIn', compare: 'set' }), { mode: 'page' });
+    await fired();
+    // not decided yet: still at its first keyframe, paused
+    expect(moving(page).every((one) => one.currentTime === 0 && one.playState === 'paused')).toBe(true);
+    (page.win as unknown as { __builderApp: unknown }).__builderApp = { get: (name: string) => (name === 'loggedIn' ? true : undefined), set: () => undefined };
+    page.document.dispatchEvent(new (page.win as unknown as { Event: typeof Event }).Event('app:bridge'));
+    expect(moving(page).every((one) => one.playState === 'running')).toBe(true);
+
+    const alone = fakePage('<h1 id="t">Hi</h1>');
+    Object.defineProperty(alone.document, 'readyState', { value: 'loading', configurable: true });
+    startOn(alone.win as unknown as Window, onLoad({ kind: 'variable', name: 'loggedIn', compare: 'set' }), { mode: 'page' });
+    await fired();
+    alone.win.dispatchEvent(new alone.win.Event('load'));
+    expect(moving(alone).every((one) => one.currentTime === 700)).toBe(true);
   });
 });

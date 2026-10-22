@@ -8,11 +8,10 @@
 // files.open. Folders, renaming, moving and deleting are explorer-file-system's own work (not built yet).
 import { message, registerHandler } from '../../core/commands/registry.ts';
 import type { DocumentJson, Page, ProjectFile } from '../../core/document/model.ts';
-import { byteCount, fileAt, folderOf, folderPaths } from '../../core/files/files.ts';
+import { byteCount, fileAt, folderOf } from '../../core/files/files.ts';
 import { filesOf } from '../../core/document/model.ts';
-import { FORMS_SCRIPT, INTERACTIONS_SCRIPT, LISTS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, STYLESHEET, WIDGETS_SCRIPT, siteDocument, siteFiles, siteScriptsWritten } from '../../core/export/export.ts';
+import { FORMS_SCRIPT, INTERACTIONS_SCRIPT, LISTS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, STYLESHEET, WIDGETS_SCRIPT, capturedSnapshotText, siteDocument, siteFiles, siteFilesWritten, type WrittenFile } from '../../core/export/export.ts';
 import { APP_MAIN_SCRIPT, APP_RUNTIME_SCRIPT, APP_START_SCRIPT } from '../../core/export/paths.ts';
-import { appPaths } from '../../core/logic/compile.ts';
 import { siteScripts } from '../forms/script.ts';
 import type { ModelRules } from '../../core/document/validate.ts';
 import type { EditorUi } from '../state.ts';
@@ -59,16 +58,20 @@ const SCRIPTS = [
 // the paths the export may write a script at
 const SCRIPT_PATHS: readonly string[] = SCRIPTS.map(([path]) => path);
 
-// Whether the path is one the document generates (a page's file, the stylesheet, a script the export writes and no
-// stored file holds): its text is rendered now, and its path is fixed — the export writes it there.
-export function isGenerated(path: string, document: DocumentJson): boolean {
-  return document.pages.some((page) => page.file === path) || path === STYLESHEET || (SCRIPT_PATHS.includes(path) && fileAt(document, path) === null) || appPaths(document).includes(path);
+// Whether the path is one the document generates (a page's file, the stylesheet, a script the export may write and no
+// stored file holds, any file the export writes now — an item's page, a captured page's snapshot): its text is
+// rendered now, and its path is fixed — the export writes it there.
+export function isGenerated(path: string, document: DocumentJson, rules: ModelRules): boolean {
+  return document.pages.some((page) => page.file === path) || path === STYLESHEET || (SCRIPT_PATHS.includes(path) && fileAt(document, path) === null) || siteFilesWritten(document, rules).some((one) => one.path === path);
 }
-// the paths of the scripts the export writes now, read without writing the site (export.ts siteScriptsWritten): what
-// the rows list at every change of the document, the text being written only when the code pane shows one
-function generatedScriptPaths(document: DocumentJson, rules: ModelRules): readonly string[] {
-  const written = siteScriptsWritten(document, rules);
-  return [...SCRIPTS.flatMap(([path, part]) => (written.has(part) ? [path] : [])), ...appPaths(document)];
+// The text of a file the export writes from a page of the document at a path no page holds: an item's page (the site
+// as the archive writes it, lists.ts siteDocument) and a captured page's snapshot. Null for any other path.
+export function writtenPageText(path: string, document: DocumentJson, rules: ModelRules): string | null {
+  const written = siteFilesWritten(document, rules).find((one) => one.path === path);
+  if (written === undefined) return null;
+  if (written.part === 'page' && written.item) return siteFiles(siteDocument(document, rules, true), rules, true, siteScripts).pages.find((one) => one.file === path)?.html ?? null;
+  const page = written.part === 'snapshot' ? document.pages.find((one) => one.id === written.page) : undefined;
+  return page === undefined ? null : capturedSnapshotText(document, page);
 }
 export function generatedScripts(document: DocumentJson, rules: ModelRules): readonly { readonly path: string; readonly text: string }[] {
   // the site as the archive writes it (export.ts siteEntries): its paged lists are only paged there
@@ -87,14 +90,11 @@ export function generatedScripts(document: DocumentJson, rules: ModelRules): rea
   return [...scripts, ...app];
 }
 
-// The Files section's rows, in the order it lists them: what the document generates (each page's file in the pages'
-// order, the stylesheet, the interactions script) and then the project's own files, each as it was uploaded.
+// The Files section's rows, in the order it lists them: the files the export writes from the document (export.ts
+// siteFilesWritten, its one list: each page's file in the pages' order, a template's items' pages in its place, the
+// stylesheet, a captured page's snapshot, the scripts) and then the project's own files, each as it was uploaded.
 export function fileRows(document: DocumentJson, rules: ModelRules): readonly FileRow[] {
-  const generated: FileRow[] = [
-    ...document.pages.map((page) => ({ path: page.file, kind: 'html' as const, generated: true, size: null })),
-    { path: STYLESHEET, kind: 'css' as const, generated: true, size: null },
-    ...generatedScriptPaths(document, rules).map((path) => ({ path, kind: 'js' as const, generated: true, size: null })),
-  ];
+  const generated: FileRow[] = siteFilesWritten(document, rules).map((one) => ({ path: one.path, kind: kindOf(one.path), generated: true, size: null }));
   const owned: FileRow[] = filesOf(document).map((file: ProjectFile) => ({ path: file.path, kind: kindOf(file.path, file.type), generated: false, size: byteCount(file.bytes) }));
   return [...generated, ...owned];
 }
@@ -115,14 +115,26 @@ export interface TreeRow {
   readonly size: number | null;
 }
 
+// a path's folders, the root apart; with `withSelf`, the path itself is one too (a stored folder)
+function ancestors(path: string, withSelf: boolean): readonly string[] {
+  const parts = path.split('/').filter((one) => one !== '');
+  return parts.slice(0, withSelf ? parts.length : parts.length - 1).map((_, i) => parts.slice(0, i + 1).join('/'));
+}
+
 export function treeRows(document: DocumentJson, rules: ModelRules): readonly TreeRow[] {
   const rows: TreeRow[] = [];
-  const folders = folderPaths(document);
+  // what the export writes (export.ts siteFilesWritten): a page's own file is that page's row; an item's page, the
+  // stylesheet, a snapshot and a script are rows of no stored file and no page. A template page writes no file of its
+  // own, so its address is no row.
+  const pageOf = (one: WrittenFile): Page | null => (one.part === 'page' && !one.item ? document.pages.find((page) => page.id === one.page && page.file === one.path) ?? null : null);
+  const made = siteFilesWritten(document, rules).map((one) => ({ path: one.path, file: null as ProjectFile | null, page: pageOf(one) }));
+  const entries = [...filesOf(document).map((file) => ({ path: file.path, file, page: null as Page | null })), ...made];
+  // the folders: every stored one (an empty one too) and every folder a listed file stands in — never a folder the
+  // export would write into while it writes nothing there (js/app-layer with no application)
+  const folders = [...new Set([...(document.folders ?? []).flatMap((folder) => ancestors(folder, true)), ...entries.flatMap((one) => ancestors(one.path, false))])];
   const under = (folder: string): readonly string[] => folders.filter((one) => folderOf(one) === folder).sort();
-  // the generated stylesheet and scripts: rows of no stored file and no page
-  const made = [STYLESHEET, ...generatedScriptPaths(document, rules)].map((path) => ({ path, file: null as ProjectFile | null, page: null as Page | null }));
   const filesIn = (folder: string): readonly { readonly path: string; readonly file: ProjectFile | null; readonly page: Page | null }[] =>
-    [...filesOf(document).map((file) => ({ path: file.path, file, page: null as Page | null })), ...document.pages.map((page) => ({ path: page.file, file: null as ProjectFile | null, page })), ...made]
+    entries
       .filter((one) => folderOf(one.path) === folder)
       .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
   const fileRow = (one: ReturnType<typeof filesIn>[number], depth: number): void => {
@@ -131,7 +143,8 @@ export function treeRows(document: DocumentJson, rules: ModelRules): readonly Tr
       folder: false,
       depth,
       kind: kindOf(one.path, one.file?.type ?? ''),
-      generated: one.page !== null || (one.file === null && one.page === null) || isGenerated(one.path, document),
+      // a row of no stored file is one the export writes; a stored file at a page's address is one too
+      generated: one.file === null || document.pages.some((page) => page.file === one.path),
       page: one.page?.id ?? null,
       size: one.file === null ? null : byteCount(one.file.bytes),
     });

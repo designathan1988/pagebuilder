@@ -2736,3 +2736,135 @@
 - Sintoma: `verify --all` reprovava em `tools/i18n/unused.test.ts`: `data.templateOtherCollection`, `data.pagePerItem`, `status.data.emptyName`, `status.pages.itemPagesCurrent`.
 - Causa: `src/core/data/commands.ts`: `pages.fromCollection` passou a marcar o modelo (DCS-080); as mensagens do fluxo de antes ficaram, e `templateOtherCollection` repetia `data.templateHelp`.
 - Prova: as quatro saíram de `en.json` e `pt-BR.json`, gerador rodado; nenhuma porta, recusa ou tela as nomeia.
+
+## DEF-0843 — Explorador listava o arquivo do modelo e não as páginas dos itens
+- Status: corrigido (sem commit: lote explorador e régua, 2026-10-22)
+- Sintoma: no blog (`content-blog.json`), Arquivos listava `post.html` como gerado, mas a exportação não grava esse arquivo e grava `posts/<slug>.html`, que não apareciam.
+- Causa: `src/editor/explorer/explorer.ts:94` e `:120` (antes): as linhas vinham de `document.pages`, não da lista da exportação (`siteDocument` troca o modelo pelas páginas dos itens).
+- Prova: `siteFilesWritten` (`src/core/export/export.ts:548`) é a lista única do que o arquivo ZIP grava do documento; `fileRows`, `treeRows`, `isGenerated` e o painel de código (`writtenPageText`) a leem (`explorer.ts:64-134`). Teste: em todo fixture, as linhas geradas = `siteEntries` menos os arquivos guardados. Uso: `posts/` com 5 páginas, sem `post.html`; `posts/bolo-de-cenoura.html` abre com o HTML exportado (fotos `en-e1`, `en-e2`, `pt-e1`, `pt-e2`).
+
+## DEF-0844 — Pasta js/app-layer vazia no Explorador sem aplicação
+- Status: corrigido (sem commit: lote explorador e régua, 2026-10-22)
+- Sintoma: todo projeto sem camada de aplicação mostrava a pasta `js/app-layer` vazia (e `js` vazia num projeto sem scripts).
+- Causa: `src/editor/explorer/explorer.ts:120` (antes): as pastas vinham de `folderPaths`, que soma as pastas de todos os caminhos que a exportação pode gravar (`GENERATED_PATHS`, `src/core/files/files.ts:279`).
+- Prova: `treeRows` monta as pastas das guardadas e das pastas dos arquivos listados (`explorer.ts:134`); `folderPaths` segue igual para mover e renomear. Teste: em todo fixture, cada pasta listada tem arquivo ou é guardada. Uso: blog sem `js/app-layer` (fotos `en-e1`, `pt-e1`).
+
+## DEF-0845 — Título do Explorador e o fechar sumiam ao rolar
+- Status: corrigido (sem commit: lote explorador e régua, 2026-10-22)
+- Sintoma: com Páginas e Arquivos mais altos que a vista (blog com 5 páginas de itens), rolar a vista cortava "EXPLORER" no topo e levava o botão de fechar (foto `en-e2`, vista rolada 12 px).
+- Causa: `src/editor/shell/sidebar.css:208`: `.view__title` ficava no fluxo da vista que rola; só o cabeçalho do Inserir era fixo (DEF-0840).
+- Prova: `.view > .view__title` (`sidebar.css:222`) fica no topo de toda vista, na superfície dela. Uso: vista rolada até o fim, título no topo da vista (topo 40 = topo da vista; foto `pt-e1`).
+
+## DEF-0846 — Transição de página na Pré-visualização deixava a página em branco
+- Status: corrigido (não commitado)
+- Sintoma: com transição de site (fade), na Pré-visualização um link para a própria página (`index.html`, `index.html#contato`), para uma página de item (`posts/x.html`) ou para uma página inexistente apagava a página (opacidade 0) e ela não voltava.
+- Causa: `src/core/motion/page-transition.ts` aplicava `bm-page-out-*` antes de saber se o editor abriria a página; `src/editor/shell/preview.tsx` não respondia quando não abria e não conhecia páginas de item.
+- Prova: o script pergunta antes (`builderPreviewGoes`) e só sai com resposta "vai"; o editor (`previewGo`) responde "fica" (com o fragmento, que o script rola) para a página aberta e a inexistente, também após `builderPreviewPage`, e abre página de item como o editor (modelo + `pages.previewItem`). Uso real: os três links mantêm opacidade 1, o fragmento rola, o item p3 abre no modelo.
+
+## DEF-0847 — Site aberto do disco ficava invisível num link para um fragmento da mesma página
+- Status: corrigido (não commitado)
+- Sintoma: site exportado aberto por file://, link `index.html#contato` no próprio index: a página sumia (opacidade 0) e ficava assim.
+- Causa: `src/core/motion/page-transition.ts` só excluía `href` começando por `#`; a navegação de fragmento não carrega documento novo.
+- Prova: o tratador do clique retorna antes de animar quando o link tem fragmento e o mesmo caminho e busca da página (`link.pathname === location.pathname`). Uso real (file://): rola até `#contato`, sem classe de saída, opacidade 1.
+
+## DEF-0848 — Paralaxe sem "deslocamento máximo" parou de mover elemento do tamanho do pai ou maior
+- Status: corrigido (não commitado)
+- Sintoma: imagem de hero do mesmo tamanho da seção (ou 120 % de uma moldura com recorte) com paralaxe 0,3 ficava parada (`translate: 0 0px`); projetos antigos perderam o efeito.
+- Causa: `src/editor/motion/runtime/behaviours.ts` (`parallax`) prendia o deslocamento à folga dentro do pai, que é zero ou negativa nesses casos.
+- Prova: a folga do pai só limita elemento menor que o pai no eixo; igual ou maior move como antes (o recorte do pai é o limite). Script `r5f-parallax.mjs`: mesmo tamanho 15px, 120 % 27px, menor 30px; uso real: hero e moldura movem a cada rolagem.
+
+## DEF-0849 — Entrada com condição falsa ficava no primeiro quadro-chave; condição de variável lida antes do app
+- Status: corrigido (não commitado)
+- Sintoma: "aparecer ao carregar" com condição (classe, breakpoint ou variável) que não vale: o elemento ficava invisível para sempre, também com movimento reduzido; condição "variável logado definida" lia `undefined` porque o app ainda não tinha começado.
+- Causa: `src/editor/motion/runtime/start.ts` (`fire`) só retornava quando a condição falhava, com a execução presa em 0; `__builderApp` nasce depois (`src/editor/app-runtime/runtime.js`).
+- Prova: entrada que não roda chama `run.settle()` (`player.ts`: animações no fim, sem disparar ações), também com movimento reduzido; condição de variável espera `app:bridge` (emitido pelo runtime ao publicar a ponte) ou o `load` da página. Uso real: entrada da variável anima de 0 a 1, a de classe aparece em 1, com movimento reduzido ambas em 1.
+
+## DEF-0850 — Renomear ou excluir classe deixava o "estado do pai" com o nome antigo
+- Status: corrigido (não commitado)
+- Sintoma: `.title` com o estado do pai "Hover em .card"; renomear `card` para `tile` deixava `parent:card:hover` nos elementos e classes e o site escrevia `.card:hover .title` (o hover parava); excluir `card` deixava a mesma chave órfã, sem aviso.
+- Causa: `src/core/design/classes.ts` `renameClassPatches` e `deleteClassCommand` não liam as chaves `parent:<classe>:<estado>`; o validador (`state-keys.ts` `parentKey`) só conferia a grafia.
+- Prova: `parentStateHolders` (páginas, definições de componentes e classes) entra em `renameClassPatches` (renomear e isolamento de colisão na importação) e recusa a exclusão (DCS-086, mensagem `status.classes.inUseByParentStates` com o dono da chave); `validate.ts` `orphanParentStates` recusa chave de classe que o projeto não tem; `migrations.ts` remove as órfãs ao abrir. Script `r5f-parent-rename.mjs`: chaves `parent:tile:hover`, CSS `.tile:hover .title`; uso real: renomeado no painel Estilos, Pré-visualização fica vermelha no hover, exclusão recusada na barra de status.
+
+## DEF-0851 — Lista paginada com vínculo de exibição: a primeira página da tela não era a do site
+- Status: corrigido (não commitado)
+- Sintoma: fixture do blog, lista de 2 por página, cartão com "Destaque preenchido": a tela não mostrava nenhum cartão; site e Pré-visualização mostravam "Bolo de cenoura" e "Pão de queijo" (e um "Carregar mais" que nada trazia).
+- Causa: `src/core/data/materialize.ts:104` e `derive.ts:52` pegavam as `pageSize` primeiras linhas contando as que o vínculo esconde; o site (`paged`) contava só as visíveis.
+- Prova: `collections.ts` `firstPage` conta só os itens que aparecem (`bindings.ts` `showsFor`, o mesmo do preenchimento), via `materialize.ts` `listFirstPage`, usada pela tela, pelo site (marcas `data-list-item` e controles só quando há mais) e por `derive.ts`. Script `r5f-showpage.mjs`: tela e site iguais; uso real: tela e Pré-visualização mostram Bolo e Pão (preenchido) e Café e Lisboa com "Carregar mais" (vazio).
+
+## DEF-0852 — Data formatada ou Sim/Não em Ligado/Desligado editados na tela eram recusados
+- Status: corrigido (não commitado)
+- Sintoma: texto vinculado a uma data mostrada como "1 de outubro de 2026" (ou mês e ano, curta, média, completa) ou a um sim/não em "Ligado": digitar outro valor na tela era recusado ("não é um valor do tipo Data").
+- Causa: `src/core/data/bindings.ts` `readBack` só lia de volta números formatados.
+- Prova: `readBack` agora inverte cada estilo de data pelas partes do `Intl` no idioma do site (`readDate`: dia, ano, mês em número ou nome, dia da semana ignorado; mês e ano lê o dia 1) e cada par de palavras de `WORD_PAIRS`. Teste em en, pt-BR, de, fr, ja; script `r5f-readback.mjs` todo `ok`; uso real (pt-BR): "2 de novembro de 2026" gravou `2026-11-02` e "Ligado" gravou `true`.
+
+## DEF-0853 — Excluir o último elemento de uma classe importada era recusado quando um estado do pai a nomeava
+- Status: corrigido (não commitado)
+- Sintoma: HTML importado com `<div class="card"><h2 class="title">`; no título, Estado "Hover em .card" e uma cor; o título sai do card (Mover para fora do pai); excluir, recortar ou desembrulhar o card dava "não foi aplicado: deixaria a página inválida". Depois de liberado, o Estado seguia "Hover em .card" e a próxima cor também era recusada.
+- Causa: `src/core/document/validate.ts:549` `orphanParentStates` recusa `parent:card:hover` quando nenhum elemento usa `card` e ela não está em `classes`; nenhuma escrita liberava a chave, e `styleStateFollows` (`src/editor/view/style-state.ts`) mantinha o estado.
+- Prova: `src/core/document/tree.ts` `releasedParentStates` compara o documento antes e depois de cada mudança e tira as chaves das classes não registradas que saíram (breakpoint vazio também); o commit da store (`src/core/store/store.ts`, depois do `derive`) junta essas remoções à mesma transação, então vale para excluir, recortar, substituir, desembrulhar e tirar a classe, e um desfazer devolve tudo. Classe registrada nunca é liberada aqui (renomear e excluir classe seguem sob o validador). `styleStateFollows` e `restoreEditContext` voltam a Base quando a classe do estado sumiu. Testes em `parent-state-release.test.ts`; uso real: card excluído com o feed vazio, Estado em Base, cor nova gravada em Base, desfazer devolveu card, chave e "Hover em .card".
+
+## DEF-0854 — Link para a página modelo de uma coleção não levava a lugar nenhum no site
+- Status: corrigido (não commitado)
+- Sintoma: fixture do blog, link no menu da Home para `post.html` (o modelo de Posts): o ZIP escrevia `<a href="post.html">`, e o ZIP não tem `post.html` (cada item vira `posts/<slug>.html`).
+- Causa: `src/core/export/lists.ts:19` `expandedPages` trocava o modelo pelas páginas dos itens sem levar os endereços que nomeavam o modelo.
+- Prova: `expandedPages` passa, antes de expandir, todo endereço do arquivo do modelo para o do primeiro item com `followPaths` (`files/references.ts`, a regra única de onde um caminho é escrito: atributos de endereço, links do texto, `url()`, em páginas, classes e componentes); `exportPath` o escreve relativo como qualquer página (DCS-087). Teste `item-pages.test.ts`; script `r5f-template-links.mjs`: `<a href="posts/bolo-de-cenoura.html">`.
+
+## DEF-0855 — A Home podia virar modelo de coleção e o site ficava sem index.html
+- Status: corrigido (não commitado)
+- Sintoma: Dados, na Home do blog, "Fazer de Blog o modelo de Autores": aceito; o ZIP trazia `autores/*.html` e os posts, sem `index.html`.
+- Causa: `src/core/data/commands.ts:610` `pagesFromCollectionCommand` só recusava página feita para um item.
+- Prova: o comando recusa a página inicial do site (`index.html`, ou a primeira página quando não há `index.html`) com `status.data.templateIsHome` (en e pt-BR, nas recusas do comando no manifesto). Teste dos dois casos; uso real en e pt-BR (fotos `en-e1-home-refused`, `pt-e1-home-refused`): a barra de status diz a mensagem inteira e a Home fica sem marca de modelo.
+
+## DEF-0856 — As páginas dos itens copiavam o título, a descrição e o canônico do modelo
+- Status: corrigido (não commitado)
+- Sintoma: com título "Post — Meu blog", descrição e canônico no modelo, todo `posts/<slug>.html` saía com o mesmo `<title>`, a mesma descrição e um canônico para `post.html`, que não existe.
+- Causa: `src/core/export/lists.ts:27` copiava a árvore do modelo com as configurações de página dele.
+- Prova: `expandedPages` (o único ponto que faz as páginas dos itens) escreve a cabeça de cada uma por `itemHead` (DCS-088): título do item no lugar do nome do modelo, descrição do campo de descrição ou o título do item, canônico do próprio arquivo. Testes em `item-pages.test.ts`; uso real: o painel de código de `posts/bolo-de-cenoura.html` mostra `<title>Bolo de cenoura</title>` e a descrição "Bolo de cenoura".
+
+## DEF-0857 — Com página modelo, cada edição refazia o site uma vez por item
+- Status: corrigido (não commitado)
+- Sintoma: blog com 1000 posts e o modelo: qualquer edição (até renomear a Home) levava cerca de 1 s; o Explorador refazia o site inteiro a cada mudança.
+- Causa: `src/core/data/materialize.ts:241` conferia cada outro item do modelo a cada derivação, e cada conferência recalculava `itemPagesOf` (itens²); `export.ts` `siteFilesWritten` materializava todas as páginas dos itens.
+- Prova: a conferência só roda quando a mudança alcança o que ela lê (`derive.ts` `checkedBefore`: a árvore do modelo e o documento fora as páginas) e recebe os endereços já calculados; o Explorador lista as páginas pelas coleções (`lists.ts` `sitePages`) e só materializa item a item um modelo com lista aninhada (`sitePagesLists`). Contagens na OTM-008; teste de que a conferência ainda recusa quando o modelo muda.
+
+## DEF-0858 — Texto digitado no lugar não avisava o relógio da página
+- Status: corrigido (não commitado)
+- Sintoma: Restaurante, editar "Gallery" no menu e digitar " and photos": o elemento ia de 59×40 a 146×40 e "Contact" andava, mas os leitores do relógio (régua, contornos, tamanho na barra de status e no modelo de caixa) guardavam a medida velha até outra mudança.
+- Causa: `src/editor/canvas/frame.tsx:153` o `input` da página só media a altura do quadro (`probeSoon`); a store não muda durante a digitação.
+- Prova: o `input` da página (ponto único de toda digitação no lugar) chama `pageChanged`. Uso real: sem a mudança, barra de status e modelo de caixa em 59 × 40 com o elemento em 146 × 40 (foto `t2-nav-typing-before`); com ela, 146 × 40 (foto `t2-nav-typing`) e 532 × 42 num parágrafo que quebrou linha (foto `t1-typing`).
+
+## DEF-0859 — Painel rápido aberto passava 4 px sobre a barra de status
+- Status: corrigido (não commitado)
+- Sintoma: 1280×720, Restaurante, painel rápido aberto num parágrafo: a última linha do painel ("Scale", "Skew X") ficava sobre a barra de status; o ponto (400, 698) era do painel (foto `q1-panel-open`).
+- Causa: `src/editor/canvas/quick-panel.tsx:462` limitava a altura pela janela inteira, sem a barra de status.
+- Prova: `tallest` e o encaixe da abertura usam `floatView()` (`shell/float.ts`, a janela útil dos popovers da DEF-0800). Uso real: o painel termina em 676, a barra começa em 696.
+
+## DEF-0860 — Nome longo de arquivo terminava em reticências no Explorador
+- Status: corrigido (não commitado)
+- Sintoma: 1280, blog: `cafe-coado-perfeito.html` e `uma-semana-em-lisboa.html` saíam cortados com "…" (DCS-085).
+- Causa: `src/editor/shell/sidebar.css` `.row__name` com `white-space: nowrap` e reticências, também na linha de arquivo.
+- Prova: na lista de arquivos o nome quebra depois dos hífens e pontos e a linha cresce; `name-first.ts` segue julgando numa linha só (lista em repouso). Uso real en e pt-BR (fotos `en-e2-explorer-names`, `pt-e2-explorer-names`): os dois nomes em duas linhas, nenhum nome cortado (`scrollWidth` ≤ `clientWidth` em todas as linhas).
+
+## DEF-0861 — Barra de texto escondida ao editar texto no alto da página (DCS-089)
+- Status: corrigido (não commitado)
+- Sintoma: Restaurante, 1280×720, duplo clique num link do menu (topo da página): a barra B/I/link ia para cima do rótulo, sobre a régua, e `is-away` escondia a barra e o rótulo (foto `review-export/t3-top-link-editing`).
+- Causa: `src/editor/canvas/chrome.tsx:805-815` punha a barra sempre sobre o rótulo, contava a altura dela no lugar do rótulo (`clearedLabel`, `above`) e escondia os dois pelo topo da barra.
+- Prova: o lugar da barra sai de um ponto só, `textToolbarPlace` (`placement.ts`): sobre o rótulo, senão sob o elemento, senão sobre a moldura, senão na borda mais próxima do palco; sempre dentro do palco, fora das abas, do rótulo e da linha do cursor (`caretLine`, `coordinates.ts`). O rótulo fica onde fica selecionado (DEC-70 e exceção) e só ele se esconde pelo próprio lugar. Uso real (fotos `pt-t1-nav-editing`, `en-t1-nav-editing`): rótulo acima, barra 8 px sob o link, linha do cursor livre; num parágrafo do meio, barra acima do rótulo como antes.
+
+## DEF-0862 — Campo de cor mostrava rgb(0, 0, 0) em foco e #000000 em repouso
+- Status: corrigido (não commitado)
+- Sintoma: Estilo > Cor do texto de um elemento sem cor própria: em repouso `#000000`, em foco o texto de exemplo `rgb(0, 0, 0)`; Fundo: `transparent` e `rgba(0, 0, 0, 0)` (foto 04 de `orphan-parent`).
+- Causa: `src/editor/shell/field.tsx` usava no foco o valor da página sem formatar (`placeholder`) e o texto guardado cru, enquanto a face (`field-face.tsx` `compactFieldValue`) passava por hex maiúsculo.
+- Prova: um formatador só, `colourFieldText` (`field-face.tsx`, o texto que o seletor grava: `#rrggbb`, `rgba()`, `transparent`), usado pela face, pelo valor do campo em foco e pelo texto de exemplo. Uso real: Cor do texto `#1c1917` em repouso e em foco (foto `en-t3-colour-focused`), Fundo `transparent` nos dois, `#475569` nos dois (fotos `pt-t3-colour-*`).
+
+## DEF-0863 — Cada letra digitada num texto em edição dava erro no console
+- Status: corrigido (não commitado)
+- Sintoma: editando um texto no canvas, cada letra digitada (não setas nem Backspace) punha no console "Blocked script execution in 'about:srcdoc'…", com ou sem foto do Playwright; desde o primeiro commit (`git log -S`).
+- Causa: `src/editor/input/keymap.ts:414` marcava o fim da rajada de letras com `target.setTimeout`; no texto em edição o `target` é a janela do iframe do canvas, cuja sandbox não roda script: o tempo nunca vencia.
+- Prova: o tempo da rajada é o da janela do editor (`window.setTimeout`/`clearTimeout`, linhas 386, 413 e 414), para todo `installKeymap`. Uso real: link e título digitados, console vazio nos três modos (sem foto, foto selecionado, foto editando); uma página fora do app com o mesmo iframe e o mesmo teclado não dá o erro.
+
+## DEF-0864 — Teste do boot herdava incidente de outro arquivo
+- Status: corrigido (commit deste lote)
+- Sintoma: com um arquivo de teste novo, o `verify` reprovou `test-boot.test.ts` com "commit element.rename left a document the model refuses", que nenhum passo dele provoca.
+- Causa: `src/core/store/command-group.test.ts:96` provoca esse incidente de propósito e não o consome; o feed (`src/core/incidents.ts`) é do processo, e o `unit` roda sem isolamento, então a ordem dos arquivos decidia.
+- Prova: o caso do `command-group` agora confere o incidente e limpa o feed; o `test-boot` limpa antes de cada caso. `verify` sem falha com o arquivo novo (`runtime-rich.test.ts`). Defeito de teste, não do app.

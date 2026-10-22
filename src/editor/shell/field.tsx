@@ -53,7 +53,7 @@ import { styleClassOf, styleSource } from '../inspector/style-target.ts';
 import { useMenuLayer } from '../doors/menu.tsx';
 import { useT, useValueLabel } from '../text.ts';
 import { createToken, tokenKindOf, tokensOf } from '../../core/design/tokens.ts';
-import { compactFieldValue, FieldOriginBadge, FieldValueSlot, useFieldAppearance } from './field-face.tsx';
+import { colourFieldText, compactFieldValue, FieldOriginBadge, FieldValueSlot, useFieldAppearance } from './field-face.tsx';
 import { restoreFieldDraft } from '../persistence/drafts.ts';
 import { DRAFT_KEPT, markFieldKept, recordFieldInput } from '../input/drafts.ts';
 import { heldTyping, holdTyping, keepTyping, ownCommandRunning, releaseTyping } from '../input/pending.ts';
@@ -1166,7 +1166,8 @@ export function TextStyleField({
     // a keyword is shown as CSS writes it, and a word typed in the person's language read back as its keyword
     // (keyword-words.ts); a value of a 0 to 1 range is read as a percentage, as the field's face says it: focused, the
     // opacity read 1 where its face said 100 % (DEF-0608), and the text it holds is read back the same (50% is 0.5)
-    const face = percentText(shown, readRange);
+    // a colour reads as its one text, focused as at rest (colourFieldText: rgb(0, 0, 0) focused, #000000 at rest)
+    const face = colour ? colourFieldText(shown) : percentText(shown, readRange);
     element.value = face;
     draft.current.typed = false;
     releaseTyping(element);
@@ -1176,7 +1177,7 @@ export function TextStyleField({
       draft.current.typed = recordFieldInput(element, new Event('input'));
       if (draft.current.typed) hold.current();
     });
-  }, [shown, said, t, store, editedFor, readRange]);
+  }, [shown, said, t, store, editedFor, readRange, colour]);
   useEffect(() => {
     const element = input.current;
     const typing = draft.current;
@@ -1266,6 +1267,8 @@ export function TextStyleField({
     keepText.current(value, store.getState().selection);
   };
   const state = `${available ? '' : ' is-unavailable'}${set ? ' is-set' : ''}${refused.text !== null ? ' is-invalid' : ''}`;
+  // the value the page computes, shown while the field is empty: a colour as its one text, as its face reads it
+  const hint = colour && placeholder !== undefined ? colourFieldText(placeholder) : placeholder;
   const visible = mixed ? t('inspector.mixedValue') : shown || placeholder || '';
   const percent = readRange?.min === 0 && readRange.max === 1 && visible.trim() !== '' && Number.isFinite(Number(visible));
   const face = percent ? { value: percentText(visible, readRange).slice(0, -1), unit: '%' } : compactFieldValue(visible, sliderRange !== undefined, colour);
@@ -1283,10 +1286,10 @@ export function TextStyleField({
         ) : null}
         <FieldValueSlot value={face.value}>{own ? (
           <form key="input-form" className="input-wrap__form" onSubmit={submit}>
-            <input ref={input} className="input" disabled={!available} aria-label={label} spellCheck={false} data-key-context={COMMAND_FIELD_CONTEXT} placeholder={placeholder} aria-invalid={refused.text !== null ? true : undefined} onInput={refused.dismiss} />
+            <input ref={input} className="input" disabled={!available} aria-label={label} spellCheck={false} data-key-context={COMMAND_FIELD_CONTEXT} placeholder={hint} aria-invalid={refused.text !== null ? true : undefined} onInput={refused.dismiss} />
           </form>
         ) : (
-          <input key="input" ref={input} className="input" disabled={!available} aria-label={label} spellCheck={false} list={listed.length > 0 ? listId : undefined} data-key-context={NUMBER_FIELD_CONTEXT} placeholder={placeholder} aria-invalid={refused.text !== null ? true : undefined} onInput={refused.dismiss} />
+          <input key="input" ref={input} className="input" disabled={!available} aria-label={label} spellCheck={false} list={listed.length > 0 ? listId : undefined} data-key-context={NUMBER_FIELD_CONTEXT} placeholder={hint} aria-invalid={refused.text !== null ? true : undefined} onInput={refused.dismiss} />
         )}</FieldValueSlot>
         {face.unit ? <span className="field__suffix" aria-hidden="true">{face.unit}</span> : null}
         {bare ? null : <FieldOriginBadge label={appearance.label} />}

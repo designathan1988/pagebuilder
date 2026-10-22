@@ -6,6 +6,7 @@
 // with that state applied. Editor state, not a preference: a reload goes back to Base. Choosing it records nothing.
 import { message, registerHandler, type MessageParam } from '../../core/commands/registry.ts';
 import { lineage, locate, type DocNode, type DocumentJson, type NodeId } from '../../core/document/model.ts';
+import { projectClassNames } from '../../core/document/validate.ts';
 import type { Followed, StoreState } from '../../core/store/store.ts';
 import { nthKey, openParentState, parentKey, stateKind, stateSelector, type StateTable } from '../../core/style/state-keys.ts';
 import type { MessageId } from '../../generated/ids.ts';
@@ -119,13 +120,29 @@ export function ancestorClasses(document: DocumentJson, id: NodeId | undefined):
   return names;
 }
 
+// The class a parent state names when the project no longer has it (no class registered by that name, no element
+// wearing it), else null: such a state is no layer a write may go to (styleStateFollows, and the context an undo or a
+// redo gives back: edit-context.ts).
+export function goneParentClass(document: DocumentJson, key: string): string | null {
+  const kind = stateKind(key, STATE_TABLE);
+  return kind?.kind === 'parent' && !projectClassNames(document).has(kind.className) ? kind.className : null;
+}
+
 // The style state follows the selection (the audit's AUD-03; the user's decision of 2026-10-02): a selection that holds
 // an element the state does not stand on (Visited, then a heading) brings the editor back to Base and says so, so no
 // write can go to a state the element does not take. Read after every new selection and every command (a tag switch
-// changes what an element is).
+// changes what an element is). A parent state whose class left the project (its last element deleted, cut or
+// unwrapped: core/document/tree.ts releasedParentStates) goes back to Base too: a write to it would name a class the
+// project lacks, which the validator refuses (validate.ts orphanParentStates).
 export function styleStateFollows(state: StoreState<EditorUi>): Followed<EditorUi> {
   const chosen = activeState(state.ui);
   if (chosen.id === BASE_STATE.id) return { ui: state.ui };
+  // said by nothing but the State menu's face: the command's own words stay (a delete's, with its Undo)
+  if (goneParentClass(state.document, chosen.id) !== null) {
+    const { styleState: _gone, ...based } = state.ui;
+    void _gone;
+    return { ui: based };
+  }
   const node = standsApart(state, chosen);
   if (node === null) return { ui: state.ui };
   const { styleState: _was, ...rest } = state.ui;

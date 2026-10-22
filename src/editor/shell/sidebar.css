@@ -217,6 +217,15 @@
   color: var(--color-text-muted);
 }
 
+/* a view's title stays at the top of the view while its content scrolls under it, on the view's own surface: the
+   Explorer scrolled its title and the panel's close door away when its sections were taller than the view */
+.view > .view__title {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--color-surface);
+}
+
 /* the name takes its words' width, the grip beside it (the window's drag band) the rest: both at flex 1, the name had
    half the title and "Compondo Page" broke over two lines (the audit of 2026-10-05) */
 .view__name {
@@ -932,6 +941,29 @@
 /* a file's name is a path: mono (a page's name in Pages stays in the interface's type) */
 [data-region='explorer-file-rows'] .row__name {
   font-family: var(--font-mono);
+}
+
+/* a file's name is never cut (DCS-085: "cafe-coado-perfeito.html" ended in an ellipsis at 1280): where it does not fit
+   its row even alone (its details gone, name-first.ts), it wraps after its dashes and dots, anywhere in a word longer
+   than the row, over the lines it takes, and the row grows to hold them. name-first.ts judges it on one line (the list
+   at rest), as it decides whether the details leave. */
+[data-region='explorer-file-rows'] .row,
+[data-region='explorer-file-rows'] .row__main {
+  height: auto;
+  min-height: var(--size-row);
+}
+
+[data-region='explorer-file-rows'] .row__main {
+  padding-block: var(--space-1);
+}
+
+[data-region='explorer-file-rows'] .row__name {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+[data-region='explorer-file-rows'][data-at-rest] .row__name {
+  white-space: nowrap;
 }
 
 /* the file row's icon (or tag) is the door that opens the file: it hugs what it shows, the row's gap after it */

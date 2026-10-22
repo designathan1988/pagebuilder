@@ -2,7 +2,7 @@
 // commands that follow run through the store, and a command that does not run as asked is an incident, never a state
 // the test silently lacks.
 import fs from 'node:fs';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { clearIncidents, incidents } from '../core/incidents.ts';
 import { manualClock } from '../core/ports/clock.ts';
 import { sequentialIds } from '../core/ports/ids.ts';
@@ -16,6 +16,8 @@ const memory = () => {
 const store = () => createEditorStore({ storage: memory(), workspace: memory(), ids: sequentialIds('t'), clock: manualClock(), ports: { readOnly: () => false } });
 const AURORA = fs.readFileSync('manifest/features/fixtures/aurora.json', 'utf8');
 
+// the feed is the process's: a file before this one in the same worker may have left an incident in it
+beforeEach(() => clearIncidents());
 afterEach(() => clearIncidents());
 
 describe('the test boot', () => {

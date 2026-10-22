@@ -8,7 +8,8 @@
 // sandboxed, never the editing canvas. No selection, guides, handles, docks or rulers are drawn.
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { message } from '../../core/commands/registry.ts';
-import type { Page } from '../../core/document/model.ts';
+import type { DocumentJson, Page } from '../../core/document/model.ts';
+import { templatePaths } from '../../core/data/bindings.ts';
 import { previewPage } from '../../core/export/export.ts';
 import type { DispatchResult } from '../../core/store/store.ts';
 import type { CommandId } from '../../generated/ids.ts';
@@ -107,13 +108,30 @@ export function PreviewPage() {
         else PREVIEW_KEPT.set(stored.key, stored.value);
         return;
       }
-      const asked = (event.data as { builderPreviewPage?: unknown } | null)?.builderPreviewPage;
+      // a link of the page asks whether the preview goes (builderPreviewGoes: the page's transition plays only then) or
+      // asks to go (builderPreviewPage, from a link or the page's application); every ask the preview does not follow
+      // (the open page, a page the project does not have) is answered, so the page that asked shows itself again
+      // (core/motion/page-transition.ts)
+      const sent = event.data as { builderPreviewGoes?: unknown; builderPreviewPage?: unknown } | null;
+      const goes = sent?.builderPreviewGoes;
+      const asked = typeof goes === 'string' ? goes : sent?.builderPreviewPage;
       if (typeof asked === 'string') {
         const state = store.getState();
-        const from = state.document.pages[openedPage(state)];
-        const target = from === undefined ? undefined : pageAt(state.document.pages, from.file, asked);
-        if (target === undefined) store.notice(message('status.preview.noPage', { address: asked }));
-        else (store.dispatch as (id: CommandId, args: unknown) => DispatchResult)(OPEN_PAGE.command.id as CommandId, { ...OPEN_PAGE.door.args, page: target.tree.id });
+        const go = previewGo(state.document, openedPage(state), asked);
+        const answer = (value: { readonly goes: boolean; readonly fragment?: string }): void => (event.source as WindowProxy).postMessage({ builderPreviewAnswer: value }, '*');
+        if (!go.goes) {
+          if (go.missing) store.notice(message('status.preview.noPage', { address: asked }));
+          answer({ goes: false, fragment: go.fragment });
+          return;
+        }
+        if (typeof goes === 'string') {
+          answer({ goes: true });
+          return;
+        }
+        const dispatch = store.dispatch as (id: CommandId, args: unknown) => DispatchResult;
+        dispatch(OPEN_PAGE.command.id as CommandId, { ...OPEN_PAGE.door.args, page: go.page.tree.id });
+        // an item page opens as the editor opens it: its template, showing that item (pages.previewItem)
+        if (go.item !== undefined && go.page.tree.dataItem?.item !== go.item) dispatch(PREVIEW_ITEM.command.id as CommandId, { ...PREVIEW_ITEM.door.args, item: go.item });
         return;
       }
       const key = relayedKey((event.data as { builderPreviewKey?: unknown } | null)?.builderPreviewKey);
@@ -150,6 +168,46 @@ function relayedKey(sent: unknown): KeyboardEventInit | null {
 
 // the door that opens a page (the Explorer's page row, pages.switch): the preview asks it for the page app.go names
 const OPEN_PAGE = doorOf('explorer-pages', 'page-row');
+// the door that shows an item on its template page (the Data panel's Pages section, pages.previewItem)
+const PREVIEW_ITEM = doorOf('data-pages', 'preview-item');
+
+// Where a link of the previewed page leads: a page of the project, or an item page the export writes from a template
+// (the template, with the item), which the preview goes to; or nowhere new — the open page itself (the item it shows,
+// for a template), scrolled to the link's fragment, or a page the project does not have (`missing`).
+export type PreviewGo =
+  | { readonly goes: true; readonly page: Page; readonly item?: string }
+  | { readonly goes: false; readonly missing: boolean; readonly fragment: string };
+export function previewGo(document: DocumentJson, opened: number, address: string): PreviewGo {
+  const from = document.pages[opened];
+  if (from === undefined) return { goes: false, missing: true, fragment: '' };
+  const root = new URL('https://site.invalid/');
+  const resolved = new URL(address, new URL(from.file, root));
+  const fragment = fragmentOf(resolved.hash);
+  let page = pageAt(document.pages, from.file, address);
+  let item: string | undefined;
+  if (page === undefined && resolved.origin === root.origin) {
+    for (const [collection, paths] of templatePaths(document)) {
+      for (const [id, path] of paths) {
+        if (new URL(path, root).pathname !== resolved.pathname) continue;
+        page = document.pages.find((one) => one.tree.dataItem?.template === true && one.tree.dataItem.collection === collection);
+        item = id;
+      }
+    }
+  }
+  if (page === undefined) return { goes: false, missing: true, fragment };
+  if (page === from && (item === undefined || from.tree.dataItem?.item === item)) return { goes: false, missing: false, fragment };
+  return item === undefined ? { goes: true, page } : { goes: true, page, item };
+}
+// a URL's fragment as the page's ids are written (percent-decoded), without its "#"
+function fragmentOf(hash: string): string {
+  const text = hash.slice(1);
+  try {
+    return decodeURIComponent(text);
+  } catch {
+    // a malformed escape: the fragment as written, which an id can hold too
+    return text;
+  }
+}
 
 // The page of the project an address of the open page names: read against the open page's folder ("../", "./"),
 // without its query and its fragment, as the exported site's browser reads the link.

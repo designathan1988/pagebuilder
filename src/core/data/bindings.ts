@@ -236,16 +236,77 @@ export function formattedText(field: Field, value: Cell, bound: Pick<Bound, 'for
   return fieldText(field, value, siteYesNo(language), { language, decimals: field.decimals }, lookup);
 }
 
-// A text a person typed over a formatted value on the canvas, read back as the value the field holds: the number of a
-// currency or a percent written in the site's language (its symbols and spaces aside), the item a title names; null
-// when it reads as none.
+// A text a person typed over a formatted value on the canvas, read back as the value the field holds: the one inverse
+// of formattedText, in the site's language. The number of a currency or a percent (its symbols and spaces aside); a
+// date in each of its styles (DATE_STYLES, read by the parts Intl writes it with, readDate); a yes/no in the binding's
+// pair of words (WORD_PAIRS); the item a title names. Null when it reads as none (the review's R-10: a bound date in a
+// style, or a yes/no in On/Off words, edited on the canvas was refused as no date, no yes/no).
 export function readBack(field: Field, typed: string, bound: Pick<Bound, 'format'>, language: string | undefined, lookup: Lookup): Cell | undefined | null {
   const plain = readFieldCell(field, typed, language, lookup);
-  if (plain !== null || field.type !== 'number' || bound.format === undefined || bound.format === 'plain') return plain;
-  const digits = typed.replace(/[^\d.,+-]/g, '');
-  // a percent is stored as the number it shows (12 shows "12 %")
-  const read = readFieldCell(field, digits, language, lookup);
-  return typeof read === 'number' ? read : null;
+  if (plain !== null) return plain;
+  const format = bound.format !== undefined && formatsOf(field).includes(bound.format) ? bound.format : undefined;
+  if (field.type === 'number' && format !== undefined && format !== 'plain') {
+    const digits = typed.replace(/[^\d.,+-]/g, '');
+    // a percent is stored as the number it shows (12 shows "12 %")
+    const read = readFieldCell(field, digits, language, lookup);
+    return typeof read === 'number' ? read : null;
+  }
+  const style = format === undefined ? undefined : DATE_STYLES[format];
+  if (field.type === 'date' && style !== undefined) return readDate(typed, style, language);
+  if (field.type === 'boolean') {
+    const [yes, no] = WORD_PAIRS[format ?? 'yes-no'] ?? ['data.yes', 'data.no'];
+    const word = loose(typed);
+    return word === loose(siteWord(language, yes)) ? true : word === loose(siteWord(language, no)) ? false : null;
+  }
+  return null;
+}
+
+// A text as a reading compares it: accents and case aside, every run of spaces (Intl writes narrow and no-break ones)
+// one space.
+const loose = (text: string): string => fold(text).replace(/\s+/g, ' ').trim();
+const escaped = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+// a two-digit year (a short date's "26") is of the century the POSIX reading gives it: 00–68 this one, 69–99 the last
+const fullYear = (digits: string): number => (digits.length > 2 ? Number(digits) : Number(digits) + (Number(digits) <= 68 ? 2000 : 1900));
+
+// A date typed in one of Intl's styles in the site's language, read back as the field stores it (YYYY-MM-DD), or null.
+// The style's parts as Intl writes them (formatToParts) make the reading: a day and a year as digits, a month as
+// digits or as one of the twelve names the style writes, a weekday as one of its seven names (the date says which it
+// is, so it is not read), the rest as written. A month and year reads as the month's first day.
+function readDate(typed: string, style: Intl.DateTimeFormatOptions, language: string | undefined): string | null {
+  return inLanguage(language, (tag) => {
+    const format = new Intl.DateTimeFormat(tag, { ...style, timeZone: 'UTC' });
+    const partOf = (date: number, type: Intl.DateTimeFormatPartTypes): string => format.formatToParts(date).find((part) => part.type === type)?.value ?? '';
+    const months = Array.from({ length: 12 }, (_, i) => loose(partOf(Date.UTC(2026, i, 15), 'month')));
+    const weekdays = Array.from({ length: 7 }, (_, i) => loose(partOf(Date.UTC(2026, 0, 4 + i), 'weekday')));
+    const order: ('day' | 'month' | 'year')[] = [];
+    let twoDigitYear = false;
+    let numericMonth = false;
+    let pattern = '';
+    for (const part of format.formatToParts(Date.UTC(2026, 0, 15))) {
+      if (part.type === 'day' || part.type === 'year') {
+        pattern += '(\\d{1,4})';
+        order.push(part.type);
+        if (part.type === 'year') twoDigitYear = part.value.length <= 2;
+      } else if (part.type === 'month') {
+        numericMonth = /^\d+$/.test(part.value);
+        pattern += numericMonth ? '(\\d{1,2})' : `(${months.map(escaped).join('|')})`;
+        order.push('month');
+      } else if (part.type === 'weekday') pattern += `(?:${weekdays.map(escaped).join('|')})`;
+      else pattern += escaped(fold(part.value).replace(/\s+/g, ' ')).replace(/ /g, '\\s*');
+    }
+    const found = new RegExp(`^${pattern}$`, 'u').exec(loose(typed));
+    if (found === null) return null;
+    const read = (unit: 'day' | 'month' | 'year'): string | undefined => (order.includes(unit) ? found[order.indexOf(unit) + 1] : undefined);
+    const yearText = read('year');
+    const monthText = read('month');
+    if (yearText === undefined || monthText === undefined) return null;
+    const year = twoDigitYear && yearText.length <= 2 ? fullYear(yearText) : Number(yearText);
+    const month = numericMonth ? Number(monthText) : months.indexOf(monthText) + 1;
+    const day = Number(read('day') ?? '1');
+    const date = new Date(Date.UTC(year, month - 1, day));
+    if (month < 1 || year < 1 || date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return null;
+    return `${String(year).padStart(4, '0')}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  });
 }
 
 // Whether an element with a show binding shows for an item: its field set (a yes/no: yes), empty (a yes/no: no), equal
@@ -266,6 +327,14 @@ export function showHolds(document: DocumentJson, bound: Bound, place: Place): b
       return bound.when === 'eq' ? equal : !equal;
     }
   }
+}
+
+// Whether an element shows for an item by its show bindings: the last one says (fillNode writes each in turn, the last
+// one's word staying), and an element with none shows. Read by the fill and by the paging of a list (collections.ts
+// firstPage), whose repeated item's show binding says whether it counts as an item of a page.
+export function showsFor(document: DocumentJson, node: DocNode, place: Place): boolean {
+  const last = (node.bind ?? []).findLast((bound) => bound.to === SHOW);
+  return last === undefined || showHolds(document, last, place);
 }
 
 // A value equal to a text a person typed: the text read as the field's value, else (a reference, a text) by the words
@@ -325,7 +394,7 @@ function fillNode(document: DocumentJson, node: DocNode, place: Place, pages: It
     if (bound.to === SHOW) {
       const { dataHidden: _was, ...shown } = next;
       void _was;
-      next = showHolds(document, bound, place) ? shown : { ...shown, dataHidden: true };
+      next = showsFor(document, node, place) ? shown : { ...shown, dataHidden: true };
       continue;
     }
     const value = valueFor(document, bound, place, pages);

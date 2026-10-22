@@ -639,7 +639,8 @@
       },
       "refusals": [
         "status.locked.edit",
-        "status.classes.inUseByInteractions"
+        "status.classes.inUseByInteractions",
+        "status.classes.inUseByParentStates"
       ],
       "confirmation": {
         "messageKey": "dialog.classes.delete",

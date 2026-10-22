@@ -35,6 +35,9 @@ interface Run {
   progress(fraction: number): void;
   // to the end (or the start) at once, every cue crossed as if played
   jump(direction: 1 | -1): void;
+  // the animations at their end and no cue crossed, the clock still before the start: what an entrance that does not
+  // run leaves (its element in its own state, never held at its first keyframe); a later play starts from 0
+  settle(): void;
   // the direction it last played in (-1 before it ever played)
   lastDirection(): 1 | -1;
   // the run's animations follow the browser's own scroll timeline; false where it cannot
@@ -474,6 +477,13 @@ export function createPlayer(win: Window, kit: MotionKit): PlayerKit {
       cross(towards > 0 ? total : -1, true);
     }
 
+    function settle(): void {
+      detachScroll();
+      stopLoop();
+      isPlaying = false;
+      setAll(total);
+    }
+
     // ---- scroll timelines
 
     function attachOne(animation: Animation): void {
@@ -558,6 +568,7 @@ export function createPlayer(win: Window, kit: MotionKit): PlayerKit {
       seek,
       progress: (fraction) => seek(Math.min(1, Math.max(0, fraction)) * total),
       jump,
+      settle,
       lastDirection: () => last,
       attachScroll,
       dispose,

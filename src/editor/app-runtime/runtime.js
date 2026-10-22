@@ -788,16 +788,21 @@ function setAttribute(el, name, value, where) {
   }
 }
 
+// DOMPurify (Cure53, Apache-2.0): the builder writes its browser build here (app-runtime/script.ts), so the site's
+// runtime stays one module and puts nothing on the window.
+const DOMPurify = /* site purify */ null;
+
 // The HTML a rich editable field (contenteditable) shows: the markup of its text (bold, lists, links), never what
-// runs. Parsed in a template, where nothing loads and nothing runs, then the elements that run or load a document
-// and every attribute unsafeAttribute refuses are taken out.
-const NOT_IN_TEXT = 'script, iframe, frame, frameset, object, embed, applet, style, link, meta, base, form, template, noscript, animate, set, animateMotion, animateTransform, foreignObject';
+// runs. DOMPurify keeps only markup that cannot run (and closes the re-parse and namespace tricks a hand-made list
+// misses); the elements of a page's head, a form and a template are not text either, and every attribute
+// unsafeAttribute refuses stays out, the same rule the bindings follow.
+const NOT_IN_TEXT = ['style', 'link', 'meta', 'base', 'form', 'template', 'noscript'];
+const purifier = DOMPurify(window);
+purifier.addHook('uponSanitizeAttribute', (node, data) => {
+  if (unsafeAttribute(node, data.attrName, data.attrValue) !== null) data.keepAttr = false;
+});
 function safeHtml(html) {
-  const holder = document.createElement('template');
-  holder.innerHTML = html;
-  for (const one of holder.content.querySelectorAll(NOT_IN_TEXT)) one.remove();
-  for (const one of holder.content.querySelectorAll('*')) for (const attribute of [...one.attributes]) if (unsafeAttribute(one, attribute.name, attribute.value) !== null) one.removeAttribute(attribute.name);
-  return holder.innerHTML;
+  return purifier.sanitize(html, { FORBID_TAGS: NOT_IN_TEXT });
 }
 
 // A field kept equal to a variable: an editable element writes its text when it edits plain text
@@ -1100,6 +1105,8 @@ export async function start(config) {
   for (const [name, value] of globalThis.__builderAppQueue || []) bridge.set(name, value);
   globalThis.__builderAppQueue = [];
   globalThis.__builderApp = bridge;
+  // the motion script's interactions that wait on a variable read it from here on (motion runtime start.ts)
+  document.dispatchEvent(new CustomEvent('app:bridge'));
   for (const [name, load] of Object.entries(config.scripts || {})) {
     try {
       const module = await load();

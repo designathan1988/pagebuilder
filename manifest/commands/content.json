@@ -2365,6 +2365,7 @@
       },
       "refusals": [
         "status.data.templateIsItemPage",
+        "status.data.templateIsHome",
         "status.data.badValue",
         "status.data.imageNotFound",
         "status.data.badLink",
