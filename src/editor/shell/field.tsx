@@ -30,7 +30,7 @@ import type { AttributeId, CommandId, FeatureId, KeyContextId, MessageId, StyleT
 import type { CommandArgs } from '../../generated/commands.ts';
 import { isFeatureBuilt } from '../../core/commands/registry.ts';
 import { droppedInputAttributes } from '../../core/elements/inputs.ts';
-import { imageFiles } from '../../core/files/files.ts';
+import { filesOf } from '../../core/document/model.ts';
 import { holdsExecutableCode } from '../../core/elements/embed.ts';
 import { equivalentTags } from '../../core/elements/tag.ts';
 import { elementPredicate, type ElementContext } from '../../core/style/applies.ts';
@@ -1776,6 +1776,17 @@ const keywordsOf = (attribute: AttributeId): readonly string[] => ATTRIBUTES.get
 // see them (spec explorer-assets-use).
 const filePickerOf = (node: DocNode): string | null => MODEL_RULES.elements.get(node.type)?.filePicker ?? null;
 // the page settings that name an image (its sharing image, its favicon): their list offers the project's image files
+// The project's files a media element's address field lists (it named nothing the project held): a video's poster
+// its images; the source of a video, an audio or one of their sources the media files of their kind (a source's
+// parent says which); any other field none.
+const POSTER = ATTRIBUTES.get('poster')?.id;
+const SOURCE = ATTRIBUTES.get('src')?.id;
+function offeredFileKinds(node: DocNode, attribute: string, parentTag: string | null): readonly string[] {
+  if (attribute === POSTER) return ['image/'];
+  if (attribute !== SOURCE) return [];
+  const media = node.tag === 'source' ? parentTag : node.tag;
+  return media === 'video' ? ['video/'] : media === 'audio' ? ['audio/'] : [];
+}
 const IMAGE_SETTINGS: ReadonlySet<string> = new Set([...ATTRIBUTES.values()].filter((one) => one.head === 'meta:og:image' || one.head === 'link:icon').map((one) => one.id));
 // the attribute whose field a link's choose button follows (elements.json: the link's href)
 const HREF_ATTRIBUTE = ATTRIBUTES.get('href')?.id ?? 'href';
@@ -1850,8 +1861,9 @@ export function KeptTextField({ entry, node, kept, label, attribute, keepOnLeave
   // an image's Source also suggests the images the project holds (spec explorer-assets-use): the library the Explorer
   // lists, offered right where the source is written
   const picksFiles = attribute !== undefined && filePickerOf(node) === attribute;
-  const listsImages = picksFiles || (attribute !== undefined && IMAGE_SETTINGS.has(attribute));
-  const projectFiles = useEditorState((s) => (listsImages ? JSON.stringify(imageFiles(s.document).map((file) => file.path)) : '[]'));
+  const parentTag = useEditorState((s) => locate(s.document, node.id)?.parent?.tag ?? null);
+  const kinds = attribute === undefined ? [] : picksFiles || IMAGE_SETTINGS.has(attribute) ? ['image/'] : offeredFileKinds(node, attribute, parentTag);
+  const projectFiles = useEditorState((s) => (kinds.length === 0 ? '[]' : JSON.stringify(filesOf(s.document).filter((file) => kinds.some((kind) => file.type.toLowerCase().startsWith(kind))).map((file) => file.path))));
   const keptSuggestions = useMemo(() => (JSON.parse(projectFiles) as readonly string[]).length === 0 ? kept.suggestions : [...new Set([...kept.suggestions, ...(JSON.parse(projectFiles) as readonly string[])])], [kept.suggestions, projectFiles]);
   const { filled, stored } = kept;
   const suggestions = keptSuggestions;

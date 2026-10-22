@@ -100,7 +100,8 @@ function ToggleField({ entry, node, attribute, label }: { readonly entry: DoorEn
 // part the element takes. Drawn only for an element that takes parts.
 function PartsEditor({ node }: { readonly node: DocNode }) {
   const takes = partTypesOf(MODEL_RULES, node);
-  const adds = ADD_PART_DOORS.filter((d) => takes(String(d.door.args.type)));
+  // one button a type: the picture's and the media's Add a source both add a source, and a video showed both
+  const adds = ADD_PART_DOORS.filter((d, i) => takes(String(d.door.args.type)) && ADD_PART_DOORS.findIndex((other) => other.command.id === d.command.id && other.door.args.type === d.door.args.type) === i);
   if (adds.length === 0) return null;
   const parts = node.children.filter((child) => MODEL_RULES.contentModel.names(node.tag ?? '', child.tag ?? ''));
   return (
