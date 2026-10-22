@@ -5,7 +5,8 @@ import { createContext, useContext, useSyncExternalStore } from 'react';
 import { message } from '../core/commands/registry.ts';
 import { isEditing, takeOver } from './persistence/tab-guard.ts';
 import { activeLayer, styleStateFollows } from './view/style-state.ts';
-import { createEmptyDocument, type DocumentJson, type Selection } from '../core/document/model.ts';
+import { createEmptyDocument, walk, type DocumentJson, type Selection } from '../core/document/model.ts';
+import { openedPage } from '../core/project/pages.ts';
 import { rulesFromManifest, type ModelRules } from '../core/document/validate.ts';
 import { rulesForDocument } from '../core/document/breakpoints.ts';
 import { systemClock, type Clock } from '../core/ports/clock.ts';
@@ -120,6 +121,12 @@ export function createEditorStore(options: EditorStoreOptions = {}): EditorStore
   // the restored work, else the empty project, whose names are the words of the person who creates it
   const document =
     options.restored?.document ?? createEmptyDocument(ids, { language: preferences.locale, page: translate(preferences.locale, 'pages.defaultHome'), root: translate(preferences.locale, rootLabel as 'element.page.label') }, rules.root);
+  const initialUi = recoveryUi(narrowStart(initialEditorUi(preferences, workspace), workspace === undefined && options.narrow === true), options.recovery ?? null);
+  // the selection restored is held to the page the editor opens on (G6): one saved on another page (Features of Home
+  // with About open, after a reload) showed that element in the inspector, its fields empty, beside a canvas without it
+  const openTree = document.pages[openedPage({ document, ui: initialUi })]?.tree;
+  const opened = new Set(openTree === undefined ? [] : [...walk(openTree)].map((node) => node.id));
+  const restoredSelection = (options.restored?.selection ?? []).filter((id) => opened.has(id));
   const store = createStore<EditorUi>({
     table: wiring().commands,
     predicates: wiring().predicates,
@@ -151,7 +158,7 @@ export function createEditorStore(options: EditorStoreOptions = {}): EditorStore
     readOnly: options.ports?.readOnly ?? (() => !isEditing()),
     layer: activeLayer,
     editing: { takeOver },
-    initial: { document, selection: options.restored?.selection ?? [], ui: recoveryUi(narrowStart(initialEditorUi(preferences, workspace), workspace === undefined && options.narrow === true), options.recovery ?? null), message: options.restored?.recovered === true ? message('status.save.recovered') : null },
+    initial: { document, selection: restoredSelection, ui: initialUi, message: options.restored?.recovered === true ? message('status.save.recovered') : null },
     freeze: options.freeze ?? import.meta.env.DEV,
     // an undo and a redo give back the breakpoint, state, class and keyframe the change was made in (DCS-009)
     restoreContext: restoreEditContext,

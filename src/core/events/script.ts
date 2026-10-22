@@ -61,13 +61,7 @@ function actionJs(node: DocNode, interaction: Interaction, selectorOf: SelectorO
     if (interaction.action === 'scroll-to') return `if (target) target.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });`;
     if (needsAddress(interaction.action)) {
       if (interaction.address === undefined) return null;
-      // in the editor's Preview (one page written into a frame, data-builder-preview) a page of the site is asked of
-      // the editor, which shows it, as a link of the page is (preview.tsx builderPreviewPage): loaded from the frame's
-      // address, it was the editor's own address and drew a blank page
-      const preview = `if (document.documentElement.hasAttribute('data-builder-preview') && !/^[a-z][a-z0-9+.-]*:/i.test(${quoted(interaction.address)})) parent.postMessage({ builderPreviewPage: ${quoted(interaction.address)} }, '*'); else`;
-      return interaction.newTab === true
-        ? `${preview} window.open(${quoted(interaction.address)}, '_blank', 'noopener,noreferrer');`
-        : `${preview} window.location.assign(${quoted(interaction.address)});`;
+      return `open(${quoted(interaction.address)}, ${interaction.newTab === true ? 'true' : 'false'});`;
     }
     return null;
   })();
@@ -118,6 +112,13 @@ function wiringJs(node: DocNode, interaction: Interaction, triggerSelectorOf: Se
   return null;
 }
 
+// How the script opens an address (Open a link): in a new tab, or in this one. The editor's Preview (one page written
+// into a frame) puts PREVIEW_OPEN in its place (export.ts previewPage): there a page of the site is asked of the editor,
+// which shows it as it shows a link's page (preview.tsx builderPreviewPage); loaded from the frame's own address, it was
+// the editor's address and drew a blank page. The exported site keeps this one, and nothing of the editor.
+export const SITE_OPEN = "  var open = function (address, newTab) { if (newTab) window.open(address, '_blank', 'noopener,noreferrer'); else window.location.assign(address); };";
+export const PREVIEW_OPEN = "  var open = function (address, newTab) { if (!/^[a-z][a-z0-9+.-]*:/i.test(address)) parent.postMessage({ builderPreviewPage: address }, '*'); else if (newTab) window.open(address, '_blank', 'noopener,noreferrer'); else window.location.assign(address); };";
+
 // The whole script of a project's interactions: the pages' elements in document order, one block per interaction.
 // Null while the project holds none (a site without interactions gets no file and no script link).
 export function interactionsJs(document: DocumentJson, selectorOf: SelectorOf): string | null {
@@ -142,6 +143,7 @@ export function interactionsJs(document: DocumentJson, selectorOf: SelectorOf): 
     '    var found = document.querySelectorAll(selector);',
     '    for (var i = 0; i < found.length; i += 1) run(found[i]);',
     '  };',
+    ...(blocks.some((block) => /(^|[^.\w])open\(/.test(block)) ? [SITE_OPEN] : []),
     ...blocks.map((block) => block.split('\n').map((line) => `  ${line}`).join('\n')),
     '})();',
     '',

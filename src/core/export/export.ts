@@ -44,7 +44,7 @@ import { rootCss } from '../design/tokens.ts';
 import type { InlineRun } from '../text/inline.ts';
 import { animationsOf, keyframesCss, playedClassDeclarations, playedClassName, animationListDeclarations } from '../animation/animation.ts';
 import { addressedNodes, playedAnimations } from '../events/interactions.ts';
-import { interactionsJs, pageNeedsScript } from '../events/script.ts';
+import { interactionsJs, pageNeedsScript, PREVIEW_OPEN, SITE_OPEN } from '../events/script.ts';
 import type { SiteScripts } from '../ports/site-scripts.ts';
 import { addressedMotionNodes, treeUsesMotion } from '../motion/document.ts';
 import { motionConfig, siteUsesLottie } from '../motion/export.ts';
@@ -619,7 +619,9 @@ export function previewPage(document: DocumentJson, rules: ModelRules, pageIndex
   // has no address the preview could load, so its text is written in, and it waits for the page as its `defer` does —
   // an inline script is never deferred.
   if (site.interactions !== null) {
-    const inline = `  <script>document.addEventListener('DOMContentLoaded', function () {\n${inlineScript(site.interactions)}  });</script>`;
+    // an address opened by an interaction is asked of the editor here (script.ts PREVIEW_OPEN)
+    const previewed = site.interactions.replace(SITE_OPEN, () => PREVIEW_OPEN);
+    const inline = `  <script>document.addEventListener('DOMContentLoaded', function () {\n${inlineScript(previewed)}  });</script>`;
     html = html.replace(deferredScriptTag(PREVIEW_BASE, INTERACTIONS_SCRIPT), () => inline);
   }
   const link = `  <link rel="stylesheet" href="${STYLESHEET}">`;

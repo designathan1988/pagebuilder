@@ -55,6 +55,7 @@ export function claimEditing(): Promise<void> {
             }
             setRole('readOnly');
             resolve();
+            waitForRelease();
             return undefined;
           }
           setRole('editing');
@@ -64,6 +65,15 @@ export function claimEditing(): Promise<void> {
         .catch(() => setRole('lost'));
     };
     ask();
+  });
+}
+
+// A read-only tab waits in line for the lock: once the tab that edits is closed, this one is started again on the
+// latest saved project and edits (it stayed read-only for good, its notice saying another tab edited when none did)
+function waitForRelease(): void {
+  void navigator.locks.request(LOCK, () => {
+    window.location.reload();
+    return new Promise<void>(() => undefined);
   });
 }
 
