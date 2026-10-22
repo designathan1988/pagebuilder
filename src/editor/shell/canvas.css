@@ -211,6 +211,17 @@
   gap: var(--space-1);
 }
 
+/* the part shown is marked as the dock's tabs mark theirs: HTML, CSS and JS looked alike whichever was shown */
+.code-pane__tabs .door {
+  color: var(--color-text-muted);
+}
+
+.code-pane__tabs .door.is-current {
+  background: var(--color-surface-selected);
+  color: var(--color-text);
+  font-weight: var(--weight-semibold);
+}
+
 .code-pane__file {
   display: flex;
   flex: 1;

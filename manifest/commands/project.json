@@ -203,6 +203,26 @@
           "args": {}
         },
         {
+          "id": "key-ctrl-s-in-global",
+          "kind": "shortcut",
+          "feature": "project-save-json",
+          "chord": "Ctrl+S",
+          "context": "global",
+          "gesture": null,
+          "labelKey": "command.saveProject",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": "none",
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
           "id": "command-bar",
           "kind": "command-bar",
           "feature": "command-bar",

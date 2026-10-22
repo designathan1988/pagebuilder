@@ -137,7 +137,8 @@ export function CodePane() {
         </div>
       </header>
       {info?.text === null || info?.text === undefined ? (
-        <p className="code-pane__empty">{t('codePanel.empty')}</p>
+        // the JS tab before any interaction: why there is no script, and where one starts
+        <p className="code-pane__empty">{t(info === null && kind === 'js' ? 'codePanel.noInteractions' : 'codePanel.empty')}</p>
       ) : editable ? (
         // the element's own part of the code (its rule, its markup): the editable text Apply writes back on it
         <div className="code-pane__body" ref={body}>
@@ -162,7 +163,8 @@ export function CodePane() {
         </div>
       )}
       <footer className="code-pane__foot">
-        {info?.generated === true ? <span className="code-pane__note">{t('codePanel.locked')}</span> : null}
+        {/* a generated page or stylesheet is edited through its elements (Apply); a generated script is only read */}
+        {info?.generated === true ? <span className="code-pane__note">{t(info.kind === 'html' || info.kind === 'css' ? 'codePanel.locked' : 'codePanel.lockedScript')}</span> : null}
         {fileText === null && kind === 'css' && shown !== null && PART('css-apply') !== undefined ? <DoorControl entry={PART('css-apply') as DoorEntry} args={{ css: shown }} className="code-pane__apply" /> : null}
         {fileText === null && kind === 'html' && ownText !== null && PART('html-apply') !== undefined ? <DoorControl entry={PART('html-apply') as DoorEntry} args={{ html: shown ?? ownText }} className="code-pane__apply" /> : null}
         {info === null || info.generated || PART('save') === undefined ? null : <DoorControl entry={PART('save') as DoorEntry} args={{ path: info.path, content: shown ?? info.text ?? '' }} className="code-pane__apply" />}

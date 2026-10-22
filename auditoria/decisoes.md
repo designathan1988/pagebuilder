@@ -463,3 +463,7 @@
 ## DCS-094 — Interações rodam no canvas; a lógica roda só na pré-visualização
 - **Origem:** pedido de 2026-10-22 de exercitar lógica e interações no canvas.
 - **Decidido (2026-10-22):** "Executar interações" (Exibir) roda no canvas os eventos da aba Interações e o movimento (`src/editor/motion/run-events.ts`): são ações declaradas, que o editor executa sem rodar código do projeto. A lógica (variáveis, ligações, eventos com código, scripts e componentes de código) é JavaScript do próprio projeto e roda só na pré-visualização, isolada do editor (sem mesma origem): no canvas ela rodaria com o acesso do editor, e um projeto aberto de outra pessoa poderia trazer código hostil. O aviso do canvas diz isso e o botão "Testar" abre a pré-visualização. **Para o dono:** rodar a lógica no canvas exige um canvas com scripts isolado do editor (outra origem), mudança de arquitetura do canvas.
+
+## DCS-095 — Ctrl+S salva o projeto
+- **Origem:** uso real de 2026-10-22: Ctrl+S fora do editor de código abria o "Salvar página como" do navegador, que grava o HTML do editor, não o projeto.
+- **Decidido (2026-10-22):** Ctrl+S, em qualquer lugar fora do editor de código, roda Arquivo › Salvar projeto (baixa o `.zip` com o nome do site), e o menu mostra o atalho. No editor de código, Ctrl+S continua salvando o arquivo aberto. O salvamento automático segue igual. **Para o dono:** se preferir que Ctrl+S só diga "salvo automaticamente", a troca é a porta `key-ctrl-s-in-global` em `manifest/commands/project.json`.

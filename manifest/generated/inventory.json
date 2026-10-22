@@ -3,10 +3,10 @@
     "features": 218,
     "built": 218,
     "commands": 396,
-    "doors": 1456,
+    "doors": 1457,
     "scenarios": 1909,
     "modules": 534,
-    "lines": 99530,
+    "lines": 99625,
     "fields": 207,
     "interactive": 314
   },
@@ -458,7 +458,7 @@
       "commands": [
         "project.save"
       ],
-      "doors": 2,
+      "doors": 3,
       "scenarios": 2
     },
     {
@@ -1628,7 +1628,7 @@
         "components.startCreate",
         "selection.range"
       ],
-      "doors": 251,
+      "doors": 252,
       "scenarios": 56
     },
     {

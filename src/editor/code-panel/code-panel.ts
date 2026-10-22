@@ -7,7 +7,7 @@ import { pageShown } from '../../core/project/pages.ts';
 import { siteScripts } from '../forms/script.ts';
 import type { DocumentJson } from '../../core/document/model.ts';
 import { fileAt, fileBytes } from '../../core/files/files.ts';
-import { pageLines, siteFiles, STYLESHEET, type CodeLine } from '../../core/export/export.ts';
+import { INTERACTIONS_SCRIPT, pageLines, siteFiles, STYLESHEET, type CodeLine } from '../../core/export/export.ts';
 import { locate, type DocNode, type Selection } from '../../core/document/model.ts';
 import type { NodeId } from '../../generated/commands.ts';
 import type { ModelRules } from '../../core/document/validate.ts';
@@ -122,12 +122,15 @@ export function paneLines(ui: EditorUi, document: DocumentJson, rules: ModelRule
 }
 
 // The file the pane shows now, its kind, and its text: the file the person opened (explorer/file-tabs.ts), else the
-// page's own file for the kind the pane's tabs chose. Null when there is nothing to show (the JS pane before the
-// interactions group exists).
+// page's own file for the kind the pane's tabs chose. Null when there is nothing to show: the JS pane while no element
+// has an interaction (the site writes no interactions script), which the pane says.
 export function shownPane(ui: EditorUi, document: DocumentJson, rules: ModelRules): { readonly path: string; readonly kind: FileKind; readonly generated: boolean; readonly text: string | null } | null {
-  const path = activeFile(ui) ?? paneFile(paneKind(ui), document, ui);
+  const opened = activeFile(ui);
+  const path = opened ?? paneFile(paneKind(ui), document, ui);
   if (path === null) return null;
-  return { path, kind: kindOf(path), generated: isGenerated(path, document, rules), text: paneText(path, document, rules) };
+  const text = paneText(path, document, rules);
+  if (opened === null && path === INTERACTIONS_SCRIPT && text === null) return null;
+  return { path, kind: kindOf(path), generated: isGenerated(path, document, rules), text };
 }
 
 // Which part of the code the pane shows (codePanel.setPane, the pane's own tabs): the page's markup, the stylesheet,
@@ -145,25 +148,29 @@ export const setPane = registerHandler<'codePanel.setPane', EditorUi>(
   (state, { pane }) => paneKind(state.ui) === pane,
 );
 
-// The file the pane shows for a kind: the page's own file, the stylesheet, the interactions script. The JS pane needs
-// the interactions group (export-events-js writes the file), so it shows nothing until then.
+// The file the pane shows for a kind: the page's own file, the stylesheet, the interactions script (the file the
+// export writes for the site's interactions; it said the pane showed it while the pane showed no file at all).
 export function paneFile(kind: PaneKind, document: DocumentJson, ui: EditorUi): string | null {
   // the page the canvas shows (openedPage, its one owner: the audit's PG2, the first page's code showed for every page)
   if (kind === 'html') return pageShown({ document, ui })?.file ?? null;
   if (kind === 'css') return STYLESHEET;
-  return null;
+  return INTERACTIONS_SCRIPT;
 }
 
 // files.saveContent is what writes a project file (the file system's own command); the pane's doors only hand the
 // text away.
 export const copyPane = registerHandler<'codePanel.copyPane', EditorUi>('codePanel.copyPane', ({ state, rules }) => {
   const shown = shownPane(state.ui, state.document, rules);
-  if (shown === null || shown.text === null) return { kind: 'refused', message: message('status.codePanel.noText', { path: shown?.path ?? '' }) };
+  // nothing shown (the JS pane of a site with no interactions): no file to name
+  if (shown === null) return { kind: 'refused', message: message('status.codePanel.noFile') };
+  if (shown.text === null) return { kind: 'refused', message: message('status.codePanel.noText', { path: shown.path }) };
   return { kind: 'change', clipboard: { text: shown.text }, message: message('status.codePanel.copied', { path: shown.path }) };
 });
 
 export const downloadPane = registerHandler<'codePanel.downloadPane', EditorUi>('codePanel.downloadPane', ({ state, rules }) => {
   const shown = shownPane(state.ui, state.document, rules);
-  if (shown === null || shown.text === null) return { kind: 'refused', message: message('status.codePanel.noText', { path: shown?.path ?? '' }) };
+  // nothing shown (the JS pane of a site with no interactions): no file to name
+  if (shown === null) return { kind: 'refused', message: message('status.codePanel.noFile') };
+  if (shown.text === null) return { kind: 'refused', message: message('status.codePanel.noText', { path: shown.path }) };
   return { kind: 'change', download: { name: shown.path.slice(shown.path.lastIndexOf('/') + 1), type: shown.path.endsWith('.css') ? 'text/css' : 'text/html', bytes: new TextEncoder().encode(shown.text) }, message: message('status.codePanel.downloaded', { path: shown.path }) };
 });
