@@ -8,7 +8,8 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const options = process.argv.slice(2);
 const values = name => options.flatMap((value, index) => value === name ? [options[index + 1]] : []).filter(Boolean);
 const origins = values('--origin');
-if (!origins.length) origins.push('http://localhost:5320');
+// the editor's own address: the dev server's PORT, as vite.config.ts reads it (5320 when none is set)
+if (!origins.length) origins.push(`http://localhost:${process.env.PORT ?? '5320'}`);
 for (const origin of origins) if (new URL(origin).origin !== origin) throw new Error('An editor origin must contain only scheme, host and port');
 const port = Number(values('--port')[0] ?? 0);
 if (!Number.isInteger(port) || port < 0 || port > 65535) throw new Error('Invalid Companion port');

@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 interface ChatEntry { id: string; role: 'user' | 'assistant' | 'tool'; text: string; error?: boolean | undefined; image?: string | undefined }
-export interface ChatSurfaceProps { entries: readonly ChatEntry[]; draft: string; busy: boolean; configured: boolean; model: string; door: (control: string, props: Readonly<Record<string, unknown>>) => ReactNode; t: (key: string) => string }
+export interface ChatSurfaceProps { entries: readonly ChatEntry[]; draft: string; busy: boolean; configured: boolean; setup: string; model: string; door: (control: string, props: Readonly<Record<string, unknown>>) => ReactNode; t: (key: string) => string }
 // Controlled by existing editor UI state. Render messages as text; document/model output is never injected HTML.
-export function ChatSurface({ entries, draft, busy, configured, model, door, t }: ChatSurfaceProps) {
+export function ChatSurface({ entries, draft, busy, configured, setup, model, door, t }: ChatSurfaceProps) {
   return <section className="assistant-chat" aria-label={t('assistant.title')}>
     <header>{door('assistant-model', { value: model, disabled: busy })}{door('assistant-preferences', {})}</header>
-    {!configured && <p className="assistant-note">{t('assistant.configure')}</p>}
+    {!configured && <p className="assistant-note">{t(setup)}</p>}
     <div className="assistant-chat__messages" role="log" aria-live="polite" aria-relevant="additions text">
       {entries.map(entry => <article key={entry.id} className={`assistant-chat__message assistant-chat__message--${entry.role}`}>
         <span>{t(`assistant.role.${entry.role}`)}</span><p role={entry.error ? 'alert' : undefined}>{entry.text}</p>

@@ -2528,7 +2528,7 @@
   "status.forms.requiresText": "A máscara precisa de um campo de texto. Remova a máscara antes de mudar para este tipo de campo.",
   "forms.useTextInput": "Usar campo de texto para máscaras",
   "assistant.title": "Assistente",
-  "assistant.configure": "Para começar, abra as Preferências do assistente: salve sua chave do serviço e conecte o Companion (rode npm run companion ao lado do editor).",
+  "assistant.configure": "Para começar, abra as Preferências do assistente: salve sua chave do serviço e conecte o Companion (rode npm run assistant ao lado do editor).",
   "assistant.role.user": "Você",
   "assistant.role.assistant": "Assistente",
   "assistant.role.tool": "Ação no editor",
@@ -2575,8 +2575,8 @@
   "assistant.status": "Estado do assistente",
   "assistant.backToChat": "Voltar à conversa",
   "assistant.providerAnthropic": "Serviço: Anthropic",
-  "assistant.setupHelp": "Inicie o Companion com o comando abaixo. Depois escolha aqui o arquivo de conexão criado por ele. A chave fica criptografada neste dispositivo e nunca entra no projeto.",
-  "assistant.setupCommand": "npm run companion",
+  "assistant.setupHelp": "Inicie o Companion com o comando abaixo. Depois escolha aqui o arquivo de conexão criado por ele: companion.json, na pasta .builder da sua pasta de usuário. A chave fica criptografada neste dispositivo e nunca entra no projeto.",
+  "assistant.setupCommand": "npm run assistant",
   "assistant.connection.connecting": "Conectando…",
   "assistant.connection.connected": "Companion conectado",
   "assistant.connection.disconnected": "Companion não conectado",
@@ -4487,5 +4487,8 @@
   "status.map.selectMap": "Selecione um mapa para definir o lugar.",
   "status.map.emptyPlace": "Escreva um endereço, ou uma latitude e uma longitude.",
   "status.map.placed": "O mapa mostra {place}.",
-  "inspector.codeViewNotice": "A vista Código não desenha a página: os valores que ela calcula aparecem em Tela ou Dividido. O que for escrito aqui é mantido."
+  "inspector.codeViewNotice": "A vista Código não desenha a página: os valores que ela calcula aparecem em Tela ou Dividido. O que for escrito aqui é mantido.",
+  "assistant.configureKey": "O Companion está conectado. Para começar, salve sua chave do serviço nas Preferências do assistente.",
+  "assistant.configureCompanion": "Sua chave está salva. Para começar, conecte o Companion nas Preferências do assistente (rode npm run assistant ao lado do editor).",
+  "assistant.disconnectedAsked": "Desconectado do Companion."
 }

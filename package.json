@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "vite",
     "companion": "node tools/companion/server.ts",
+    "assistant": "node companion/main.mjs",
     "build": "vite build",
     "build:proofs": "vite build --config vite.proofs.config.ts",
     "build:e2e": "vite build --mode e2e",

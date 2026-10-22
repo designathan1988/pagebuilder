@@ -130,9 +130,13 @@ export function installAssistant(store: EditorStore): () => void {
     }
     if (kind === 'disconnect') {
       session?.cancel();
-      disconnect?.();
+      // cleared before the socket closes: its close reports at once, and a close it did not know was asked for said
+      // "The Companion connection was lost" after the person pressed Disconnect
+      const closing = disconnect;
       disconnect = null;
       pairing = null;
+      closing?.();
+      if (closing !== null) notice('assistant.disconnectedAsked');
       return;
     }
     await ready;

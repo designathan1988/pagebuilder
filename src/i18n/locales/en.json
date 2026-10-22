@@ -2528,7 +2528,7 @@
   "status.forms.requiresText": "A mask needs a text field. Remove the mask before changing to this input type.",
   "forms.useTextInput": "Use a text field for masks",
   "assistant.title": "Assistant",
-  "assistant.configure": "To start, open Assistant preferences: save your service key, then connect the Companion (run npm run companion beside the editor).",
+  "assistant.configure": "To start, open Assistant preferences: save your service key, then connect the Companion (run npm run assistant beside the editor).",
   "assistant.role.user": "You",
   "assistant.role.assistant": "Assistant",
   "assistant.role.tool": "Editor action",
@@ -2575,8 +2575,8 @@
   "assistant.status": "Assistant status",
   "assistant.backToChat": "Back to conversation",
   "assistant.providerAnthropic": "Provider: Anthropic",
-  "assistant.setupHelp": "Start Companion with the command below. Then choose its connection file here. Your service key stays encrypted on this device; it is never included in the project.",
-  "assistant.setupCommand": "npm run companion",
+  "assistant.setupHelp": "Start Companion with the command below. Then choose its connection file here: companion.json, in the .builder folder of your user folder. Your service key stays encrypted on this device; it is never included in the project.",
+  "assistant.setupCommand": "npm run assistant",
   "assistant.connection.connecting": "Connecting…",
   "assistant.connection.connected": "Companion connected",
   "assistant.connection.disconnected": "Companion not connected",
@@ -4487,5 +4487,8 @@
   "status.map.selectMap": "Select a map to set its place.",
   "status.map.emptyPlace": "Write an address, or a latitude and a longitude.",
   "status.map.placed": "The map shows {place}.",
-  "inspector.codeViewNotice": "The Code view draws no page: the values it computes show in Canvas or Split. What is written here is kept."
+  "inspector.codeViewNotice": "The Code view draws no page: the values it computes show in Canvas or Split. What is written here is kept.",
+  "assistant.configureKey": "The Companion is connected. To start, save your service key in Assistant preferences.",
+  "assistant.configureCompanion": "Your key is saved. To start, connect the Companion in Assistant preferences (run npm run assistant beside the editor).",
+  "assistant.disconnectedAsked": "Disconnected from the Companion."
 }

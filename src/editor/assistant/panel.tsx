@@ -55,6 +55,9 @@ function AssistantField({ entry, value, multiline = false, live = false, offered
   </form>;
 }
 
+// what is left before the first message, named alone: with the Companion connected the line still asked to connect it
+const setupNote = (key: boolean, connected: boolean): MessageId => (!key && !connected ? 'assistant.configure' : !key ? 'assistant.configureKey' : 'assistant.configureCompanion');
+
 export function AssistantPanel(): ReactNode {
   const store = useStore(), t = useT();
   const state = useEditorState(state => assistantOf(state.ui));
@@ -96,7 +99,7 @@ export function AssistantPanel(): ReactNode {
       <p className="assistant-help">{t('assistant.setupHelp')}</p>
       <code>{t('assistant.setupCommand')}</code>
       <DoorControl entry={entryOf('assistant-close-preferences')} />
-    </> : <ChatSurface entries={state.entries} draft={state.draft} busy={state.busy} configured={state.hasKey && state.connection === 'connected'} model={model} door={door} t={key => t(key as MessageId)} />}
+    </> : <ChatSurface entries={state.entries} draft={state.draft} busy={state.busy} configured={state.hasKey && state.connection === 'connected'} setup={setupNote(state.hasKey, state.connection === 'connected')} model={model} door={door} t={key => t(key as MessageId)} />}
     <div className="assistant-connection" role="group" aria-label={t('assistant.status')}>
       <span className="assistant-connection__state">{t(`assistant.connection.${state.connection}` as MessageId)}</span>
       {state.connection === 'connected' && <DoorControl entry={entryOf('assistant-select-session')} ready={!state.busy} />}

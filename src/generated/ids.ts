@@ -7696,5 +7696,8 @@ export const MESSAGE_IDS = [
   "status.map.emptyPlace",
   "status.map.placed",
   "inspector.codeViewNotice",
+  "assistant.configureKey",
+  "assistant.configureCompanion",
+  "assistant.disconnectedAsked",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];
