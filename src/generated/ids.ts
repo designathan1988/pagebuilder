@@ -5793,6 +5793,7 @@ export const MESSAGE_IDS = [
   "assistant.invalidModel",
   "assistant.modelChanged",
   "assistant.referenceAdded",
+  "assistant.referenceRemoved",
   "assistant.invalidImage",
   "assistant.connectionRequired",
   "assistant.emptyInput",

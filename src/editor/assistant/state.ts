@@ -41,7 +41,8 @@ export const attachAssistantReference = registerHandler<'assistant.attachReferen
     return { kind: 'change', ui: nextUi(state.ui, { reference: { name: picked.name, type: picked.type, bytes: picked.bytes } }), message: message('assistant.referenceAdded') };
   } catch { return { kind: 'refused', message: message('assistant.invalidImage') }; }
 });
-export const clearAssistantReference = registerHandler<'assistant.clearReference', EditorUi>('assistant.clearReference', ({ state }) => ({ kind: 'change', ui: nextUi(state.ui, { reference: null }) }));
+// said, as adding it is: the status bar went on saying the image was added to the next message once it was removed
+export const clearAssistantReference = registerHandler<'assistant.clearReference', EditorUi>('assistant.clearReference', ({ state }) => ({ kind: 'change', ui: nextUi(state.ui, { reference: null }), message: message('assistant.referenceRemoved') }));
 // Secret drafts belong to the password control and credential vault, never the state or command history.
 export const editAssistantKey = registerHandler('assistant.editKey', () => ({ kind: 'change' }));
 

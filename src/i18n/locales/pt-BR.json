@@ -2578,6 +2578,7 @@
   "assistant.invalidModel": "Informe um identificador de modelo válido.",
   "assistant.modelChanged": "Modelo alterado. Uma nova conversa será iniciada.",
   "assistant.referenceAdded": "Imagem de referência adicionada à próxima mensagem.",
+  "assistant.referenceRemoved": "Imagem de referência retirada da próxima mensagem.",
   "assistant.invalidImage": "Escolha uma imagem PNG, JPEG, WebP ou GIF de até 5 MB.",
   "assistant.connectionRequired": "Conecte o Companion antes de enviar.",
   "assistant.emptyInput": "Escreva uma mensagem ou escolha uma imagem de referência.",

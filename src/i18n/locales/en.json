@@ -2578,6 +2578,7 @@
   "assistant.invalidModel": "Enter a valid model identifier.",
   "assistant.modelChanged": "Model changed. A new conversation will start.",
   "assistant.referenceAdded": "Reference image added to the next message.",
+  "assistant.referenceRemoved": "Reference image removed from the next message.",
   "assistant.invalidImage": "Choose a PNG, JPEG, WebP or GIF image up to 5 MB.",
   "assistant.connectionRequired": "Connect Companion before sending.",
   "assistant.emptyInput": "Write a message or choose a reference image.",
