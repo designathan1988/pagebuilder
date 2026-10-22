@@ -312,6 +312,10 @@ export function updateInteractionCommand<Ui>(make: PickMaking<Ui>): RegisteredHa
   if (changes !== null && typeof changes === 'object' && !Array.isArray(changes) && (changes as Record<string, unknown>).pick === true) {
     return { kind: 'change', ui: make.makePicking(make.makePicked(context.state.ui), interaction) };
   }
+  // and stops it, the target as it was: the Target field pressed again, or Escape while picking
+  if (changes !== null && typeof changes === 'object' && !Array.isArray(changes) && (changes as Record<string, unknown>).pick === false) {
+    return { kind: 'change', ui: make.makePicked(context.state.ui) };
+  }
   const locked = lockedRefusal(context, found.node);
   if (locked !== null) return { kind: 'refused', message: locked };
   let next: Interaction = held;

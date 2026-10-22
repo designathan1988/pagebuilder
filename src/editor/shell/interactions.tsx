@@ -8,7 +8,7 @@
 // title: these events (spec events-actions), then the element's motion (spec motion-interactions); one note at its end
 // says which runs where (interactions.runNote).
 import { isFeatureBuilt } from '../../core/commands/registry.ts';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { locate, type DocNode, type Interaction } from '../../core/document/model.ts';
 import { actionLabel, applicableActions, applicableTriggers, firesOnce, interactionsOf, needsAddress, needsAnimation, needsClassName, needsTarget, primaryNodeOf, readOptions, triggerLabel } from '../../core/events/interactions.ts';
 import { animationsOf } from '../../core/animation/animation.ts';
@@ -105,6 +105,18 @@ function Card({ node, interaction, index }: { readonly node: DocNode; readonly i
   const classes = [...node.classes];
   const projectClasses = useEditorState((s) => classesOf(s.document)).map((one) => one.name);
   const [expanded, setExpanded] = useState(index === 0);
+  // Escape stops picking wherever the focus is (the Target button in the inspector kept it: Escape did nothing there)
+  useEffect(() => {
+    if (!picking || TARGET_FIELD === null) return undefined;
+    const entry = TARGET_FIELD;
+    const stop = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      (store.dispatch as (id: CommandId, args: unknown) => DispatchResult)(entry.command.id as CommandId, { ...entry.door.args, interaction: index, changes: { pick: false } });
+    };
+    window.addEventListener('keydown', stop, true);
+    return () => window.removeEventListener('keydown', stop, true);
+  }, [picking, index, store]);
   const options = useOptionWords();
   const valueKey = valueLabelKey(interaction.action);
   return (
@@ -152,7 +164,8 @@ function Card({ node, interaction, index }: { readonly node: DocNode; readonly i
         <div className="field-row interaction-card__target" data-interaction-target={index}>
           <span className="field-row__label">{t('interactions.field.target')}</span>
           {TARGET_FIELD !== null ? (
-            <PanelButton entry={TARGET_FIELD} args={{ interaction: index }} pressed={picking} icon={<Icon name="locate-fixed" size="sm" />}>
+            // pressed again while picking, it stops picking (the target stays as it was)
+            <PanelButton entry={TARGET_FIELD} args={picking ? { interaction: index, changes: { pick: false } } : { interaction: index }} pressed={picking} icon={<Icon name="locate-fixed" size="sm" />}>
               {picking ? t('interactions.picking') : (target?.name ?? t('interactions.target.none'))}
             </PanelButton>
           ) : null}
