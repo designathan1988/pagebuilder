@@ -3,7 +3,7 @@ import { createEditorStore, MODEL_RULES } from '../store.ts';
 import { manualClock } from '../../core/ports/clock.ts';
 import { sequentialIds } from '../../core/ports/ids.ts';
 import fs from 'node:fs';
-import { siteFiles, siteScriptsWritten } from '../../core/export/export.ts';
+import { siteDocument, siteFiles, siteScriptsWritten } from '../../core/export/export.ts';
 import type { DocumentJson } from '../../core/document/model.ts';
 import { siteScripts } from '../forms/script.ts';
 import { paneText } from '../code-panel/code-panel.ts';
@@ -42,8 +42,8 @@ describe('the generated scripts listed', () => {
   const fixtures = fs.readdirSync('manifest/features/fixtures').filter((name) => name.endsWith('.json'));
   it.each(fixtures)('are the scripts the export writes, on %s', (name) => {
     const document = JSON.parse(fs.readFileSync(`manifest/features/fixtures/${name}`, 'utf8')) as DocumentJson;
-    const site = siteFiles(document, MODEL_RULES, true, siteScripts);
-    const written = (['interactions', 'forms', 'motion', 'lottie', 'widgets', 'app'] as const).filter((part) => site[part] !== null);
+    const site = siteFiles(siteDocument(document, MODEL_RULES, true), MODEL_RULES, true, siteScripts);
+    const written = (['interactions', 'forms', 'motion', 'lottie', 'widgets', 'lists', 'app'] as const).filter((part) => site[part] !== null);
     expect([...siteScriptsWritten(document, MODEL_RULES)].sort()).toEqual([...written].sort());
   });
 });

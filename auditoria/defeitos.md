@@ -2526,3 +2526,213 @@
 - Sintoma: leitores de tela diziam "Abrir o seletor de cor de Cor do texto" e "Open the colour picker of Border colour".
 - Causa: mensagem `field.swatch.of` nos catálogos (`en.json:875`, `pt-BR.json:875`), usada em `field.tsx:1280`.
 - Prova: agora "Abrir o seletor de cor: {property}" / "Open the colour picker: {property}"; no uso, "Abrir o seletor de cor: Fundo" e "Open the colour picker: Background".
+
+## DEF-0802 — “+ Movimento” criava um “Animar” sem propriedade; entrada levava ~8 passos
+- Status: corrigido (não commitado, 2026-10-22)
+- Sintoma: Selecionar um título, Interações › “+ Movimento”: a linha do tempo nova tinha uma ação “Animar” sem nenhuma propriedade; para um efeito de entrada eram precisos modo Gravar e dois quadros-chave (prontidao.md, Atritos menores).
+- Causa: `src/core/motion/commands.ts:122` (HEAD) criava a primeira ação com `defaultEffect('animate')`, `tracks: []`; os efeitos rápidos só ofereciam quatro entradas ao rolar.
+- Prova: `firstAction` (`commands.ts:126`) dá à ação uma pulsação em `scale` (1 → 1,06 → 1), que começa e termina no tamanho do elemento em qualquer gatilho; `MOTION_PRESETS` (`commands.ts:141`) tem Surgir, Subir, Entrar pela esquerda, Entrar pela direita e Ampliar, e a linha “Efeito de entrada” (`interactions.tsx:193`) escolhe Ao rolar ou Ao carregar a página; um clique é um passo de desfazer (todas as portas passam por `motion.add`). No uso (1280 pt-BR, 1440 en): os cinco efeitos criados, tocados na Linha do tempo e na Pré-visualização, no ZIP em `js/motion.js`; feed e console vazios.
+
+## DEF-0803 — Efeito de entrada com “Ao carregar a página” era recusado
+- Status: corrigido (não commitado, 2026-10-22)
+- Sintoma: `motion.add` com um efeito e o gatilho `page-load` (ou qualquer gatilho sem metade de saída) dizia “valor inválido” e não criava nada.
+- Causa: `src/core/motion/commands.ts:173` (HEAD) gravava `leave: 'none'` em todo efeito; `readInteraction` (`read.ts:453`) recusa `leave` num gatilho não pareado.
+- Prova: `commands.ts:191` grava `leave` só quando `TRIGGERS[kind].paired`; `once` sempre. Teste `commands.test.ts` (page-load) e cenário `an-entry-effect-slides-the-element-in-from-the-right-as-the-page-loads`; no uso, “Título 2 slide-from-right” ao carregar, sem incidente.
+
+## DEF-0804 — “Reproduzir” no Movimento com a agulha no fim não fazia nada
+- Status: corrigido (não commitado, 2026-10-22)
+- Sintoma: Tocar a linha do tempo até o fim e clicar Reproduzir de novo: a agulha ficava parada.
+- Causa: `src/editor/motion/state.ts:195` (HEAD) ligava `playing` sem mexer no tempo; `nextPreviewTime` via o fim e pausava no primeiro quadro.
+- Prova: `previewMotionCommand` (`state.ts:197`) volta a agulha a 0 quando ela está no fim ou além, como `timeline.play` já fazia (`timeline/preview.ts`). `state.test.ts`; no uso, 150 ms depois do segundo Reproduzir o título estava em opacidade 0,92 e 2,5 px abaixo (em movimento).
+
+## DEF-0805 — Resumo do cartão de movimento cortado
+- Status: corrigido (não commitado, 2026-10-22)
+- Sintoma: Inspector 335 px, cartão de um efeito ao carregar: “Ao carregar a pág… → reproduz Título 2 slide-from-r…” (foto pt-4 da primeira rodada).
+- Causa: `src/editor/shell/window-overlays.css:1326` e `:1334` (nome e ação do cartão em uma linha com reticências), sem regra própria do cartão de movimento.
+- Prova: `src/editor/motion/ui/motion.css:45`: no `.motion-card` o resumo quebra linha e nome e ação não cortam. No uso: “Ao carregar a página” / “→ reproduz Título 2 slide-from-right” inteiros (scrollWidth = clientWidth), fotos pt-4 e en-4.
+
+## DEF-0806 — Nome da linha do tempo cortado na coluna das linhas do tempo
+- Status: corrigido (não commitado, 2026-10-22)
+- Sintoma: No painel Movimento, campo Nome: “Título slide…” (texto 184 px num campo de 103 px).
+- Causa: `src/editor/motion/ui/timeline.tsx:112` desenha o campo com a coluna de rótulo ao lado, na coluna estreita de `--size-sidebar`.
+- Prova: `motion.css:439`: o campo do nome fica sob o rótulo, na largura da coluna. No uso: 221/221 px, “Título slide-up” e “Heading slide-up” inteiros (fotos pt-2, en-2).
+
+## DEF-0807 — Quadro-chave em 0 s meio coberto pelo nome da faixa
+- Status: corrigido (não commitado, 2026-10-22)
+- Sintoma: Na Linha do tempo de um efeito de entrada, o losango em 0 s aparecia como “>”: a metade esquerda ficava sob o nome “opacity”.
+- Causa: `src/editor/motion/ui/motion.css:224` (HEAD): o eixo começava rente à coluna de rótulos, fixa por cima (`.motion-lane__label`, sticky, z-index 1).
+- Prova: `motion.css:225`: o eixo começa meio quadro-chave depois da coluna (régua, barras e faixas juntas; o ponteiro lê o início em `[data-motion-track]`). No uso: losango 619–643 px fora do rótulo (elementsFromPoint), foto en-6-lanes.
+
+## DEF-0808 — Barras da linha do tempo abaixo dos campos de adicionar ação
+- Status: corrigido (não commitado, 2026-10-22)
+- Sintoma: Em 1280×720, depois de um efeito de entrada, o painel Movimento mostrava a barra de botões e os três campos “Adicionar depois/junto/no cabeçote”; régua e barras ficavam fora de vista.
+- Causa: `src/editor/motion/ui/timeline.tsx:427` (HEAD): a linha de adicionar vinha antes do trilho.
+- Prova: `timeline.tsx:429`: o trilho vem logo abaixo da barra de botões e a linha de adicionar depois dele (borda de cima, `motion.css`). No uso: régua e agulha visíveis em 720 (pt-2), barra e losangos em 900 (en-2, en-3).
+
+## DEF-0809 — Alça da seleção cobre a primeira letra do título no canvas
+- Status: corrigido (sem commit: lote do coordenador, 2026-10-22)
+- Sintoma: Título selecionado no topo da página (1280 pt-BR e 1440 en): um quadradinho da moldura fica sobre o “N” de “Novo título” (foto pt-6).
+- Causa: `src/editor/canvas/chrome.tsx` `dotLies`: sem espaço fora (topo ou esquerda da área visível), o ponto da alça ficava centrado na borda, metade sobre o texto.
+- Prova: `coversStart` em `ResizeHandles` não desenha a alça cujo ponto ficaria centrado num lado de início (n, w); a borda inteira (edge grip, invisível) segue redimensionando. Uso: "Novo título" no topo à esquerda, alças só [resize-e], "N" inteiro (pt-5, en-5).
+
+## DEF-0810 — busca de propriedades não achava "Fundo" por "cor de fundo" nem por "cor"
+- Status: corrigido (não commitado, 2026-10-22)
+- Sintoma: no Estilo, buscar "cor de fundo", "cor" ou "background color" (pt-BR) não mostrava o campo Fundo: "Nenhuma propriedade corresponde". "Adicionar uma propriedade" tinha uma busca própria, igual.
+- Causa: `src/editor/inspector/sections.ts:331` (antes) só procurava a consulta inteira no rótulo mostrado e no nome CSS; `src/editor/shell/inspector.tsx:410` (antes) repetia uma comparação própria.
+- Prova: `searchWords` (rótulo nos dois idiomas, nomes CSS e as palavras de cor do catálogo, `inspector.search.colour`) e `searchMatches` (consulta inteira, ou cada palavra que nomeia algo, sem as de `inspector.search.fillers`, no começo de uma palavra) são a única busca: campos e "Adicionar uma propriedade" (`inspector.tsx:162,409`). No uso (1280×720): pt-BR "cor de fundo" → só Fundo (antes também "Recorte do fundo"); "cor" → Fundo, Cor da borda, Cor do texto; en "colour", "background color", "cor de fundo" acham Background. DCS-069.
+
+## DEF-0811 — a classe criada por "+ Classe" não virava o alvo do estilo
+- Status: corrigido (não commitado, 2026-10-22)
+- Sintoma: "+ Classe" com um nome novo aplicava a classe, mas o alvo seguia "Elemento" e a edição seguinte ia para o elemento.
+- Causa: `src/editor/store.ts:171` (antes) `followCommand` só movia o alvo num renomear (`targetFollowsClassRename`); nada seguia `classes.apply`/`classes.create`.
+- Prova: `targetFollowsNewClass` (`src/editor/inspector/style-target.ts:115`) no `followCommand`, que recebe agora o estado anterior (`src/core/store/store.ts:211,570,641`): classe que não existia antes e que toda a seleção lista vira o alvo; classe já existente não muda nada. Digitação pendente é gravada antes no elemento (G1/G2, `gestureSafe`). No uso: ".destaque afeta 1 elemento" com o chip preenchido; largura 300px digitada sem Enter e "+ Classe outra" → 300px no elemento, 500px seguinte na classe; feed vazio. DCS-070.
+
+## DEF-0812 — arrastar uma imagem do Explorador para o canvas não fazia nada
+- Status: corrigido (não commitado, 2026-10-22)
+- Sintoma: arrastar `img/foto.png` da árvore do Explorador para uma imagem ou para um contêiner do canvas não mudava nada (a soltura fora de uma pasta só abria o arquivo no painel Código).
+- Causa: `src/editor/input/pointer/effects.ts:200` (antes) a soltura da linha do Explorador só conhecia pasta (`files.move`) ou clique (`files.open`); `assets.insertImageFile` só aceitava arquivo enviado.
+- Prova: porta nova `panel-drag` `explorer-row`/`drop-proposal` de `assets.insertImageFile`, com o argumento `path` (`manifest/commands/files.json`; `placedImage`, `src/core/files/assets.ts`); durante o arraste, `showExplorerImageDrag` desenha a proposta ou o contorno da imagem (`src/editor/input/file-drop.ts`, `pointer/panels.ts:93`) e a soltura roda a porta (`effects.ts:205`), um passo de desfazer. Cenário `an-explorer-image-dragged-onto-the-canvas-places-an-image`. No uso: soltar na Seção insere a Imagem com `img/foto.png`; soltar `paisagem.png` na imagem troca a origem; Ctrl+Z volta, Ctrl+Y refaz; clique abre o arquivo e soltar na pasta `js` move; feed vazio. DCS-071.
+
+## DEF-0813 — painel da bancada aberto tomava 212 px numa janela de 768
+- Status: corrigido (não commitado, 2026-10-22)
+- Sintoma: a 1366×768, com Verificações aberto, o palco caía de 585 para 373 px (foto 82 de prontidao.md).
+- Causa: `src/editor/shell/dock.css:92` (antes) altura fixa `var(--size-dock-body)` (212 px) em qualquer janela.
+- Prova: `height: clamp(var(--size-dock-body-min), 22vh, var(--size-dock-body))` (`dock.css:94`, token novo em `src/ui/tokens.css:101`). No uso a 1366×768: corpo 169 px, palco 416 de 585. O estado continua o deixado: aberto segue aberto ao recarregar; fechado pela alternância segue fechado em duas recargas; nenhum caminho abre a bancada sem comando (`withDock`/`showPanel` só em comandos). DCS-072.
+
+## DEF-0814 — o estado Antes/Depois pintava o próprio elemento na prévia do canvas
+- Status: corrigido (sem commit: o coordenador faz o commit do lote)
+- Sintoma: com o estado Antes (::before) ou Depois (::after) escolhido, uma cor ou opacidade digitada mudava o elemento inteiro no canvas, e não o pseudo-elemento; a exportação escrevia `.x::before`, então o canvas mostrava outra coisa que a página publicada.
+- Causa: `src/editor/canvas/render/render.ts` `previewState` reescrevia os valores do estado como os do estado base do elemento (`[data-node] { … }`), sem olhar que `::before` não é um estado em que o elemento entra.
+- Prova: `previewState` agora não escreve prévia para um pseudo-elemento (`isPseudoElement`, `src/core/style/state-keys.ts`): a regra própria do nó (`nodeCss`) já desenha `::before`, `::after`, `::placeholder`, `::marker` e `::selection` sempre. Teste `render.test.ts` ("forces no pseudo-element on it"); os cenários de Antes e Depois deixam de esperar a opacidade no elemento.
+
+## DEF-0815 — exportar e importar de volta perdia as regras ::before e ::after
+- Status: corrigido (sem commit)
+- Sintoma: um estilo de Antes/Depois exportado (`.x::before { … }`) voltava da importação como regra não mapeada, e a segunda exportação saía sem ele.
+- Causa: `src/core/import/selectors.ts` `readCompound` recusava todo pseudo-elemento, e `statePseudos` (`src/core/document/validate.ts`) deixava de fora os estados com `::`.
+- Prova: o leitor guarda o pseudo-elemento com um dos dois-pontos (`:before`), `statePseudos` mapeia `:before`/`:after`/`:placeholder`/`:marker`/`:selection`, e `selectorState` (`src/core/import/import.ts`) lê o estado; `state-keys.test.ts` exporta, importa e exporta de novo e compara o CSS e o HTML byte a byte.
+
+## DEF-0816 — Entrada animada piscava na página publicada
+- Status: corrigido (sem commit: lote do coordenador, 2026-10-22)
+- Sintoma: Título com "Subir" ao carregar: opacidade 1 por ~60 ms, cai a 0 e entra; com movimento reduzido, 1→0→1 (relatório de lacunas).
+- Causa: `src/core/export/export.ts` (cabeça da página): o primeiro quadro-chave só chegava pelo `js/motion.js` adiado, nada o escrevia antes da primeira pintura.
+- Prova: `src/core/motion/first-paint.ts` escreve o primeiro estado sob `.bm-motion-start` (classe posta por script bloqueante na cabeça, `head.ts`), retirada por `start.ts` no mesmo passo em que as execuções seguram esse estado, ou após o DOMContentLoaded se o motion.js não rodar; regras sob `prefers-reduced-motion: no-preference` e entrada já no fim com movimento reduzido (`start.ts` ENTRANCES). Uso: exportação servida, 1º quadro opacidade 0.00 e sobe a 1.00; reduzido 1.00 em todos; sem JS 1; motion.js ausente 1 (pt 1280, en 1440).
+
+## DEF-0817 — Nome da linha do tempo vazava o id do gatilho em pt-BR
+- Status: corrigido (sem commit: lote do coordenador, 2026-10-22)
+- Sintoma: "Título scroll-into-view" ao dar efeito de entrada ou "+ Movimento".
+- Causa: `src/core/motion/commands.ts` `timelineNameFor`: recebia o id do gatilho ou do efeito.
+- Prova: O nome vem de `context.words` (palavras do catálogo do gatilho ou do efeito, em minúsculas): "Título subir", "Título surgir"; en "Title slide up". Cenários de 24-motion.json passaram a "Hero on click". Uso: 1280 pt-BR e 1440 en.
+
+## DEF-0818 — Paralaxe deslizava sobre a seção seguinte
+- Status: corrigido (sem commit: lote do coordenador, 2026-10-22)
+- Sintoma: Imagem com paralaxe saía da própria seção e cobria o título "RECURSOS" (foto 18 do relatório).
+- Causa: `src/editor/motion/runtime/behaviours.ts` `parallax`: deslocamento 0,3 × rolagem sem limite.
+- Prova: Faixa (começa/termina em % do caminho pela tela) e deslocamento máximo; sem máximo, preso à caixa do pai. Uso na pré-visualização: painel encosta na base do Hero (folga 0) em toda rolagem, sem cobrir RECURSOS (pt-6, en-6).
+
+## DEF-0819 — Painel Movimento mostrava uma raia a 1280×720
+- Status: corrigido (sem commit: lote do coordenador, 2026-10-22)
+- Sintoma: Barra de ferramentas em duas linhas, leitura do tempo e só "Marcadores" visíveis (p01).
+- Causa: `src/editor/shell/dock.css` `.dock-body`: 22vh para toda aba (158 px a 720).
+- Prova: Aba Movimento com 34vh (120–360 px) e divisor da altura do painel inferior, guardado entre sessões (`manifest/layout.json` dock-height, `src/editor/shell/dock.tsx`). Uso: 245 px por padrão, 367 px após arrastar, mantido após recarregar (pt-2, pt-3, en-2, en-3).
+
+## DEF-0820 — Barra de ferramentas do Movimento cortada ao rolar a coluna
+- Status: corrigido (sem commit: lote do coordenador, 2026-10-22)
+- Sintoma: Com a coluna rolada até os campos da ação, Reproduzir/Pausar/Parar apareciam cortados no topo (foto pt-2 da primeira passada).
+- Causa: `src/editor/motion/ui/motion.css` `.motion-timeline__toolbar`: rolava com o conteúdo.
+- Prova: Barra fixa no topo da coluna (sticky, com fundo). Foto pt-2 refeita: barra inteira.
+
+## DEF-0821 — Campos de Transições de página desalinhados
+- Status: corrigido (sem commit: lote do coordenador, 2026-10-22)
+- Sintoma: "Entre páginas" encostado na borda do painel, fora do alinhamento do título (pt-4, en-4).
+- Causa: `src/editor/motion/ui/interactions.tsx` `PageTransitions`: campos direto na seção, sem margem.
+- Prova: Campos num bloco com a margem dos botões de comportamento (12 px). Foto pt-10: alinhados.
+
+## DEF-0822 — Rótulo "Deslocamento máximo (px)" quebrava em duas linhas
+- Status: corrigido (sem commit: lote do coordenador, 2026-10-22)
+- Sintoma: Campo novo do paralaxe, a 1280 pt-BR (pt-9).
+- Causa: `src/editor/shell/inspector.css` `.field-row`: coluna de rótulo fixa.
+- Prova: Quantidade e faixa num grid com a coluna de rótulos do tamanho do maior (`.motion-behaviours__fields`). Foto pt-10: uma linha, 16 px de altura cada.
+
+## DEF-0823 — Ação "Mudar uma variável CSS" com variável do app
+- Status: corrigido (sem commit: lote do coordenador, 2026-10-22)
+- Sintoma: Depois de escolher "O app (state)", a ação seguia nomeada "Mudar uma variável CSS" (pt-2, en-2).
+- Causa: `src/i18n/locales/*.json` `motion.action.variable`.
+- Prova: Texto passa a "Mudar uma variável" / "Change a variable" (o campo "Variável de" diz qual); cenário de 24-motion.json ajustado. Foto pt-2 refeita.
+
+## DEF-0830 — Item sem valor mostrava o valor de outro item
+- Status: corrigido (sem commit: lote do coordenador, 2026-10-22)
+- Sintoma: Célula esvaziada, cartão reaproveitado ou página de item escrita pelo modelo mantinham o texto anterior (o post sem autor saía com "Ana Souza").
+- Causa: `src/core/data/bindings.ts` fillNode: `if (value === undefined) continue` deixava o que o elemento mostrava.
+- Prova: Valor ausente esvazia texto e endereço; imagem e texto alternativo voltam aos do componente (`definitionPart`); a derivação compara com `filledFor`. Uso real: "Trilhas da serra" sem autor, vazio na tela e na exportação (fotos 17, 18).
+
+## DEF-0831 — Campos da consulta sem nome e ordem cortada
+- Status: corrigido (sem commit: lote do coordenador, 2026-10-22)
+- Sintoma: Na barra lateral de 223 px, "0", "" e "2" sem dizer o que contam; "Data (Z a A, 9 a 0)" lido "Data (Z a" (foto 09, 1280 pt-BR).
+- Causa: `src/editor/data/grid.tsx` QueryBar: campos soltos na mesma linha, sem legenda.
+- Prova: Cada parte sob sua legenda (`.data-part`), menus na linha inteira. Foto 09 refeita: Pular, Mostrar no máximo, Itens por página, Próximas páginas legíveis.
+
+## DEF-0832 — Rótulo de seleção sobre o conteúdo de um elemento oculto pelo item
+- Status: corrigido (sem commit: lote do coordenador, 2026-10-22)
+- Sintoma: Ao escolher "Mostrar Destaque quando Destaque está preenchido", o rótulo "Destaque p 0 × 0" ficava sobre o título do primeiro cartão (foto 06).
+- Causa: `src/editor/canvas/chrome.tsx` drawnTargets só pulava `hidden`, não o `dataHidden` derivado.
+- Prova: drawnTargets e a alça de redimensionar pulam `dataHidden`; a linha nas Camadas fica marcada como oculta (`layers.tsx`).
+
+## DEF-0833 — Recusa sem sentido ao mudar o tipo do campo de onde vem o slug
+- Status: corrigido (sem commit: lote do coordenador, 2026-10-22)
+- Sintoma: Título como "Item de uma coleção" dizia "slug cannot be a field of Posts." (1440 en).
+- Causa: `src/core/data/collections.ts` setField caía na recusa genérica de `schemaRefusal`.
+- Prova: Recusa própria `status.data.slugSource` nomeando o slug e o campo (foto 15b).
+
+## DEF-0834 — Espaço vazio sobre o menu do item do modelo
+- Status: corrigido (sem commit: lote do coordenador, 2026-10-22)
+- Sintoma: Na seção Páginas, ~40 px vazios entre o texto do modelo e o menu do item (foto 11, pt-BR).
+- Causa: `src/editor/data/panel.css`: `.data-field` com base de flex em coluna vira altura.
+- Prova: `.data-template > .data-field { flex: none }`; foto 11 refeita, menu logo abaixo do texto.
+
+## DEF-0835 — Aviso do "mostrar quando" sem o valor e com a chave do campo
+- Status: corrigido (sem commit: lote do coordenador, 2026-10-22)
+- Sintoma: "Destaque shows only when Status equals." e "quando destaque está preenchido" (chave, não rótulo).
+- Causa: `src/core/data/commands.ts` showWhenCommand passava a chave e não o valor comparado.
+- Prova: Rótulo do caminho ("Autor › Nome") e mensagem `status.data.showWhenValue` com o valor.
+
+## DEF-0836 — Classe "list-more" inventada ao importar um site com lista paginada
+- Status: corrigido (sem commit: lote de integração, 2026-10-22)
+- Sintoma: exportar e importar de volta o blog com lista paginada (`content-blog.json`) criava as classes `list-more` e `list-pages`, que o projeto não tinha (`roundtrip.test.ts`).
+- Causa: `src/core/import/import.ts:1339`: as regras dos controles das listas (`LISTS_CSS`, escritas pela exportação ao lado da base) não estavam entre as regras da própria exportação, e viravam classes da pessoa.
+- Prova: `WIDGET_STATE_RULES` inclui as regras de `LISTS_CSS`, casadas inteiras como as dos componentes; `isBaseRule` as descarta em todo import. `verify --all`: ida-e-volta igual em todos os fixtures.
+
+## DEF-0837 — Explorer sem js/lists.js num projeto com lista paginada
+- Status: corrigido (sem commit: lote de integração, 2026-10-22)
+- Sintoma: no Explorer, o blog com lista paginada não listava `js/lists.js`, que o ZIP traz.
+- Causa: `src/core/export/export.ts:520`: `siteScriptsWritten` não conhecia as listas; o ZIP decidia à parte, em `siteEntries`.
+- Prova: `siteFiles` devolve `lists` (export.ts:501) e o ZIP o usa (export.ts:643); `siteScriptsWritten` lê o site materializado (`siteDocument`); o Explorer lista e abre o texto do mesmo site (explorer.ts:57, 75). Uso: `pt-4`/`en-4`, "lists.js gerado", aberto no painel de código.
+
+## DEF-0838 — Dica do arraste cortada em "Ctrl sem en…" a 1280
+- Status: corrigido (sem commit: lote de integração, 2026-10-22)
+- Sintoma: arrastar no canvas a 1280×720 em pt-BR, com a barra lateral aberta: a dica da barra do canvas terminava em "Ctrl sem en…", mesmo com os botões só em ícones.
+- Causa: `src/editor/shell/canvas.css:115`: a dica era uma linha só, cortada com reticências.
+- Prova: `Hint` (canvas.tsx:92) desenha cada tecla inteira e a dica quebra entre elas numa segunda linha da barra (duas linhas de 16 px cabem nos 36); `fit` (canvas.tsx:158) mede também o corte vertical. Fotos `pt-2` (ícones, 2 linhas inteiras) e `en-2` (nomes, 2 linhas inteiras).
+
+## DEF-0839 — Valor padrão da Decoração "none auto solid …" cortado
+- Status: corrigido (sem commit: lote de integração, 2026-10-22)
+- Sintoma: num título sem decoração, o campo Decoração mostrava "none auto solid …" cortado (en e pt-BR).
+- Causa: `src/editor/shell/field.tsx:313`: sem `compose` no codec `text-decoration`, os quatro longhands computados eram juntados por espaço.
+- Prova: `compose` do codec (codecs.ts:397), como o do lado da borda: sem linha lê `none`; com linha, a linha e as partes fora do valor inicial. Fotos `pt-3` e `en-3`: "none" inteiro.
+
+## DEF-0840 — Cabeçalho e busca do Inserir rolavam com os blocos
+- Status: corrigido (sem commit: lote de integração, 2026-10-22)
+- Sintoma: no Inserir, rolar os blocos levava embora o título, a busca e as densidades; só a linha do destino ficava.
+- Causa: `src/editor/shell/sidebar/insert.tsx:145`: só `.insert__destination` era fixa; a busca estava no fluxo dos blocos.
+- Prova: `.insert__head` (sidebar.css:68, fixa no topo da vista) leva título, destino, busca e densidades; os blocos rolam sob ela. Fotos `pt-1` e `en-1` com a vista rolada 500 px: cabeçalho e busca no topo.
+
+## DEF-0841 — Aviso do dock fechado cortado a 1280
+- Status: corrigido (sem commit: lote de integração, 2026-10-22)
+- Sintoma: a 1280×720 em pt-BR, a primeira verificação ao lado das abas do dock terminava em "…escolher um co…" (foto `pt-5`).
+- Causa: `src/editor/shell/dock.css:72`: `.dock-strip__peek` numa linha só, com reticências.
+- Prova: o aviso usa as duas linhas de 14 px da faixa de 28 px; só uma frase maior que duas linhas termina em reticências (título e lista inteiros). Fotos `pt-6` (2 linhas inteiras) e `en-6` (1 linha).
+
+## DEF-0842 — Quatro chaves do catálogo sem uso
+- Status: corrigido (sem commit: lote de integração, 2026-10-22)
+- Sintoma: `verify --all` reprovava em `tools/i18n/unused.test.ts`: `data.templateOtherCollection`, `data.pagePerItem`, `status.data.emptyName`, `status.pages.itemPagesCurrent`.
+- Causa: `src/core/data/commands.ts`: `pages.fromCollection` passou a marcar o modelo (DCS-080); as mensagens do fluxo de antes ficaram, e `templateOtherCollection` repetia `data.templateHelp`.
+- Prova: as quatro saíram de `en.json` e `pt-BR.json`, gerador rodado; nenhuma porta, recusa ou tela as nomeia.

@@ -4,7 +4,7 @@
 // released on the Explorer's Files region, which uploads it (spec explorer-assets). The frame's own window reports
 // its drags to this module too (canvas/frame.tsx). Pointer state, not editor state.
 import { locate, type NodeId } from '../../core/document/model.ts';
-import { readUploadFile, type UploadedFile } from '../../core/files/files.ts';
+import { fileAt, readUploadFile, type UploadedFile } from '../../core/files/files.ts';
 import { message } from '../../core/commands/registry.ts';
 import { manifest, type DoorEntry } from '../../manifest/runtime.ts';
 import { canvasFrame, framePointOnScreen, geometryOf, nodesUnder, type Point } from '../canvas/coordinates.ts';
@@ -16,6 +16,9 @@ import { pointerViews, type Inserting } from './pointer/views.ts';
 const osImageDoor: DoorEntry | null = manifest.doors.find((d) => d.door.kind === 'canvas-drag' && d.door.source === 'os-image-file') ?? null;
 // the element type a drop that lands on one replaces the source of
 const IMAGE_TYPE = 'image';
+// the media type every image file's type begins with, and the zone of the drops that place an image where it lands
+const IMAGE_MEDIA = 'image/';
+const DROP_PROPOSAL = 'drop-proposal';
 
 // An image file held over the canvas: the proposal the release would commit, so the chrome draws where it lands; over
 // an image, the image the file would replace is outlined instead (the pointer's own hover mark).
@@ -51,6 +54,47 @@ function imageUnder(store: EditorStore, at: Point): string | null {
     if (found !== null && found.node.type === IMAGE_TYPE) return found.node.id;
   }
   return null;
+}
+
+// An image of the project dragged from a row of the Explorer's tree (spec explorer-assets-use; DCS-071): over the
+// canvas it does what an image file dragged in from the operating system does — over an image, that image is outlined
+// and the release makes the file its source; elsewhere, the proposal is drawn and the release places an Image there —
+// through the row's drop door, one undo step. Off the canvas, or for a file that is not an image, the row's own drag
+// (a move into a folder, a click that opens it) is all there is.
+const explorerImageDoor: DoorEntry | null = manifest.doors.find((d) => d.door.kind === 'panel-drag' && d.door.source === 'explorer-row' && d.door.zone === DROP_PROPOSAL) ?? null;
+// whether the point lies on the canvas's stage, where the page is shown, with nothing of the editor over it
+function overStage(at: Point): boolean {
+  const under = document.elementFromPoint(at.x, at.y);
+  return canvasFrame() !== null && under instanceof Element && under.closest('[data-canvas-stage]') !== null;
+}
+function isImagePath(store: EditorStore, path: string): boolean {
+  return fileAt(store.getState().document, path)?.type.toLowerCase().startsWith(IMAGE_MEDIA) === true;
+}
+// The door an Explorer row's image released at this point runs, with its arguments; null off the canvas, for a file
+// that is not an image, or where nothing takes an image.
+export function explorerImageDrop(store: EditorStore, path: string, at: Point): { readonly door: DoorEntry; readonly args: Readonly<Record<string, unknown>> } | null {
+  const door = explorerImageDoor;
+  if (door === null || !overStage(at) || !isImagePath(store, path)) return null;
+  const target = imageUnder(store, at);
+  if (target !== null) return { door, args: { ...door.door.args, path, parent: locate(store.getState().document, target as NodeId)?.parent?.id, index: 0, replace: target } };
+  const place = fileDropProposal(store, at);
+  return place === null ? null : { door, args: { ...door.door.args, path, parent: place.parent, index: place.index } };
+}
+// Draws what the release at this point would do; true while it would place the image (the drag view is then the
+// row's), false where it would not, the view cleared once it was drawn.
+export function showExplorerImageDrag(store: EditorStore, path: string, at: Point, shown: boolean): boolean {
+  const door = explorerImageDoor;
+  if (door === null || !overStage(at) || !isImagePath(store, path)) {
+    if (shown) hideFileDrag(store);
+    return false;
+  }
+  const target = imageUnder(store, at);
+  if (target !== null) showFileTarget(store, target);
+  else showFileDrag(store, { tile: door, args: {}, drop: door }, at);
+  return true;
+}
+export function hideExplorerImageDrag(store: EditorStore): void {
+  hideFileDrag(store);
 }
 
 // An image file dropped onto the Explorer's Files region uploads (spec explorer-assets; the door files.upload's folder

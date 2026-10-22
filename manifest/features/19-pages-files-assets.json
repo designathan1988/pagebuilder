@@ -3027,7 +3027,7 @@
                 {
                   "path": "index.html",
                   "present": [
-                    "<a href=\"index.html\">A link</a>"
+                    "<a href=\"index.html\" aria-current=\"page\">A link</a>"
                   ],
                   "absent": []
                 }
@@ -4119,6 +4119,158 @@
             ],
             "history": {
               "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.export.done",
+                  "params": {
+                    "file": "site.zip"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": {
+              "files": [
+                {
+                  "path": "index.html",
+                  "present": [
+                    "<img src=\"img/photo.png\""
+                  ],
+                  "absent": []
+                },
+                {
+                  "path": "img/photo.png",
+                  "present": [
+                    "PNG"
+                  ],
+                  "absent": []
+                }
+              ]
+            }
+          },
+          "refusals": []
+        },
+        {
+          "id": "an-explorer-image-dragged-onto-the-canvas-places-an-image",
+          "setup": {
+            "fixture": "empty",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-insert",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-explorer",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "files.upload#explorer-upload",
+              "args": {
+                "files": "png:photo.png"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "assets.insertImageFile#panel-drag-explorer-row-drop-proposal",
+              "args": {
+                "path": "img/photo.png"
+              },
+              "target": null,
+              "drop": {
+                "placement": "inside",
+                "reference": "/Page"
+              },
+              "action": true,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "project.export#toolbar-top-bar-export",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "assets.insertImageFile#panel-drag-explorer-row-drop-proposal"
+          ],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/@files",
+                "value": [
+                  {
+                    "path": "img/photo.png",
+                    "type": "image/png",
+                    "bytes": "png:photo.png",
+                    "width": 4,
+                    "height": 3
+                  }
+                ]
+              },
+              {
+                "op": "set",
+                "path": "/Page/@children",
+                "value": [
+                  {
+                    "type": "image",
+                    "name": "Image",
+                    "tag": "img",
+                    "attributes": {
+                      "src": "img/photo.png"
+                    },
+                    "classes": [],
+                    "styles": {
+                      "desktop": {
+                        "base": {
+                          "max-width": "100%"
+                        }
+                      }
+                    },
+                    "text": null,
+                    "children": []
+                  }
+                ]
+              }
+            ],
+            "selection": [
+              "/Page/Image"
+            ],
+            "history": {
+              "undoSteps": 2,
               "undoRestores": true,
               "redoRestores": true
             },

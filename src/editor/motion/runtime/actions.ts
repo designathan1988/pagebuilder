@@ -138,6 +138,23 @@ export function createActions(win: Window, kit: MotionKit): ActionKit {
     }
   }
 
+  // A variable of the application layer set from a timeline (core/motion/model.ts, scope 'app'): through the bridge the
+  // application's runtime puts on the window (app-runtime/runtime.js __builderApp), or, before the application has
+  // started, kept in the queue it reads when it starts. The value is read as JSON (a number, true, a quoted text), else
+  // as the text itself.
+  function setAppVariable(name: string, text: string): void {
+    let value: unknown;
+    try {
+      value = JSON.parse(text) as unknown;
+    } catch {
+      // not JSON: the text itself
+      value = text;
+    }
+    const page = win as Window & { __builderApp?: { set(name: string, value: unknown): void }; __builderAppQueue?: [string, unknown][] };
+    if (page.__builderApp !== undefined) page.__builderApp.set(name, value);
+    else (page.__builderAppQueue ??= []).push([name, value]);
+  }
+
   function variableKeyframes(effect: Extract<Effect, { kind: 'variable' }>, target: Element): Keyframe[] {
     register(target.ownerDocument, effect.name, effect.value);
     const now = win.getComputedStyle(target).getPropertyValue(effect.name).trim();
@@ -285,6 +302,10 @@ export function createActions(win: Window, kit: MotionKit): ActionKit {
         return undo;
       }
       case 'variable': {
+        if (effect.scope === 'app') {
+          setAppVariable(effect.name, effect.value);
+          return null;
+        }
         const undo = inlineStyle(target, effect.name);
         html(target).style.setProperty(effect.name, effect.value);
         return undo;
@@ -410,7 +431,8 @@ export function createActions(win: Window, kit: MotionKit): ActionKit {
   }
 
   return {
-    reversible: (effect) => REVERSIBLE.has(effect.kind),
+    // a variable of the application is the visitor's data: set only while a timeline really plays forwards
+    reversible: (effect) => REVERSIBLE.has(effect.kind) && !(effect.kind === 'variable' && effect.scope === 'app'),
     run,
     display,
     variableKeyframes,

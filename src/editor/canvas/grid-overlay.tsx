@@ -4,7 +4,7 @@
 // (`height` tall, `gutter` apart) and the dot grid (`spacing` apart), all in page px from the page's top-left corner,
 // translucent so the page shows through, in the canvas chrome, never in the page.
 import { openedPage, pageShown } from '../../core/project/pages.ts';
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { memo, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { columnBands, columnsOf, dotsOf, foldLines, gridShown, rowBands, rowsOf } from '../../core/page/grid.ts';
 import { useEditorState } from '../store.ts';
 import { activeBreakpoint } from '../view/breakpoints.ts';
@@ -20,7 +20,7 @@ interface Page {
 }
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 
-export function GridOverlay() {
+export const GridOverlay = memo(function GridOverlay() {
   const t = useT();
   const columns = useEditorState((s) => gridShown(s, 'gridColumns'));
   const rows = useEditorState((s) => gridShown(s, 'gridRows'));
@@ -84,4 +84,4 @@ export function GridOverlay() {
       {dots && page ? <div className="chrome__grid-dots" data-region="grid-dots" style={{ left: page.x, top: page.y, width: page.width, height: page.height, '--grid-dot': `${dotSpacing * page.zoom}px` } as CSSProperties} /> : null}
     </div>
   );
-}
+});

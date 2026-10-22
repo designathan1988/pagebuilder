@@ -53,9 +53,12 @@ import { freshName, type NodeMaker } from '../structure/node-maker.ts';
 import { parseDeclarations } from '../style/custom.ts';
 import { shadowLayersFromCss } from '../style/shadows.ts';
 import { matches, readSelector, type Compound, type Facts, type Selector } from './selectors.ts';
+import { nthKey, parentKey } from '../style/state-keys.ts';
+import { linksToFile } from '../render/output.ts';
 import { readDeclarations, readStylesheet, type CssRule, type CssSheet } from './stylesheet.ts';
 import { baseCss, capturedBaseCss, CAPTURE_BASE_LAYER, widgetStateCss } from '../render/base.ts';
 import { ELEMENTS_HEADING, underClassesHeading } from '../export/sheet-headings.ts';
+import { LISTS_CSS } from '../export/lists.ts';
 // reading markup (core/import/markup.ts): the DOM walk and the source lines, moved out of this file
 import { lineOf, lineOfNode, parseMarkup, parsePage, textOf, type MarkupChild, type MarkupNode } from './markup.ts';
 import { browserPorts } from '../ports/browser.ts';
@@ -339,6 +342,9 @@ interface Builder {
   readonly dropped: { elements: number; attributes: number };
   problem: ImportProblem | null;
 }
+
+// the attribute a link to the page it stands on carries (WAI-ARIA aria-current; the Current state)
+const CURRENT_ATTRIBUTE = 'aria-current';
 
 // Resolve only addresses that name picked resources; external addresses retain the address owner's rules.
 function importedPath(builder: Builder, address: string, from = builder.file): string | null {
@@ -672,6 +678,16 @@ function build(child: MarkupChild, builder: Builder, ancestors: readonly string[
     if (customAttributeRefusal(html, rules) === null && customAttributeValueRefusal(html, value) === null) customAttributes = { ...customAttributes, [html]: value };
     else if (builder.mode === 'import') builder.report.attributes.push(line);
     else builder.dropped.attributes += 1;
+  }
+  // the current page's mark the export writes on a link to the page itself (core/render/output.ts elementAttributes):
+  // the export writes it again from the link, so the link keeps no attribute of its own that a later file name of the
+  // page would leave behind
+  const hrefId = child.tag === 'a' ? attributeNamed('href', type, rules) : null;
+  const address = hrefId === null ? undefined : attributes[hrefId];
+  if (customAttributes[CURRENT_ATTRIBUTE] === 'page' && typeof address === 'string' && linksToFile(address, builder.file)) {
+    const { [CURRENT_ATTRIBUTE]: _current, ...others } = customAttributes;
+    void _current;
+    customAttributes = others;
   }
   const inlineDeclarations = inlineStyle === null ? null : styleDeclarations(builder, inlineStyle, line);
   const captureHint = builder.captured && (svgSize.declarations !== '' || imageSize.size > 0);
@@ -1020,26 +1036,15 @@ function readyRules(builder: Builder, sources: readonly SheetSource[]): ReadyRul
         continue;
       }
       if (media.approximated) add(builder.report.approximated, source.file, rule.line);
-      const selector = readSelector(rule.selector);
-      // a pseudo-class on an ancestor (nav a:hover > span) is no state of the element the rule styles: the matcher
-      // reads only the compounds' names, so the rule would hold always; it is reported, never guessed
-      if (selector === null || innerPseudo(selector)) {
+      const read = readSelector(rule.selector);
+      // the state the rule is written for (core/style/state-keys.ts), and the selector the element itself matches
+      const stated = read === null ? null : selectorState(read, rules);
+      if (stated === null) {
         add(builder.report.unmapped, source.file, rule.line);
         continue;
       }
-      const last = selector.compounds[selector.compounds.length - 1] as Compound;
-      const classRule = classRuleOf(selector);
-      let state = rules.baseLayer.state;
-      if (last.pseudo !== null) {
-        const named = rules.statePseudos.get(last.pseudo);
-        // a pseudo-class that is no state of the editor, or a state rule whose selector names more than the element
-        // (a descendant rule): the rule is reported, never guessed
-        if (named === undefined || (selector.compounds.length > 1 && classRule === null)) {
-          add(builder.report.unmapped, source.file, rule.line);
-          continue;
-        }
-        state = named;
-      }
+      const { state, bare } = stated;
+      const classRule = classRuleOf(bare);
       if (classRule !== null) {
         // a class name the project's own registry cannot hold is nothing this importer can map
         if (!validClassName(classRule)) {
@@ -1048,7 +1053,6 @@ function readyRules(builder: Builder, sources: readonly SheetSource[]): ReadyRul
         }
         classNames.add(classRule);
       }
-      const bare: Selector = last.pseudo === null ? selector : { ...selector, compounds: [...selector.compounds.slice(0, -1), { ...last, pseudo: null }] };
       ready.push({ rule, source: source.file, media, state, bare, classRule, order });
     }
   }
@@ -1330,7 +1334,9 @@ const normalizedBaseText = (text: string): string => text.replace(/\s+/g, ' ').t
 const BASE_RULES = [...readStylesheet(baseCss()).rules, ...readStylesheet(capturedBaseCss()).rules];
 // the web components' closed parts (base.ts widgetStateCss), which the export writes beside the base in a site holding
 // one: matched whole, with their media query and their importance, so a site read back never takes them as its own
-const WIDGET_STATE_RULES = readStylesheet(widgetStateCss()).rules;
+// The paged lists' controls (export/lists.ts LISTS_CSS) are written beside them the same way, while a page holds a
+// paged list: their `.list-more` and `.list-pages` rules are the export's, never classes of the person's.
+const WIDGET_STATE_RULES = [...readStylesheet(widgetStateCss()).rules, ...readStylesheet(LISTS_CSS).rules];
 const ruleText = (rule: CssRule): string =>
   JSON.stringify([normalizedBaseText(rule.selector), rule.media.map(normalizedBaseText), rule.declarations.map((declaration) => [normalizedBaseText(declaration.text), declaration.important]).sort()]);
 const WIDGET_STATE_TEXTS = new Set(WIDGET_STATE_RULES.map(ruleText));
@@ -1461,6 +1467,59 @@ function rootTokens<Ui>(context: HandlerContext<Ui>, sources: readonly SheetSour
 
 // whether a compound before the last carries a pseudo-class (a state of an ancestor)
 const innerPseudo = (selector: Selector): boolean => selector.compounds.slice(0, -1).some((compound) => compound.pseudo !== null);
+
+// a compound that names one class and nothing else (.card)
+const onlyClass = (compound: Compound): string | null =>
+  compound.tag === null && !compound.universal && compound.id === null && compound.attributes.length === 0 && compound.classes.length === 1 ? (compound.classes[0] as string) : null;
+
+// The style state a rule's selector is written for, as the export writes each (core/style/state-keys.ts stateSelector),
+// and the selector the element itself matches (the state taken off): `.btn:hover`, `.row:nth-child(3n+1)`,
+// `.field::placeholder`, `.nav__link[aria-current="page"]`, `.card:hover .title`. Null for a selector whose state is
+// none of the editor's, a pseudo-class on an ancestor that is no parent state (nav a:hover > span: the matcher reads
+// only the compounds' names, so the rule would hold always), or a state rule naming more than the element (a
+// descendant rule): the rule is reported, never guessed.
+function selectorState(selector: Selector, rules: ModelRules): { readonly state: string; readonly bare: Selector } | null {
+  const table = rules.output.states;
+  const compounds = selector.compounds;
+  const last = compounds[compounds.length - 1] as Compound;
+  // a parent state: an ancestor of one class in a state an ancestor may be in, then the element's class rule
+  const parent = compounds.length === 2 ? (compounds[0] as Compound) : null;
+  if (parent !== null && parent.pseudo !== null && selector.combinators[0] === ' ') {
+    const ancestorClass = onlyClass(parent);
+    const ancestorState = rules.statePseudos.get(parent.pseudo);
+    const key = ancestorClass === null || ancestorState === undefined ? null : parentKey(ancestorClass, ancestorState, table);
+    if (key === null || last.pseudo !== null || onlyClass(last) === null) return null;
+    return { state: key, bare: { compounds: [last], combinators: [], specificity: selector.specificity } };
+  }
+  if (innerPseudo(selector)) return null;
+  // the current page's link: the attribute test the Current state writes (properties.json, an attribute test as its
+  // "pseudo"), taken off the element's own selector
+  const current = last.pseudo === null ? currentTest(last, table) : null;
+  const attributes = current === null ? last.attributes : last.attributes.filter((_test, i) => i !== current.index);
+  let state = rules.baseLayer.state;
+  if (current !== null) state = current.state;
+  else if (last.pseudo !== null) {
+    const named = rules.statePseudos.get(last.pseudo) ?? (last.pseudo.startsWith(`${NTH_CHILD}(`) && last.pseudo.endsWith(')') ? nthKey(last.pseudo.slice(NTH_CHILD.length + 1, -1), table) : null);
+    if (named === null) return null;
+    state = named;
+  }
+  const bare: Selector = { ...selector, compounds: [...compounds.slice(0, -1), { ...last, pseudo: null, attributes }] };
+  if (state !== rules.baseLayer.state && compounds.length > 1 && classRuleOf(bare) === null) return null;
+  return { state, bare };
+}
+// the one pseudo-class with arguments a state is written with: a child position (:nth-child(An+B))
+const NTH_CHILD = 'nth-child';
+
+// the state whose "pseudo" is an attribute test the compound carries ([aria-current="page"]), with the test's place
+function currentTest(compound: Compound, table: ModelRules['output']['states']): { readonly state: string; readonly index: number } | null {
+  for (const [index, test] of compound.attributes.entries()) {
+    if (test.op !== '=') continue;
+    const written = `[${test.name}="${test.value}"]`;
+    const state = [...table].find(([, s]) => s.pseudo === written)?.[0];
+    if (state !== undefined) return { state, index };
+  }
+  return null;
+}
 
 function classRuleOf(selector: Selector): string | null {
   if (selector.compounds.length !== 1) return null;
@@ -1853,13 +1912,13 @@ const isCapturedPage = (markup: string): boolean => /<meta\b[^>]*\bname\s*=\s*["
 
 // whether this importer maps a selector, as applyStyles decides it
 function mapsSelector(text: string, rules: ModelRules): boolean {
-  const selector = readSelector(text);
-  if (selector === null || innerPseudo(selector)) return false;
-  const last = selector.compounds[selector.compounds.length - 1] as Compound;
+  const read = readSelector(text);
+  const stated = read === null ? null : selectorState(read, rules);
+  if (stated === null) return false;
+  const last = stated.bare.compounds[stated.bare.compounds.length - 1] as Compound;
   // The SVG node is one model element; its text, paths and shapes are markup inside it, not model nodes.
   if (last.tag !== null && last.tag !== rules.root.tag && typeOfTag(last.tag, rules) === null) return false;
-  const classRule = classRuleOf(selector);
-  if (last.pseudo !== null && (rules.statePseudos.get(last.pseudo) === undefined || (selector.compounds.length > 1 && classRule === null))) return false;
+  const classRule = classRuleOf(stated.bare);
   return classRule === null || validClassName(classRule);
 }
 

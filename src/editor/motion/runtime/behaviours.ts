@@ -56,8 +56,29 @@ export function createBehaviours(win: Window, kit: MotionKit): BehaviourKit {
       element.style.removeProperty('translate');
       const box = element.getBoundingClientRect();
       const vertical = behaviour.axis !== 'x';
-      const offset = vertical ? box.top + box.height / 2 - win.innerHeight / 2 : box.left + box.width / 2 - win.innerWidth / 2;
-      const shift = Math.round(-offset * behaviour.amount * 100) / 100;
+      const view = vertical ? win.innerHeight : win.innerWidth;
+      const size = vertical ? box.height : box.width;
+      const lead = vertical ? box.top : box.left;
+      // how far along its way across the screen it is (0: its leading edge enters, 1: its trailing edge leaves), held
+      // inside the range it moves in (Behaviour start, end)
+      const way = view + size;
+      const progress = way <= 0 ? 0.5 : (view - lead) / way;
+      const held = Math.min((behaviour.end ?? 100) / 100, Math.max((behaviour.start ?? 0) / 100, progress));
+      // the centre's offset from the viewport's at that point of the way (0.5: centred)
+      const offset = way * (0.5 - held);
+      let shift = -offset * behaviour.amount;
+      if (behaviour.max !== undefined) {
+        shift = Math.min(behaviour.max, Math.max(-behaviour.max, shift));
+      } else {
+        // as far as its parent's box lets it, so it never moves over the section after it (or before it)
+        const parent = element.parentElement?.getBoundingClientRect();
+        if (parent !== undefined) {
+          const before = vertical ? box.top - parent.top : box.left - parent.left;
+          const after = vertical ? parent.bottom - box.bottom : parent.right - box.right;
+          shift = Math.min(Math.max(0, after), Math.max(-Math.max(0, before), shift));
+        }
+      }
+      shift = Math.round(shift * 100) / 100;
       element.style.setProperty('translate', vertical ? `0 ${shift}px` : `${shift}px 0`);
     };
     const schedule = (): void => {

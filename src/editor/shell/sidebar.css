@@ -61,15 +61,25 @@
   scrollbar-width: thin;
 }
 
-/* the line at the top of the Insert view naming where a palette click inserts (the user's real-use audit, A3.19): it
-   stays at the top of the view while the tiles scroll under it, on the view's own surface, so the tile under the
-   pointer far down the list is still described (it scrolled off with the search: the last check's L02) */
-.insert__destination {
+/* the Insert view's head (insert.tsx): its title, the line naming where a palette click inserts (the user's real-use
+   audit, A3.19), the search and the densities stay at the top of the view while the tiles scroll under it, on the
+   view's own surface, so the tile under the pointer far down the list is still described (it scrolled off with the
+   search: the last check's L02) and the search is in reach */
+.insert__head {
   position: sticky;
   top: 0;
   z-index: 1;
   flex: none;
   background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.insert.insert__controls {
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
+}
+
+.insert__destination {
   padding: 0 var(--space-6);
   color: var(--color-text-muted);
   font-size: var(--fs-micro);

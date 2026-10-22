@@ -358,3 +358,67 @@
 ## DCS-067 — os avisos de Verificações da barra de navegação inserida ficam
 - **Origem:** na passada final (P-6), inserir "Barra de navegação" num projeto vazio mostra "Verificações: 4 problemas", um "Link sem destino" por link do modelo.
 - **Decidido (2026-10-21):** os avisos ficam de propósito: lembram de ligar o menu antes de publicar. Nada muda no código nem no modelo (`manifest/elements.json`).
+
+## DCS-068 — efeitos de entrada em um clique e o “+ Movimento” sem ação vazia
+- **Origem:** prontidao.md, Atritos menores: uma animação de entrada levava cerca de 8 passos e “+ Movimento” deixava um “Animar” sem propriedade. O dono autorizou escolher a melhor opção.
+- **Decidido (2026-10-22):** a aba Interações mostra “Efeito de entrada” com a escolha Ao rolar (padrão) ou Ao carregar a página e cinco efeitos: Surgir (`fade-in`), Subir (`slide-up`), Entrar pela esquerda (`slide-from-left`), Entrar pela direita (`slide-from-right`), Ampliar (`scale-in`). Cada um cria, num passo de desfazer, a interação (uma vez só) e uma linha do tempo chamada pelo elemento e pelo efeito (“Hero slide-up”), 0,7 s, `cubic-bezier(0.22, 1, 0.36, 1)`, quadros-chave de opacidade e da parte da transformação; o movimento reduzido segue o padrão “Respeitar” (salta para o fim). Os ids antigos (`fade-up`, `zoom-in`, `slide-in`) saíram: eram só argumentos do comando, nada salvo os guarda.
+- **“+ Movimento”** continua criando a interação do primeiro gatilho do elemento (ao clicar), agora com uma pulsação em `scale` (1 → 1,06 → 1 em 0,6 s): começa e termina no tamanho do elemento, então nada fica escondido antes do gatilho. Uma entrada a partir de escondido como padrão esconderia o elemento até o clique. Os 135 cenários de `manifest/features/24-motion.json` que usam “+ Movimento” passaram a esperar essa faixa.
+
+## DCS-069 — a busca de propriedades acha por sinônimos nos dois idiomas
+- **Origem:** prontidao.md, Atritos menores: "cor de fundo" e "cor" não achavam "Fundo". O dono autorizou escolher a melhor opção.
+- **Decidido (2026-10-22):** um campo do Estilo é achado pelo rótulo em todos os idiomas da interface, pelos nomes CSS que edita e, se edita uma cor, pelas palavras de cor do catálogo (`inspector.search.colour`: "cor cores" / "colour color"). A consulta inteira contida num desses textos acha, como antes; senão, cada palavra da consulta que nomeia algo (fora as de `inspector.search.fillers`, como "de", "of") precisa começar uma palavra deles. "Adicionar uma propriedade" usa a mesma busca (`searchWords`, `searchMatches`, `src/editor/inspector/sections.ts`).
+
+## DCS-070 — a classe recém-criada vira o alvo do estilo
+- **Origem:** prontidao.md, Atritos menores: depois de "+ Classe" o alvo seguia "Elemento". O dono autorizou escolher a melhor opção.
+- **Decidido (2026-10-22), como no Webflow:** uma classe criada e aplicada pelo comando ("+ Classe" com nome novo, `classes.apply`; "Salvar os estilos como classe", `classes.create`) vira o alvo; aplicar uma classe que o projeto já tem (definida ou listada por algum elemento) não muda o alvo. Desfazer volta ao contexto em que a classe foi aplicada (Elemento, DCS-009). Digitação pendente grava antes, onde foi digitada (`targetFollowsNewClass`, `src/editor/inspector/style-target.ts`).
+
+## DCS-071 — arrastar uma imagem do Explorador para o canvas
+- **Origem:** prontidao.md, Atritos menores: arrastar o arquivo do Explorador para a imagem não fazia nada. O dono autorizou escolher a melhor opção.
+- **Decidido (2026-10-22):** a linha de um arquivo de imagem arrastada sobre o canvas faz o que faz uma imagem arrastada do sistema: sobre uma imagem, o contorno dela e a soltura troca a origem; em outro lugar, a proposta de inserção e a soltura insere uma Imagem com aquele arquivo, sem guardar cópia. Um passo de desfazer. Fora do canvas, ou com arquivo que não é imagem, valem o mover para pasta e o clique que abre (`explorerImageDrop`, `src/editor/input/file-drop.ts`; porta `assets.insertImageFile` `panel-drag` `explorer-row`).
+
+## DCS-072 — a bancada guarda o estado deixado e encolhe em janela baixa
+- **Origem:** prontidao.md, Atritos menores: depois de recarregar, Verificações aparecia aberto e tomava metade do canvas a 768 px (foto 82).
+- **Decidido (2026-10-22):** a bancada abre só por comando e volta como foi deixada (aberta, fechada ou maximizada, com a aba ativa), como já fazia `persistWorkspace`; o que se via na foto 82 era o estado salvo, aberto. A altura padrão do corpo passa a ser 22 % da altura da janela, entre 120 e 212 px: 169 px a 768, 212 px a partir de 964 (`src/editor/shell/dock.css`).
+
+## DCS-073 — estados de estilo novos: marcado, foco dentro, posições de filho, vazio, pseudo-elementos, página atual e estado do pai
+- **Origem:** relatório de lacunas (capabilities.md, seção Estados): faltavam checked, focus-within, nth-child/ímpar/par/:empty, ::placeholder/::selection/::marker, o link da página atual e o estado do pai.
+- **Decidido (2026-10-22):** os estados fixos entram em `manifest/properties.json` (`checked` em campo e opção; `focus-within`; `odd`/`even` como `:nth-child(odd|even)`; `empty`; `placeholder` em campo e área de texto; `selection`; `marker` em item de lista e resumo; `current` em link e bloco de link, escrito `[aria-current="page"]`). Dois estados levam palavras próprias e são chaves do documento, sem migração (projetos antigos só têm estados do manifesto): `nth:<An+B>` na grafia canônica (uma fórmula que um estado já nomeia, odd/even, é esse estado) e `parent:<classe>:<estado>`, escrito `.card:hover .title`; só os estados marcados `ancestor` no manifesto (hover, focus, focus-visible, active, focus-within) servem ao pai. Dono único: `src/core/style/state-keys.ts`.
+- **Interface:** o menu Estado ganha "Filho na posição…" (abre em `3n`) e "Estado do pai…" (a classe do ancestral mais próximo que tem uma; recusa com palavras se nenhum tem); abaixo do seletor de estado, uma linha com a fórmula (campo) ou a classe e o estado do pai (listas), todas portas de `view.setStyleState`.
+- **Página atual:** a exportação escreve `aria-current="page"` nos links (a) cujo endereço é o arquivo da página escrita (com ou sem # e ?); o canvas faz o mesmo para a página aberta; um `aria-current` escrito pela pessoa prevalece. A importação descarta o `aria-current="page"` de um link para a própria página (a exportação o escreve de novo).
+- **Prévia:** pais e posições são forçados no elemento selecionado como qualquer estado; pseudo-elementos não são forçados (são sempre desenhados pela regra do nó). `::selection` só aparece ao selecionar texto na pré-visualização.
+
+## DCS-074 — Eventos antigos e Movimento ficam os dois
+- **Origem:** relatório de lacunas, item 10: "Eventos" (`core/events`) e Movimento se sobrepõem na aba Interações.
+- **Decidido (2026-10-22):** os eventos antigos não mapeiam 1:1: passar o mouse com mostrar/ocultar faz o oposto ao sair e alternar classe não; entrar na tela sem "uma vez" alterna a classe a cada entrada (o Movimento reinicia a linha do tempo); "tocar animação" depende da regra de classe que a exportação escreve só para eventos (`playedAnimations`). Migrar mudaria comportamento de sites existentes. Ficam os dois; a seção antiga passa a "Eventos simples (sistema anterior)" / "Simple events (earlier system)".
+
+## DCS-075 — Altura do painel inferior: divisor guardado e Movimento mais alto por padrão
+- **Origem:** relatório de lacunas, item 13: a 1280×720 o Movimento mostrava uma raia.
+- **Decidido (2026-10-22):** o painel inferior ganha o divisor `dock-height` (arrastar ou setas; guardado com os outros divisores). Enquanto a pessoa não o move, a aba Movimento usa 34 % da altura da janela, entre 120 e 360 px (245 px a 720); as outras abas mantêm a DCS-072.
+
+## DCS-076 — Transições de página: do site e por link
+- **Origem:** relatório de lacunas, item 4.
+- **Decidido (2026-10-22):** o site guarda `pageTransition` (esmaecer ou deslizar, duração até 3 s); um link guarda a sua no atributo `data-page-transition` (esmaecer, deslizar, nenhuma), escrito como está na exportação. Em http(s) com o navegador que tem View Transitions entre documentos, a transição é a do navegador (tipo `bm-fade`/`bm-slide`); em file:// ou sem suporte, um script próprio anima a saída, segue o link e a página nova entra (o nome da janela leva o tipo). Na Pré-visualização o link pede a página ao editor depois da saída. Movimento reduzido: nenhuma animação.
+
+## DCS-077 — Paralaxe presa à seção por padrão
+- **Origem:** relatório de lacunas, item 11 (foto 18).
+- **Decidido (2026-10-22):** sem "Deslocamento máximo", o paralaxe não sai da caixa do pai (o que já existia passa a respeitar isso ao abrir); com máximo, vale o número. "Começa/Termina em" é a parte do caminho pela tela em que se move; fora dela fica parado na ponta.
+
+## DCS-078 — Nomes automáticos de linhas do tempo nas palavras da interface
+- **Origem:** relatório de lacunas, item 12.
+- **Decidido (2026-10-22):** o nome é o do elemento seguido das palavras do gatilho ou do efeito de entrada no idioma da interface, em minúsculas ("Título ao clicar", "Hero on click"); nomes já salvos não mudam.
+
+## DCS-080 — Páginas de item: um modelo vivo por coleção
+- **Origem:** relatório de lacunas, item 6 (cópias por item, sem pasta).
+- **Decidido (2026-10-22):** "Fazer o modelo" marca a página aberta (`dataItem.template`); a tela mostra o item escolhido (primeiro, por padrão); a exportação grava uma página por item em `pasta-da-coleção/slug.html` (slug do campo slug, senão do campo escolhido, senão do título; repetido ganha "-2") e não grava o modelo. Links "página do item" apontam para lá. Páginas copiadas antes continuam valendo (sem migração: os campos novos são opcionais, versão 4); havendo modelo, os links usam o modelo. Um modelo por coleção.
+
+## DCS-081 — Valores formatados e palavras no idioma do site
+- **Decidido (2026-10-22):** número simples, agrupado, moeda (a da ligação, senão a do idioma do site: pt-BR→BRL, en→USD…) ou porcentagem (12 guarda 12 e mostra 12 %); datas curta a completa e mês/ano; sim/não, verdadeiro/falso, ligado/desligado. Sempre no idioma do site, nunca no da interface. Texto digitado na tela sobre um valor formatado volta como número (símbolos ignorados).
+
+## DCS-082 — Item sem valor não mostra nada
+- **Decidido (2026-10-22):** texto e endereço ficam vazios; imagem e texto alternativo voltam aos do componente (o cartão novo mantém a foto do modelo). Um texto de exemplo do componente ("Autor") nunca aparece no site como dado do item.
+
+## DCS-083 — Listas paginadas no navegador
+- **Decidido (2026-10-22):** a tela mostra a primeira página; o site recebe todos os itens, os seguintes ocultos, e `js/lists.js` acrescenta "Carregar mais" ou links de páginas (palavras no idioma do site). Sem script, vale a primeira página. Itens ocultos por "mostrar quando" não contam nas páginas.
+
+## DCS-084 — Listas aninhadas e campos de referência
+- **Decidido (2026-10-22):** a lista aninhada (via campo multirreferência) repete todos os filhos do seu contêiner, que deve conter só o elemento a repetir; não vira componente (instância não fica dentro de instância), as cópias guardam a parte do componente. Referência guarda o id; item apagado solta a referência; coleção apagada faz o campo virar texto com os títulos. O slug é criado do título só quando vazio (mudar o título não muda o endereço). Coluna importada como Opção ganha as escolhas que contém; Item(ns) de coleção não aparecem no tipo da importação (o campo é convertido depois, pelos títulos).

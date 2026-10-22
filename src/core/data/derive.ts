@@ -1,11 +1,14 @@
 // The derivation (spec content-data): what follows any change of the document in the same transaction, so the content
 // stays one truth whatever command made the change.
 //  1. An element bound to an item that the change edited directly (its text typed on the canvas, an image's source
-//     picked in Settings) writes its new value to the item: the canvas is one more way to edit the collection. A
-//     value the field cannot hold refuses the change, naming the row and the column.
-//  2. The shared regions follow an edited instance (regions.ts syncRegions), and a page the change made receives the
+//     picked in Settings) writes its new value to the item — through a reference, to the item it names — the canvas
+//     is one more way to edit the collection. A value the field cannot hold refuses the change, naming the row and the
+//     column.
+//  2. The collections settle: a slug an item lacks is made from its title, and a reference to an item that is gone is
+//     released.
+//  3. The shared regions follow an edited instance (regions.ts syncRegions), and a page the change made receives the
 //     regions shared with new pages.
-//  3. Every bound list and item page shows its collection again (materialize.ts).
+//  4. Every bound list and item page shows its collection again (materialize.ts).
 // The store calls deriveData after a handler's patches are applied and before the document is validated; the derived
 // patches join the command's own in one history entry, so one undo takes the whole change back. A refusal here is a
 // predictable one, said in the status bar; the command's change is then not applied at all.
@@ -14,54 +17,60 @@ import type { DocNode, DocumentJson } from '../document/model.ts';
 import { walk } from '../document/model.ts';
 import { deepEqual, type Patch } from '../history/transaction.ts';
 import type { MessageId } from '../../generated/ids.ts';
-import { itemPagesOf, reached, shownBy, targetsOf, valueFor, type DataContext, type ItemPages, type Place } from './bindings.ts';
-import { DataRefusal, collectionNamed, collectionsOf, queryItems, readCell, refuse } from './collections.ts';
+import { filledFor, itemPagesOf, placeOf, reached, reachedBy, readBack, repeats, shownBy, targetsOf, type DataContext, type ItemPages, type Place } from './bindings.ts';
+import { DataRefusal, collectionNamed, collectionsOf, filledSlugs, firstPage, lookupIn, queryItems, readFieldCell, referencedIds, refuse } from './collections.ts';
 import { materialize } from './materialize.ts';
-import { ITEM_PAGE, type Cell, type Collection } from './model.ts';
+import { ITEM_PAGE, SHOW, isReferenceType, type Cell, type Collection, type Item } from './model.ts';
 import { documentPatches } from './patches.ts';
 import { syncRegions } from './regions.ts';
-import { plainText, type InlineRun } from '../text/inline.ts';
 
 export type Derived = { readonly patches: readonly Patch[] } | { readonly refused: Message };
 
 // Whether a document has anything to derive: collections, or a shared region.
 const holdsContent = (document: DocumentJson): boolean => collectionsOf(document).length > 0 || (document.components ?? []).some((c) => c.shared !== undefined);
 
-// Every place an item shows in the document: the repeated items of each bound list and every item page, with the
-// item, its row and the elements that show it.
+// Every place an item shows in the document: the repeated items of each bound list (nested lists' too) and every item
+// page, with the item, its row and the elements that show it — the places materialize.ts fills, read the same way.
 interface Shown {
   readonly place: Place;
   readonly nodes: readonly DocNode[];
+  // the component whose instance the elements stand in
+  readonly component: string | undefined;
 }
 function shownItems(document: DocumentJson): Shown[] {
   const shown: Shown[] = [];
-  const at = (collection: Collection, id: string): Place | null => {
-    const row = collection.items.findIndex((item) => item.id === id);
-    const item = collection.items[row];
-    return item === undefined ? null : { collection, item, row: row + 1 };
-  };
-  for (const page of document.pages) {
-    for (const node of walk(page.tree)) {
-      const list = node.dataList;
-      const collection = list === undefined ? undefined : collectionNamed(document, list.collection);
-      if (list === undefined || collection === undefined) continue;
-      let rows: readonly { readonly id: string }[];
+  const lookup = lookupIn(document);
+  const visit = (node: DocNode, place: Place | null, within: string | undefined): void => {
+    const inside = node.component ?? within;
+    const list = node.dataList;
+    const collection = list === undefined ? undefined : collectionNamed(document, list.collection);
+    const placed = new Map<string, Place>();
+    if (list !== undefined && collection !== undefined && (list.via === undefined || place !== null)) {
+      let rows: readonly Item[] = [];
       try {
-        rows = queryItems(collection, list.query);
-      } catch {
-        continue;
+        const own = list.via === undefined || place === null ? collection.items : referencedIds(place.item.values[list.via]).flatMap((id) => collection.items.filter((item) => item.id === id));
+        rows = firstPage(queryItems({ ...collection, items: own }, list.query, lookup), list.query);
+      } catch (error) {
+        if (!(error instanceof DataRefusal)) throw error;
       }
-      const instances = node.children.filter((child) => child.component === list.component);
-      instances.forEach((instance, k) => {
+      node.children.filter((child) => repeats(list, child)).forEach((instance, k) => {
         const item = rows[k];
-        const place = item === undefined ? null : at(collection, item.id);
-        if (place !== null) shown.push({ place, nodes: [...reached(instance)] });
+        const at = item === undefined ? null : placeOf(collection, item.id);
+        if (at === null) return;
+        placed.set(instance.id, at);
+        shown.push({ place: at, nodes: [...reached(instance)], component: instance.component ?? inside });
       });
     }
+    for (const child of node.children) visit(child, placed.get(child.id) ?? (list !== undefined && repeats(list, child) ? null : place), inside);
+  };
+  for (const page of document.pages) {
     const mark = page.tree.dataItem;
     const collection = mark === undefined ? undefined : collectionNamed(document, mark.collection);
-    const place = mark === undefined || collection === undefined ? null : at(collection, mark.item);
-    if (place !== null) shown.push({ place, nodes: [...reached(page.tree)] });
+    const first = mark?.template === true ? collection?.items[0]?.id : undefined;
+    const id = mark?.item ?? first;
+    const place = collection === undefined || id === undefined ? null : placeOf(collection, id);
+    if (place !== null) shown.push({ place, nodes: [...reached(page.tree)], component: undefined });
+    visit(page.tree, place, undefined);
   }
   return shown;
 }
@@ -78,29 +87,34 @@ function writeBack(before: DocumentJson, after: DocumentJson, pages: ItemPages):
   const old = new Map<string, DocNode>();
   for (const page of before.pages) for (const node of walk(page.tree)) if (node.bind !== undefined) old.set(node.id, node);
   if (old.size === 0) return after;
+  const lookup = lookupIn(after);
   const writes = new Map<string, Map<string, Map<string, Cell | undefined>>>();
-  for (const { place, nodes } of shownItems(after)) {
+  for (const { place, nodes, component } of shownItems(after)) {
     for (const node of nodes) {
       const was = old.get(node.id);
       if (was === undefined) continue;
       for (const bound of node.bind ?? []) {
+        if (bound.to === SHOW) continue;
         const now = shownBy(node, bound.to);
         if (now === shownBy(was, bound.to)) continue;
         // a value that is what the item shows already is no edit of this element's (the command that changed it was
         // a content command, which showed the item itself)
-        const expected = valueFor(after, bound, place, pages);
-        const expectedText = expected === undefined ? undefined : typeof expected === 'string' ? expected : plainText(expected as readonly InlineRun[]);
-        if (now === expectedText) continue;
+        // (an item with no value there shows its component's own content, or none: filledFor)
+        if (now === shownBy(filledFor(after, node, place, pages, component), bound.to)) continue;
         if (bound.field === ITEM_PAGE) refuse('status.data.pageLink', { name: node.name });
-        const field = place.collection.fields.find((f) => f.key === bound.field);
-        if (field === undefined) continue;
-        const value = now === undefined ? undefined : readCell(field.type, written(node, now, field.type), after.language);
-        if (value === null) refuse('status.data.badValue', { collection: place.collection.name, row: place.row, column: field.label, value: now ?? '', type: { key: `data.type.${field.type}` as MessageId } });
-        const ofCollection = writes.get(place.collection.name) ?? new Map<string, Map<string, Cell | undefined>>();
-        const ofItem = ofCollection.get(place.item.id) ?? new Map<string, Cell | undefined>();
+        // the item and the field the binding's path reaches: the place's own, or the one a reference names
+        const target = reachedBy(lookup, place, bound.field);
+        if (target === undefined) continue;
+        const { field } = target;
+        // an email shown as a link's address is written mailto:
+        const typed = now !== undefined && field.type === 'email' && bound.to === 'link' ? now.replace(/^mailto:/i, '') : now;
+        const value = typed === undefined ? undefined : field.type === 'richtext' ? readFieldCell(field, written(node, typed, field.type), after.language, lookup) : readBack(field, typed, bound, after.language, lookup);
+        if (value === null) refuse('status.data.badValue', { collection: target.collection.name, row: target.row, column: field.label, value: now ?? '', type: { key: `data.type.${field.type}` as MessageId } });
+        const ofCollection = writes.get(target.collection.name) ?? new Map<string, Map<string, Cell | undefined>>();
+        const ofItem = ofCollection.get(target.item.id) ?? new Map<string, Cell | undefined>();
         ofItem.set(field.key, value);
-        ofCollection.set(place.item.id, ofItem);
-        writes.set(place.collection.name, ofCollection);
+        ofCollection.set(target.item.id, ofItem);
+        writes.set(target.collection.name, ofCollection);
       }
     }
   }
@@ -126,10 +140,43 @@ function writeBack(before: DocumentJson, after: DocumentJson, pages: ItemPages):
     }),
   };
 }
+// Step 2: the collections settled — every slug an item lacks made from its title (collections.ts filledSlugs), every
+// reference to an item its collection no longer holds released (a multireference keeps the others).
+function settled(document: DocumentJson): DocumentJson {
+  const collections = collectionsOf(document);
+  if (collections.length === 0) return document;
+  const held = new Map(collections.map((c) => [c.name, new Set(c.items.map((item) => item.id))]));
+  let changed = false;
+  const next = collections.map((collection) => {
+    let current = filledSlugs(collection);
+    const references = current.fields.filter((f) => isReferenceType(f.type));
+    if (references.length > 0) {
+      let items = current.items;
+      items = items.map((item) => {
+        let values = item.values;
+        for (const field of references) {
+          const value = values[field.key];
+          if (value === undefined) continue;
+          const ids = held.get(field.collection ?? '') ?? new Set<string>();
+          const kept = referencedIds(value).filter((id) => ids.has(id));
+          if (kept.length === referencedIds(value).length) continue;
+          const { [field.key]: _gone, ...others } = values;
+          void _gone;
+          values = kept.length === 0 ? others : { ...others, [field.key]: field.type === 'reference' ? (kept[0] as string) : kept };
+        }
+        return values === item.values ? item : { id: item.id, values };
+      });
+      if (items.some((item, i) => item !== current.items[i])) current = { ...current, items };
+    }
+    if (current !== collection) changed = true;
+    return current;
+  });
+  return changed ? { ...document, collections: next } : document;
+}
 
 // The marks a change left without meaning go with it, so no other command's change is ever refused because of them:
 // a binding whose element can no longer show it (a link made a button, a text element given children), and the item
-// mark of a page that copies another page made for the same item.
+// mark of a page that copies another page made for the same item (or another template of the same collection).
 function prune(document: DocumentJson, context: DataContext): DocumentJson {
   const fix = (node: DocNode): DocNode => {
     let next = node;
@@ -137,7 +184,7 @@ function prune(document: DocumentJson, context: DataContext): DocumentJson {
       const targets = targetsOf(node, context.rules);
       const seen = new Set<string>();
       const kept = node.bind.filter((bound) => {
-        const fits = targets.includes(bound.to) && !seen.has(bound.to);
+        const fits = (bound.to === SHOW || targets.includes(bound.to)) && !seen.has(bound.to);
         seen.add(bound.to);
         return fits;
       });
@@ -155,7 +202,7 @@ function prune(document: DocumentJson, context: DataContext): DocumentJson {
     let tree = fix(page.tree);
     const mark = tree.dataItem;
     if (mark !== undefined) {
-      const key = `${mark.collection}\u0000${mark.item}`;
+      const key = mark.template === true ? `${mark.collection}\u0000\u0000template` : `${mark.collection}\u0000${mark.item ?? ''}`;
       if (claimed.has(key)) {
         const { dataItem: _copy, ...plain } = tree;
         void _copy;
@@ -185,8 +232,8 @@ function listEdit(before: DocumentJson, after: DocumentJson): void {
       const was = lists.get(node.id);
       const list = node.dataList;
       if (was === undefined || list === undefined || !deepEqual(was.dataList, list)) continue;
-      if (!deepEqual(collectionNamed(before, list.collection), collectionNamed(after, list.collection))) continue;
-      const items = (n: DocNode) => n.children.filter((child) => child.component === list.component).map((child) => child.id);
+      if (!deepEqual(collectionsOf(before), collectionsOf(after))) continue;
+      const items = (n: DocNode) => n.children.filter((child) => repeats(list, child)).map((child) => child.id);
       if (!deepEqual(items(was), items(node))) refuse('status.data.listOwned', { name: node.name, collection: list.collection });
     }
   }
@@ -197,7 +244,7 @@ export function derivedDocument(before: DocumentJson, changed: DocumentJson, con
   const after = prune(changed, context);
   if (!holdsContent(after) && !holdsContent(before)) return after;
   listEdit(before, after);
-  const written = writeBack(before, after, itemPagesOf(after));
+  const written = settled(writeBack(before, after, itemPagesOf(after)));
   const regions = syncRegions(before, written, context);
   return materialize(regions, context);
 }

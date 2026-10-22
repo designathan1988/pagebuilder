@@ -22,14 +22,14 @@ import { floatBelow, type Placed } from './float.ts';
 import { crumbsAfterFold } from './crumb-fold.ts';
 import { drawnAsOf } from '../doors/placement.ts';
 import { useEditorState } from '../store.ts';
-import { activeState } from '../view/style-state.ts';
+import { activeState, stateName } from '../view/style-state.ts';
 import { panelName } from '../workspace/panel-catalogue.ts';
 import { messageText, useLocale, useT } from '../text.ts';
 import { ZoomValue } from './canvas.tsx';
 import { Slots } from './slots.tsx';
 import { previewing } from '../view/preview.ts';
 import { breakpointName } from '../../core/document/breakpoints.ts';
-import { useDuplicating, usePointerValue } from '../input/pointer/use-views.ts';
+import { useDuplicating, usePointerSelect } from '../input/pointer/use-views.ts';
 
 
 export function StatusBar() {
@@ -49,16 +49,19 @@ export function StatusBar() {
   // while a drag goes on (pointer.ts), an element's or a palette tile's, the message is the drop's own words, as its
   // label reads them on the canvas, or, off the page, that releasing cancels (spec palette-drag-insert, Problems in
   // Pager 1 and 2; the user's real-use audit, item 3.3)
-  const dragging = usePointerValue('drag');
+  // The drop's words are read from the drag as one text (null while no drag goes on): the bar is drawn anew when its
+  // words change, not at every move of the pointer.
   const copying = useDuplicating();
-  const words = dragging !== null ? dragMessages(document, dragging, copying) : [];
+  const dragSaid = usePointerSelect('drag', (drag) => (drag === null ? null : JSON.stringify(dragMessages(document, drag, copying))));
+  const dragging = dragSaid !== null;
+  const words: readonly Message[] = dragSaid === null ? [] : (JSON.parse(dragSaid) as Message[]);
   // a message given during the drag that did not move where it lands (a level key refused: "Already at the top level")
   // stays until the place changes; a key that moved it is read in the drop's words
-  const said = dragging === null ? '' : JSON.stringify(words);
+  const said = dragSaid ?? '';
   const [held, setHeld] = useState<{ words: string; message: Message | null; pinned: Message | null }>({ words: said, message, pinned: null });
-  const next = dragging === null ? { words: '', message, pinned: null } : said !== held.words ? { words: said, message, pinned: null } : message !== held.message ? { words: said, message, pinned: message } : held;
+  const next = !dragging ? { words: '', message, pinned: null } : said !== held.words ? { words: said, message, pinned: null } : message !== held.message ? { words: said, message, pinned: message } : held;
   if (next !== held && (next.words !== held.words || next.message !== held.message || next.pinned !== held.pinned)) setHeld(next);
-  const shown = dragging === null ? [message] : next.pinned !== null ? [next.pinned] : words.length > 0 ? words : [message];
+  const shown = !dragging ? [message] : next.pinned !== null ? [next.pinned] : words.length > 0 ? words : [message];
   // the whole message, also its tooltip: a long one is cut on the bar
   // while the page is previewed, the bar says only its message: the editing controls (the breadcrumb, the size, the
   // zoom…) act on a canvas that is not shown (the audit's U-039, met again in the dogfooding pass)
@@ -80,7 +83,7 @@ export function StatusBar() {
                 <Breadcrumb key="breadcrumb" entry={slot.entry} />,
                 <SelectionSize key="size" />,
                 <span key="context" className="status-bar__item status-bar__context">
-                  {t('statusBar.context', { breakpoint: breakpointName(breakpoint, t), state: t(state.labelKey as MessageId) })}
+                  {t('statusBar.context', { breakpoint: breakpointName(breakpoint, t), state: stateName(state, t) })}
                 </span>,
                 <span key="count" className="status-bar__item">
                   {t(`status.elementCount.${pluralForm(locale, count)}`, { count })}

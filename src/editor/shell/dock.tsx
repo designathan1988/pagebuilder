@@ -2,7 +2,7 @@
 // tab-strip component, the panel's icon from layout.json panels), show or hide, maximize, close the tab; its body when
 // open. Closed, the strip stays (design/final: Timeline · Checks · the first issue): its tabs open the dock on their
 // panel.
-import { useMemo } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { checksOf, type CheckIssue } from '../../core/a11y/checks.ts';
 import { manifest } from '../../manifest/runtime.ts';
 import type { DoorId, FeatureId, MessageId } from '../../generated/ids.ts';
@@ -20,6 +20,12 @@ import { PANELS, panelName, type Panel } from '../workspace/panel-catalogue.ts';
 import type { BodyTable } from './bodies.ts';
 import { Slots } from './slots.tsx';
 import { Shortcuts } from './shortcuts.tsx';
+import { Splitter } from './splitter.tsx';
+import { setDrawnSplitterSize } from '../workspace/layout.ts';
+
+// the dock's height, which the person sets by the splitter over its strip (spec panel-resize), kept between sessions
+// with the other splitters; while they never set it, the body takes its default share of the window (dock.css)
+const DOCK_SPLITTER = 'dock-height';
 
 const TAB = doorSlots('tab-strip')[0];
 // the strip's button that closes the tab it shows (its door's own arguments close a panel)
@@ -137,12 +143,39 @@ function Checks() {
 // the Motion tab: the project's motion timelines (spec motion-timeline; src/editor/motion/ui/timeline.tsx)
 export const DOCK_TABS: BodyTable = { timeline: Timeline, motion: MotionTimelinePanel, document: DocumentJson, checks: Checks, shortcuts: Shortcuts };
 
-// the tab's panel, named after its tab
-function DockBody({ tab }: { readonly tab: Panel }) {
+// the tab's panel, named after its tab, at the height the person gave the dock (its splitter); `onDrawn` hears the
+// height it is drawn at, which the splitter says and a drag starts from
+function DockBody({ tab, onDrawn }: { readonly tab: Panel; readonly onDrawn: (height: number | null) => void }) {
   const t = useT();
   const Body = DOCK_TABS[tab];
+  const chosen = useEditorState((s) => s.ui.preferences.splitterSizes?.[DOCK_SPLITTER] ?? null);
+  const maximized = useEditorState((s) => s.ui.layout.dock === 'max');
+  const body = useRef<HTMLDivElement | null>(null);
+  useLayoutEffect(() => {
+    const element = body.current;
+    if (element === null) return undefined;
+    const read = () => {
+      setDrawnSplitterSize(DOCK_SPLITTER, element.offsetHeight);
+      onDrawn(element.offsetHeight);
+    };
+    read();
+    const observer = new ResizeObserver(read);
+    observer.observe(element);
+    return () => {
+      observer.disconnect();
+      setDrawnSplitterSize(DOCK_SPLITTER, null);
+      onDrawn(null);
+    };
+  }, [onDrawn]);
   return (
-    <div className={`dock-body${Body ? '' : ' dock-body--empty'}`} role="tabpanel" aria-label={t(panelName(tab))} data-panel-focus={tab}>
+    <div
+      ref={body}
+      className={`dock-body dock-body--${tab}${Body ? '' : ' dock-body--empty'}`}
+      role="tabpanel"
+      aria-label={t(panelName(tab))}
+      data-panel-focus={tab}
+      style={chosen === null || maximized ? undefined : { height: chosen }}
+    >
       {Body ? <Body /> : t('common.notAvailableYet')}
     </div>
   );
@@ -183,8 +216,12 @@ export function Dock() {
   const checksName = t(`statusBar.checks.${pluralForm(locale, issues.length)}` as MessageId, { count: issues.length });
   // closed, the strip says the first issue after its tabs (design/final's peek), the whole list a press away
   const first = closed ? issues[0] : undefined;
+  const [drawn, setDrawn] = useState<number | null>(null);
+  const open = active !== null && !closed;
   return (
     <section className={`dock dock--${state}`} aria-label={t(panelName('workbench'))}>
+      {/* the dock's height, over its strip (a maximized dock takes the stage's whole height) */}
+      {open && state !== 'max' ? <Splitter splitter={DOCK_SPLITTER} className="splitter--dock" drawn={drawn} /> : null}
       <div className="dock-strip" data-region="dock-strip">
         {closed ? (
           <div className="dock-strip__tabs">
@@ -232,7 +269,7 @@ export function Dock() {
           />
         </span>
       </div>
-      {active !== null && !closed ? <DockBody tab={active} /> : null}
+      {active !== null && !closed ? <DockBody tab={active} onDrawn={setDrawn} /> : null}
     </section>
   );
 }

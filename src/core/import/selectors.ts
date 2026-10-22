@@ -6,10 +6,11 @@
 // the specificity that ranks those rules is this module's (specificityOf, for any selector; canvas/coordinates.ts).
 //
 // What it reads: a compound selector of a type (or `*`), classes, an id and attribute tests ([attr], [attr=v],
-// [attr~=v], [attr^=v], [attr$=v], [attr*=v]), joined by the descendant and the child combinators; a trailing
-// pseudo-class is left to the caller (the state a rule belongs to: properties.json's states), and every other
-// pseudo-class, a pseudo-element or a sibling combinator is not read — the caller reports such a rule instead of
-// mapping it. Specificity counts (ids, classes and attributes, types), as CSS counts it.
+// [attr~=v], [attr^=v], [attr$=v], [attr*=v]), joined by the descendant and the child combinators; a pseudo-class, a
+// child position (:nth-child(An+B)) or a pseudo-element a compound ends with is left to the caller (the state a rule
+// belongs to: core/style/state-keys.ts), and every other functional pseudo-class (:not, :is, :has), a chain of them or
+// a sibling combinator is not read — the caller reports such a rule instead of mapping it. Specificity counts (ids,
+// classes and attributes, types), as CSS counts it.
 export interface Facts {
   readonly tag: string | null;
   readonly classes: readonly string[];
@@ -29,7 +30,8 @@ export interface Compound {
   readonly classes: readonly string[];
   readonly id: string | null;
   readonly attributes: readonly AttributeTest[];
-  // the pseudo-class the compound ends with (`hover` for `:hover`), which the caller reads as a state; null for none
+  // the pseudo-class the compound ends with, without its colon (`hover` for `:hover`, `nth-child(3n+1)`), or the
+  // pseudo-element with one of its two (`:before` for `::before`), which the caller reads as a state; null for none
   readonly pseudo: string | null;
 }
 
@@ -46,6 +48,8 @@ const TYPE = /^[a-z][a-z0-9-]*/i;
 const CLASS = /^\.(-?[_a-z][\w-]*)/i;
 const ID = /^#(-?[_a-z][\w-]*)/i;
 const PSEUDO = /^::?([\w-]+)(\(([^)]*)\))?/;
+// the one pseudo-class with arguments a compound may end with: a child position (core/style/state-keys.ts)
+const NTH_CHILD = 'nth-child';
 const ATTRIBUTE = /^\[\s*([\w-]+)\s*(?:([~^$*]?=)\s*(?:"([^"]*)"|'([^']*)'|([^\]\s]+))\s*)?\]/;
 
 // The pieces of one compound selector, or null when a piece is one this module does not read.
@@ -69,10 +73,12 @@ function readCompound(text: string): Compound | null {
     }
     const pseudoMatch = PSEUDO.exec(rest);
     if (pseudoMatch !== null) {
-      const [, name = '', args] = pseudoMatch;
-      // a pseudo-element, or a pseudo-class that takes arguments (:not, :nth-child): not read here
-      if (rest.startsWith('::') || args !== undefined) return null;
-      pseudo = name.toLowerCase();
+      const [, name = '', args, inner = ''] = pseudoMatch;
+      // a pseudo-class that takes arguments is read only for a child position (:nth-child(An+B)): :not, :is, :has and
+      // the rest are not read here
+      const lower = name.toLowerCase();
+      if (args !== undefined && (lower !== NTH_CHILD || rest.startsWith('::'))) return null;
+      pseudo = rest.startsWith('::') || LEGACY_ELEMENTS.has(lower) ? `:${lower}` : args === undefined ? lower : `${lower}(${inner.replace(/\s+/g, '').toLowerCase()})`;
       rest = rest.slice(pseudoMatch[0].length);
       continue;
     }
@@ -105,7 +111,7 @@ function readCompound(text: string): Compound | null {
 }
 
 // A selector read into its compounds and combinators, or null when it holds a piece this module does not read (a
-// pseudo-element, :not(), a sibling combinator, an escape): the caller reports such a rule as not mapped.
+// chain of pseudo-classes, :not(), a sibling combinator, an escape): the caller reports such a rule as not mapped.
 export function readSelector(text: string): Selector | null {
   const trimmed = text.trim();
   if (trimmed === '') return null;
@@ -130,8 +136,9 @@ export function readSelector(text: string): Selector | null {
   };
   for (let at = 0; at < trimmed.length; at += 1) {
     const char = trimmed[at] as string;
-    if (char === '[') depth += 1;
-    if (char === ']') depth -= 1;
+    // inside an attribute test or a child position's formula (:nth-child(2n + 1)) a space and a "+" are its own
+    if (char === '[' || char === '(') depth += 1;
+    if (char === ']' || char === ')') depth -= 1;
     if (depth > 0) {
       current += char;
       continue;
@@ -152,8 +159,10 @@ export function readSelector(text: string): Selector | null {
   commit();
   if (failed || compounds.length === 0 || current !== '' || pending === '>') return null;
   const ids = compounds.filter((c) => c.id !== null).length;
-  const others = compounds.reduce((n, c) => n + c.classes.length + c.attributes.length + (c.pseudo === null ? 0 : 1), 0);
-  const types = compounds.filter((c) => c.tag !== null).length;
+  // a pseudo-element counts as a type, a pseudo-class as a class (`pseudo` keeps one colon of a pseudo-element's two)
+  const element = (c: Compound): boolean => c.pseudo !== null && c.pseudo.startsWith(':');
+  const others = compounds.reduce((n, c) => n + c.classes.length + c.attributes.length + (c.pseudo === null || element(c) ? 0 : 1), 0);
+  const types = compounds.filter((c) => c.tag !== null).length + compounds.filter(element).length;
   return { compounds, combinators, specificity: [ids, others, types] };
 }
 

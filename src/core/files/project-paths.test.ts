@@ -26,6 +26,18 @@ describe('a file of the project keeps its own name on every road (AD1)', () => {
     expect(ran.problems).toEqual([]);
   });
 
+  it('an image the project holds, dragged from the Explorer, is placed or becomes an image source without a new file (DCS-071)', () => {
+    const files = [{ path: 'img/a.png', type: 'image/png', bytes: '' }, { path: 'css/x.css', type: 'text/css', bytes: '' }];
+    const placed = runHandler(insertImageFileCommand, documentOf({ pages: [home()], files }), { path: 'img/a.png' });
+    expect(placed.problems).toEqual([]);
+    expect(placed.document.files).toEqual(files);
+    expect(placed.document.pages[0]?.tree.children[0]?.attributes.src).toBe('img/a.png');
+    const replaced = runHandler(insertImageFileCommand, documentOf({ pages: [home([node('Pic', 'image', 'img', { attributes: { src: 'img/b.png' } })])], files }), { path: 'img/a.png', replace: 'Pic' });
+    expect(locate(replaced.document, 'Pic' as NodeId)?.node.attributes.src).toBe('img/a.png');
+    expect(runHandler(insertImageFileCommand, documentOf({ pages: [home()], files }), { path: 'css/x.css' }).outcome.kind).toBe('refused');
+    expect(runHandler(insertImageFileCommand, documentOf({ pages: [home()], files }), { path: 'img/gone.png' }).outcome.kind).toBe('refused');
+  });
+
   it('a used file renamed to a name with spaces and accents keeps the element showing it', () => {
     const document = documentOf({ pages: [home([node('Pic', 'image', 'img', { attributes: { src: 'img/a.png' } })])], files: [{ path: 'img/a.png', type: 'image/png', bytes: '' }] });
     const ran = runHandler(renameFileCommand, document, { path: 'img/a.png', name: 'Título com acentos ção.png' });

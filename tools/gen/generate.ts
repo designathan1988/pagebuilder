@@ -18,6 +18,7 @@ import { bcdVersion, generateCompatProperties, generateUnits, generateValueFunct
 import { writeTypes } from './types.ts';
 import { ICONS_FILE, ICON_SPRITE, generateIconNames, generateSprite } from './icons.ts';
 import { packageVersion } from './versions.ts';
+import { writeMotionRuntime } from './motion-runtime.ts';
 
 const require = createRequire(import.meta.url);
 
@@ -364,6 +365,7 @@ export async function generate(root: string = REPO_ROOT): Promise<string[]> {
     written.push(`${GENERATED_DIR}/${file}`);
   }
   written.push(...writeTypes(root));
+  written.push(writeMotionRuntime(root));
   fs.writeFileSync(path.join(root, ICON_SPRITE), generateSprite(root));
   written.push(ICON_SPRITE);
   return written;

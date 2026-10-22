@@ -6,7 +6,7 @@ import { translate } from '../../i18n/index.ts';
 import type { PreferenceStorage } from '../preferences/preferences.ts';
 import { createEditorStore, MODEL_RULES } from '../store.ts';
 import type { Declarations, DocNode, DocumentJson } from '../../core/document/model.ts';
-import { collapsedSections, declaredBorderValues, sectionClosed, summaryOf, summaryProperties } from './sections.ts';
+import { collapsedSections, declaredBorderValues, searchMatches, searchWords, sectionClosed, summaryOf, summaryProperties } from './sections.ts';
 
 function memory(text: string | null = null): PreferenceStorage & { text: string | null } {
   const box = {
@@ -129,5 +129,19 @@ describe('the summary of a collapsed section (inspector/sections.ts)', () => {
     expect(summaryOf('border', declaredBorderValues(document, node, MODEL_RULES), words, 'en')).toBe('4px solid');
     const withOwn: DocNode = { ...node, styles: { desktop: { base: { 'border-top-width': '6px' } } } };
     expect(summaryOf('border', declaredBorderValues(document, withOwn, MODEL_RULES), words, 'en')).toBe('6px 4px 4px solid');
+  });
+});
+
+describe('property search', () => {
+  const background = searchWords('property.backgroundColor', ['background-color']);
+  const width = searchWords('property.width', ['width']);
+  it('finds a colour field by its words in either language, fillers ignored', () => {
+    for (const query of ['Fundo', 'fundo', 'background', 'cor de fundo', 'background color', 'cor', 'colour', 'Cor do fundo']) expect(searchMatches(query, background), query).toBe(true);
+  });
+  it('keeps a field that none of the words name out', () => {
+    for (const query of ['cor', 'cor de fundo', 'de', 'colour']) expect(searchMatches(query, width), query).toBe(false);
+    expect(searchMatches('cor de fundo', searchWords('property.backgroundClip', ['background-clip'])), 'a word begins a word').toBe(false);
+    expect(searchMatches('largura', width)).toBe(true);
+    expect(searchMatches('  ', width)).toBe(true);
   });
 });

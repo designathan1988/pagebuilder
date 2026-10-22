@@ -26,7 +26,7 @@ import { endOffSelection, endOnUndoable } from './canvas/text-edit.ts';
 import { endRenameOffSelection, endRenameOnUndoable } from './layers/rename.ts';
 import { revealSelection } from './layers/tree.ts';
 import { pageFollowsSelection } from './project/page-follows.ts';
-import { targetFollowsClassRename, targetOffSelection } from './inspector/style-target.ts';
+import { targetFollowsClassRename, targetFollowsNewClass, targetOffSelection } from './inspector/style-target.ts';
 import { keyframeTarget } from './timeline/playhead.ts';
 import { motionContext } from './motion/state.ts';
 import { browserStorage, loadPreferences, persistPreferences, type PreferenceStorage } from './preferences/preferences.ts';
@@ -168,8 +168,9 @@ export function createEditorStore(options: EditorStoreOptions = {}): EditorStore
       // the style state goes back to Base when the selection holds an element it does not stand on (AUD-03)
       return styleStateFollows({ ...revealed, ui: endRenameOffSelection({ ...revealed, ui: endOffSelection(revealed) }) });
     },
-    followCommand: (state, command, args) => {
-      const followed = { ...state, ui: targetFollowsClassRename(state, command, args) };
+    followCommand: (state, command, args, before) => {
+      const renamed = { ...state, ui: targetFollowsClassRename(state, command, args) };
+      const followed = { ...renamed, ui: targetFollowsNewClass(renamed, command, args, before) };
       return styleStateFollows({ ...followed, ui: endRenameOnUndoable({ ...followed, ui: endOnUndoable(followed, command) }, command) });
     },
   });

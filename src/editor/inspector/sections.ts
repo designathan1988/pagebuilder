@@ -18,9 +18,9 @@ import type { StoreState } from '../../core/store/store.ts';
 import { shownText } from '../../core/style/set.ts';
 import { fold } from '../../core/text/fold.ts';
 import type { CommandArgs } from '../../generated/commands.ts';
-import { SECTION_IDS, type MessageId, type SectionId } from '../../generated/ids.ts';
+import { LOCALES, SECTION_IDS, type MessageId, type SectionId } from '../../generated/ids.ts';
 import type { Locale } from '../../i18n/index.ts';
-import { pluralForm } from '../../i18n/index.ts';
+import { pluralForm, translate } from '../../i18n/index.ts';
 import { manifest } from '../../manifest/runtime.ts';
 import type { EditorUi } from '../state.ts';
 import { chosen } from '../preferences/said.ts';
@@ -326,12 +326,33 @@ export const searchInspector = registerHandler<'inspector.search', EditorUi>('in
   return { kind: 'change', ui: { ...rest, inspectorSearch: query }, message: message('status.inspector.searchFor', { query: typed }) };
 });
 
-// Whether a field or an editor control of the Style tab matches a query: the query (case and accents ignored) is part
-// of its label as shown, or of one of the CSS names it edits. An empty query matches everything.
-export function searchMatches(query: string, label: string, cssNames: readonly string[]): boolean {
+// The words a field of the Style tab is found by: its label in every interface language, the CSS names it edits and,
+// when one of them holds a colour, the catalogue's words for a colour (inspector.search.colour) in every language. So
+// "cor de fundo", "background color" and "cor" find Background whichever language the interface shows (DCS-069).
+export function searchWords(labelKey: MessageId | null, cssNames: readonly string[]): readonly string[] {
+  const colour = cssNames.some((name) => isColourValue(name));
+  return [
+    ...LOCALES.flatMap((locale) => [...(labelKey === null ? [] : [translate(locale, labelKey)]), ...(colour ? [translate(locale, 'inspector.search.colour')] : [])]),
+    ...cssNames,
+  ];
+}
+
+// the words of a query that name nothing ("de", "of"), read from the catalogue of every language
+let fillers: ReadonlySet<string> | null = null;
+const fillerWords = (): ReadonlySet<string> => (fillers ??= new Set(LOCALES.flatMap((locale) => queryWords(translate(locale, 'inspector.search.fillers')))));
+const queryWords = (text: string): string[] => fold(text).split(/[^\p{L}\p{N}]+/u).filter((word) => word !== '');
+
+// Whether a field or an editor control of the Style tab matches a query (case and accents ignored): the query is part
+// of one of its search words (searchWords), or each word of the query that names something begins one of their words
+// ("cor" begins "cor", never the middle of "recorte"). An empty query matches everything. The field search and Add a
+// property both ask it.
+export function searchMatches(query: string, words: readonly string[]): boolean {
   const wanted = fold(query.trim());
   if (wanted === '') return true;
-  return fold(label).includes(wanted) || cssNames.some((name) => fold(name).includes(wanted));
+  if (words.some((text) => fold(text).includes(wanted))) return true;
+  const named = queryWords(wanted).filter((word) => !fillerWords().has(word));
+  const own = words.flatMap(queryWords);
+  return named.length > 0 && named.every((word) => own.some((one) => one.startsWith(word)));
 }
 
 // a section of the inspector an argument names (manifest refers: inspector-section)

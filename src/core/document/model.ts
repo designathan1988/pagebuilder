@@ -6,7 +6,7 @@ import type { AttributeId, BreakpointId, ElementType, PropertyId, StateId } from
 import type { IdGenerator } from '../ports/ids.ts';
 import type { InlineRun } from '../text/inline.ts';
 import type { Bound, Collection, DataItem, DataList, SharedRegion } from '../data/model.ts';
-import type { Behaviour, MotionInteraction, MotionTimeline } from '../motion/model.ts';
+import type { Behaviour, MotionInteraction, MotionTimeline, PageTransition } from '../motion/model.ts';
 import type { Authoring } from './authoring.ts';
 import type { AppLayer, NodeLogic } from '../logic/model.ts';
 import type { ProjectBreakpoint } from './breakpoint-rules.ts';
@@ -25,8 +25,10 @@ export type StructuredLayer = { readonly [field: string]: string | boolean };
 export type StoredValue = string | readonly StructuredLayer[];
 // property → what it stores
 export type Declarations = { readonly [P in PropertyId]?: StoredValue };
-// breakpoint → state → declarations: a value belongs to one breakpoint and one state
-export type Styles = { readonly [B in BreakpointId]?: { readonly [S in StateId]?: Declarations } };
+// breakpoint → state → declarations: a value belongs to one breakpoint and one state — a state of properties.json, a
+// child position (`nth:3n+1`) or a parent state (`parent:card:hover`), core/style/state-keys.ts
+export type StateKey = StateId | `nth:${string}` | `parent:${string}`;
+export type Styles = { readonly [B in BreakpointId]?: { readonly [S in StateKey]?: Declarations } };
 export type AttributeValue = string | number | boolean;
 
 export interface DocNode {
@@ -85,6 +87,10 @@ export interface DocNode {
   // a page's root only: the item of a collection the page was made for (core/data/commands.ts pages.fromCollection);
   // absent on any other page
   readonly dataItem?: DataItem;
+  // hidden for the item it shows (core/data/materialize.ts): its show binding does not hold for the item, or it is a
+  // nested list's first item while the list shows none; true, absent while it shows. Derived, never set by a person:
+  // the canvas and the export write it as the hidden attribute (core/render/output.ts elementAttributes).
+  readonly dataHidden?: true;
   // the animations of the element (core/animation/animation.ts, group 18), in the order they were made; absent while it
   // has none
   readonly animations?: readonly Animation[];
@@ -203,6 +209,8 @@ export interface DocumentJson {
   // The project's motion timelines (core/motion, spec motion-timeline): named, reusable timelines of actions that the
   // elements' interactions play by name. Absent while the project holds none.
   readonly motionTimelines?: readonly MotionTimeline[];
+  // the transition between the site's pages (core/motion/model.ts, spec page-transitions); absent: none
+  readonly pageTransition?: PageTransition;
   // the project's collections, in the order they were made: typed fields and items, which bound lists and item pages
   // show (core/data/collections.ts, spec content-data); absent while none is
   readonly collections?: readonly Collection[];

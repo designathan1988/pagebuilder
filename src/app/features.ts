@@ -208,6 +208,7 @@ export const FEATURES = {
   'motion-keyframes': registerFeature('motion-keyframes'),
   'motion-preview': registerFeature('motion-preview'),
   'motion-behaviours': registerFeature('motion-behaviours'),
+  'page-transitions': registerFeature('page-transitions'),
   'export-motion-js': registerFeature('export-motion-js'),
   // 19 pages, files, assets
   'explorer-pages': registerFeature('explorer-pages'),

@@ -137,7 +137,7 @@ describe('the schema', () => {
     expect(schemaRefusal('Menu', [])?.key).toBe('status.data.noFields');
     expect(schemaRefusal('Menu', [FIELDS[0] as Field, { key: 'other', label: 'NOME', type: 'text' }])?.key).toBe('status.data.fieldLabelTaken');
     expect(schemaRefusal('Menu', [{ key: '__proto__', label: 'x', type: 'text' }])?.key).toBe('status.data.badField');
-    expect(schemaRefusal('Menu', [{ key: 'a', label: 'a', type: 'color' as never }])?.key).toBe('status.data.badField');
+    expect(schemaRefusal('Menu', [{ key: 'a', label: 'a', type: 'nonsense' as never }])?.key).toBe('status.data.badField');
     expect(schemaRefusal('Menu', FIELDS)).toBeNull();
   });
 

@@ -110,15 +110,25 @@
 }
 
 /* the keys of a drag, while one goes on (the user's real-use audit, item 3.3) */
-/* it takes what the toolbar leaves, never more: cut with an ellipsis, whole in its tooltip (canvas.tsx Hint) */
+/* it takes what the toolbar leaves, never more: where one line does not fit, it breaks between its keys onto a second
+   line of the toolbar (two caption lines fit its height), each key whole (canvas.tsx Hint) */
 .canvas-toolbar__hint {
+  display: flex;
   flex: 0 1 auto;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: flex-end;
+  column-gap: var(--space-3);
   min-width: 0;
+  max-height: 100%;
   margin-inline-start: auto;
   overflow: hidden;
   color: var(--color-text-muted);
   font: var(--fw-caption) var(--fs-caption) / var(--lh-caption) var(--font-ui);
-  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+.canvas-toolbar__hint-part {
   white-space: nowrap;
 }
 

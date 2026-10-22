@@ -86,8 +86,11 @@ export function elementAt(iframe: HTMLIFrameElement, point: Point): Element | nu
 // The screen box of a page element: its frame box, scaled and placed.
 export function screenBox(iframe: HTMLIFrameElement, element: Element): { x: number; y: number; width: number; height: number } | null {
   const g = geometryOf(iframe);
-  if (!g) return null;
-  const r = element.getBoundingClientRect();
+  return g ? placed(element.getBoundingClientRect(), g) : null;
+}
+// A box in the frame, scaled and placed on the screen by a geometry already read: a reader of many boxes reads the
+// frame's geometry once for all of them (nothing between its reads moves the frame).
+function placed(r: DOMRectReadOnly, g: FrameGeometry): { x: number; y: number; width: number; height: number } {
   const topLeft = frameToScreen({ x: r.left, y: r.top }, g);
   return { x: topLeft.x, y: topLeft.y, width: r.width * g.zoom, height: r.height * g.zoom };
 }
@@ -97,7 +100,7 @@ export function screenBox(iframe: HTMLIFrameElement, element: Element): { x: num
 export function innerBox(iframe: HTMLIFrameElement, id: string): { x: number; y: number; width: number; height: number } | null {
   const element = iframe.contentDocument?.querySelector(nodeSelector(id as NodeId));
   const g = geometryOf(iframe);
-  const box = element ? screenBox(iframe, element) : null;
+  const box = element && g ? placed(element.getBoundingClientRect(), g) : null;
   const style = element ? iframe.contentWindow?.getComputedStyle(element) : undefined;
   if (!box || !g || !style) return null;
   const px = (value: string) => (parseFloat(value) || 0) * g.zoom;
@@ -331,8 +334,7 @@ export function elementBoxes(iframe: HTMLIFrameElement): ElementBox[] {
   if (!page || !view || !g) return [];
   const px = (value: string) => (parseFloat(value) || 0) * g.zoom;
   return [...page.querySelectorAll(`[${NODE_ATTRIBUTE}]`)].flatMap((element) => {
-    const box = screenBox(iframe, element);
-    if (box === null) return [];
+    const box = placed(element.getBoundingClientRect(), g);
     const style = view.getComputedStyle(element);
     return [
       {
@@ -474,10 +476,7 @@ function readContentBoxes(iframe: HTMLIFrameElement): { x: number; y: number; wi
   const doc = iframe.contentDocument;
   const g = geometryOf(iframe);
   if (!doc || !g) return [];
-  const toScreen = (r: DOMRect) => {
-    const topLeft = frameToScreen({ x: r.left, y: r.top }, g);
-    return { x: topLeft.x, y: topLeft.y, width: r.width * g.zoom, height: r.height * g.zoom };
-  };
+  const toScreen = (r: DOMRect) => placed(r, g);
   const boxes: { x: number; y: number; width: number; height: number }[] = [];
   const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
   const range = doc.createRange();

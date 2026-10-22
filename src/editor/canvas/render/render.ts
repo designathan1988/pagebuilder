@@ -42,7 +42,7 @@
 import type { NodeId } from '../../../generated/commands.ts';
 import { baseCss, capturedBaseCss, WIDGET_OPEN_ATTRIBUTE, widgetClosedPart, widgetStateCss } from '../../../core/render/base.ts';
 import { formNodes } from '../../../core/export/authoring.ts';
-import { canvasViewport, classesCss, elementAttributes, fileUrlsIn, nodeCss, outputModelFromManifest, type OutputModel } from '../../../core/render/output.ts';
+import { canvasViewport, classesCss, elementAttributes, fileUrlsIn, linksToFile, nodeCss, outputModelFromManifest, type OutputModel } from '../../../core/render/output.ts';
 export {  nodeCss,   } from '../../../core/render/output.ts';
 import type { ElementsFile, InteractionsFile, PropertiesFile } from '../../../manifest/schema.ts';
 import { locate, walk, type DocNode, type DocumentJson } from '../../../core/document/model.ts';
@@ -60,6 +60,7 @@ import { animationsOf, keyframesCss, previewDeclarations } from '../../../core/a
 import { outputForTable } from '../../../core/document/breakpoint-rules.ts';
 import { captureAssetPath, capturedPageCss, capturedPageStylePath } from '../../../core/import/capture-styles.ts';
 import { mountCaptured } from './captured.ts';
+import { isPseudoElement } from '../../../core/style/state-keys.ts';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 export const NODE_ATTRIBUTE = 'data-node';
@@ -233,6 +234,9 @@ function touchOf(doc: DocumentJson, page: number, patch: Patch): Touch {
     return { kind: index <= page ? 'page' : 'none' };
   }
   if (index !== page) return { kind: 'none' };
+  // the page's file is what its links to itself name: they are its current page's links (aria-current, spec
+  // state-styles), so a new file draws the page again
+  if (path[2] === 'file') return { kind: 'page' };
   if (path[2] !== 'tree') return { kind: 'none' };
   if (path.length === 3) return { kind: 'page' };
   let node: DocNode | undefined = doc.pages[page]?.tree;
@@ -358,12 +362,15 @@ export class PageRenderer {
 
   // Editor-only (spec state-styles): the selected elements drawn as if a state held, while a state other than Base is
   // edited: one stylesheet, after every node's, holding each selected node's values of that state as plain rules (with
-  // their breakpoints' media queries); none otherwise. The export never has it.
+  // their breakpoints' media queries); none otherwise. The export never has it. A parent state or a child position is
+  // forced on the selected elements as any state is (the card need not be hovered to see its title's Hover); a
+  // pseudo-element (::before, ::placeholder, ::marker, ::selection) is no state the element is in: its rule is the
+  // node's own, drawn always, and written as the element's would style the element itself.
   previewState(doc: DocumentJson, selection: readonly NodeId[], state: string | null): void {
     this.doc = doc;
     const tree = doc.pages[this.page]?.tree ?? null;
     const css =
-      state === null || tree === null
+      state === null || tree === null || isPseudoElement(state, this.model.states)
         ? ''
         : selection
             .map((id) => findNode(tree, id))
@@ -810,7 +817,7 @@ export class PageRenderer {
       wanted.set(KEY_CONTEXT_ATTRIBUTE, edited.context);
     }
     const tag = element.localName;
-    const output = elementAttributes(node, tag, root, this.model, (_name, value) => value, { language: this.doc?.language ?? 'en', inForm: this.inForm(node.id) });
+    const output = elementAttributes(node, tag, root, this.model, (_name, value) => value, { language: this.doc?.language ?? 'en', inForm: this.inForm(node.id), currentPage: (address) => linksToFile(address, this.doc?.pages[this.page]?.file ?? '') });
     for (const [name, value] of output.element) {
       if (wanted.has(name)) continue;
       const written = value === true ? '' : this.address(name, value);

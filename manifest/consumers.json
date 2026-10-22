@@ -313,6 +313,10 @@
       "reader": "src/editor/view/style-state.ts"
     },
     {
+      "field": "properties:states[].ancestor",
+      "reader": "src/core/render/output.ts"
+    },
+    {
       "field": "properties:properties",
       "reader": "src/core/document/validate.ts"
     },

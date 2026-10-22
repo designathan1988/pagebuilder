@@ -21,13 +21,13 @@ export interface DocumentPath {
 
 // the fields of a node a path may name; id is generated, so never named. locked, hidden (true, absent when off) and
 // inline (the runs of inline marks) arrive with the lock, hide and inline formatting features of group 02.
-const NODE_FIELDS = ['type', 'name', 'tag', 'attributes', 'classes', 'styles', 'text', 'children', 'locked', 'hidden', 'inline', 'customAttributes', 'component', 'componentPart', 'guides', 'grid', 'layerColors', 'animations', 'interactions', 'motions', 'behaviours', 'authoring', 'bind', 'dataList', 'dataItem', 'logic'] as const;
+const NODE_FIELDS = ['type', 'name', 'tag', 'attributes', 'classes', 'styles', 'text', 'children', 'locked', 'hidden', 'inline', 'customAttributes', 'component', 'componentPart', 'guides', 'grid', 'layerColors', 'animations', 'interactions', 'motions', 'behaviours', 'authoring', 'bind', 'dataList', 'dataItem', 'dataHidden', 'logic'] as const;
 // the node fields the model holds only while they have a key (an element's logic): removing the last key removes
 // the field
 const KEYED_NODE_FIELDS = ['logic'] as const;
 // the fields of the project itself a diff names with no node path ("/@swatches"): the saved colours and the design
 // tokens, and the project's document and code languages (model.ts)
-const DOCUMENT_FIELDS = ['pages', 'swatches', 'tokens', 'classes', 'components', 'files', 'folders', 'motionTimelines', 'language', 'codeLanguage', 'collections', 'breakpoints', 'app'] as const;
+const DOCUMENT_FIELDS = ['pages', 'swatches', 'tokens', 'classes', 'components', 'files', 'folders', 'motionTimelines', 'pageTransition', 'language', 'codeLanguage', 'collections', 'breakpoints', 'app'] as const;
 
 // The id a fixture file names: manifest/features/fixtures/<id>.json. "empty" has no file.
 export const EMPTY_FIXTURE = 'empty';

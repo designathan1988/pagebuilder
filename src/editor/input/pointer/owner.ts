@@ -126,8 +126,9 @@ export interface PointerSession {
   stopping: { readonly press: Extract<Press, { on: 'stop' }>; readonly startX: number } | null;
   // The drag of a row of the Explorer's file tree (spec explorer-file-system): its press and the folder row the
   // pointer is over, marked while the drag goes on; the release moves the file there through the row's move door, one
-  // undo step, and Escape moves nothing
-  exploring: { readonly press: Extract<Press, { on: 'explorer' }>; over: string | null } | null;
+  // undo step, and Escape moves nothing. Over the canvas (onCanvas), an image file shows where it would land, and the
+  // release places it there through the row's drop door (input/file-drop.ts; DCS-071)
+  exploring: { readonly press: Extract<Press, { on: 'explorer' }>; over: string | null; onCanvas: boolean } | null;
   // The drag of a column of the Data panel (spec content-data, "binding"): its press and the element's part the pointer
   // is over (the node and the part a [data-data-target] stands for), marked while the drag goes on; the release binds
   // that part to the column's field through the drag door, one undo step, and Escape binds nothing

@@ -1126,7 +1126,9 @@
         "refusalKey": null
       },
       "refusals": [
-        "status.styleState.notApplicable"
+        "status.styleState.notApplicable",
+        "status.styleState.noParentClass",
+        "status.styleState.badFormula"
       ],
       "confirmation": null,
       "history": {
@@ -1492,6 +1494,348 @@
           "args": {
             "state": "user-valid"
           }
+        },
+        {
+          "id": "menu-style-state-checked",
+          "kind": "menu",
+          "feature": "state-styles",
+          "menu": "style-state",
+          "checked": "radio",
+          "labelKey": "styleState.checked",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "menu:style-state",
+            "order": 16
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "state": "checked"
+          }
+        },
+        {
+          "id": "menu-style-state-focus-within",
+          "kind": "menu",
+          "feature": "state-styles",
+          "menu": "style-state",
+          "checked": "radio",
+          "labelKey": "styleState.focusWithin",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "menu:style-state",
+            "order": 17
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "state": "focus-within"
+          }
+        },
+        {
+          "id": "menu-style-state-odd",
+          "kind": "menu",
+          "feature": "state-styles",
+          "menu": "style-state",
+          "checked": "radio",
+          "labelKey": "styleState.odd",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "menu:style-state",
+            "order": 18
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "state": "odd"
+          }
+        },
+        {
+          "id": "menu-style-state-even",
+          "kind": "menu",
+          "feature": "state-styles",
+          "menu": "style-state",
+          "checked": "radio",
+          "labelKey": "styleState.even",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "menu:style-state",
+            "order": 19
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "state": "even"
+          }
+        },
+        {
+          "id": "menu-style-state-nth-child",
+          "kind": "menu",
+          "feature": "state-styles",
+          "menu": "style-state",
+          "checked": "radio",
+          "labelKey": "styleState.nthChild",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "menu:style-state",
+            "order": 20
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "state": "nth:3n"
+          }
+        },
+        {
+          "id": "menu-style-state-empty",
+          "kind": "menu",
+          "feature": "state-styles",
+          "menu": "style-state",
+          "checked": "radio",
+          "labelKey": "styleState.empty",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "menu:style-state",
+            "order": 21
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "state": "empty"
+          }
+        },
+        {
+          "id": "menu-style-state-placeholder",
+          "kind": "menu",
+          "feature": "state-styles",
+          "menu": "style-state",
+          "checked": "radio",
+          "labelKey": "styleState.placeholder",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "menu:style-state",
+            "order": 22
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "state": "placeholder"
+          }
+        },
+        {
+          "id": "menu-style-state-selection",
+          "kind": "menu",
+          "feature": "state-styles",
+          "menu": "style-state",
+          "checked": "radio",
+          "labelKey": "styleState.selection",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "menu:style-state",
+            "order": 23
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "state": "selection"
+          }
+        },
+        {
+          "id": "menu-style-state-marker",
+          "kind": "menu",
+          "feature": "state-styles",
+          "menu": "style-state",
+          "checked": "radio",
+          "labelKey": "styleState.marker",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "menu:style-state",
+            "order": 24
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "state": "marker"
+          }
+        },
+        {
+          "id": "menu-style-state-current",
+          "kind": "menu",
+          "feature": "state-styles",
+          "menu": "style-state",
+          "checked": "radio",
+          "labelKey": "styleState.current",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "menu:style-state",
+            "order": 25
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "state": "current"
+          }
+        },
+        {
+          "id": "menu-style-state-parent",
+          "kind": "menu",
+          "feature": "state-styles",
+          "menu": "style-state",
+          "checked": "radio",
+          "labelKey": "styleState.parent",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "menu:style-state",
+            "order": 26
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "state": "parent::hover"
+          }
+        },
+        {
+          "id": "inspector-state-formula",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "state-styles",
+          "panel": "inspector",
+          "control": "state-formula",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "inspector.stateFormula",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-selector-bar",
+            "order": 6
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "inspector-state-parent-class",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "state-styles",
+          "panel": "inspector",
+          "control": "state-parent-class",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "inspector.stateParentClass",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-selector-bar",
+            "order": 7
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "inspector-state-parent-state",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "state-styles",
+          "panel": "inspector",
+          "control": "state-parent-state",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "inspector.stateParentState",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-selector-bar",
+            "order": 8
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
         }
       ]
     },

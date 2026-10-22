@@ -1104,7 +1104,12 @@
         "file": {
           "type": "file",
           "values": [],
-          "optional": false
+          "optional": true
+        },
+        "path": {
+          "type": "path",
+          "values": [],
+          "optional": true
         },
         "parent": {
           "type": "node",
@@ -1162,6 +1167,26 @@
             "writes": [],
             "fields": [],
             "fileReading": "upload"
+          },
+          "args": {}
+        },
+        {
+          "id": "panel-drag-explorer-row-drop-proposal",
+          "kind": "panel-drag",
+          "feature": "explorer-assets-use",
+          "source": "explorer-row",
+          "zone": "drop-proposal",
+          "gesture": "explorer-drag",
+          "labelKey": "command.assets.insertImage",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": "none",
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
           },
           "args": {}
         }

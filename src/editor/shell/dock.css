@@ -66,15 +66,20 @@
   font: var(--fw-micro) var(--fs-micro) / var(--lh-micro) var(--font-ui);
 }
 
-/* the closed dock's first issue (design/final .peek) */
+/* the closed dock's first issue (design/final .peek): on two lines of the strip (two lines of 14 px fill its 28),
+   so a check's sentence reads whole beside the tabs ("Links · Link do WhatsApp sem número… um co…" at 1280); only a
+   sentence longer than two lines ends in an ellipsis, whole in its tooltip and in the Checks list */
 .dock-strip__peek {
+  display: -webkit-box;
   min-width: 0;
   margin-left: var(--space-4);
   overflow: hidden;
   color: var(--color-text-subtle);
   font-size: var(--fs-caption);
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: var(--lh-micro);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 .dock-strip__actions .door--icon-button {
@@ -89,7 +94,9 @@
   flex-wrap: wrap;
   align-content: flex-start;
   gap: var(--space-2);
-  height: var(--size-dock-body);
+  /* its height at most a share of a short window, so the canvas above keeps most of the stage (1366×768: 169 px of
+     the 585 the stage has with the dock closed; DCS-072) */
+  height: clamp(var(--size-dock-body-min), 22vh, var(--size-dock-body));
   padding: var(--space-4) var(--space-6);
   overflow: auto;
   border-top: 1px solid var(--color-border);
@@ -98,6 +105,20 @@
 .dock--max .dock-body {
   flex: 1;
   height: auto;
+}
+
+/* the Motion tab holds a toolbar, a ruler and a lane per property: its default share of a short window is larger, so
+   the lanes show under the toolbar (1280×720: 245 px, the ruler and the first lanes, not one; DCS-075). The person's own
+   height (the dock's splitter, kept between sessions) is set inline and wins over either default */
+.dock-body--motion {
+  height: clamp(var(--size-dock-body-min), 34vh, calc(var(--size-dock-body) * 1.7));
+}
+
+/* the dock's height splitter, over its strip: the dock's own top border is its line */
+.dock > .splitter--dock {
+  height: var(--space-2);
+  margin-bottom: calc(-1 * var(--space-2));
+  border-top: 0;
 }
 
 .dock-body--empty {

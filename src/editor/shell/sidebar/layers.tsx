@@ -28,7 +28,7 @@ import { motionPicking } from '../../motion/state.ts';
 import { findTimeline } from '../../../core/motion/document.ts';
 import { requireDoor, drawnAs } from './doors.tsx';
 import { insertDestination, useAimedTile } from './insert.tsx';
-import { usePointerValue, usePointerViews } from '../../input/pointer/use-views.ts';
+import { usePointerSelect, usePointerViews } from '../../input/pointer/use-views.ts';
 
 const LAYERS_HEADER = requireDoor('explorer-layers', (d) => drawnAs(d) === 'disclosure');
 
@@ -241,10 +241,16 @@ const LayersRow = memo(function LayersRow({ node, depth, view }: { readonly node
   // a drag in progress, from Layers or from the canvas (spec layers-drag): the row its drop is placed against says
   // where (before, after, inside, or refused over the dragged nodes' own subtree), and the receiving parent's row is
   // marked, except while the drop is refused (Problems in Pager 4)
-  const dropping = usePointerValue('drag');
-  const proposal = dropping?.proposal ?? null;
-  const dropAt = proposal !== null && proposal.reference === node.id ? (proposal.refused ? 'refused' : proposal.placement) : undefined;
-  const receiving = proposal !== null && !proposal.refused && proposal.placement !== 'inside' && proposal.parent === node.id;
+  // (only what this row draws of the drag is read: the drag changes at every pointer move, and a row redraws only when
+  // its own mark does, not every row at every move)
+  const dropAt = usePointerSelect('drag', (dropping) => {
+    const proposal = dropping?.proposal ?? null;
+    return proposal !== null && proposal.reference === node.id ? (proposal.refused ? 'refused' : proposal.placement) : undefined;
+  });
+  const receiving = usePointerSelect('drag', (dropping) => {
+    const proposal = dropping?.proposal ?? null;
+    return proposal !== null && !proposal.refused && proposal.placement !== 'inside' && proposal.parent === node.id;
+  });
   const store = useStore();
   const branch = node.children.length > 0;
   // while Layers is searched, only the rows that match and the rows above them show, unfolded (spec layers-search)
@@ -285,7 +291,7 @@ const LayersRow = memo(function LayersRow({ node, depth, view }: { readonly node
         aria-disabled={door.built ? undefined : true}
         aria-level={depth + 1}
         tabIndex={tabStop ? 0 : -1}
-        className={`row row--tree${selected ? ' is-selected' : ''}${node.hidden === true ? ' row--hidden' : ''}${node.locked === true ? ' row--locked' : ''}${receiving ? ' is-receiving' : ''}${match ? ' is-match' : ''}${colour === undefined ? '' : ' is-coloured'}`}
+        className={`row row--tree${selected ? ' is-selected' : ''}${node.hidden === true || node.dataHidden === true ? ' row--hidden' : ''}${node.locked === true ? ' row--locked' : ''}${receiving ? ' is-receiving' : ''}${match ? ' is-match' : ''}${colour === undefined ? '' : ' is-coloured'}`}
         data-drop-position={dropAt}
         // the room the actions strip takes at the row's end (sidebar.css .row--tree): a button per action drawn
         // there, the colour dot among them unless it leads the row

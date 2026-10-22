@@ -10,8 +10,8 @@
 import type { NodeId } from '../../generated/commands.ts';
 import { locate, walk, type DocNode, type DocumentJson } from '../document/model.ts';
 import type { Patch } from '../history/transaction.ts';
-import { readBehaviour, readInteraction, readTimeline } from './read.ts';
-import type { Behaviour, MotionInteraction, MotionTimeline, TimelineAction } from './model.ts';
+import { readBehaviour, readInteraction, readPageTransition, readTimeline } from './read.ts';
+import { PAGE_TRANSITION_ATTRIBUTE, PAGE_TRANSITION_KINDS, type Behaviour, type MotionInteraction, type MotionTimeline, type TimelineAction } from './model.ts';
 
 const NO_TIMELINES: readonly MotionTimeline[] = [];
 const NO_MOTIONS: readonly MotionInteraction[] = [];
@@ -206,9 +206,21 @@ export function motionProblems(document: DocumentJson): MotionProblem[] {
         });
       }
     }
+    // a link's own page transition (PAGE_TRANSITION_ATTRIBUTE): one of the kinds, or none
+    const linkTransition = node.customAttributes?.[PAGE_TRANSITION_ATTRIBUTE];
+    if (linkTransition !== undefined && !(LINK_TRANSITIONS as readonly string[]).includes(linkTransition)) bad(`${at}/customAttributes/${PAGE_TRANSITION_ATTRIBUTE}`, `a link's page transition is one of ${LINK_TRANSITIONS.join(', ')}`);
+  }
+  // the site's page transition, read strictly
+  const transition: unknown = (document as { readonly pageTransition?: unknown }).pageTransition;
+  if (transition !== undefined) {
+    const read = readPageTransition(transition);
+    if (!read.ok) for (const issue of read.issues) bad(`/pageTransition/${issue.path}`, issue.reason);
   }
   return problems;
 }
+
+// What a link's own page transition may say: one of the kinds, or none (no transition on that link).
+export const LINK_TRANSITIONS = [...PAGE_TRANSITION_KINDS, 'none'] as const;
 
 // The stand-ins a scenario's expected document takes before it is checked as a document (src/manifest/scenario.ts
 // withStandInIds): a scenario never names a generated id, so every motion object written without one takes a

@@ -19,8 +19,8 @@ import { readValue, writeStyle } from '../style/set.ts';
 import { INITIAL_VALUES } from '../../generated/value-lists.ts';
 import { manifest, numberConstant } from '../../manifest/runtime.ts';
 import { EFFECTS, TRIGGERS, applicableTriggers, defaultEffect, defaultTrigger, isEffectKind, isTargetKind, isTriggerKind, targetOf, triggerApplies, type TriggerKind } from './catalog.ts';
-import { behavioursOf, findTimeline, motionsOf, primaryNode, renameTimelinePatches, timelineUses, timelinesOf, uniqueTimelineName, writeBehaviours, writeMotions, writeTimeline, writeTimelines } from './document.ts';
-import { CLASS_NAME, TIMELINE_NAME, readBehaviour, readInteraction, readTimeline } from './read.ts';
+import { LINK_TRANSITIONS, behavioursOf, findTimeline, motionsOf, primaryNode, renameTimelinePatches, timelineUses, timelinesOf, uniqueTimelineName, writeBehaviours, writeMotions, writeTimeline, writeTimelines } from './document.ts';
+import { APP_VARIABLE, CLASS_NAME, MAX_PAGE_TRANSITION, TIMELINE_NAME, readBehaviour, readInteraction, readPageTransition, readTimeline } from './read.ts';
 import {
   addAction,
   addMarker,
@@ -43,9 +43,9 @@ import {
   type KeyframeRef,
   type Placement,
 } from './timeline.ts';
-import type { Behaviour, Effect, MotionInteraction, MotionTimeline, TimelineAction, Trigger } from './model.ts';
-import { RUNTIME_BEHAVIOURS, TRANSFORM_PARTS, type BehaviourKind, type RuntimeBehaviourKind } from './model.ts';
-import { DIRECTION, OPACITY } from './words.ts';
+import type { Behaviour, ConditionCompare, Effect, MotionCondition, MotionInteraction, MotionTimeline, TimelineAction, Trigger } from './model.ts';
+import { CONDITION_COMPARES, ELEMENT_STATES, PAGE_TRANSITION_ATTRIBUTE, PAGE_TRANSITION_KINDS, RUNTIME_BEHAVIOURS, TRANSFORM_PARTS, type BehaviourKind, type PageTransition, type RuntimeBehaviourKind } from './model.ts';
+import { DIRECTION, OPACITY, SCALE } from './words.ts';
 
 type Located = { readonly node: DocNode; readonly path: readonly (string | number)[] };
 
@@ -104,10 +104,11 @@ function commitTimeline(index: number, next: MotionTimeline, said: Message, valu
   return { kind: 'change', patches: [writeTimeline(index, read.value)], message: said };
 }
 
-// A name a new timeline takes from an element and its trigger ("Hero click"): the characters a timeline's name allows,
-// "Timeline" when nothing of them is left.
-function timelineNameFor(document: DocumentJson, node: DocNode, trigger: string): string {
-  const base = `${node.name} ${trigger}`.replace(/[^\p{L}\p{N} _.-]+/gu, ' ').replace(/\s+/g, ' ').trim();
+// A name a new timeline takes from an element and the words of its trigger or its entrance effect, in the person's
+// language ("Hero on click", "Título ao clicar"; an id such as "scroll-into-view" never reaches a name): the characters
+// a timeline's name allows, "Timeline" when nothing of them is left.
+function timelineNameFor(document: DocumentJson, node: DocNode, words: string): string {
+  const base = `${node.name} ${words.toLocaleLowerCase()}`.replace(/[^\p{L}\p{N} _.-]+/gu, ' ').replace(/\s+/g, ' ').trim().slice(0, 60).trim();
   const wanted = TIMELINE_NAME.test(base) ? base : 'Timeline';
   return uniqueTimelineName(document, wanted);
 }
@@ -116,22 +117,38 @@ function timelineNameFor(document: DocumentJson, node: DocNode, trigger: string)
 
 const continuousControl = (kind: TriggerKind): MotionInteraction['control'] => (TRIGGERS[kind].continuous ? 'scrub' : 'play');
 
-// The first action a new timeline holds: the element fading in, so the interaction shows at once in the preview.
+// The first action a new timeline holds when no entry effect is chosen: the element pops (its scale up and back), so
+// the interaction is seen at once in the preview and the Timeline shows a property to edit, never an empty "Animate".
+// It starts and ends at the element's own size, so whatever the trigger, the element looks as it does before it fires
+// (an entry keyed from hidden would hide it until a click). `scale` is the CSS property, apart from the transform parts
+// a person keys (scale-x, scale-y), so keying one of them adds its own track.
+const POP_PROPERTY = SCALE;
+const POP_PEAK = '1.06';
 function firstAction<Ui>(context: HandlerContext<Ui>): TimelineAction {
   const id = () => context.ids.next();
-  return { id: id(), target: { kind: 'self' }, start: 0, duration: EFFECTS.animate.duration, effect: defaultEffect('animate', id), easing: 'ease-out' };
+  const duration = EFFECTS.animate.duration;
+  const keyframes = [
+    { id: id(), time: 0, value: '1' },
+    { id: id(), time: Math.round(duration / 2), value: POP_PEAK },
+    { id: id(), time: duration, value: '1' },
+  ];
+  return { id: id(), target: { kind: 'self' }, start: 0, duration, effect: { kind: 'animate', tracks: [{ id: id(), property: POP_PROPERTY, keyframes }] }, easing: 'ease-out' };
 }
 
-// The quick effects (the Interactions tab's "Appear on scroll" row): a timeline the element enters the page with,
-// keyed from its hidden state to the state it holds, played once when it scrolls into view. Each preset is the tracks
-// of one animate action: the property, then its value at the start and at the end.
+// The entry effects (the Interactions tab's "Entrance effect" row): a timeline the element enters the page with, keyed
+// from its hidden state to the state it holds, played once when it scrolls into view or when the page loads. Each
+// preset is the tracks of one animate action: the property, then its value at the start and at the end. The runtime
+// holds the first keyframe until the trigger fires (runtime/player.ts), and with less motion asked it jumps to the end.
 export const MOTION_PRESETS = {
-  'fade-up': [[OPACITY, '0', '1'], ['translate-y', '32px', '0px']],
   'fade-in': [[OPACITY, '0', '1']],
-  'zoom-in': [[OPACITY, '0', '1'], ['scale-x', '0.9', '1'], ['scale-y', '0.9', '1']],
-  'slide-in': [[OPACITY, '0', '1'], ['translate-x', '-48px', '0px']],
+  'slide-up': [[OPACITY, '0', '1'], ['translate-y', '32px', '0px']],
+  'slide-from-left': [[OPACITY, '0', '1'], ['translate-x', '-48px', '0px']],
+  'slide-from-right': [[OPACITY, '0', '1'], ['translate-x', '48px', '0px']],
+  'scale-in': [[OPACITY, '0', '1'], ['scale-x', '0.9', '1'], ['scale-y', '0.9', '1']],
 } as const satisfies Record<string, readonly (readonly [string, string, string])[]>;
 export type MotionPreset = keyof typeof MOTION_PRESETS;
+// the triggers an entry effect is offered with, the first its default
+export const ENTRY_TRIGGERS = ['scroll-into-view', 'page-load'] as const satisfies readonly TriggerKind[];
 const PRESET_DURATION = 700;
 
 function presetAction<Ui>(context: HandlerContext<Ui>, preset: MotionPreset): TimelineAction {
@@ -147,8 +164,8 @@ function presetAction<Ui>(context: HandlerContext<Ui>, preset: MotionPreset): Ti
 export const addMotionCommand = registerHandler('motion.add', (context, { trigger, timeline, preset }): Outcome<never> => {
   const found = primaryNode(context.state.document, context.state.selection);
   if (found === null) return { kind: 'change' };
-  // a quick effect enters the page as it scrolls into view, unless another trigger is asked for
-  const kind = trigger ?? (preset === undefined ? undefined : 'scroll-into-view') ?? applicableTriggers(found.node)[0] ?? 'click';
+  // an entry effect enters the page as it scrolls into view, unless another trigger is asked for
+  const kind = trigger ?? (preset === undefined ? undefined : ENTRY_TRIGGERS[0]) ?? applicableTriggers(found.node)[0] ?? 'click';
   if (!isTriggerKind(kind) || !triggerApplies(kind, found.node)) return { kind: 'refused', message: message('status.motion.notApplicable', { name: { key: triggerLabel(kind) }, element: found.node.name }) };
   const locked = lockedRefusal(context, found.node);
   if (locked !== null) return { kind: 'refused', message: locked };
@@ -159,7 +176,8 @@ export const addMotionCommand = registerHandler('motion.add', (context, { trigge
     if (findTimeline(context.state.document, timeline) === null) return { kind: 'refused', message: message('status.motion.notFound', { name: timeline }) };
     name = timeline;
   } else {
-    name = timelineNameFor(context.state.document, found.node, kind);
+    // an entry effect's timeline is named after the effect ("Hero slide-up"), a look another element may play by name
+    name = timelineNameFor(context.state.document, found.node, context.words(preset === undefined ? triggerLabel(kind) : (`motion.quick.${preset}` as MessageId)));
     const made: MotionTimeline = { id: context.ids.next(), name, actions: [preset === undefined ? firstAction(context) : presetAction(context, preset)], markers: [] };
     patches.push(...writeTimelines(context.state.document, [...timelinesOf(context.state.document), made]));
   }
@@ -169,14 +187,32 @@ export const addMotionCommand = registerHandler('motion.add', (context, { trigge
     trigger: defaultTrigger(kind, context.rules.base.breakpoint),
     timeline: name,
     control: continuousControl(kind),
-    // a quick effect plays once and stays: the element does not hide again when it scrolls away
-    ...(preset !== undefined ? { leave: 'none' as const, once: true as const } : spec.paired ? { leave: 'reverse' as const } : {}),
+    // an entry effect plays once and stays: the element does not hide again when it scrolls away (only a paired trigger
+    // has a leaving half to answer: the page load has none)
+    ...(preset !== undefined ? { once: true as const, ...(spec.paired ? { leave: 'none' as const } : {}) } : spec.paired ? { leave: 'reverse' as const } : {}),
   };
   const read = readInteraction(interaction);
   if (!read.ok) return invalid(kind);
   patches.push(...writeMotions(found.node, found.path, [...motionsOf(found.node), read.value]));
   return { kind: 'change', patches, message: message('status.motion.added', { name: { key: triggerLabel(kind) }, element: found.node.name, timeline: name }) };
 });
+
+// An interaction's condition as its card's first field chooses it: always (none), or a kind with its negation.
+export const CONDITION_FORMS = ['always', 'class', 'no-class', 'breakpoint', 'not-breakpoint', 'variable', 'state', 'not-state'] as const;
+export type ConditionForm = (typeof CONDITION_FORMS)[number];
+const conditionForm = (form: Exclude<ConditionForm, 'always'>): readonly [MotionCondition['kind'], boolean] =>
+  form === 'no-class' ? ['class', true] : form === 'not-breakpoint' ? ['breakpoint', true] : form === 'not-state' ? ['state', true] : [form, false];
+// the form a condition stands in (the card's first field shows it)
+export const formOfCondition = (condition: MotionCondition | undefined): ConditionForm =>
+  condition === undefined ? 'always' : condition.not === true ? (condition.kind === 'class' ? 'no-class' : condition.kind === 'breakpoint' ? 'not-breakpoint' : 'not-state') : condition.kind;
+// The name a new condition starts from: the element's first class, the first breakpoint other than the base, the
+// project's first application variable, the open state. The card's name field changes it.
+function conditionNameFor<Ui>(context: HandlerContext<Ui>, node: DocNode, kind: MotionCondition['kind']): string {
+  if (kind === 'class') return node.classes[0] ?? 'is-active';
+  if (kind === 'breakpoint') return context.rules.breakpointTable.find((breakpoint) => breakpoint.id !== context.rules.base.breakpoint)?.id ?? context.rules.base.breakpoint;
+  if (kind === 'variable') return context.state.document.app?.variables?.[0]?.name ?? 'value';
+  return ELEMENT_STATES[0];
+}
 
 // The parameter fields of a trigger, set through motion.update by their own names.
 const TRIGGER_PARAMETERS = ['key', 'threshold', 'milliseconds', DIRECTION, 'axis', 'breakpoint', 'seconds', 'state', 'event'] as const;
@@ -238,6 +274,36 @@ function updatedInteraction<Ui>(context: HandlerContext<Ui>, node: DocNode, held
       const percent = readNumber(typeof value === 'string' ? value.replace('%', '') : value);
       if (percent === null) return invalid(value);
       return { ...held, scrollStart: held.scrollStart ?? 0, scrollEnd: held.scrollEnd ?? 100, [field]: percent };
+    }
+    case 'condition': {
+      // the condition's form (CONDITION_FORMS): none, or a kind with its negation, starting from a name it can hold
+      const form = readText(value);
+      if (form === null || !(CONDITION_FORMS as readonly string[]).includes(form)) return invalid(value);
+      if (form === 'always') return without(held, 'condition');
+      const [kind, not] = conditionForm(form as Exclude<ConditionForm, 'always'>);
+      const name = held.condition?.kind === kind ? held.condition.name : conditionNameFor(context, node, kind);
+      const made: MotionCondition = kind === 'variable' ? { kind, name, ...(held.condition?.kind === 'variable' ? { compare: held.condition.compare ?? 'set', ...(held.condition.value === undefined ? {} : { value: held.condition.value }) } : { compare: 'set' as const }) } : { kind, name, ...(not ? { not: true as const } : {}) };
+      return { ...held, condition: made };
+    }
+    case 'conditionName': {
+      const name = readText(value);
+      if (name === null || held.condition === undefined) return invalid(value);
+      // a breakpoint is one of the project's
+      if (held.condition.kind === 'breakpoint' && !context.rules.breakpoints.has(name)) return invalid(value);
+      return { ...held, condition: { ...held.condition, name } };
+    }
+    case 'conditionCompare': {
+      const compare = readText(value);
+      if (compare === null || held.condition?.kind !== 'variable' || !(CONDITION_COMPARES as readonly string[]).includes(compare)) return invalid(value);
+      const valued = compare !== 'set' && compare !== 'unset';
+      const { value: _was, ...rest } = held.condition;
+      void _was;
+      return { ...held, condition: valued ? { ...rest, compare: compare as ConditionCompare, value: held.condition.value ?? (compare === 'greater' || compare === 'less' ? '0' : '') } : { ...rest, compare: compare as ConditionCompare } };
+    }
+    case 'conditionValue': {
+      const text = typeof value === 'number' ? String(value) : readText(value);
+      if (text === null || held.condition?.kind !== 'variable' || held.condition.compare === 'set' || held.condition.compare === 'unset') return invalid(value);
+      return { ...held, condition: { ...held.condition, value: text } };
     }
     default: {
       if (!(TRIGGER_PARAMETERS as readonly string[]).includes(field)) return invalid(field);
@@ -472,6 +538,13 @@ export const setEffectOptionCommand = registerHandler('motion.setEffectOption', 
   else if (option === 'value' && (held.effect.kind === 'attribute' || held.effect.kind === 'style') && value === '') read = null;
   else if (typeof value === 'string') read = value.trim();
   if (read === null && option !== 'value') return invalid(value);
+  // a variable set on the application (state.name) or as a custom property (--name): the name follows the scope
+  if (option === 'scope') {
+    if (held.effect.kind !== 'variable' || (read !== 'app' && read !== 'css')) return invalid(value);
+    const next = variableScoped(held.effect, read);
+    if (JSON.stringify(next) === JSON.stringify(held.effect)) return { kind: 'change' };
+    return commitTimeline(found.index, replaceAction(found.timeline, held.id, (action) => ({ ...action, effect: next })), message('status.motion.actionUpdated', { name: { key: effectLabel(held.effect.kind) }, timeline: found.timeline.name }), value);
+  }
   // an option read as nothing is taken away from the effect
   const effect: Record<string, unknown> = read === undefined ? Object.fromEntries(Object.entries(held.effect).filter(([name]) => name !== option)) : { ...held.effect, [option]: read };
   // a timeline it controls is one of the project's, never itself
@@ -496,8 +569,23 @@ export const setEffectOptionCommand = registerHandler('motion.setEffectOption', 
   return commitTimeline(found.index, replaceAction(found.timeline, held.id, () => next), message('status.motion.actionUpdated', { name: { key: effectLabel(held.effect.kind) }, timeline: found.timeline.name }), value);
 });
 
-// options an effect holds only in some of its forms (a seek's time, a segment's frames, a custom event's detail)
-const OPTIONAL_OPTIONS = new Set(['time', 'index', 'address', 'text', 'detail', 'from', 'to']);
+// options an effect holds only in some of its forms (a seek's time, a segment's frames, a custom event's detail, a
+// variable's scope)
+const OPTIONAL_OPTIONS = new Set(['time', 'index', 'address', 'text', 'detail', 'from', 'to', 'scope']);
+
+// A variable action moved to the application layer or back to a custom property: its name turned into the other's
+// grammar ("--motion-value" and "motionValue"), its value kept where the other reads it (a CSS value holds none of
+// ; { } < >, so a text the application took that holds one starts over from 1).
+function variableScoped(effect: Extract<Effect, { kind: 'variable' }>, scope: 'app' | 'css'): Extract<Effect, { kind: 'variable' }> {
+  if (scope === 'app') {
+    if (effect.scope === 'app') return effect;
+    const name = effect.name.replace(/^--/, '').replace(/-([a-zA-Z0-9])/g, (_all, letter: string) => letter.toUpperCase()).replace(/[^A-Za-z0-9_$]/g, '');
+    return { kind: 'variable', name: APP_VARIABLE.test(name) ? name : 'value', value: effect.value, scope: 'app' };
+  }
+  if (effect.scope !== 'app') return effect;
+  const kebab = effect.name.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`).replace(/[^a-z0-9_-]/gi, '');
+  return { kind: 'variable', name: `--${kebab === '' ? 'motion-value' : kebab}`, value: /^[^;{}<>]+$/.test(effect.value) && !effect.value.includes('/*') ? effect.value : '1' };
+}
 
 const idList = (value: unknown): ReadonlySet<string> | null => (Array.isArray(value) && value.every((one) => typeof one === 'string') ? new Set(value as string[]) : null);
 // the actions a door names: a list of ids (the selection), else the one at a place
@@ -837,4 +925,88 @@ export const removeBehaviourCommand = registerHandler('motion.removeBehaviour', 
   if (locked !== null) return { kind: 'refused', message: locked };
   const next = behavioursOf(found.node).filter((one) => one.kind !== behaviour);
   return { kind: 'change', patches: writeBehaviours(found.node, found.path, next), message: message('status.motion.behaviourRemoved', { name: { key: behaviourLabel(behaviour) }, element: found.node.name }) };
+});
+
+// A parallax's range (spec motion-behaviours): where along the element's way across the screen it moves, in percent,
+// and the most it moves either way in px — 0 or empty for the room its parent's box gives it, the default.
+export const setParallaxRangeCommand = registerHandler('motion.setParallaxRange', (context, { field, value }): Outcome<never> => {
+  const found = primaryNode(context.state.document, context.state.selection);
+  if (found === null) return { kind: 'change' };
+  const held = behavioursOf(found.node).find((one) => one.kind === 'parallax');
+  if (held === undefined) return { kind: 'refused', message: message('status.motion.noParallax', { element: found.node.name }) };
+  const locked = lockedRefusal(context, found.node);
+  if (locked !== null) return { kind: 'refused', message: locked };
+  const text = typeof value === 'number' ? String(value) : readText(typeof value === 'string' ? value.replace('%', '').replace(/px$/i, '') : value);
+  const number = text === null || text === '' ? 0 : readNumber(text);
+  if (number === null) return invalid(value);
+  let next: Behaviour;
+  if (field === 'max') {
+    const { max: _was, ...rest } = held;
+    void _was;
+    next = number === 0 ? rest : { ...held, max: number };
+  } else {
+    const start = field === 'start' ? number : (held.start ?? 0);
+    const end = field === 'end' ? number : (held.end ?? 100);
+    const { start: _s, end: _e, ...rest } = held;
+    void _s;
+    void _e;
+    // the whole way is the default: nothing stored
+    next = start === 0 && end === 100 ? rest : { ...rest, start, end };
+  }
+  const read = readBehaviour(next);
+  if (!read.ok) return invalid(value);
+  const behaviours = behavioursOf(found.node).map((one) => (one.kind === 'parallax' ? read.value : one));
+  if (JSON.stringify(behaviours) === JSON.stringify(behavioursOf(found.node))) return { kind: 'change' };
+  return { kind: 'change', patches: writeBehaviours(found.node, found.path, behaviours), message: message('status.motion.behaviourSet', { name: { key: behaviourLabel('parallax') }, element: found.node.name }) };
+});
+
+// ---------------------------------------------------------------- page transitions
+
+// What the site's page transition holds while none was chosen before: a fade of 300 ms.
+const PAGE_TRANSITION_DEFAULT: PageTransition = { kind: 'fade', duration: 300 };
+
+// The site's page transition (spec page-transitions): its kind ('' for none, which removes it) or its duration (a time
+// typed in seconds or ms, as every time of motion is).
+export const setPageTransitionCommand = registerHandler('motion.setPageTransition', (context, { field, value }): Outcome<never> => {
+  const document = context.state.document;
+  const held = document.pageTransition;
+  let next: PageTransition | null;
+  if (field === 'kind') {
+    const kind = readText(value);
+    if (kind === null || (kind !== '' && kind !== 'none' && !(PAGE_TRANSITION_KINDS as readonly string[]).includes(kind))) return invalid(value);
+    next = kind === '' || kind === 'none' ? null : { ...(held ?? PAGE_TRANSITION_DEFAULT), kind: kind as PageTransition['kind'] };
+  } else {
+    const duration = readTime(value);
+    if (duration === null || duration > MAX_PAGE_TRANSITION) return invalid(value);
+    next = { ...(held ?? PAGE_TRANSITION_DEFAULT), duration };
+  }
+  if (next !== null) {
+    const read = readPageTransition(next);
+    if (!read.ok) return invalid(value);
+    next = read.value;
+  }
+  if (JSON.stringify(next ?? null) === JSON.stringify(held ?? null)) return { kind: 'change' };
+  const patches: Patch[] = next === null ? [{ op: 'remove', path: ['pageTransition'] }] : [{ op: held === undefined ? 'add' : 'replace', path: ['pageTransition'], value: next }];
+  return { kind: 'change', patches, message: next === null ? message('status.motion.pageTransitionOff') : message('status.motion.pageTransitionSet', { name: { key: `motion.pageTransition.${next.kind}` as MessageId }, duration: (next.duration / 1000).toFixed(2) }) };
+});
+
+// A link's own page transition (PAGE_TRANSITION_ATTRIBUTE on the selected link): the site's ('' removes the link's
+// own), none, or a kind. Written as the link's attribute, which the export writes as it is and the page's transition
+// script reads.
+export const setLinkTransitionCommand = registerHandler('motion.setLinkTransition', (context, { transition }): Outcome<never> => {
+  const found = primaryNode(context.state.document, context.state.selection);
+  if (found === null) return { kind: 'change' };
+  if (found.node.tag !== 'a') return { kind: 'refused', message: message('status.motion.notALink', { element: found.node.name }) };
+  const chosen = transition.trim();
+  if (chosen !== '' && !(LINK_TRANSITIONS as readonly string[]).includes(chosen)) return invalid(transition);
+  const locked = lockedRefusal(context, found.node);
+  if (locked !== null) return { kind: 'refused', message: locked };
+  const custom = found.node.customAttributes ?? {};
+  if ((custom[PAGE_TRANSITION_ATTRIBUTE] ?? '') === chosen) return { kind: 'change' };
+  const { [PAGE_TRANSITION_ATTRIBUTE]: _was, ...others } = custom;
+  void _was;
+  const next = chosen === '' ? others : { ...others, [PAGE_TRANSITION_ATTRIBUTE]: chosen };
+  const path = [...found.path, 'customAttributes'];
+  const patches: Patch[] = Object.keys(next).length === 0 ? [{ op: 'remove', path }] : [{ op: found.node.customAttributes === undefined ? 'add' : 'replace', path, value: next }];
+  return { kind: 'change', patches, message: message('status.motion.linkTransitionSet', { element: found.node.name, name: { key: chosen === '' ? 'motion.linkTransition.site' : (`motion.linkTransition.${chosen}` as MessageId) } }) };
 });

@@ -15,6 +15,7 @@ import { message, type Message } from '../commands/registry.ts';
 import { locate, type DocumentJson, type NodeId } from '../document/model.ts';
 import type { ModelRules } from '../document/validate.ts';
 import { referenceFound } from './references.ts';
+import { stateArgumentFits } from '../style/state-keys.ts';
 
 type Arg = Command['args'][string];
 
@@ -43,7 +44,8 @@ function fits(arg: Arg, value: unknown, document: DocumentJson, rules: ModelRule
     case 'breakpoint':
       return typeof value === 'string' && rules.breakpoints.has(value) ? 'fits' : 'invalid';
     case 'state':
-      return typeof value === 'string' && rules.states.has(value) ? 'fits' : 'invalid';
+      // a style state, or a parent state whose class is still to be chosen (core/style/state-keys.ts)
+      return typeof value === 'string' && stateArgumentFits(value, rules.output.states) ? 'fits' : 'invalid';
     case 'attribute':
       return typeof value === 'string' && rules.attributeValues.has(value) ? 'fits' : 'invalid';
     case 'point':

@@ -66,3 +66,44 @@ describe('the style state and the selection (AUD-03)', () => {
     }
   });
 });
+
+// The states that take words of their own (core/style/state-keys.ts): a child position typed as a formula, a parent
+// state named by an ancestor's class
+describe('the child positions and the parent states', () => {
+  it('takes a formula as typed, in its canonical spelling, and refuses a text that is none, with words', () => {
+    const store = openStore('aurora');
+    run(store, 'selection.select', { target: 'n-card-c' as never });
+    expect(run(store, 'view.setStyleState', { state: 'nth:2N + 1' } as never).status).toBe('done');
+    expect(store.getState().ui.styleState).toBe('nth:2n+1');
+    expect(said(store)).toBe('Editing the Nth child 2n+1 state.');
+    // a formula a state names is that state
+    run(store, 'view.setStyleState', { state: 'nth:even' } as never);
+    expect(store.getState().ui.styleState).toBe('even');
+    expect(run(store, 'view.setStyleState', { state: 'nth:every third' } as never).status).toBe('refused');
+    expect(said(store)).toBe('“every third” is not a child position: write a formula such as 2n+1, 3 or odd.');
+    expect(store.getState().ui.styleState).toBe('even');
+    // a write goes to the formula's layer
+    run(store, 'view.setStyleState', { state: 'nth:3n' } as never);
+    expect(run(store, 'style.set', { property: 'opacity', value: '50' } as never).status).toBe('done');
+    const card = store.getState().document.pages[0]?.tree.children[1]?.children[0]?.children[2];
+    expect(card?.styles.desktop?.['nth:3n']).toEqual({ opacity: '0.5' });
+  });
+
+  it("names the nearest ancestor's class for a parent state, keeps it when the ancestor state changes, and refuses where no ancestor has one", () => {
+    const store = openStore('aurora');
+    run(store, 'selection.select', { target: 'n-card-a-title' as never });
+    expect(run(store, 'view.setStyleState', { state: 'parent::hover' } as never).status).toBe('done');
+    expect(store.getState().ui.styleState).toBe('parent:card:hover');
+    expect(said(store)).toBe('Editing the Hover on .card state.');
+    run(store, 'view.setStyleState', { state: 'parent::focus-within' } as never);
+    expect(store.getState().ui.styleState).toBe('parent:card:focus-within');
+    expect(run(store, 'style.set', { property: 'color', value: '#1d4ed8' } as never).status).toBe('done');
+    const title = store.getState().document.pages[0]?.tree.children[1]?.children[0]?.children[0]?.children[0];
+    expect(title?.styles.desktop?.['parent:card:focus-within']).toEqual({ color: '#1d4ed8' });
+    // the hero's intro sits in no element with a class
+    run(store, 'view.setStyleState', { state: 'base' } as never);
+    run(store, 'selection.select', { target: 'n-intro' as never });
+    expect(run(store, 'view.setStyleState', { state: 'parent::hover' } as never).status).toBe('refused');
+    expect(said(store)).toBe('No element around Intro has a class: give its parent a class first.');
+  });
+});

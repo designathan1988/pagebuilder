@@ -22,7 +22,7 @@ export function scenariosRules(ctx: CheckContext) {
     compositeById,
     recipeById,
     breakpointIds,
-    stateIds,
+    stateArgument,
     input,
   } = ctx;
   const modelRules = rulesFromManifest(p.elements, p.properties, p.html);
@@ -136,7 +136,7 @@ export function scenariosRules(ctx: CheckContext) {
       case 'breakpoint':
         return text !== null && (breakpointIds.has(text) || /^[a-z0-9]+(-[a-z0-9]+)*$/.test(text)) ? null : 'is a breakpoint id: one of properties.json or one the project makes';
       case 'state':
-        return text !== null && stateIds.has(text) ? null : 'is a state of properties.json';
+        return text !== null && stateArgument(text) ? null : 'is a state of properties.json, a child position or a parent state';
       case 'point':
         return isNumbers(value, ['x', 'y']) ? null : 'is { "x", "y" }';
       case 'rect':

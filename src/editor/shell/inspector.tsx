@@ -27,7 +27,7 @@ import { DoorControl, Icon, useDoor } from '../doors/door.tsx';
 import { MenuButton } from '../doors/menu.tsx';
 import { GLYPHS, doorSlots, drawnAsOf, partOf, slotsIn } from '../doors/placement.ts';
 import { setActiveOption } from '../focus/focus.ts';
-import { authoredProperties, declaredBorderValues, editedProperties, editedPropertiesByDoor, inspectorMode, inspectorSearchOf, isEssential, searchMatches, sectionClosed, sectionProperties, summaryOf, summaryProperties } from '../inspector/sections.ts';
+import { authoredProperties, declaredBorderValues, editedProperties, editedPropertiesByDoor, inspectorMode, inspectorSearchOf, isEssential, searchMatches, searchWords, sectionClosed, sectionProperties, summaryOf, summaryProperties } from '../inspector/sections.ts';
 import { orderByGroup, pairRowOf, rowPrefixKey, type PairRow } from '../inspector/rows.ts';
 import { CONCEPT_ROWS, pairItem, rowClosed, rowOfItem, shortLabelOf } from '../inspector/concept-rows.ts';
 import { ConceptRowView } from './concept-row.tsx';
@@ -41,7 +41,8 @@ import { panelName } from '../workspace/panel-catalogue.ts';
 import { messageText, useLocale, useT } from '../text.ts';
 import { firstLockRefusal } from '../../core/nodes/flags.ts';
 import { activeBreakpoint } from '../view/breakpoints.ts';
-import { activeState } from '../view/style-state.ts';
+import { activeState, ancestorClasses, ANCESTOR_STATES, NTH_STATE, setStyleState, STATE_TABLE, stateName } from '../view/style-state.ts';
+import { parentKey, stateKind } from '../../core/style/state-keys.ts';
 import { keepAfterGesture, useMixed, usePageValues, useSelectionContext, useSelectionContexts } from './field.tsx';
 import { shownForContext, shownForKinds, type ElementContext } from '../../core/style/applies.ts';
 import { ANCHOR_CONTROL, AnchorControl, BoxModel, Field, GridItemField, GridTracks, SPACING_LINK, TARGETS, TRACK_DOORS, fieldLabelKey, sectionOf, targetOf, useSelectionKinds } from './inspector-controls.tsx';
@@ -159,7 +160,7 @@ function StyleSections() {
   const heldText = useEditorState((s) => [...authoredProperties(s)].sort().join(' '));
   const held = useMemo(() => new Set(heldText.split(' ').filter((property) => property !== '')), [heldText]);
   const shownDoors = (section: string) =>
-    (SECTION_DOORS.get(section) ?? []).filter((d) => shownForSelection(d, kinds, contexts) && (searching ? searchMatches(query, t(fieldLabelKey(d)), cssNamesOf(d)) : mode === 'all' || shownInEssentials(d, held, revealed)));
+    (SECTION_DOORS.get(section) ?? []).filter((d) => shownForSelection(d, kinds, contexts) && (searching ? searchMatches(query, searchWords(fieldLabelKey(d), cssNamesOf(d))) : mode === 'all' || shownInEssentials(d, held, revealed)));
   if (searching && STYLE_SECTIONS.every((s) => shownDoors(s.id).length === 0)) return <p className="inspector-search__none">{t('inspector.searchNoMatch', { query: query.trim() })}</p>;
   return (
     <>
@@ -406,8 +407,7 @@ function AddProperty() {
           .filter((target) => {
             if (!hiddenTargets.has(target)) return false;
             const label = TARGETS.get(target)?.labelKey;
-            const words = `${label === undefined ? '' : t(label as MessageId)} ${target}`.toLowerCase();
-            return words.includes(query.trim().toLowerCase());
+            return searchMatches(query, searchWords(label === undefined ? null : (label as MessageId), [target]));
           });
   return (
     <div className="add-property">
@@ -764,6 +764,8 @@ function SelectorBar() {
             const drawn = slot.entry.door.kind === 'panel-control' ? slot.entry.door.drawnAs : null;
             // the target chips and the × drawn inside them stand for the element's targets (TargetChips draws them)
             if (drawn === 'item' || slot.entry === CHIP_PART) return null;
+            // the state's own fields stand under the State picker (StateParameter)
+            if (slot.entry.command.id === setStyleState.command) return null;
             return classBarControl(slot.entry);
           }}
         />
@@ -776,7 +778,7 @@ function SelectorBar() {
             slot.kind === 'menu' ? (
               <MenuButton key={slot.menu} menu={slot.menu} anchor={slot.anchor} indicator className="state-picker">
                 <span className="state-picker__key">{t('menu.styleState')}</span>
-                <span className="state-picker__value">{t(state.labelKey as MessageId)}</span>
+                <span className="state-picker__value">{stateName(state, t)}</span>
               </MenuButton>
             ) : null
           }
@@ -787,6 +789,84 @@ function SelectorBar() {
           <span className="active-breakpoint__width">{breakpoint.width}</span>
         </span>
       </div>
+      <StateParameters />
     </div>
   );
+}
+
+// The fields of the edited state that takes words of its own (view/style-state.ts), in a row under the State picker:
+// a child position's formula, a parent state's class and state. None for every other state.
+const STATE_FORMULA = 'state-formula';
+const STATE_PARENT_CLASS = 'state-parent-class';
+const STATE_PARENT_STATE = 'state-parent-state';
+function StateParameters() {
+  const kind = useEditorState((s) => stateKind(activeState(s.ui).id, STATE_TABLE)?.kind ?? null);
+  if (kind !== 'nth' && kind !== 'parent') return null;
+  return (
+    <div className="selector-bar__state-params">
+      <Slots region="inspector-selector-bar" render={(slot) => (slot.kind === 'door' && slot.entry.command.id === setStyleState.command ? <StateParameter key={slot.entry.ref} entry={slot.entry} /> : null)} />
+    </div>
+  );
+}
+
+// One field of the edited state: each hands view.setStyleState the state it names (the formula as typed, which the
+// handler reads and refuses with words; the parent state with the class or the state picked)
+function StateParameter({ entry }: { readonly entry: DoorEntry }) {
+  const t = useT();
+  const store = useStore();
+  const state = useEditorState((s) => activeState(s.ui));
+  const around = useEditorState((s) => ancestorClasses(s.document, s.selection[0]).join(' '));
+  const kind = stateKind(state.id, STATE_TABLE);
+  const control = entry.door.kind === 'panel-control' ? entry.door.control : null;
+  const label = t(entry.door.labelKey as MessageId);
+  const choose = (key: string | null) => {
+    if (key !== null && key !== state.id) (store.dispatch as (id: string, args: unknown) => unknown)(entry.command.id, { state: key });
+  };
+  if (control === STATE_FORMULA && kind?.kind === 'nth') {
+    const typed = (field: HTMLInputElement) => {
+      const text = field.value.trim();
+      if (text !== kind.formula) choose(`${NTH_STATE}${text}`);
+    };
+    return (
+      <form
+        className="state-param"
+        data-door={entry.ref}
+        data-args="{}"
+        onSubmit={(event) => {
+          event.preventDefault();
+          const field = event.currentTarget.elements.namedItem(STATE_FORMULA);
+          if (field instanceof HTMLInputElement) typed(field);
+        }}
+      >
+        <span className="state-param__label">{label}</span>
+        <input key={kind.formula} name={STATE_FORMULA} className="input state-param__formula" defaultValue={kind.formula} aria-label={label} spellCheck={false} onBlur={(event) => typed(event.currentTarget)} />
+      </form>
+    );
+  }
+  if (control === STATE_PARENT_CLASS && kind?.kind === 'parent') {
+    const names = [kind.className, ...around.split(' ').filter((name) => name !== '' && name !== kind.className)];
+    return (
+      <label className="state-param">
+        <span className="state-param__label">{label}</span>
+        <select data-door={entry.ref} className="select state-param__select" value={kind.className} onChange={(event) => choose(parentKey(event.currentTarget.value, kind.state, STATE_TABLE))}>
+          {names.map((name) => (
+            <option key={name} value={name}>{`.${name}`}</option>
+          ))}
+        </select>
+      </label>
+    );
+  }
+  if (control === STATE_PARENT_STATE && kind?.kind === 'parent') {
+    return (
+      <label className="state-param">
+        <span className="state-param__label">{label}</span>
+        <select data-door={entry.ref} className="select state-param__select" value={kind.state} onChange={(event) => choose(parentKey(kind.className, event.currentTarget.value, STATE_TABLE))}>
+          {ANCESTOR_STATES.map((one) => (
+            <option key={one.id} value={one.id}>{t(one.labelKey as MessageId)}</option>
+          ))}
+        </select>
+      </label>
+    );
+  }
+  return null;
 }

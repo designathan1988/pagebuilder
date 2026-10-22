@@ -426,6 +426,11 @@ export function MotionTimelinePanel() {
         {/* no timeline: the list beside says so once, its New timeline under it (the user's review of 2026-10-05) */}
         {timeline === null ? null : (
           <>
+            {/* the lanes first, under the toolbar: an action just made (an entrance effect, a new interaction) shows its bars
+                and keyframes at once in a short dock; the fields that add another action follow them */}
+            <div className="motion-timeline__scroller">
+              <Track timeline={timeline} motion={motion} />
+            </div>
             <div className="motion-timeline__add">
               {(['after', 'with', 'at'] as const).map((placement) => {
                 const words = (kind: string) => t(`motion.action.${camel(kind)}` as MessageId);
@@ -433,9 +438,6 @@ export function MotionTimelinePanel() {
                   <PanelField key={placement} entry={motionDoor(MOTION_DOORS.addAction(placement))} args={{ timeline: timeline.name }} value="" label={t(`motion.timeline.add${placement === 'after' ? 'After' : placement === 'with' ? 'With' : 'At'}` as MessageId)} offered={EFFECT_KINDS} display={words} accept={chosenOf(EFFECT_KINDS, words)} />
                 );
               })}
-            </div>
-            <div className="motion-timeline__scroller">
-              <Track timeline={timeline} motion={motion} />
             </div>
             <div className="motion-timeline__selection">
               {selectedAction >= 0 ? <ActionFields timeline={timeline} action={timeline.actions[selectedAction] as TimelineAction} at={selectedAction} /> : null}

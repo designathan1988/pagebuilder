@@ -371,6 +371,33 @@ describe('the renderer (src/editor/canvas/render/render.ts)', () => {
     expect(sheet).not.toContain('blue');
   });
 
+  it('previews a parent state and a child position on the selected element, and forces no pseudo-element on it', () => {
+    const stated = applyPatches(doc, [{ op: 'replace', path: at('children', 0, 'children', 0, 'styles'), value: styles({ desktop: { 'parent:card:hover': { color: 'red' }, 'nth:3n': { opacity: '0.5' }, selection: { color: 'blue' } } }) }]).document;
+    const { target, renderer } = mounted(stated);
+    // the node's own rules write each state's selector (core/style/state-keys.ts)
+    const own = target.querySelector('style[data-node-style="title"]')?.textContent ?? '';
+    expect(own).toContain('.card:hover [data-node="title"] { color: red; }');
+    expect(own).toContain('[data-node="title"]:nth-child(3n) { opacity: 0.5; }');
+    expect(own).toContain('[data-node="title"]::selection { color: blue; }');
+    renderer.previewState(stated, ['title' as NodeId], 'parent:card:hover');
+    expect(target.querySelector('style[data-preview-style]')?.textContent).toBe('[data-node="title"] { color: red; }');
+    renderer.previewState(stated, ['title' as NodeId], 'nth:3n');
+    expect(target.querySelector('style[data-preview-style]')?.textContent).toBe('[data-node="title"] { opacity: 0.5; }');
+    // the selected text's colour is the ::selection rule's, never the heading's own
+    renderer.previewState(stated, ['title' as NodeId], 'selection');
+    expect(target.querySelector('style[data-preview-style]')).toBeNull();
+  });
+
+  it("marks a link to the open page as its current page's, and only that one (aria-current)", () => {
+    const linked = applyPatches(doc, [
+      { op: 'add', path: at('children', 3), value: node('home', 'link', 'a', { text: 'Home', attributes: attributes({ href: 'index.html#top' }) }) },
+      { op: 'add', path: at('children', 4), value: node('away', 'link', 'a', { text: 'About', attributes: attributes({ href: 'about/index.html' }) }) },
+    ]).document;
+    const { target } = mounted(linked);
+    expect(target.querySelector('[data-node="home"]')?.getAttribute('aria-current')).toBe('page');
+    expect(target.querySelector('[data-node="away"]')?.hasAttribute('aria-current')).toBe(false);
+  });
+
   it('never writes an event attribute, even one a model would name', () => {
     const withEvent: RenderModel = { ...model, attributes: new Map([...model.attributes, ['clickHandler', 'onclick']]) };
     const d = applyPatches(doc, [{ op: 'add', path: at('children', 2, 'attributes', 'clickHandler'), value: 'alert(1)' }]).document;

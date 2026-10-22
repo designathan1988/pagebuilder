@@ -2,7 +2,7 @@
 // the manifest names, its label from the catalogue, its shortcut as a hint, and disabled with "not available yet"
 // while its command's entry in the command table is NOT_AVAILABLE_YET. Every icon comes from the sprite by a name
 // the manifest gives (a door's icon, a glyph, a panel, an element); no component chooses one.
-import { useContext, type MouseEvent, type ReactNode } from 'react';
+import { memo, useContext, type MouseEvent, type ReactNode } from 'react';
 import { wiring } from '../wiring.ts';
 import { isFeatureBuilt, isBuilt, type Message } from '../../core/commands/registry.ts';
 import { projectFileText } from '../../core/project/archive.ts';
@@ -257,7 +257,22 @@ export interface DoorControlProps {
 // the key context of a group whose controls rove (interactions.json; the arrows move the focus in keymap.ts)
 const ROVING_CONTEXT = 'roving-group';
 
-export function DoorControl({ entry, args = {}, children, expanded, className, label, title, ready = true, keysIn = 'global', tabbable = true, current, roving = false, icon: ownIcon, toggle = false }: DoorControlProps) {
+// The control is drawn anew when its door's state changes (its hooks) or its props do: the arguments its place adds
+// are compared by their values, as a row writes them anew at each of its own drawings ({ target } of a Layers row),
+// every other prop by identity. A row drawn again for its own mark leaves its nine controls as they are.
+function sameArgs(a: Readonly<Record<string, unknown>> | undefined, b: Readonly<Record<string, unknown>> | undefined): boolean {
+  if (a === b) return true;
+  if (a === undefined || b === undefined) return false;
+  const keys = Object.keys(a);
+  return keys.length === Object.keys(b).length && keys.every((key) => Object.hasOwn(b, key) && Object.is(a[key], b[key]));
+}
+function sameDoorProps(before: DoorControlProps, after: DoorControlProps): boolean {
+  const keys = Object.keys(before) as (keyof DoorControlProps)[];
+  if (keys.length !== Object.keys(after).length) return false;
+  return keys.every((key) => (key === 'args' ? sameArgs(before.args, after.args) : Object.hasOwn(after, key) && Object.is(before[key], after[key])));
+}
+
+export const DoorControl = memo(function DoorControl({ entry, args = {}, children, expanded, className, label, title, ready = true, keysIn = 'global', tabbable = true, current, roving = false, icon: ownIcon, toggle = false }: DoorControlProps) {
   const found = useDoor(entry, args, label, ready, keysIn);
   // a control that stands for a value several selected elements do not share is not current (A3.35)
   const door = current === undefined ? found : { ...found, current };
@@ -327,4 +342,4 @@ export function DoorControl({ entry, args = {}, children, expanded, className, l
         </button>
       );
   }
-}
+}, sameDoorProps);

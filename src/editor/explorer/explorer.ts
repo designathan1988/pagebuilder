@@ -2,14 +2,15 @@
 // the rows the Files section lists — what the document generates (one .html per page, the stylesheet
 // css/styles.css, and each script the export writes for what the project holds: js/interactions.js once it has
 // interactions, js/forms.js, js/motion.js,
-// js/lottie.min.js, js/widgets.js, and the application's files under js/app-layer/) and the files the project holds
+// js/lottie.min.js, js/widgets.js, js/lists.js while a list is paged, and the application's files under
+// js/app-layer/) and the files the project holds
 // (document.files) — and the door that opens one in the code pane. One owner: the row list, the row's kind, and
 // files.open. Folders, renaming, moving and deleting are explorer-file-system's own work (not built yet).
 import { message, registerHandler } from '../../core/commands/registry.ts';
 import type { DocumentJson, Page, ProjectFile } from '../../core/document/model.ts';
 import { byteCount, fileAt, folderOf, folderPaths } from '../../core/files/files.ts';
 import { filesOf } from '../../core/document/model.ts';
-import { FORMS_SCRIPT, INTERACTIONS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, STYLESHEET, WIDGETS_SCRIPT, siteFiles, siteScriptsWritten } from '../../core/export/export.ts';
+import { FORMS_SCRIPT, INTERACTIONS_SCRIPT, LISTS_SCRIPT, LOTTIE_SCRIPT, MOTION_SCRIPT, STYLESHEET, WIDGETS_SCRIPT, siteDocument, siteFiles, siteScriptsWritten } from '../../core/export/export.ts';
 import { APP_MAIN_SCRIPT, APP_RUNTIME_SCRIPT, APP_START_SCRIPT } from '../../core/export/paths.ts';
 import { appPaths } from '../../core/logic/compile.ts';
 import { siteScripts } from '../forms/script.ts';
@@ -53,6 +54,7 @@ const SCRIPTS = [
   [MOTION_SCRIPT, 'motion'],
   [LOTTIE_SCRIPT, 'lottie'],
   [WIDGETS_SCRIPT, 'widgets'],
+  [LISTS_SCRIPT, 'lists'],
 ] as const;
 // the paths the export may write a script at
 const SCRIPT_PATHS: readonly string[] = SCRIPTS.map(([path]) => path);
@@ -69,7 +71,8 @@ function generatedScriptPaths(document: DocumentJson, rules: ModelRules): readon
   return [...SCRIPTS.flatMap(([path, part]) => (written.has(part) ? [path] : [])), ...appPaths(document)];
 }
 export function generatedScripts(document: DocumentJson, rules: ModelRules): readonly { readonly path: string; readonly text: string }[] {
-  const site = siteFiles(document, rules, true, siteScripts);
+  // the site as the archive writes it (export.ts siteEntries): its paged lists are only paged there
+  const site = siteFiles(siteDocument(document, rules, true), rules, true, siteScripts);
   const scripts = SCRIPTS.flatMap(([path, part]) => {
     const text = site[part];
     return text === null ? [] : [{ path, text }];

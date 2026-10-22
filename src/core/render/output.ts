@@ -10,6 +10,7 @@ import { isPageSetting } from '../page/settings.ts';
 import { viewBoxOf } from '../elements/svg.ts';
 import { writtenByWord } from '../elements/word-states.ts';
 import { hasLogic } from '../logic/model.ts';
+import { orderedStates, stateSelector } from '../style/state-keys.ts';
 
 // The manifest data the page's output needs, on the canvas and in the export: the elements, their attributes' HTML
 // names, the breakpoints, the states' pseudo-classes and the recipes.
@@ -24,7 +25,8 @@ export interface OutputModel {
   readonly breakpoints: readonly { readonly id: string; readonly width: number; readonly base: boolean }[];
   // state id → its pseudo-class (or pseudo-element) and the element types it stands on (elements.json; null for every
   // one): a rule a browser would ignore is never written (A3.36)
-  readonly states: ReadonlyMap<string, { readonly pseudo: string | null; readonly elements: readonly string[] | null }>;
+  // and whether it may be an ancestor's (a parent state: core/style/state-keys.ts)
+  readonly states: ReadonlyMap<string, { readonly pseudo: string | null; readonly elements: readonly string[] | null; readonly ancestor?: boolean }>;
   // recipe id → its declarations; a null value is the stored value
   readonly recipes: ReadonlyMap<string, readonly { readonly property: string; readonly value: string | null }[]>;
   // property → the fields of its structured value, in order, and how each reaches CSS (properties.json structures)
@@ -35,6 +37,15 @@ export interface OutputModel {
 }
 
 const SVG_TAG = 'svg';
+// the attribute a link to the page it stands on carries (WAI-ARIA aria-current)
+const CURRENT = 'aria-current';
+// Whether a link's stored address names the page at `file` (a project path, as a link to a page stores it, with or
+// without a fragment or a query): what makes it that page's current link. An address with no path (#top) names no page.
+export function linksToFile(address: string, file: string): boolean {
+  const cut = address.search(/[#?]/);
+  const path = (cut < 0 ? address : address.slice(0, cut)).replace(/^(?:\.\/|\/)+/, '');
+  return path !== '' && path === file;
+}
 const VIEW_BOX = 'viewBox';
 // a media part (a <source> or a <track> the person added): HTML writes it only with an address (the audit's A3.6)
 const MEDIA_PART_TAGS = new Set(['source', 'track']);
@@ -75,7 +86,7 @@ export function outputModelFromManifest(elements: ElementsFile, properties: Prop
     attributes: new Map(elements.attributes.map((a) => [a.id, a.html])),
     appliesTo: new Map(elements.attributes.map((a) => [a.id, a.elements])),
     breakpoints: properties.breakpoints.map((b) => ({ id: b.id, width: b.width, base: b.base })),
-    states: new Map(properties.states.map((s) => [s.id, { pseudo: s.pseudo, elements: s.elements }] as const)),
+    states: new Map(properties.states.map((s) => [s.id, { pseudo: s.pseudo, elements: s.elements, ancestor: s.ancestor === true }] as const)),
     base: { breakpoint: properties.breakpoints.find((b) => b.base)?.id ?? '', state: properties.states[0]?.id ?? '' },
     boxSize: boxSizeOf(properties),
     composites: properties.composites.flatMap(c => c.shorthand === null ? [] : [{ shorthand: c.shorthand, longhands: c.longhands, codec: c.codec, compose: codecOf(c.codec)?.compose }]),
@@ -194,18 +205,24 @@ export function nodeCss(node: Pick<DocNode, 'styles'> & { readonly type?: string
     // export-keyframes)
     if (!byState && !(breakpoint.base && extra.length > 0)) continue;
     const rules: string[] = [];
-    for (const [state, details] of model.states) {
+    // the states it holds, in the order their rules are written (core/style/state-keys.ts): the base first, with the
+    // declarations an animation adds even where it holds none
+    const held = Object.keys(byState ?? {});
+    const keys = breakpoint.base && extra.length > 0 && !held.includes(model.base.state) ? [model.base.state, ...held] : held;
+    for (const state of orderedStates(keys, model.states)) {
       const declarations = byState?.[state as keyof typeof byState];
-      const added = breakpoint.base && details.pseudo === null ? extra : [];
+      const added = breakpoint.base && state === model.base.state ? extra : [];
       if (!declarations && added.length === 0) continue;
       // a state the element does not stand on writes nothing, however it was stored (A3.36: no :disabled on an h2); a
       // class holds no type of its own and writes what it holds
-      if (details.elements !== null && node.type !== undefined && !details.elements.includes(node.type)) continue;
-      const pseudo = details.pseudo;
+      const elements = model.states.get(state)?.elements ?? null;
+      if (elements !== null && node.type !== undefined && !elements.includes(node.type)) continue;
+      const written = stateSelector(selector, state, model.states);
+      if (written === null) continue;
       const lines = declarationLines(declarations ?? {}, model, layout).concat(added);
       if (lines.length === 0) continue;
       const indent = breakpoint.base ? '' : '  ';
-      rules.push(layout === 'line' ? `${selector}${pseudo ?? ''} { ${lines.join(' ')} }` : `${indent}${selector}${pseudo ?? ''} {\n${lines.map((l) => `${indent}  ${l}`).join('\n')}\n${indent}}`);
+      rules.push(layout === 'line' ? `${written} { ${lines.join(' ')} }` : `${indent}${written} {\n${lines.map((l) => `${indent}  ${l}`).join('\n')}\n${indent}}`);
     }
     if (rules.length === 0) continue;
     blocks.push(breakpoint.base ? rules.join('\n') : `${mediaQuery(breakpoint)} {\n${rules.join('\n')}\n}`);
@@ -270,10 +287,12 @@ export function elementAttributes(
   // how a stored value is written (a project file as its object URL on the canvas, a reference as the target's id
   // attribute): null writes nothing at all (a reference whose target holds no id; core/elements/references.ts)
   resolve: (name: string, value: string) => string | null = (_name, value) => value,
-  context: { readonly language?: string; readonly inForm?: boolean } = {},
+  // `currentPage`: whether a link's stored address is the page written (the export's page, the canvas's open page)
+  context: { readonly language?: string; readonly inForm?: boolean; readonly currentPage?: (address: string) => boolean } = {},
 ): { readonly element: Map<string, string | true>; readonly page: Map<string, string> } {
   const element = new Map<string, string | true>();
   const page = new Map<string, string>();
+  let address: string | null = null;
   if (node.classes.length > 0) element.set('class', node.classes.join(' '));
   for (const [id, value] of Object.entries(node.attributes)) {
     const name = model.attributes.get(id);
@@ -281,6 +300,7 @@ export function elementAttributes(
     // a link switched to a button keeps its address and tab in the document, for when it is switched back, but a
     // button is no link
     if ((name === 'href' || name === 'target') && tag !== 'a') continue;
+    if (name === 'href') address = String(value);
     if (name === 'target' && value === true) {
       element.set('target', '_blank');
       element.set('rel', 'noopener noreferrer');
@@ -293,6 +313,13 @@ export function elementAttributes(
     (root && isPageSetting(model.appliesTo.get(id), node.type) ? page : element).set(name, written);
   }
   for (const [name, value] of Object.entries(node.customAttributes ?? {})) if (!element.has(name)) element.set(name, value);
+  // an element its item's content hides (core/data/materialize.ts: a show binding that does not hold, a repeated item
+  // past a list's first page on the site) is hidden on the canvas and on the page alike, by the base style's [hidden]
+  if (node.dataHidden === true) element.set('hidden', true);
+  // a link to the page written is its current page's link (spec state-styles: the Current state styles
+  // [aria-current="page"]; Webflow's w--current): the export marks it on the page it writes, the canvas on the open
+  // page, unless the person wrote an aria-current of their own
+  if (tag === 'a' && address !== null && element.has('href') && !element.has(CURRENT) && context.currentPage?.(address) === true) element.set(CURRENT, 'page');
   // an element with logic is found by the application runtime by its id (core/logic/compile.ts, spec app-logic)
   if (hasLogic(node)) element.set('data-app', node.id);
   // the code component it draws (spec app-logic): the canvas shows its name where the site draws it

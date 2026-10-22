@@ -10,6 +10,7 @@ Leia por inteiro antes de começar; atualize ao fim de cada lote. Regras de ritm
 - **Defeitos:** DEF-0615 a DEF-0801 corrigidos; nenhum aberto. No c03f9818: DEF-0713 a DEF-0734 (lógica), DEF-0735 a DEF-0749 (modelos) e DEF-0750 a DEF-0754 (uso real da DCS-035).
 - **Verificação:** um comando só, `npm run verify` (`tools/verify/run.ts`); com `--all`, cerca de 63 s no 7b2a2a71. `ui-widths.json` medido de novo nas três condições depois da DCS-065.
 - **Código em inglês:** comentários, identificadores, nomes de arquivo, títulos de teste e mensagens de ferramentas.
+- **Lote de 2026-10-22 (sem commit):** estados de estilo (DCS-073), CMS (DEF-0830 a 0835, DCS-080 a 084), lacunas de movimento (DEF-0816 a 0823, DCS-074 a 078), atritos (DEF-0810 a 0813, DCS-069 a 072), arraste (OTM-004) e a integração (DEF-0836 a 0842, OTM-005: contornos pelo relógio da página); o cenário `a-link-points-at-a-page-of-the-project` passou a esperar `aria-current="page"` (link para a própria página). `verify --all` sem falha, `ui-widths.json` medido nas três condições, uso real em pt-BR 1280×720 e en 1440×900 com o feed vazio.
 
 ## Estado anterior (2026-10-10)
 - **Prontidão para uso (2026-10-10):** `auditoria/prontidao.md`. O veredito é "pronto, com ressalvas". Um site de 3 páginas foi feito do zero no build de produção, salvo, reaberto e exportado, no Chrome e no Edge. Ficaram 7 defeitos abertos (DEF-0615 a DEF-0621); dois dão resultado errado: DEF-0615 (componente) e DEF-0620 (preço do CSV).
@@ -136,7 +137,7 @@ Leia por inteiro antes de começar; atualize ao fim de cada lote. Regras de ritm
 - **Fim da etapa dos lotes 7 a 10 (2026-10-09):** catálogo inteiro de mutantes, 152, com 149 acusados e 3 equivalentes com motivo (M19, M25, M30), 100 % dos não equivalentes, em 294 s. A suíte inteira de navegador não rodou: o pedido do dono desta rodada a proíbe; cada lote rodou os specs da sua área nas duas condições.
 
 ## Próximo passo
-Etapa de 2026-10-21 fechada, sem item aberto: relatório final em `auditoria/relatorio-final-2026-10-21.md` (código no commit 5ab14c67, `verify --all` com a medição em dia, três passadas de uso real com fotos; em 2026-10-22, a varredura exaustiva, as plantas do `manifest:check`, os modelos e a sonda completos passaram). Próximo: uma rodada de uso real com fotos a cada lote novo.
+Commit e push do lote de 2026-10-22 (estados, CMS, movimento, atritos, desempenho e integração), depois a conferência cética por subagente e a passada de fim de etapa (varredura exaustiva, plantas do `manifest:check`) sobre esse commit.
 
 ## Para uma próxima rodada (fora dos lotes 1 a 5)
-- O quadro de `onUp` acima de 50 ms só com a CPU disputada: o caminho está em `otimizacoes.md`, "O que fica para uma próxima rodada".
+- Os contornos medidos a cada quadro (`ViewOverlays`): `otimizacoes.md`, "O que fica para uma próxima rodada". O trabalho do arraste citado no quadro de `onUp` foi reduzido na OTM-004.

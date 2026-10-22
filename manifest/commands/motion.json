@@ -64,10 +64,11 @@
         "preset": {
           "type": "enum",
           "values": [
-            "fade-up",
             "fade-in",
-            "zoom-in",
-            "slide-in"
+            "slide-up",
+            "slide-from-left",
+            "slide-from-right",
+            "scale-in"
           ],
           "optional": true
         }
@@ -152,7 +153,11 @@
             "state",
             "event",
             "scrollStart",
-            "scrollEnd"
+            "scrollEnd",
+            "condition",
+            "conditionName",
+            "conditionCompare",
+            "conditionValue"
           ],
           "optional": true
         },
@@ -739,6 +744,118 @@
           },
           "args": {
             "field": "scrollEnd"
+          }
+        },
+        {
+          "id": "inspector-motion-condition",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "motion-interactions",
+          "panel": "inspector",
+          "control": "motion-condition",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "motion.field.condition",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-interactions",
+            "order": 53
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "field": "condition"
+          }
+        },
+        {
+          "id": "inspector-motion-condition-name",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "motion-interactions",
+          "panel": "inspector",
+          "control": "motion-condition-name",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "motion.field.conditionName",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-interactions",
+            "order": 54
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "field": "conditionName"
+          }
+        },
+        {
+          "id": "inspector-motion-condition-compare",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "motion-interactions",
+          "panel": "inspector",
+          "control": "motion-condition-compare",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "motion.field.conditionCompare",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-interactions",
+            "order": 55
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "field": "conditionCompare"
+          }
+        },
+        {
+          "id": "inspector-motion-condition-value",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "motion-interactions",
+          "panel": "inspector",
+          "control": "motion-condition-value",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "motion.field.conditionValue",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-interactions",
+            "order": 56
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "field": "conditionValue"
           }
         }
       ]
@@ -1658,7 +1775,8 @@
             "file",
             "loop",
             "speed",
-            "from"
+            "from",
+            "scope"
           ],
           "optional": false
         },
@@ -3683,6 +3801,288 @@
           "placement": {
             "region": "inspector-interactions",
             "order": 52
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        }
+      ]
+    },
+    {
+      "id": "motion.setParallaxRange",
+      "labelKey": "command.motion.setParallaxRange",
+      "owner": "src/core/motion/commands.ts",
+      "introducedBy": "motion-behaviours",
+      "args": {
+        "field": {
+          "type": "enum",
+          "values": [
+            "start",
+            "end",
+            "max"
+          ],
+          "optional": false
+        },
+        "value": {
+          "type": "json",
+          "values": [],
+          "optional": true
+        }
+      },
+      "availability": {
+        "predicate": "singleSelection",
+        "refusalKey": "status.needsSingleSelection"
+      },
+      "refusals": [
+        "status.motion.invalid",
+        "status.motion.noParallax",
+        "status.locked.edit"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "inspector-motion-parallax-start",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "motion-behaviours",
+          "panel": "inspector",
+          "control": "motion-parallax-start",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "motion.parallax.start",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-interactions",
+            "order": 57
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "field": "start"
+          }
+        },
+        {
+          "id": "inspector-motion-parallax-end",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "motion-behaviours",
+          "panel": "inspector",
+          "control": "motion-parallax-end",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "motion.parallax.end",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-interactions",
+            "order": 58
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "field": "end"
+          }
+        },
+        {
+          "id": "inspector-motion-parallax-max",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "motion-behaviours",
+          "panel": "inspector",
+          "control": "motion-parallax-max",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "motion.parallax.max",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-interactions",
+            "order": 59
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "field": "max"
+          }
+        }
+      ]
+    },
+    {
+      "id": "motion.setPageTransition",
+      "labelKey": "command.motion.setPageTransition",
+      "owner": "src/core/motion/commands.ts",
+      "introducedBy": "page-transitions",
+      "args": {
+        "field": {
+          "type": "enum",
+          "values": [
+            "kind",
+            "duration"
+          ],
+          "optional": false
+        },
+        "value": {
+          "type": "json",
+          "values": [],
+          "optional": true
+        }
+      },
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [
+        "status.motion.invalid"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "inspector-motion-page-transition",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "page-transitions",
+          "panel": "inspector",
+          "control": "motion-page-transition",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "motion.pageTransition.kind",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-interactions",
+            "order": 60
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "field": "kind"
+          }
+        },
+        {
+          "id": "inspector-motion-page-transition-duration",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "page-transitions",
+          "panel": "inspector",
+          "control": "motion-page-transition-duration",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "motion.pageTransition.duration",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-interactions",
+            "order": 61
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "field": "duration"
+          }
+        }
+      ]
+    },
+    {
+      "id": "motion.setLinkTransition",
+      "labelKey": "command.motion.setLinkTransition",
+      "owner": "src/core/motion/commands.ts",
+      "introducedBy": "page-transitions",
+      "args": {
+        "transition": {
+          "type": "enum",
+          "values": [
+            "",
+            "fade",
+            "slide",
+            "none"
+          ],
+          "optional": false
+        }
+      },
+      "availability": {
+        "predicate": "singleSelection",
+        "refusalKey": "status.needsSingleSelection"
+      },
+      "refusals": [
+        "status.motion.invalid",
+        "status.motion.notALink",
+        "status.locked.edit"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "inspector-motion-link-transition",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "page-transitions",
+          "panel": "inspector",
+          "control": "motion-link-transition",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "motion.linkTransition.label",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-interactions",
+            "order": 62
           },
           "adapter": {
             "selection": "none",

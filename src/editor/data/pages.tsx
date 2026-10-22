@@ -4,41 +4,51 @@
 // stop sharing.
 import type { ReactNode } from 'react';
 import type { NodeId } from '../../generated/commands.ts';
-import { siteYesNo } from '../../core/data/bindings.ts';
-import { cellText } from '../../core/data/collections.ts';
+import { templatePaths } from '../../core/data/bindings.ts';
+import { collectionNamed, itemTitle } from '../../core/data/collections.ts';
 import type { Collection } from '../../core/data/model.ts';
 import { NEW_PAGES } from '../../core/data/regions.ts';
 import { locate, walk, type DocumentJson, type Page } from '../../core/document/model.ts';
 import { DoorControl } from '../doors/door.tsx';
 import { useEditorState } from '../store.ts';
 import { useT } from '../text.ts';
-import { DoorForm, doorOf } from './controls.tsx';
+import { DoorField, DoorForm, doorOf } from './controls.tsx';
 
 const PAGES = 'data-pages';
 const SHARED = 'data-shared';
 const FROM_NAMES = doorOf(PAGES, 'pages-from-names');
 const FROM_COLLECTION = doorOf(PAGES, 'pages-from-collection');
+const PREVIEW_ITEM = doorOf(PAGES, 'preview-item');
 const SHARE = doorOf(SHARED, 'share');
 const DETACH = doorOf(SHARED, 'shared-detach');
 const STOP = doorOf(SHARED, 'shared-stop');
 
 export function PagesView({ page, collection }: { readonly page: Page; readonly collection: Collection | undefined }): ReactNode {
   const t = useT();
-  const nameField = collection?.fields.find((field) => field.type === 'text') ?? collection?.fields[0];
-  // the examples are the names the pages will take: the value as the site writes it (pages.fromCollection)
+  // the field that addresses the item pages: the collection's slug, else its first text field
+  const nameField = collection?.fields.find((field) => field.type === 'slug') ?? collection?.fields.find((field) => field.type === 'text') ?? collection?.fields[0];
   const language = useEditorState((state) => state.document.language);
+  const document = useEditorState((state) => state.document);
+  const mark = page.tree.dataItem;
+  const templated = mark?.template === true ? collectionNamed(document, mark.collection) : undefined;
   return (
     <section className="data-pages" data-region="data-pages" aria-label={t('data.pagesTitle')}>
       <p className="data-panel__note">{t('data.pagesFromHelp', { name: page.name })}</p>
       <DoorForm entry={FROM_NAMES} args={{}}>
         <textarea className="input" name="names" rows={3} aria-label={t('data.pageNames')} placeholder={t('data.pageNamesHint')} spellCheck={false} />
       </DoorForm>
-      {collection === undefined || nameField === undefined ? null : (
+      {templated === undefined ? null : (
+        <div className="data-template" role="group" aria-label={t('data.templateTitle', { collection: templated.name })}>
+          <p className="data-panel__note">{t('data.templateHelp', { name: page.name, collection: templated.name, example: [...(templatePaths(document).get(templated.name)?.values() ?? [])][0] ?? '' })}</p>
+          {templated.items.length === 0 ? null : <DoorField entry={PREVIEW_ITEM} args={{}} name="item" value={mark?.item ?? ''} options={templated.items.map((item, i) => ({ value: item.id, label: `${i + 1}. ${itemTitle(templated, item, language)}` }))} label={t('data.previewItem')} />}
+        </div>
+      )}
+      {collection === undefined || nameField === undefined || templated !== undefined ? null : (
         <div className="data-panel__actions">
-          <DoorControl entry={FROM_COLLECTION} args={{ collection: collection.name, nameField: nameField.key }} label={t('data.pagePerItem', { collection: collection.name, field: nameField.label })}>
-            <span className="door__label">{t('data.pagePerItem', { collection: collection.name, field: nameField.label })}</span>
+          <DoorControl entry={FROM_COLLECTION} args={{ collection: collection.name, nameField: nameField.key }} label={t('data.templatePerItem', { name: page.name, collection: collection.name, field: nameField.label })}>
+            <span className="door__label">{t('data.templatePerItem', { name: page.name, collection: collection.name, field: nameField.label })}</span>
           </DoorControl>
-          <span className="data-panel__note">{t('data.itemPagesCount', { count: collection.items.length, examples: collection.items.slice(0, 2).map((item) => cellText(item.values[nameField.key], siteYesNo(language), { language, decimals: nameField.decimals })).join(', ') })}</span>
+          <span className="data-panel__note">{t('data.itemPagesCount', { count: collection.items.length, examples: collection.items.slice(0, 2).map((item) => itemTitle(collection, item, language)).join(', ') })}</span>
         </div>
       )}
     </section>

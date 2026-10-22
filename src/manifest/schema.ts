@@ -436,8 +436,9 @@ export const propertiesFileSchema = z.strictObject({
     .min(1),
   // the style states: the id the document stores, the label the menu shows, the pseudo-class (or pseudo-element) the
   // export writes, and the element ids it stands on (elements.json; null for every element) — an h2 takes no :disabled
-  // (the user's real-use audit, item A3.36)
-  states: z.array(z.strictObject({ id: kebabId, labelKey: i18nKey, pseudo: z.string().nullable(), elements: z.array(camelId).min(1).nullable() })).min(1),
+  // (the user's real-use audit, item A3.36). `ancestor`: the state may also be an ancestor's (a parent state: "when the
+  // card is hovered, its title", written `.card:hover .title`; core/style/state-keys.ts)
+  states: z.array(z.strictObject({ id: kebabId, labelKey: i18nKey, pseudo: z.string().nullable(), elements: z.array(camelId).min(1).nullable(), ancestor: z.boolean().optional() })).min(1),
   structures: z.array(structureSchema),
   properties: z.array(propertySchema).min(1),
   composites: z.array(compositeSchema),

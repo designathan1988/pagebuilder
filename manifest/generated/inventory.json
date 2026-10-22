@@ -1,14 +1,14 @@
 {
   "totals": {
-    "features": 217,
-    "built": 217,
-    "commands": 387,
-    "doors": 1401,
-    "scenarios": 1872,
-    "modules": 519,
-    "lines": 92744,
+    "features": 218,
+    "built": 218,
+    "commands": 393,
+    "doors": 1438,
+    "scenarios": 1908,
+    "modules": 526,
+    "lines": 95728,
     "fields": 207,
-    "interactive": 271
+    "interactive": 278
   },
   "features": [
     {
@@ -1528,8 +1528,8 @@
         "view.setBreakpoint",
         "view.setStyleState"
       ],
-      "doors": 198,
-      "scenarios": 17
+      "doors": 212,
+      "scenarios": 31
     },
     {
       "id": "preview-mode",
@@ -1719,7 +1719,7 @@
         "view.setBreakpoint",
         "view.setStyleState"
       ],
-      "doors": 33,
+      "doors": 47,
       "scenarios": 2
     },
     {
@@ -2063,8 +2063,8 @@
         "assetPicker.open",
         "assetPicker.close"
       ],
-      "doors": 137,
-      "scenarios": 3
+      "doors": 138,
+      "scenarios": 4
     },
     {
       "id": "export-file-tree",
@@ -2244,8 +2244,8 @@
         "motion.update",
         "motion.remove"
       ],
-      "doors": 22,
-      "scenarios": 64
+      "doors": 26,
+      "scenarios": 68
     },
     {
       "id": "motion-timeline",
@@ -2305,10 +2305,11 @@
       "built": true,
       "commands": [
         "motion.setBehaviour",
-        "motion.removeBehaviour"
+        "motion.removeBehaviour",
+        "motion.setParallaxRange"
       ],
-      "doors": 10,
-      "scenarios": 10
+      "doors": 13,
+      "scenarios": 11
     },
     {
       "id": "export-motion-js",
@@ -2318,6 +2319,16 @@
         "project.export"
       ],
       "doors": 11,
+      "scenarios": 2
+    },
+    {
+      "id": "page-transitions",
+      "built": true,
+      "commands": [
+        "motion.setPageTransition",
+        "motion.setLinkTransition"
+      ],
+      "doors": 3,
       "scenarios": 2
     },
     {
@@ -2338,8 +2349,8 @@
         "data.moveItem",
         "workspace.setPanelOpen"
       ],
-      "doors": 49,
-      "scenarios": 27
+      "doors": 54,
+      "scenarios": 33
     },
     {
       "id": "data-import",
@@ -2366,10 +2377,12 @@
         "data.unbind",
         "data.setCell",
         "data.select",
-        "workspace.setPanelOpen"
+        "workspace.setPanelOpen",
+        "data.formatBinding",
+        "data.showWhen"
       ],
-      "doors": 33,
-      "scenarios": 6
+      "doors": 39,
+      "scenarios": 13
     },
     {
       "id": "data-pages",
@@ -2378,10 +2391,11 @@
         "pages.fromNames",
         "pages.fromCollection",
         "pages.duplicate",
-        "workspace.setPanelOpen"
+        "workspace.setPanelOpen",
+        "pages.previewItem"
       ],
-      "doors": 30,
-      "scenarios": 3
+      "doors": 31,
+      "scenarios": 4
     },
     {
       "id": "shared-regions",
@@ -4140,9 +4154,9 @@
   ],
   "interactive": {
     "owners": {
-      "door": 93,
-      "inside-door": 42,
-      "local": 19,
+      "door": 96,
+      "inside-door": 45,
+      "local": 20,
       "none": 87,
       "spread": 6,
       "wraps-door": 24
@@ -4704,6 +4718,15 @@
           "onClick"
         ],
         "owner": "none"
+      },
+      {
+        "key": "src/editor/motion/ui/interactions.tsx|button|aria-pressed,className,data-local,key,onClick,type|1",
+        "tag": "button",
+        "role": null,
+        "handlers": [
+          "onClick"
+        ],
+        "owner": "local"
       },
       {
         "key": "src/editor/motion/ui/timeline.tsx|button|aria-disabled,aria-haspopup,className,data-args,data-door,onClick,title,type|1",
@@ -5820,6 +5843,56 @@
         "owner": "inside-door"
       },
       {
+        "key": "src/editor/shell/inspector.tsx|form|className,data-args,data-door,onSubmit|2",
+        "tag": "form",
+        "role": null,
+        "handlers": [
+          "onSubmit"
+        ],
+        "owner": "door"
+      },
+      {
+        "key": "src/editor/shell/inspector.tsx|input|aria-label,className,defaultValue,key,name,onBlur,spellCheck|1",
+        "tag": "input",
+        "role": null,
+        "handlers": [
+          "onBlur"
+        ],
+        "owner": "inside-door"
+      },
+      {
+        "key": "src/editor/shell/inspector.tsx|select|className,data-door,onChange,value|1",
+        "tag": "select",
+        "role": null,
+        "handlers": [
+          "onChange"
+        ],
+        "owner": "door"
+      },
+      {
+        "key": "src/editor/shell/inspector.tsx|option|key,value|1",
+        "tag": "option",
+        "role": null,
+        "handlers": [],
+        "owner": "inside-door"
+      },
+      {
+        "key": "src/editor/shell/inspector.tsx|select|className,data-door,onChange,value|2",
+        "tag": "select",
+        "role": null,
+        "handlers": [
+          "onChange"
+        ],
+        "owner": "door"
+      },
+      {
+        "key": "src/editor/shell/inspector.tsx|option|key,value|2",
+        "tag": "option",
+        "role": null,
+        "handlers": [],
+        "owner": "inside-door"
+      },
+      {
         "key": "src/editor/shell/interactions.tsx|button|aria-expanded,className,onClick,type|1",
         "tag": "button",
         "role": null,
@@ -6026,6 +6099,15 @@
         "owner": "wraps-door"
       },
       {
+        "key": "src/editor/shell/sidebar/insert.tsx|input|aria-label,className,data-local,onChange,placeholder,type,value|1",
+        "tag": "input",
+        "role": null,
+        "handlers": [
+          "onChange"
+        ],
+        "owner": "local"
+      },
+      {
         "key": "src/editor/shell/sidebar/insert.tsx|div|className,onBlur,onFocus|1",
         "tag": "div",
         "role": null,
@@ -6034,15 +6116,6 @@
           "onBlur"
         ],
         "owner": "wraps-door"
-      },
-      {
-        "key": "src/editor/shell/sidebar/insert.tsx|input|aria-label,className,data-local,onChange,placeholder,type,value|1",
-        "tag": "input",
-        "role": null,
-        "handlers": [
-          "onChange"
-        ],
-        "owner": "local"
       },
       {
         "key": "src/editor/shell/sidebar/layers.tsx|form|className,onSubmit|1",

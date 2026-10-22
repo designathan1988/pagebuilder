@@ -22,6 +22,7 @@ export function styleDoorsRules(ctx: CheckContext, identity: Pick<ReturnType<typ
     isRecipeDoor,
     breakpointIds,
     stateIds,
+    stateArgument,
     contextIds,
     gestureById,
     viewportIds,
@@ -131,7 +132,7 @@ export function styleDoorsRules(ctx: CheckContext, identity: Pick<ReturnType<typ
       if (arg.type === 'property') ref(text !== null && (propertyById.has(text) || compositeById.has(text) || recipeById.has(text)), file, `${path}.args.${name}`, `unknown property, composite or recipe "${String(value)}"`);
       if (arg.type === 'attribute') ref(text !== null && attributeById.has(text), file, `${path}.args.${name}`, `unknown attribute "${String(value)}"`);
       if (arg.type === 'breakpoint') ref(text !== null && breakpointIds.has(text), file, `${path}.args.${name}`, `unknown breakpoint "${String(value)}"`);
-      if (arg.type === 'state') ref(text !== null && stateIds.has(text), file, `${path}.args.${name}`, `unknown state "${String(value)}"`);
+      if (arg.type === 'state') ref(text !== null && stateArgument(text), file, `${path}.args.${name}`, `unknown state "${String(value)}"`);
     }
     const gesture = 'gesture' in door && door.gesture !== null ? door.gesture : null;
     if (gesture !== null) ref(gestureById.has(gesture), file, `${path}.gesture`, `unknown gesture "${gesture}"`);

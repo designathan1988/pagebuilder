@@ -3,6 +3,7 @@
 import { BROWSERS, type Browser, type Command, type Feature, type Recipe, type Structure } from '../schema.ts';
 import type { ManifestInput, Parsed, Problem, RuleId, DoorEntry } from './base.ts';
 import { cssMatcher, supportedKeywords, PREFIX } from './base.ts';
+import { stateArgumentFits } from '../../core/style/state-keys.ts';
 
 export type Support = { chrome: string | false; firefox: string | false; safari: string | false; why: Partial<Record<Browser, string>> };
 
@@ -53,6 +54,10 @@ export function collectContext(input: ManifestInput, parsed: Parsed, problems: P
   const isRecipeDoor = (entry: DoorEntry) => recipeDoorRefs.has(entry.ref) || (entry.door.kind === 'inspector-field' && entry.door.recipe !== null);
   const breakpointIds = new Set(p.properties.breakpoints.map((b) => b.id));
   const stateIds = new Set(p.properties.states.map((s) => s.id));
+  // what a door or a step may hand a state argument: a state of properties.json, a child position or a parent state
+  // (core/style/state-keys.ts)
+  const stateTable = new Map(p.properties.states.map((s) => [s.id, { pseudo: s.pseudo, elements: s.elements, ancestor: s.ancestor === true }] as const));
+  const stateArgument = (value: string): boolean => stateArgumentFits(value, stateTable);
   const contextIds = new Set(p.interactions.keyContexts.map((k) => k.id));
   const gestureById = new Map(p.interactions.gestures.map((g) => [g.id, g]));
   const constantById = new Map(p.interactions.constants.map((c) => [c.id, c]));
@@ -110,6 +115,7 @@ export function collectContext(input: ManifestInput, parsed: Parsed, problems: P
     isRecipeDoor,
     breakpointIds,
     stateIds,
+    stateArgument,
     contextIds,
     gestureById,
     constantById,

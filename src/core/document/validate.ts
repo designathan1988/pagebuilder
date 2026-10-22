@@ -12,6 +12,7 @@ import { hasIncompatibleMask } from '../elements/inputs.ts';
 import { IDENTIFIER_SOURCE, isIdentifier } from '../text/identifier.ts';
 import { languageTagAllowed } from '../text/language-tag.ts';
 import { stateStandsOn } from '../style/state-elements.ts';
+import { isStyleState } from '../style/state-keys.ts';
 import type { ElementType, MessageId } from '../../generated/ids.ts';
 import { boxSizeOf, outputModelFromManifest, type OutputModel } from '../render/output.ts';
 import type { Attribute, Coupling, ElementsFile, GeneratedHtml, PropertiesFile, TemplateNode } from '../../manifest/schema.ts';
@@ -107,7 +108,8 @@ export interface ModelRules {
   readonly stateLabels: ReadonlyMap<string, MessageId>;
   // breakpoint id → the screen width it stands for (properties.json): the import maps a media query's width to it
   readonly breakpointWidths: ReadonlyMap<string, number>;
-  // the pseudo-class of a state, without its colons ("hover") → the state id: the import reads a selector's state
+  // the pseudo-class of a state without its colon ("hover", "nth-child(odd)"), a pseudo-element with one (":before") →
+  // the state id: the import reads a selector's state (an attribute test, [aria-current="page"], is read apart)
   readonly statePseudos: ReadonlyMap<string, string>;
   // the breakpoint and the state a value belongs to when none is chosen (properties.json: base)
   readonly base: { readonly breakpoint: string; readonly state: string };
@@ -191,7 +193,7 @@ export function rulesFromManifest(elements: ElementsFile, properties: Properties
     stateElements: new Map(properties.states.map((s) => [s.id, s.elements] as const)),
     stateLabels: new Map(properties.states.map((s) => [s.id, s.labelKey as MessageId] as const)),
     breakpointWidths: new Map(properties.breakpoints.map((b) => [b.id, b.width] as const)),
-    statePseudos: new Map(properties.states.flatMap((s) => (s.pseudo === null || s.pseudo.startsWith('::') ? [] : [[s.pseudo.slice(1), s.id] as const]))),
+    statePseudos: new Map(properties.states.flatMap((s) => (s.pseudo === null || !s.pseudo.startsWith(':') ? [] : [[s.pseudo.slice(1), s.id] as const]))),
     base: { breakpoint: baseBreakpoint.id, state: baseState.id },
     baseLayer: { breakpoint: baseBreakpoint.id, state: baseState.id },
     boxSize: boxSizeOf(properties),
@@ -315,7 +317,8 @@ function validateStyles(styles: unknown, at: string, rules: ModelRules, bad: (pa
         continue;
       }
       for (const [state, declarations] of Object.entries(byState)) {
-        if (!rules.states.has(state)) bad(`${at}/styles/${breakpoint}/${state}`, `"${state}" is not a style state`);
+        // a state of properties.json, a child position or a parent state (core/style/state-keys.ts)
+        if (!isStyleState(state, rules.output.states)) bad(`${at}/styles/${breakpoint}/${state}`, `"${state}" is not a style state`);
         // a state the element does not stand on (visited on a div, disabled on an h2) is no state for it (A3.36): the
         // export would write a rule a browser ignores
         else if (type !== undefined && !stateStandsOn(state, type, rules)) bad(`${at}/styles/${breakpoint}/${state}`, `"${state}" is not a state ${type} takes`);

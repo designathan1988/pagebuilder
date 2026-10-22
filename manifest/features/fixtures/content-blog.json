@@ -1,0 +1,802 @@
+{
+  "version": 4,
+  "language": "pt-BR",
+  "pages": [
+    {
+      "id": "blog",
+      "name": "Blog",
+      "file": "index.html",
+      "tree": {
+        "id": "blog-root",
+        "type": "page",
+        "name": "Blog page",
+        "tag": "body",
+        "attributes": {},
+        "classes": [],
+        "styles": {},
+        "text": null,
+        "children": [
+          {
+            "id": "blog-heading",
+            "type": "heading",
+            "name": "Posts recentes",
+            "tag": "h2",
+            "attributes": {},
+            "classes": [],
+            "styles": {},
+            "text": "Posts recentes",
+            "children": []
+          },
+          {
+            "id": "blog-list",
+            "type": "section",
+            "name": "Lista",
+            "tag": "section",
+            "attributes": {},
+            "classes": [],
+            "styles": {},
+            "text": null,
+            "children": [
+              {
+                "id": "c1-card",
+                "type": "article",
+                "name": "Cartao",
+                "tag": "article",
+                "attributes": {},
+                "classes": [],
+                "styles": {},
+                "text": null,
+                "children": [
+                  {
+                    "id": "c1-title",
+                    "type": "heading",
+                    "name": "Titulo",
+                    "tag": "h3",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": "Café coado perfeito",
+                    "children": [],
+                    "bind": [
+                      {
+                        "field": "titulo",
+                        "to": "text"
+                      }
+                    ],
+                    "componentPart": [
+                      0
+                    ]
+                  },
+                  {
+                    "id": "c1-author",
+                    "type": "paragraph",
+                    "name": "Autor",
+                    "tag": "p",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": "Ana Souza",
+                    "children": [],
+                    "bind": [
+                      {
+                        "field": "autor.nome",
+                        "to": "text"
+                      }
+                    ],
+                    "componentPart": [
+                      1
+                    ]
+                  },
+                  {
+                    "id": "c1-date",
+                    "type": "paragraph",
+                    "name": "Data",
+                    "tag": "p",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": "2026-10-15",
+                    "children": [],
+                    "bind": [
+                      {
+                        "field": "data",
+                        "to": "text"
+                      }
+                    ],
+                    "componentPart": [
+                      2
+                    ]
+                  },
+                  {
+                    "id": "c1-price",
+                    "type": "paragraph",
+                    "name": "Preco",
+                    "tag": "p",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": "R$ 7,90",
+                    "children": [],
+                    "bind": [
+                      {
+                        "field": "preco",
+                        "to": "text",
+                        "format": "currency"
+                      }
+                    ],
+                    "componentPart": [
+                      3
+                    ]
+                  },
+                  {
+                    "id": "c1-featured",
+                    "type": "paragraph",
+                    "name": "Destaque",
+                    "tag": "p",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": "Em destaque",
+                    "children": [],
+                    "componentPart": [
+                      4
+                    ]
+                  },
+                  {
+                    "id": "c1-tags",
+                    "type": "div",
+                    "name": "Tags",
+                    "tag": "div",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": null,
+                    "children": [
+                      {
+                        "id": "c1-tag",
+                        "type": "paragraph",
+                        "name": "Tag",
+                        "tag": "p",
+                        "attributes": {},
+                        "classes": [],
+                        "styles": {},
+                        "text": "Categoria",
+                        "children": [],
+                        "componentPart": [
+                          5,
+                          0
+                        ]
+                      }
+                    ],
+                    "componentPart": [
+                      5
+                    ]
+                  },
+                  {
+                    "id": "c1-more",
+                    "type": "link",
+                    "name": "Leia",
+                    "tag": "a",
+                    "attributes": {
+                      "href": "posts/cafe-coado-perfeito.html"
+                    },
+                    "classes": [],
+                    "styles": {},
+                    "text": "Leia mais",
+                    "children": [],
+                    "bind": [
+                      {
+                        "field": "@page",
+                        "to": "link"
+                      }
+                    ],
+                    "componentPart": [
+                      6
+                    ]
+                  }
+                ],
+                "component": "Cartao",
+                "componentPart": []
+              },
+              {
+                "id": "f9",
+                "type": "article",
+                "name": "Cartao 2",
+                "tag": "article",
+                "attributes": {},
+                "classes": [],
+                "styles": {},
+                "text": null,
+                "children": [
+                  {
+                    "id": "f1",
+                    "type": "heading",
+                    "name": "Titulo 2",
+                    "tag": "h3",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": "Uma semana em Lisboa",
+                    "children": [],
+                    "bind": [
+                      {
+                        "field": "titulo",
+                        "to": "text"
+                      }
+                    ],
+                    "componentPart": [
+                      0
+                    ]
+                  },
+                  {
+                    "id": "f2",
+                    "type": "paragraph",
+                    "name": "Autor 2",
+                    "tag": "p",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": "Bruno Lima",
+                    "children": [],
+                    "bind": [
+                      {
+                        "field": "autor.nome",
+                        "to": "text"
+                      }
+                    ],
+                    "componentPart": [
+                      1
+                    ]
+                  },
+                  {
+                    "id": "f3",
+                    "type": "paragraph",
+                    "name": "Data 2",
+                    "tag": "p",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": "2026-10-08",
+                    "children": [],
+                    "bind": [
+                      {
+                        "field": "data",
+                        "to": "text"
+                      }
+                    ],
+                    "componentPart": [
+                      2
+                    ]
+                  },
+                  {
+                    "id": "f4",
+                    "type": "paragraph",
+                    "name": "Preco 2",
+                    "tag": "p",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": "R$ 0,00",
+                    "children": [],
+                    "bind": [
+                      {
+                        "field": "preco",
+                        "to": "text",
+                        "format": "currency"
+                      }
+                    ],
+                    "componentPart": [
+                      3
+                    ]
+                  },
+                  {
+                    "id": "f5",
+                    "type": "paragraph",
+                    "name": "Destaque 2",
+                    "tag": "p",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": "Em destaque",
+                    "children": [],
+                    "componentPart": [
+                      4
+                    ]
+                  },
+                  {
+                    "id": "f7",
+                    "type": "div",
+                    "name": "Tags 2",
+                    "tag": "div",
+                    "attributes": {},
+                    "classes": [],
+                    "styles": {},
+                    "text": null,
+                    "children": [
+                      {
+                        "id": "f6",
+                        "type": "paragraph",
+                        "name": "Tag 2",
+                        "tag": "p",
+                        "attributes": {},
+                        "classes": [],
+                        "styles": {},
+                        "text": "Categoria",
+                        "children": [],
+                        "componentPart": [
+                          5,
+                          0
+                        ]
+                      }
+                    ],
+                    "componentPart": [
+                      5
+                    ]
+                  },
+                  {
+                    "id": "f8",
+                    "type": "link",
+                    "name": "Leia 2",
+                    "tag": "a",
+                    "attributes": {
+                      "href": "posts/uma-semana-em-lisboa.html"
+                    },
+                    "classes": [],
+                    "styles": {},
+                    "text": "Leia mais",
+                    "children": [],
+                    "bind": [
+                      {
+                        "field": "@page",
+                        "to": "link"
+                      }
+                    ],
+                    "componentPart": [
+                      6
+                    ]
+                  }
+                ],
+                "component": "Cartao",
+                "componentPart": []
+              }
+            ],
+            "dataList": {
+              "collection": "Posts",
+              "component": "Cartao",
+              "query": {
+                "order": [
+                  {
+                    "field": "data",
+                    "direction": "desc"
+                  }
+                ],
+                "pageSize": 2
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "post",
+      "name": "Post",
+      "file": "post.html",
+      "tree": {
+        "id": "post-root",
+        "type": "page",
+        "name": "Post page",
+        "tag": "body",
+        "attributes": {},
+        "classes": [],
+        "styles": {},
+        "text": null,
+        "children": [
+          {
+            "id": "post-title",
+            "type": "heading",
+            "name": "Post titulo",
+            "tag": "h1",
+            "attributes": {},
+            "classes": [],
+            "styles": {},
+            "text": "Bolo de cenoura",
+            "children": [],
+            "bind": [
+              {
+                "field": "titulo",
+                "to": "text"
+              }
+            ]
+          },
+          {
+            "id": "post-author",
+            "type": "paragraph",
+            "name": "Post autor",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {},
+            "text": "Ana Souza",
+            "children": [],
+            "bind": [
+              {
+                "field": "autor.nome",
+                "to": "text"
+              }
+            ]
+          },
+          {
+            "id": "post-categories",
+            "type": "paragraph",
+            "name": "Post categorias",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {},
+            "text": "Receitas, Café",
+            "children": [],
+            "bind": [
+              {
+                "field": "categorias",
+                "to": "text"
+              }
+            ]
+          }
+        ],
+        "dataItem": {
+          "collection": "Posts",
+          "item": "p1",
+          "template": true,
+          "field": "slug"
+        }
+      }
+    }
+  ],
+  "components": [
+    {
+      "name": "Cartao",
+      "tree": {
+        "id": "def-card",
+        "type": "article",
+        "name": "Cartao",
+        "tag": "article",
+        "attributes": {},
+        "classes": [],
+        "styles": {},
+        "text": null,
+        "children": [
+          {
+            "id": "def-title",
+            "type": "heading",
+            "name": "Titulo",
+            "tag": "h3",
+            "attributes": {},
+            "classes": [],
+            "styles": {},
+            "text": "Título",
+            "children": [],
+            "bind": [
+              {
+                "field": "titulo",
+                "to": "text"
+              }
+            ]
+          },
+          {
+            "id": "def-author",
+            "type": "paragraph",
+            "name": "Autor",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {},
+            "text": "Autor",
+            "children": [],
+            "bind": [
+              {
+                "field": "autor.nome",
+                "to": "text"
+              }
+            ]
+          },
+          {
+            "id": "def-date",
+            "type": "paragraph",
+            "name": "Data",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {},
+            "text": "Data",
+            "children": [],
+            "bind": [
+              {
+                "field": "data",
+                "to": "text"
+              }
+            ]
+          },
+          {
+            "id": "def-price",
+            "type": "paragraph",
+            "name": "Preco",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {},
+            "text": "Preço",
+            "children": [],
+            "bind": [
+              {
+                "field": "preco",
+                "to": "text",
+                "format": "currency"
+              }
+            ]
+          },
+          {
+            "id": "def-featured",
+            "type": "paragraph",
+            "name": "Destaque",
+            "tag": "p",
+            "attributes": {},
+            "classes": [],
+            "styles": {},
+            "text": "Em destaque",
+            "children": []
+          },
+          {
+            "id": "def-tags",
+            "type": "div",
+            "name": "Tags",
+            "tag": "div",
+            "attributes": {},
+            "classes": [],
+            "styles": {},
+            "text": null,
+            "children": [
+              {
+                "id": "def-tag",
+                "type": "paragraph",
+                "name": "Tag",
+                "tag": "p",
+                "attributes": {},
+                "classes": [],
+                "styles": {},
+                "text": "Categoria",
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "def-more",
+            "type": "link",
+            "name": "Leia",
+            "tag": "a",
+            "attributes": {},
+            "classes": [],
+            "styles": {},
+            "text": "Leia mais",
+            "children": [],
+            "bind": [
+              {
+                "field": "@page",
+                "to": "link"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "collections": [
+    {
+      "name": "Autores",
+      "fields": [
+        {
+          "key": "nome",
+          "label": "Nome",
+          "type": "text"
+        },
+        {
+          "key": "email",
+          "label": "E-mail",
+          "type": "email"
+        }
+      ],
+      "items": [
+        {
+          "id": "a1",
+          "values": {
+            "nome": "Ana Souza",
+            "email": "ana@exemplo.com"
+          }
+        },
+        {
+          "id": "a2",
+          "values": {
+            "nome": "Bruno Lima",
+            "email": "bruno@exemplo.com"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categorias",
+      "fields": [
+        {
+          "key": "nome",
+          "label": "Nome",
+          "type": "text"
+        },
+        {
+          "key": "descricao",
+          "label": "Descrição",
+          "type": "text"
+        },
+        {
+          "key": "slug",
+          "label": "Slug",
+          "type": "slug"
+        }
+      ],
+      "items": [
+        {
+          "id": "k1",
+          "values": {
+            "nome": "Receitas",
+            "descricao": "Pratos do dia",
+            "slug": "receitas"
+          }
+        },
+        {
+          "id": "k2",
+          "values": {
+            "nome": "Viagem",
+            "descricao": "Lugares",
+            "slug": "viagem"
+          }
+        },
+        {
+          "id": "k3",
+          "values": {
+            "nome": "Café",
+            "descricao": "Grãos e preparo",
+            "slug": "cafe"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Posts",
+      "fields": [
+        {
+          "key": "titulo",
+          "label": "Título",
+          "type": "text"
+        },
+        {
+          "key": "slug",
+          "label": "Slug",
+          "type": "slug",
+          "from": "titulo"
+        },
+        {
+          "key": "autor",
+          "label": "Autor",
+          "type": "reference",
+          "collection": "Autores"
+        },
+        {
+          "key": "categorias",
+          "label": "Categorias",
+          "type": "multireference",
+          "collection": "Categorias"
+        },
+        {
+          "key": "data",
+          "label": "Data",
+          "type": "date"
+        },
+        {
+          "key": "preco",
+          "label": "Preço",
+          "type": "number",
+          "decimals": 2
+        },
+        {
+          "key": "destaque",
+          "label": "Destaque",
+          "type": "boolean"
+        },
+        {
+          "key": "status",
+          "label": "Status",
+          "type": "option",
+          "options": [
+            "Rascunho",
+            "Publicado"
+          ]
+        },
+        {
+          "key": "relacionado",
+          "label": "Relacionado",
+          "type": "reference",
+          "collection": "Posts"
+        }
+      ],
+      "items": [
+        {
+          "id": "p1",
+          "values": {
+            "titulo": "Bolo de cenoura",
+            "autor": "a1",
+            "categorias": [
+              "k1",
+              "k3"
+            ],
+            "data": "2026-10-01",
+            "preco": 12.5,
+            "destaque": true,
+            "status": "Publicado",
+            "slug": "bolo-de-cenoura"
+          }
+        },
+        {
+          "id": "p2",
+          "values": {
+            "titulo": "Uma semana em Lisboa",
+            "autor": "a2",
+            "categorias": [
+              "k2"
+            ],
+            "data": "2026-10-08",
+            "preco": 0,
+            "destaque": false,
+            "status": "Publicado",
+            "slug": "uma-semana-em-lisboa"
+          }
+        },
+        {
+          "id": "p3",
+          "values": {
+            "titulo": "Café coado perfeito",
+            "autor": "a1",
+            "categorias": [
+              "k3"
+            ],
+            "data": "2026-10-15",
+            "preco": 7.9,
+            "status": "Rascunho",
+            "slug": "cafe-coado-perfeito"
+          }
+        },
+        {
+          "id": "p4",
+          "values": {
+            "titulo": "Pão de queijo",
+            "autor": "a2",
+            "data": "2026-09-20",
+            "preco": 9,
+            "destaque": true,
+            "status": "Publicado",
+            "slug": "pao-de-queijo"
+          }
+        },
+        {
+          "id": "p5",
+          "values": {
+            "titulo": "Trilhas da serra",
+            "categorias": [
+              "k2"
+            ],
+            "data": "2026-09-02",
+            "preco": 1234.5,
+            "status": "Publicado",
+            "slug": "trilhas-da-serra"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -83,8 +83,12 @@ describe('interactions', () => {
   it('adds an interaction playing a new timeline named after the element and its trigger', () => {
     const ran = chain(page(), [[addMotionCommand, {}]]);
     expect(said(ran)).toBe('status.motion.added');
-    expect(hero(ran.document).motions?.map(withoutId)).toEqual([{ trigger: { kind: 'click' }, timeline: 'Hero click', control: 'play' }]);
-    expect(firstTimeline(ran.document)).toMatchObject({ name: 'Hero click', markers: [], actions: [{ target: { kind: 'self' }, start: 0, duration: 600, easing: 'ease-out', effect: { kind: 'animate', tracks: [] } }] });
+    expect(hero(ran.document).motions?.map(withoutId)).toEqual([{ trigger: { kind: 'click' }, timeline: 'Hero motion.trigger.click', control: 'play' }]);
+    expect(firstTimeline(ran.document)).toMatchObject({ name: 'Hero motion.trigger.click', markers: [], actions: [{ target: { kind: 'self' }, start: 0, duration: 600, easing: 'ease-out', effect: { kind: 'animate' } }] });
+    // never an action without a property: the element pops, at its own size before and after
+    const made = firstTimeline(ran.document)?.actions[0]?.effect;
+    const keyed = made?.kind === 'animate' ? made.tracks : [];
+    expect(keyed.map((track) => [track.property, ...track.keyframes.map((key) => `${String(key.time)}:${key.value}`)])).toEqual([['scale', '0:1', '300:1.06', '600:1']]);
   });
 
   it('reuses a timeline by name, and refuses a name the project lacks', () => {
@@ -102,9 +106,9 @@ describe('interactions', () => {
     expect(hero(scroll.document).motions?.[0]).toMatchObject({ trigger: { kind: 'page-scroll' }, control: 'scrub' });
   });
 
-  it('gives a quick effect: the element enters as it scrolls into view, once, keyed from hidden to shown', () => {
-    const ran = chain(page(), [[addMotionCommand, { preset: 'fade-up' }]]);
-    expect(hero(ran.document).motions?.[0]).toMatchObject({ trigger: { kind: 'scroll-into-view' }, control: 'play', leave: 'none', once: true });
+  it('gives an entry effect: the element enters as it scrolls into view, once, keyed from hidden to shown', () => {
+    const ran = chain(page(), [[addMotionCommand, { preset: 'slide-up' }]]);
+    expect(hero(ran.document).motions?.[0]).toMatchObject({ trigger: { kind: 'scroll-into-view' }, timeline: 'Hero motion.quick.slide-up', control: 'play', leave: 'none', once: true });
     const action = firstTimeline(ran.document)?.actions[0];
     expect(action).toMatchObject({ target: { kind: 'self' }, start: 0, duration: 700 });
     const tracks = action?.effect.kind === 'animate' ? action.effect.tracks : [];
@@ -112,8 +116,12 @@ describe('interactions', () => {
       ['opacity', '0:0', '700:1'],
       ['translate-y', '0:32px', '700:0px'],
     ]);
-    // another trigger asked for with the preset is kept
-    expect(hero(chain(page(), [[addMotionCommand, { preset: 'zoom-in', trigger: 'hover' }]]).document).motions?.[0]?.trigger).toEqual({ kind: 'hover' });
+    // another trigger asked for with the preset is kept: the page load, or any other
+    const loaded = chain(page(), [[addMotionCommand, { preset: 'slide-from-right', trigger: 'page-load' }]]);
+    expect(hero(loaded.document).motions?.[0]).toMatchObject({ trigger: { kind: 'page-load' }, timeline: 'Hero motion.quick.slide-from-right', once: true });
+    const right = firstTimeline(loaded.document)?.actions[0]?.effect;
+    expect(right?.kind === 'animate' ? right.tracks.map((track) => [track.property, track.keyframes[0]?.value]) : []).toEqual([['opacity', '0'], ['translate-x', '48px']]);
+    expect(hero(chain(page(), [[addMotionCommand, { preset: 'scale-in', trigger: 'hover' }]]).document).motions?.[0]?.trigger).toEqual({ kind: 'hover' });
   });
 
   it('refuses a trigger that cannot apply, and a locked element', () => {
@@ -159,7 +167,7 @@ describe('interactions', () => {
   it('removes an interaction and keeps its timeline', () => {
     const removed = chain(page(), [[addMotionCommand, {}], [removeMotionCommand, { interaction: 0 }]]);
     expect(hero(removed.document).motions).toBeUndefined();
-    expect(removed.document.motionTimelines?.map((one) => one.name)).toEqual(['Hero click']);
+    expect(removed.document.motionTimelines?.map((one) => one.name)).toEqual(['Hero motion.trigger.click']);
   });
 });
 
@@ -170,7 +178,7 @@ describe('timelines', () => {
     expect(said(runHandler(createTimelineCommand, made.document, { name: 'motion.timeline.defaultName' }))).toBe('status.motion.nameTaken');
     expect(said(runHandler(createTimelineCommand, made.document, { name: '#nope' }))).toBe('status.motion.nameInvalid');
     const played = chain(page(), [[addMotionCommand, {}]]);
-    const renamed = chain(played.document, [[renameTimelineCommand, { timeline: 'Hero click', name: 'Hero intro' }]]);
+    const renamed = chain(played.document, [[renameTimelineCommand, { timeline: 'Hero motion.trigger.click', name: 'Hero intro' }]]);
     expect(hero(renamed.document).motions?.[0]?.timeline).toBe('Hero intro');
     expect(said(runHandler(deleteTimelineCommand, renamed.document, { timeline: 'Hero intro' }))).toBe('status.motion.timelineInUse');
     const unused = chain(page(), [[createTimelineCommand, { name: 'Spare' }], [deleteTimelineCommand, { timeline: 'Spare' }]]);
@@ -182,17 +190,17 @@ describe('actions', () => {
   const played = () => chain(page(), [[addMotionCommand, {}]]);
 
   it('adds an action after, with or at the playhead', () => {
-    const after = chain(played().document, [[addActionCommand, { timeline: 'Hero click', kind: 'wait' }]]);
+    const after = chain(played().document, [[addActionCommand, { timeline: 'Hero motion.trigger.click', kind: 'wait' }]]);
     expect(firstTimeline(after.document)?.actions[1]).toMatchObject({ start: 600, duration: 500, effect: { kind: 'wait' } });
-    const together = chain(played().document, [[addActionCommand, { timeline: 'Hero click', kind: 'display', placement: 'with' }]]);
+    const together = chain(played().document, [[addActionCommand, { timeline: 'Hero motion.trigger.click', kind: 'display', placement: 'with' }]]);
     expect(firstTimeline(together.document)?.actions[1]).toMatchObject({ start: 0, duration: 300, effect: { kind: 'display', operation: 'toggle', transition: 'fade', mode: 'hidden' } });
-    const ran = runHandler(atPlayhead(addActionCommand, 1800), played().document, { timeline: 'Hero click', kind: 'event', placement: 'at' }, { selection: ['hero'] });
+    const ran = runHandler(atPlayhead(addActionCommand, 1800), played().document, { timeline: 'Hero motion.trigger.click', kind: 'event', placement: 'at' }, { selection: ['hero'] });
     expect(firstTimeline(ran.document)?.actions[1]).toMatchObject({ start: 1800, duration: 0, effect: { kind: 'event', name: 'custom-event' } });
   });
 
   it('changes an action by its fields, by id or by its place', () => {
     const base = played().document;
-    const update = (field: string, value: unknown) => chain(base, [[PICK, { timeline: 'Hero click', at: 0, field, value }]]).document;
+    const update = (field: string, value: unknown) => chain(base, [[PICK, { timeline: 'Hero motion.trigger.click', at: 0, field, value }]]).document;
     expect(firstTimeline(update('start', '1.5'))?.actions[0]?.start).toBe(1500);
     expect(firstTimeline(update('duration', 1200))?.actions[0]?.duration).toBe(1200);
     expect(firstTimeline(update('easing', 'steps(4)'))?.actions[0]?.easing).toBe('steps(4)');
@@ -202,90 +210,92 @@ describe('actions', () => {
     expect(firstTimeline(update('target', 'siblings'))?.actions[0]?.target).toEqual({ kind: 'siblings' });
     expect(firstTimeline(update('target', { kind: 'element', node: 'intro' }))?.actions[0]?.target).toEqual({ kind: 'element', node: 'intro' });
     expect(firstTimeline(update('kind', 'class'))?.actions[0]).toMatchObject({ duration: 0, effect: { kind: 'class', operation: 'toggle', className: 'is-active' } });
-    expect(said(runHandler(PICK, base, { timeline: 'Hero click', at: 0, field: 'target', value: { kind: 'element', node: 'gone' } }, { selection: ['hero'] }))).toBe('status.motion.invalid');
+    expect(said(runHandler(PICK, base, { timeline: 'Hero motion.trigger.click', at: 0, field: 'target', value: { kind: 'element', node: 'gone' } }, { selection: ['hero'] }))).toBe('status.motion.invalid');
     // a class target takes the selected element's first class, or says it needs one
-    expect(said(runHandler(PICK, base, { timeline: 'Hero click', at: 0, field: 'target', value: 'class' }, { selection: ['hero'] }))).toBe('status.motion.needsClass');
-    expect(firstTimeline(chain(base, [[PICK, { timeline: 'Hero click', at: 0, field: 'target', value: 'class' }, ['card-a']]]).document)?.actions[0]?.target).toEqual({ kind: 'class', className: 'card' });
+    expect(said(runHandler(PICK, base, { timeline: 'Hero motion.trigger.click', at: 0, field: 'target', value: 'class' }, { selection: ['hero'] }))).toBe('status.motion.needsClass');
+    expect(firstTimeline(chain(base, [[PICK, { timeline: 'Hero motion.trigger.click', at: 0, field: 'target', value: 'class' }, ['card-a']]]).document)?.actions[0]?.target).toEqual({ kind: 'class', className: 'card' });
   });
 
   it('sets an option of an effect, reading booleans and numbers, an address through its one rule', () => {
-    const navigate = chain(played().document, [[addActionCommand, { timeline: 'Hero click', kind: 'navigate' }]]).document;
-    const option = (option: string, value: unknown, document = navigate) => runHandler(setEffectOptionCommand, document, { timeline: 'Hero click', at: 1, option, value }, { selection: ['hero'] });
+    const navigate = chain(played().document, [[addActionCommand, { timeline: 'Hero motion.trigger.click', kind: 'navigate' }]]).document;
+    const option = (option: string, value: unknown, document = navigate) => runHandler(setEffectOptionCommand, document, { timeline: 'Hero motion.trigger.click', at: 1, option, value }, { selection: ['hero'] });
     expect(firstTimeline(option('address', 'example.com/about').document)?.actions[1]?.effect).toEqual({ kind: 'navigate', to: 'url', address: 'https://example.com/about', newTab: false });
     expect(said(option('address', 'javascript:alert(1)'))).toBe('status.url.unsafe');
     expect(firstTimeline(option('newTab', 'true').document)?.actions[1]?.effect).toMatchObject({ newTab: true });
     expect(firstTimeline(option('to', 'back').document)?.actions[1]?.effect).toEqual({ kind: 'navigate', to: 'back', newTab: false });
     expect(said(option('nope', 'x'))).toBe('status.motion.notAnOption');
-    const slide = chain(played().document, [[addActionCommand, { timeline: 'Hero click', kind: 'slide' }]]).document;
+    const slide = chain(played().document, [[addActionCommand, { timeline: 'Hero motion.trigger.click', kind: 'slide' }]]).document;
     expect(firstTimeline(option('operation', 'go', slide).document)?.actions[1]?.effect).toEqual({ kind: 'slide', operation: 'go', index: 0 });
-    const control = chain(played().document, [[addActionCommand, { timeline: 'Hero click', kind: 'timeline' }]]).document;
-    expect(said(option('timeline', 'Hero click', control))).toBe('status.motion.notFound');
+    const control = chain(played().document, [[addActionCommand, { timeline: 'Hero motion.trigger.click', kind: 'timeline' }]]).document;
+    expect(said(option('timeline', 'Hero motion.trigger.click', control))).toBe('status.motion.notFound');
   });
 
   it('removes, moves and resizes bars', () => {
-    const two = chain(played().document, [[addActionCommand, { timeline: 'Hero click', kind: 'wait' }]]).document;
-    expect(firstTimeline(chain(two, [[removeActionsCommand, { timeline: 'Hero click', at: 0 }]]).document)?.actions.map((one) => one.effect.kind)).toEqual(['wait']);
+    const two = chain(played().document, [[addActionCommand, { timeline: 'Hero motion.trigger.click', kind: 'wait' }]]).document;
+    expect(firstTimeline(chain(two, [[removeActionsCommand, { timeline: 'Hero motion.trigger.click', at: 0 }]]).document)?.actions.map((one) => one.effect.kind)).toEqual(['wait']);
     const ids = firstTimeline(two)?.actions.map((one) => one.id) ?? [];
-    expect(firstTimeline(chain(two, [[moveActionsCommand, { timeline: 'Hero click', actions: ids, delta: 250 }]]).document)?.actions.map((one) => one.start)).toEqual([250, 850]);
+    expect(firstTimeline(chain(two, [[moveActionsCommand, { timeline: 'Hero motion.trigger.click', actions: ids, delta: 250 }]]).document)?.actions.map((one) => one.start)).toEqual([250, 850]);
     // a drag with no delta reads its travel at the Timeline's first zoom (200 px a second)
-    expect(firstTimeline(chain(two, [[moveActionsCommand, { timeline: 'Hero click', at: 1, distance: 40 }]]).document)?.actions[1]?.start).toBe(800);
-    expect(firstTimeline(chain(two, [[resizeActionCommand, { timeline: 'Hero click', at: 0, edge: 'end', delta: 400 }]]).document)?.actions[0]?.duration).toBe(1000);
-    const instant = chain(played().document, [[addActionCommand, { timeline: 'Hero click', kind: 'class' }]]).document;
-    expect(said(runHandler(resizeActionCommand, instant, { timeline: 'Hero click', at: 1, edge: 'end', delta: 100 }))).toBe('status.motion.instant');
+    expect(firstTimeline(chain(two, [[moveActionsCommand, { timeline: 'Hero motion.trigger.click', at: 1, distance: 40 }]]).document)?.actions[1]?.start).toBe(800);
+    expect(firstTimeline(chain(two, [[resizeActionCommand, { timeline: 'Hero motion.trigger.click', at: 0, edge: 'end', delta: 400 }]]).document)?.actions[0]?.duration).toBe(1000);
+    const instant = chain(played().document, [[addActionCommand, { timeline: 'Hero motion.trigger.click', kind: 'class' }]]).document;
+    expect(said(runHandler(resizeActionCommand, instant, { timeline: 'Hero motion.trigger.click', at: 1, edge: 'end', delta: 100 }))).toBe('status.motion.instant');
   });
 });
 
 describe('keyframes', () => {
-  const keyed = () => chain(page(), [[addMotionCommand, {}], [setKeyframeCommand, { timeline: 'Hero click', at: 0, property: 'opacity', value: '0' }]]);
+  // the track a new interaction's action holds (it pops), before the ones a test keys
+  const POP = { property: 'scale' };
+  const keyed = () => chain(page(), [[addMotionCommand, {}], [setKeyframeCommand, { timeline: 'Hero motion.trigger.click', at: 0, property: 'opacity', value: '0' }]]);
 
   it('animates a property from its initial value or a typed one, at the playhead, growing the action to hold it', () => {
-    const initial = chain(page(), [[addMotionCommand, {}], [setKeyframeCommand, { timeline: 'Hero click', at: 0, property: 'opacity', value: '' }]]);
-    expect(firstTimeline(initial.document)?.actions[0]?.effect).toMatchObject({ tracks: [{ property: 'opacity', keyframes: [{ time: 0, value: '1' }] }] });
-    const part = chain(page(), [[addMotionCommand, {}], [setKeyframeCommand, { timeline: 'Hero click', at: 0, property: 'rotate-z', value: '' }]]);
-    expect(firstTimeline(part.document)?.actions[0]?.effect).toMatchObject({ tracks: [{ property: 'rotate-z', keyframes: [{ time: 0, value: '0deg' }] }] });
-    const later = runHandler(atPlayhead(setKeyframeCommand, 900), keyed().document, { timeline: 'Hero click', at: 0, property: 'opacity', value: '' }, { selection: ['hero'] });
+    const initial = chain(page(), [[addMotionCommand, {}], [setKeyframeCommand, { timeline: 'Hero motion.trigger.click', at: 0, property: 'opacity', value: '' }]]);
+    expect(firstTimeline(initial.document)?.actions[0]?.effect).toMatchObject({ tracks: [POP, { property: 'opacity', keyframes: [{ time: 0, value: '1' }] }] });
+    const part = chain(page(), [[addMotionCommand, {}], [setKeyframeCommand, { timeline: 'Hero motion.trigger.click', at: 0, property: 'rotate-z', value: '' }]]);
+    expect(firstTimeline(part.document)?.actions[0]?.effect).toMatchObject({ tracks: [POP, { property: 'rotate-z', keyframes: [{ time: 0, value: '0deg' }] }] });
+    const later = runHandler(atPlayhead(setKeyframeCommand, 900), keyed().document, { timeline: 'Hero motion.trigger.click', at: 0, property: 'opacity', value: '' }, { selection: ['hero'] });
     expect(later.problems).toEqual([]);
-    expect(firstTimeline(later.document)?.actions[0]).toMatchObject({ duration: 900, effect: { tracks: [{ keyframes: [{ time: 0, value: '0' }, { time: 900, value: '0' }] }] } });
-    const instant = chain(page(), [[addMotionCommand, {}], [addActionCommand, { timeline: 'Hero click', kind: 'class' }]]).document;
-    expect(said(runHandler(setKeyframeCommand, instant, { timeline: 'Hero click', at: 1, property: 'opacity' }))).toBe('status.motion.notKeyed');
+    expect(firstTimeline(later.document)?.actions[0]).toMatchObject({ duration: 900, effect: { tracks: [POP, { keyframes: [{ time: 0, value: '0' }, { time: 900, value: '0' }] }] } });
+    const instant = chain(page(), [[addMotionCommand, {}], [addActionCommand, { timeline: 'Hero motion.trigger.click', kind: 'class' }]]).document;
+    expect(said(runHandler(setKeyframeCommand, instant, { timeline: 'Hero motion.trigger.click', at: 1, property: 'opacity' }))).toBe('status.motion.notKeyed');
   });
 
   it('edits a keyframe by its place: value, segment easing, time, and the property its track animates', () => {
-    const base = chain(keyed().document, [[setKeyframeCommand, { timeline: 'Hero click', at: 0, property: 'opacity', value: '1' }]]);
-    const later = runHandler(atPlayhead(setKeyframeCommand, 600), base.document, { timeline: 'Hero click', at: 0, property: 'opacity', value: '1' }, { selection: ['hero'] }).document;
-    const edit = (field: string, value: unknown, keyframeAt = 0) => chain(later, [[editKeyframeCommand, { timeline: 'Hero click', at: 0, property: 'opacity', keyframeAt, field, value }]]).document;
+    const base = chain(keyed().document, [[setKeyframeCommand, { timeline: 'Hero motion.trigger.click', at: 0, property: 'opacity', value: '1' }]]);
+    const later = runHandler(atPlayhead(setKeyframeCommand, 600), base.document, { timeline: 'Hero motion.trigger.click', at: 0, property: 'opacity', value: '1' }, { selection: ['hero'] }).document;
+    const edit = (field: string, value: unknown, keyframeAt = 0) => chain(later, [[editKeyframeCommand, { timeline: 'Hero motion.trigger.click', at: 0, property: 'opacity', keyframeAt, field, value }]]).document;
     const keyframes = (document: DocumentJson) => {
       const effect = firstTimeline(document)?.actions[0]?.effect;
-      return effect?.kind === 'animate' ? effect.tracks[0]?.keyframes.map(withoutId) : null;
+      return effect?.kind === 'animate' ? effect.tracks[1]?.keyframes.map(withoutId) : null;
     };
     expect(keyframes(edit('value', '0.4'))).toEqual([{ time: 0, value: '0.4' }, { time: 600, value: '1' }]);
     expect(keyframes(edit('easing', 'ease-in'))).toEqual([{ time: 0, value: '1', easing: 'ease-in' }, { time: 600, value: '1' }]);
     expect(keyframes(edit('time', '0.2', 1))).toEqual([{ time: 0, value: '1' }, { time: 200, value: '1' }]);
     const renamed = firstTimeline(edit('property', 'scale-x'))?.actions[0]?.effect;
-    expect(renamed?.kind === 'animate' ? renamed.tracks[0]?.property : null).toBe('scale-x');
-    expect(said(runHandler(editKeyframeCommand, later, { timeline: 'Hero click', at: 0, property: 'opacity', keyframeAt: 0, field: 'easing', value: 'bounce' }))).toBe('status.motion.invalid');
+    expect(renamed?.kind === 'animate' ? renamed.tracks[1]?.property : null).toBe('scale-x');
+    expect(said(runHandler(editKeyframeCommand, later, { timeline: 'Hero motion.trigger.click', at: 0, property: 'opacity', keyframeAt: 0, field: 'easing', value: 'bounce' }))).toBe('status.motion.invalid');
   });
 
   it('moves, deletes, and pastes keyframes at the playhead', () => {
-    const two = runHandler(atPlayhead(setKeyframeCommand, 600), keyed().document, { timeline: 'Hero click', at: 0, property: 'opacity', value: '1' }, { selection: ['hero'] }).document;
-    const moved = chain(two, [[moveKeyframesCommand, { timeline: 'Hero click', at: 0, property: 'opacity', keyframeAt: 1, delta: -200 }]]).document;
-    expect(firstTimeline(moved)?.actions[0]?.effect).toMatchObject({ tracks: [{ keyframes: [{ time: 0 }, { time: 400 }] }] });
-    const deleted = chain(two, [[deleteKeyframesCommand, { timeline: 'Hero click', at: 0, property: 'opacity', keyframeAt: 0 }]]).document;
-    expect(firstTimeline(deleted)?.actions[0]?.effect).toMatchObject({ tracks: [{ keyframes: [{ time: 600, value: '1' }] }] });
-    const pasted = runHandler(atPlayhead(pasteKeyframesCommand, 600), two, { timeline: 'Hero click', at: 0, keyframes: [{ property: 'opacity', offset: 0, value: '0.5' }, { property: 'opacity', offset: 300, value: '0.8', easing: 'ease-out' }] }, { selection: ['hero'] });
+    const two = runHandler(atPlayhead(setKeyframeCommand, 600), keyed().document, { timeline: 'Hero motion.trigger.click', at: 0, property: 'opacity', value: '1' }, { selection: ['hero'] }).document;
+    const moved = chain(two, [[moveKeyframesCommand, { timeline: 'Hero motion.trigger.click', at: 0, property: 'opacity', keyframeAt: 1, delta: -200 }]]).document;
+    expect(firstTimeline(moved)?.actions[0]?.effect).toMatchObject({ tracks: [POP, { keyframes: [{ time: 0 }, { time: 400 }] }] });
+    const deleted = chain(two, [[deleteKeyframesCommand, { timeline: 'Hero motion.trigger.click', at: 0, property: 'opacity', keyframeAt: 0 }]]).document;
+    expect(firstTimeline(deleted)?.actions[0]?.effect).toMatchObject({ tracks: [POP, { keyframes: [{ time: 600, value: '1' }] }] });
+    const pasted = runHandler(atPlayhead(pasteKeyframesCommand, 600), two, { timeline: 'Hero motion.trigger.click', at: 0, keyframes: [{ property: 'opacity', offset: 0, value: '0.5' }, { property: 'opacity', offset: 300, value: '0.8', easing: 'ease-out' }] }, { selection: ['hero'] });
     expect(pasted.problems).toEqual([]);
-    expect(firstTimeline(pasted.document)?.actions[0]).toMatchObject({ duration: 900, effect: { tracks: [{ keyframes: [{ time: 0 }, { time: 600, value: '0.5' }, { time: 900, value: '0.8', easing: 'ease-out' }] }] } });
-    expect(said(runHandler(pasteKeyframesCommand, two, { timeline: 'Hero click', at: 0, keyframes: [] }))).toBe('status.motion.nothingCopied');
+    expect(firstTimeline(pasted.document)?.actions[0]).toMatchObject({ duration: 900, effect: { tracks: [POP, { keyframes: [{ time: 0 }, { time: 600, value: '0.5' }, { time: 900, value: '0.8', easing: 'ease-out' }] }] } });
+    expect(said(runHandler(pasteKeyframesCommand, two, { timeline: 'Hero motion.trigger.click', at: 0, keyframes: [] }))).toBe('status.motion.nothingCopied');
   });
 
   it('records a style write at the playhead into the open timeline instead of the element\'s styles', () => {
     const played = chain(page(), [[addMotionCommand, {}]]).document;
-    const recording = { timeline: 'Hero click', time: 300, action: null };
+    const recording = { timeline: 'Hero motion.trigger.click', time: 300, action: null };
     const ran = runHandler(atPlayhead(setStyleCommand, 300, recording), played, { property: 'opacity', value: '50' }, { selection: ['hero'] });
     expect(ran.problems).toEqual([]);
     expect(said(ran)).toBe('status.motion.recorded');
     expect(hero(ran.document).styles).toEqual(hero(played).styles);
-    expect(firstTimeline(ran.document)?.actions[0]?.effect).toMatchObject({ tracks: [{ property: 'opacity', keyframes: [{ time: 300, value: '0.5' }] }] });
+    expect(firstTimeline(ran.document)?.actions[0]?.effect).toMatchObject({ tracks: [POP, { property: 'opacity', keyframes: [{ time: 300, value: '0.5' }] }] });
     // an element nothing plays the timeline on gets an animation of its own, picked
     const other = runHandler(atPlayhead(setStyleCommand, 900, { ...recording, time: 900 }), played, { property: 'opacity', value: '50' }, { selection: ['intro'] });
     expect(firstTimeline(other.document)?.actions[1]).toMatchObject({ target: { kind: 'element', node: 'intro' }, start: 0, duration: 900, effect: { tracks: [{ keyframes: [{ time: 900, value: '0.5' }] }] } });
@@ -297,11 +307,11 @@ describe('keyframes', () => {
 describe('markers', () => {
   it('adds a marker at the playhead, drags, renames and removes it', () => {
     const played = chain(page(), [[addMotionCommand, {}]]).document;
-    const added = runHandler(atPlayhead(addMarkerCommand, 450), played, { timeline: 'Hero click' }, { selection: ['hero'] });
+    const added = runHandler(atPlayhead(addMarkerCommand, 450), played, { timeline: 'Hero motion.trigger.click' }, { selection: ['hero'] });
     expect(firstTimeline(added.document)?.markers.map(withoutId)).toEqual([{ name: 'motion.marker.defaultName', time: 450 }]);
-    const moved = chain(added.document, [[moveMarkerCommand, { timeline: 'Hero click', markerAt: 0, delta: 50 }], [renameMarkerCommand, { timeline: 'Hero click', markerAt: 0, name: 'Peak' }]]);
+    const moved = chain(added.document, [[moveMarkerCommand, { timeline: 'Hero motion.trigger.click', markerAt: 0, delta: 50 }], [renameMarkerCommand, { timeline: 'Hero motion.trigger.click', markerAt: 0, name: 'Peak' }]]);
     expect(firstTimeline(moved.document)?.markers.map(withoutId)).toEqual([{ name: 'Peak', time: 500 }]);
-    expect(firstTimeline(chain(moved.document, [[removeMarkerCommand, { timeline: 'Hero click', markerAt: 0 }]]).document)?.markers).toEqual([]);
+    expect(firstTimeline(chain(moved.document, [[removeMarkerCommand, { timeline: 'Hero motion.trigger.click', markerAt: 0 }]]).document)?.markers).toEqual([]);
   });
 });
 
@@ -338,9 +348,9 @@ describe('a keyframe value the browser does not take is refused (the audit\'s ST
   const refusing = (handler: Handler): Handler => ({ run: (context, args) => handler.run({ ...context, css: { supports: (_property, value) => value !== 'banana' } }, args) });
   it('setting or editing opacity to "banana" is refused; a transform part and a variable are the runtime\'s', () => {
     const added = chain(page(), [[addMotionCommand, {}]]).document;
-    expect(said(runHandler(refusing(setKeyframeCommand), added, { timeline: 'Hero click', at: 0, property: 'opacity', value: 'banana' }))).toBe('status.motion.invalid');
-    expect(said(runHandler(refusing(setKeyframeCommand), added, { timeline: 'Hero click', at: 0, property: 'opacity', value: 'var(--fade)' }))).toBe('status.motion.keyframeSet');
-    const keyed = runHandler(refusing(setKeyframeCommand), added, { timeline: 'Hero click', at: 0, property: 'opacity', value: '0' }).document;
-    expect(said(runHandler(refusing(editKeyframeCommand), keyed, { timeline: 'Hero click', at: 0, property: 'opacity', keyframeAt: 0, field: 'value', value: 'banana' }))).toBe('status.motion.invalid');
+    expect(said(runHandler(refusing(setKeyframeCommand), added, { timeline: 'Hero motion.trigger.click', at: 0, property: 'opacity', value: 'banana' }))).toBe('status.motion.invalid');
+    expect(said(runHandler(refusing(setKeyframeCommand), added, { timeline: 'Hero motion.trigger.click', at: 0, property: 'opacity', value: 'var(--fade)' }))).toBe('status.motion.keyframeSet');
+    const keyed = runHandler(refusing(setKeyframeCommand), added, { timeline: 'Hero motion.trigger.click', at: 0, property: 'opacity', value: '0' }).document;
+    expect(said(runHandler(refusing(editKeyframeCommand), keyed, { timeline: 'Hero motion.trigger.click', at: 0, property: 'opacity', keyframeAt: 0, field: 'value', value: 'banana' }))).toBe('status.motion.invalid');
   });
 });

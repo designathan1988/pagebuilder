@@ -206,8 +206,9 @@ export interface StoreOptions<Ui> {
   readonly followSelection?: (state: StoreState<Ui>) => Followed<Ui>;
   // the editor state that follows a command that ran, by the command's manifest data and the arguments it ran with (a
   // text edit ends when an undoable command runs: the document may change under it; a renamed class the editor targets
-  // moves the target with it); it returns the same editor state when nothing follows
-  readonly followCommand?: (state: StoreState<Ui>, command: Command, args: Readonly<Record<string, unknown>>) => Followed<Ui>;
+  // moves the target with it; a class the command created becomes the target), from the state it ran in (`before`); it
+  // returns the same editor state when nothing follows
+  readonly followCommand?: (state: StoreState<Ui>, command: Command, args: Readonly<Record<string, unknown>>, before: StoreState<Ui>) => Followed<Ui>;
   // the editor state with the context an undone or redone change was made in given back (decisoes.md, DCS-009: its
   // breakpoint and state, its class, its keyframe); the editor state as it is when absent
   readonly restoreContext?: (state: StoreState<Ui>, context: EditContext) => Ui;
@@ -566,7 +567,7 @@ export function createStore<Ui>(options: StoreOptions<Ui>): Store<Ui> {
       refused: false,
       ui: outcome.ui ?? before.ui,
     };
-    const follows = options.followCommand?.(ran, command, args);
+    const follows = options.followCommand?.(ran, command, args, before);
     const next: StoreState<Ui> = follows === undefined ? ran : { ...ran, ui: follows.ui, ...(follows.message === undefined ? {} : { message: follows.message }) };
     const changed = documentChanged || !deepEqual(before.selection, next.selection) || next.ui !== before.ui || next.message !== before.message;
     breach = null;
@@ -637,7 +638,7 @@ export function createStore<Ui>(options: StoreOptions<Ui>): Store<Ui> {
     const outcome = entry.run(handlerContext(), args);
     if (outcome.kind !== 'change') return null;
     const ran: StoreState<Ui> = { ...state, selection: outcome.selection ?? state.selection, ui: outcome.ui ?? state.ui };
-    const ui = options.followCommand?.(ran, command, args)?.ui ?? ran.ui;
+    const ui = options.followCommand?.(ran, command, args, state)?.ui ?? ran.ui;
     return ui === state.ui ? null : ui;
   };
 

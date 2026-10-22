@@ -10,7 +10,7 @@
 //    holds none of its own (cascadeSource, in the stylesheet's order; inspector/origin.ts names it).
 import { message, registerHandler } from '../../core/commands/registry.ts';
 import type { Command } from '../../manifest/schema.ts';
-import { classTarget, classesOf, missingClassDefinitions, renameClassCommand } from '../../core/design/classes.ts';
+import { applyClassCommand, classTarget, classesOf, createClassCommand, missingClassDefinitions, renameClassCommand, usesOfClass } from '../../core/design/classes.ts';
 import { locate, type DocNode, type DocumentJson } from '../../core/document/model.ts';
 import type { ModelRules } from '../../core/document/validate.ts';
 import type { StoreState } from '../../core/store/store.ts';
@@ -103,4 +103,20 @@ export function targetFollowsClassRename(state: StoreState<EditorUi>, command: C
   const next = typeof args.nextName === 'string' ? args.nextName.trim() : null;
   if (renamed === null || next === null || (state.ui.styleTarget ?? null) !== renamed) return state.ui;
   return { ...state.ui, styleTarget: next };
+}
+
+// A class the command just created and applied becomes the style target (DCS-070, as in Webflow): + Class with a new
+// name (classes.apply) and Save the styles as a class (classes.create) leave the Style tab writing into the class, so
+// the edits that follow style it and not the element. Applying a class the project already had leaves the target as it
+// is. The class must be new in the project (`before` neither defines it nor has an element listing it) and every
+// selected element must list it now; a refusal changes nothing, so nothing follows it. Typing held in a field was
+// kept before the command ran, in the context it was typed in (editor/store.ts gestureSafe: a command that changes
+// the document keeps it first).
+export function targetFollowsNewClass(state: StoreState<EditorUi>, command: Command, args: Readonly<Record<string, unknown>>, before: StoreState<EditorUi>): EditorUi {
+  const typed = command.id === applyClassCommand.command ? args.className : command.id === createClassCommand.command ? args.name : undefined;
+  if (typeof typed !== 'string') return state.ui;
+  const name = typed.trim();
+  if (classesOf(before.document).some((styleClass) => styleClass.name === name) || usesOfClass(before.document, name) > 0) return state.ui;
+  if (classTarget(state.document, state.selection, name) === null || state.ui.styleTarget === name) return state.ui;
+  return { ...state.ui, styleTarget: name };
 }

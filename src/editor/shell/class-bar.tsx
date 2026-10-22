@@ -19,7 +19,7 @@ import { DoorControl, Icon, appliesNow, useDoor } from '../doors/door.tsx';
 import { doorSlots, drawnAsOf, partOf } from '../doors/placement.ts';
 import { afterGesture } from '../input/pointer.ts';
 import { styleClassOf } from '../inspector/style-target.ts';
-import { BASE_STATE, activeState } from '../view/style-state.ts';
+import { activeState, stateRuleOf } from '../view/style-state.ts';
 import { useEditorState, useStore } from '../store.ts';
 import { useT } from '../text.ts';
 import { Popover, usePopover } from './popover.tsx';
@@ -198,9 +198,10 @@ export function Affects() {
   const several = useEditorState((s) => s.selection.length > 1);
   // several elements written at once: their fields say Mixed where their values differ (the canonical note)
   // the state edited, as its selector writes it: the rule the writes land in (the canonical ".btn:hover affects 3")
-  const pseudo = useEditorState((s) => (activeState(s.ui).id === BASE_STATE.id ? '' : (activeState(s.ui).pseudo ?? '')));
+  // (a parent state's rule names the parent first: ".card:hover .title"; core/style/state-keys.ts)
+  const state = useEditorState((s) => activeState(s.ui));
   if (target === null) return several ? <div className="affects">{t('inspector.mixed')}</div> : null;
-  const selector = `.${target}${pseudo}`;
+  const selector = stateRuleOf(`.${target}`, state);
   return (
     <div className="affects">
       <span>{count === 1 ? t('inspector.affects.one', { selector }) : t('inspector.affects.other', { selector, count })}</span>

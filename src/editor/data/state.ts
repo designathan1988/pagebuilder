@@ -4,9 +4,9 @@
 // the rows of the file the person checked, as a new collection or into one.
 import { message, registerHandler, type Message, type MessageParam } from '../../core/commands/registry.ts';
 import { contentChange, shownCollection } from '../../core/data/commands.ts';
-import { DataRefusal, canonicalQuery, collectionNamed, collectionsOf, createCollection, decimalsOf, guessType, importRows, keyFor, queryItems, queryRefusal, refuse, type ImportMode } from '../../core/data/collections.ts';
+import { DataRefusal, canonicalQuery, collectionNamed, collectionsOf, createCollection, decimalsOf, guessType, importRows, keyFor, lookupIn, queryItems, queryRefusal, refuse, type ImportMode } from '../../core/data/collections.ts';
 import type { DataFile, Sheet } from '../../core/data/readers.ts';
-import { FIELD_TYPES, FILTER_OPERATORS, type Field, type FieldType, type FilterOperator, type Query, type Sort } from '../../core/data/model.ts';
+import { FIELD_TYPES, FILTER_OPERATORS, PAGINGS, isReferenceType, type Field, type FieldType, type FilterOperator, type Paging, type Query, type Sort } from '../../core/data/model.ts';
 import { fold } from '../../core/text/fold.ts';
 import type { MessageId } from '../../generated/ids.ts';
 import type { EditorUi } from '../state.ts';
@@ -81,6 +81,21 @@ function queryWith(query: Query, part: string, typed: string, collection: string
       const sort = sortOf(typed);
       return { ...query, order: [...(query.order ?? []).slice(0, 1), ...(sort === null ? [] : [sort])] };
     }
+    case 'pageSize': {
+      // no size: the list shows every item on one page
+      if (typed === '') {
+        const { pageSize: _size, paging: _paging, ...rest } = query;
+        void _size;
+        void _paging;
+        return rest;
+      }
+      const count = countOf(typed);
+      if (count === null || count < 1) refuse('status.data.badCount', { collection });
+      return { ...query, pageSize: count };
+    }
+    case 'paging':
+      if (query.pageSize === undefined || !(PAGINGS as readonly string[]).includes(typed)) refuse('status.data.badCount', { collection });
+      return { ...query, paging: typed as Paging };
     case 'offset':
     case 'limit': {
       if (typed === '' && part === 'limit') {
@@ -106,7 +121,7 @@ export const setQuery = registerHandler<'data.setQuery', EditorUi>('data.setQuer
     const asked = canonicalQuery(queryWith(dataOf(state.ui).query ?? {}, part, typeof value === 'string' ? value.trim() : '', collection.name));
     const refused = queryRefusal(collection, asked);
     if (refused !== null) return { kind: 'refused', message: refused };
-    const shown = queryItems(collection, asked).length;
+    const shown = queryItems(collection, asked, lookupIn(state.document)).length;
     return { kind: 'change', ui: withData(state.ui, { query: asked }), message: message('status.data.queryApplied', { collection: collection.name, count: { plural: 'data.items', count: shown }, total: collection.items.length }) };
   } catch (error) {
     if (error instanceof DataRefusal) return { kind: 'refused', message: error.refusal };
@@ -165,7 +180,7 @@ export const choosePreviewSheet = registerHandler<'data.previewSheet', EditorUi>
 export const setPreviewType = registerHandler<'data.previewType', EditorUi>('data.previewType', ({ state }, { column, type }) => {
   const preview = dataOf(state.ui).preview;
   if (preview === undefined || !(previewSheet(preview)?.columns ?? []).includes(column)) return { kind: 'refused', message: argumentRefused('column') };
-  if (!(FIELD_TYPES as readonly string[]).includes(type)) throw new Error(`data.previewType: ${type} is not a field type`);
+  if (!(FIELD_TYPES as readonly string[]).includes(type) || isReferenceType(type as FieldType)) throw new Error(`data.previewType: ${type} is not a type a file's column takes`);
   return { kind: 'change', ui: withData(state.ui, { preview: { ...preview, types: { ...preview.types, [column]: type as FieldType } } }), message: message('status.data.columnTyped', { column, type: { key: `data.type.${type}` as MessageId } }) };
 });
 
@@ -201,7 +216,9 @@ export const importNew = registerHandler<'data.importNew', EditorUi>('data.impor
       const type = preview.types[column] ?? 'text';
       // a number column keeps the decimal places the file writes ("6,50" stays "6,50" on the site, DEF-0620)
       const decimals = type === 'number' ? decimalsOf(sheet.rows.map((row) => row[column]), document.language) : 0;
-      return { key, label: column, type, ...(decimals > 0 ? { decimals } : {}) };
+      // an option column's choices are the values it holds, each once, in the order the file first writes them
+      const options = type === 'option' ? [...new Map(sheet.rows.map((row) => String(row[column] ?? '').trim()).filter((value) => value !== '').map((value) => [fold(value), value])).values()] : undefined;
+      return { key, label: column, type, ...(decimals > 0 ? { decimals } : {}), ...(options === undefined ? {} : { options }) };
     });
     const typed = name.trim() === '' ? stem(preview.file) : name.trim();
     const empty = createCollection(collectionsOf(document), typed, fields);
@@ -246,7 +263,7 @@ export const importInto = registerHandler<'data.importInto', EditorUi>('data.imp
       const decimals = Math.max(field.decimals ?? 0, decimalsOf(sheet.rows.map((row) => row[column]), document.language));
       return decimals > 0 ? { ...field, decimals } : field;
     });
-    const next = importRows({ ...held, fields: widened }, rows, mode as ImportMode, key, () => data.ids.next(), document.language);
+    const next = importRows({ ...held, fields: widened }, rows, mode as ImportMode, key, () => data.ids.next(), document.language, lookupIn(document));
     return {
       document: { ...document, collections: collectionsOf(document).map((c) => (c.name === held.name ? next : c)) },
       message: message('status.data.importedInto', { collection: held.name, count: { plural: 'data.items', count: rows.length }, mode: { key: `data.mode.${mode}` as MessageId } }),

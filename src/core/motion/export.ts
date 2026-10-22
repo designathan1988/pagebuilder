@@ -53,6 +53,8 @@ export interface ConfigInputs {
   readonly playedClassName: (animation: string) => string;
   // every timeline of the project, played or not (the editor's preview draws a library timeline too); absent: false
   readonly everyTimeline?: boolean;
+  // false: a Lottie action's animation data is not read (the first-paint rules need none of it); absent: true
+  readonly lottie?: boolean;
 }
 
 // The timelines a set of interactions needs: the ones they play, and every timeline those control, transitively.
@@ -133,7 +135,7 @@ export function motionConfig(document: DocumentJson, inputs: ConfigInputs): Runt
       actions.push({ ...action, target });
       const effect: Effect = action.effect;
       if (effect.kind === 'css-animation' && effect.animation !== '') cssAnimations[effect.animation] = inputs.playedClassName(effect.animation);
-      if (effect.kind === 'lottie' && effect.file !== '' && !(effect.file in lottie)) {
+      if (effect.kind === 'lottie' && effect.file !== '' && inputs.lottie !== false && !(effect.file in lottie)) {
         const data = jsonFile(document, effect.file);
         if (data !== null) lottie[effect.file] = data;
       }

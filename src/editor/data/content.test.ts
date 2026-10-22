@@ -233,37 +233,34 @@ describe('pages from a page', () => {
     expect(run(store, 'pages.fromNames', { names: ' \n ' }).status).toBe('refused');
   });
 
-  it('makes a page per item, its bindings showing the item, and keeps its file when the item changes', () => {
+  it('makes the open page the template of the item pages, showing the item chosen, and follows the item', () => {
     const store = storeOf('content-menu-list');
     run(store, 'pages.switch', { page: 'product' });
     run(store, 'pages.fromCollection', { collection: 'Cardapio', nameField: 'nome' });
-    const made = store.getState().document.pages.filter((page) => page.tree.dataItem !== undefined);
-    expect(made.map((page) => [page.name, page.file, page.tree.dataItem?.item])).toEqual([
-      ['Espresso Grão Norte', 'espresso-grao-norte.html', 'item-1'],
-      ['Filtrado Sul de Minas', 'filtrado-sul-de-minas.html', 'item-2'],
-      ['Descafeinado', 'descafeinado.html', 'item-3'],
-    ]);
-    const second = made[1] as (typeof made)[number];
-    expect(second.tree.children[0]?.text).toBe('Filtrado Sul de Minas');
-    expect(second.tree.children[1]?.attributes).toEqual({ src: 'img/xicara.png', alt: 'Filtrado Sul de Minas' });
+    // one page stands for every item: no copy is made
+    const templates = store.getState().document.pages.filter((page) => page.tree.dataItem !== undefined);
+    expect(templates.map((page) => [page.name, page.file, page.tree.dataItem])).toEqual([['Product', 'product.html', { collection: 'Cardapio', template: true, field: 'nome', item: 'item-1' }]]);
+    expect(said(store)).toBe('Product is the template of Cardapio: the export writes 3 pages.');
+    expect(templates[0]?.tree.children[0]?.text).toBe('Espresso Grão Norte');
+    run(store, 'pages.previewItem', { item: 'item-2' });
+    const template = () => store.getState().document.pages.find((page) => page.id === 'product');
+    expect(template()?.tree.children[0]?.text).toBe('Filtrado Sul de Minas');
+    expect(template()?.tree.children[1]?.attributes).toEqual({ src: 'img/xicara.png', alt: 'Filtrado Sul de Minas' });
     run(store, 'data.setCell', { collection: 'Cardapio', item: 'item-2', field: 'nome', value: 'Filtrado' });
-    const after = store.getState().document.pages.find((page) => page.id === second.id);
-    expect(after?.file).toBe('filtrado-sul-de-minas.html');
-    expect(after?.tree.children[0]?.text).toBe('Filtrado');
-    // run again: every item has its page, and nothing is made twice
-    run(store, 'pages.switch', { page: 'product' });
-    run(store, 'pages.fromCollection', { collection: 'Cardapio', nameField: 'nome' });
-    expect(said(store)).toBe('Every item of Cardapio has its page already; they show its items now.');
-    expect(store.getState().document.pages).toHaveLength(5);
+    expect(template()?.tree.children[0]?.text).toBe('Filtrado');
+    // a page that is no template shows no item to choose
+    run(store, 'pages.switch', { page: 'home' });
+    expect(run(store, 'pages.previewItem', { item: 'item-1' }).status).toBe('refused');
+    expect(said(store)).toBe('Home is no template of a collection.');
   });
 
-  it("links a list's cards to their items' pages", () => {
+  it("links a list's cards to their items' pages, in the folder of the collection", () => {
     const store = storeOf('content-menu-list');
     run(store, 'pages.switch', { page: 'product' });
     run(store, 'pages.fromCollection', { collection: 'Cardapio', nameField: 'nome' });
     run(store, 'pages.switch', { page: 'home' });
-    // each card's More link goes to its item's page; before the pages existed it went nowhere
-    expect(cards(store).map((card) => card.children[3]?.attributes.href)).toEqual(['espresso-grao-norte.html', 'filtrado-sul-de-minas.html', 'descafeinado.html']);
+    // each card's More link goes to its item's page; before the template existed it went nowhere
+    expect(cards(store).map((card) => card.children[3]?.attributes.href)).toEqual(['cardapio/espresso-grao-norte.html', 'cardapio/filtrado-sul-de-minas.html', 'cardapio/descafeinado.html']);
     // a link bound to its item's page keeps its address: typing another is refused
     run(store, 'selection.select', { target: cards(store)[0]?.id });
     expect(run(store, 'data.bindElement', { node: cards(store)[0]?.children[1]?.id, field: '@page', to: 'link' }).status).toBe('refused');

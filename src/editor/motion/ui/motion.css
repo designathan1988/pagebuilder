@@ -14,7 +14,7 @@
   padding: var(--space-3) var(--space-6) 0;
 }
 
-/* the quick effects: a label, then one button per preset, wrapping at the inspector's width */
+/* the entry effects: a label, when they play, then one button per preset, wrapping at the inspector's width */
 .motion-interactions__quick {
   display: flex;
   flex-wrap: wrap;
@@ -28,6 +28,31 @@
   font-size: var(--fs-caption);
   line-height: var(--lh-caption);
   color: var(--color-text-muted);
+}
+
+/* when the entry effects play (on scroll, on page load): a row of its own above the effects */
+.motion-interactions__when {
+  flex-basis: 100%;
+  min-width: 0;
+}
+
+.motion-interactions__when .door {
+  min-width: 0;
+}
+
+/* a motion card's summary says its trigger and its timeline whole ("On page load → plays Hero 2 slide-from-right"):
+   it wraps onto a second line instead of cutting either (an entry effect's timeline is named after the effect) */
+.motion-card .interaction-card__summary {
+  flex-wrap: wrap;
+  row-gap: 0;
+  padding: var(--space-1) 0;
+}
+
+.motion-card .interaction-card__name,
+.motion-card .interaction-card__action {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .motion-interactions__head .interactions__title {
@@ -84,6 +109,28 @@
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
   border-top: 1px solid var(--color-border);
+}
+
+/* the page transitions' fields, lined up with the behaviours' buttons above them (their 12 px margin) */
+.motion-page-transitions__fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-6) var(--space-4);
+}
+
+/* a behaviour's amount and a parallax's range: one grid, the labels in a column as wide as the longest of them, so
+   none breaks onto a second line ("Deslocamento máximo (px)" did in the label column of the inspector's rows) */
+.motion-behaviours__fields {
+  display: grid;
+  flex: 1 0 100%;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+}
+
+.motion-behaviours__fields > .field-row {
+  display: contents;
 }
 
 .motion-behaviours__name {
@@ -143,7 +190,21 @@
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
+}
+
+/* the toolbar over the lanes, the row that adds an action under them */
+/* the toolbar stays whole at the top of the main column while it scrolls to the fields of the selection (a short dock
+   showed Play, Pause and Stop cut in half above the lanes) */
+.motion-timeline__toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
+}
+
+.motion-timeline__add {
+  border-top: 1px solid var(--color-border);
 }
 
 /* the toolbar and the action row wrap within the part of the dock in sight — the dock's width less the timelines' list
@@ -186,9 +247,12 @@
   min-width: var(--size-inspector);
 }
 
+/* the time axis starts half a keyframe's width after the label column, so a keyframe at 0 s (every entrance effect
+   starts with one) is drawn whole beside the lane's name, never half under it */
 .motion-track {
+  --motion-key-room: calc(var(--size-control) / 2);
   position: relative;
-  margin-left: var(--size-label-column);
+  margin-left: calc(var(--size-label-column) + var(--motion-key-room));
 }
 
 .motion-ruler {
@@ -236,7 +300,8 @@
   left: 0;
   z-index: 1;
   flex: none;
-  margin-left: calc(-1 * var(--size-label-column));
+  margin-left: calc(-1 * (var(--size-label-column) + var(--motion-key-room)));
+  margin-right: var(--motion-key-room);
   background: var(--color-surface);
   display: flex;
   align-items: center;
@@ -395,6 +460,13 @@
   min-width: 0;
   padding: 0;
   white-space: nowrap;
+}
+
+/* the open timeline's name under its label, the column's whole width: a name made of the element and its effect
+   ("Hero 2 slide-from-right") is read whole, never cut beside a label column */
+.motion-timeline__side > .panel-field {
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-1);
 }
 
 /* the dock's values in the code face of the Timeline's values (window-overlays.css .timeline__side); a value of several

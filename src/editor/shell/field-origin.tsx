@@ -6,7 +6,6 @@
 // its value comes from elsewhere, a second line says where typing writes: the target (the element, or the class while
 // it is the target) at the edited breakpoint and state.
 import { useEffect, useState } from 'react';
-import type { MessageId } from '../../generated/ids.ts';
 import type { DoorEntry } from '../../manifest/runtime.ts';
 import { editedProperties } from '../inspector/sections.ts';
 import { valueOrigin } from '../inspector/origin.ts';
@@ -15,7 +14,7 @@ import { locate } from '../../core/document/model.ts';
 import { layeredRules, useEditorState } from '../store.ts';
 import { useT } from '../text.ts';
 import { breakpointById, breakpointName as nameOf } from '../../core/document/breakpoints.ts';
-import { STATES } from '../view/style-state.ts';
+import { stateName, styleStateOf } from '../view/style-state.ts';
 
 // whether the focus is inside the field whose door is this one (the focus is the page's, not the store's)
 const focusInside = (ref: string) => document.activeElement instanceof Element && document.activeElement.closest(`[data-door="${CSS.escape(ref)}"]`) !== null;
@@ -62,15 +61,13 @@ export function FieldOrigin({ entry, target }: { readonly entry: DoorEntry; read
     const found = breakpointById({ breakpoints: table }, id);
     return found === undefined ? id : nameOf(found, t);
   };
-  const stateName = (id: string) => {
-    const key = STATES.find((x) => x.id === id)?.labelKey;
-    return key === undefined ? id : t(key as MessageId);
-  };
+  // a state of properties.json, a child position or a parent state, by its name (view/style-state.ts)
+  const nameOfState = (id: string) => stateName(styleStateOf(id), t);
   const note =
     kind === 'here'
       ? t('inspector.origin.here', { breakpoint: breakpointName(first) })
       : kind === 'breakpoint' || kind === 'state'
-        ? t('inspector.origin.from', { source: kind === 'state' ? `${breakpointName(first)} · ${stateName(second)}` : breakpointName(first) })
+        ? t('inspector.origin.from', { source: kind === 'state' ? `${breakpointName(first)} · ${nameOfState(second)}` : breakpointName(first) })
         : kind === 'class'
           ? t('inspector.fromClass', { name: first })
           : kind === 'inherited'
@@ -78,7 +75,7 @@ export function FieldOrigin({ entry, target }: { readonly entry: DoorEntry; read
             : null;
   const elsewhere = kind === 'breakpoint' || kind === 'state' || kind === 'class' || kind === 'inherited';
   const [writer = '', breakpoint = '', state = '', baseState = ''] = writes.split('|');
-  const layer = state === baseState ? breakpointName(breakpoint) : `${breakpointName(breakpoint)} · ${stateName(state)}`;
+  const layer = state === baseState ? breakpointName(breakpoint) : `${breakpointName(breakpoint)} · ${nameOfState(state)}`;
   return (
     <>
       {note !== null ? (

@@ -1088,6 +1088,18 @@ export async function start(config) {
     state[variable.name] = saved !== MISSING && fits(variable.type, saved) ? saved : structuredClone(variable.initial);
     if (variable.persist) effect(() => keep(at, JSON.parse(JSON.stringify(state[variable.name] ?? null))), undefined, `state.${variable.name}`);
   }
+  // the bridge the site's motion script reads and sets the variables through (editor/motion/runtime: an interaction's
+  // condition on a variable, a Set variable action on the application), and the sets it made before the application
+  // started, in their order
+  const bridge = {
+    get: (name) => state[name],
+    set: (name, value) => {
+      state[name] = value;
+    },
+  };
+  for (const [name, value] of globalThis.__builderAppQueue || []) bridge.set(name, value);
+  globalThis.__builderAppQueue = [];
+  globalThis.__builderApp = bridge;
   for (const [name, load] of Object.entries(config.scripts || {})) {
     try {
       const module = await load();

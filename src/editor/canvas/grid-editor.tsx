@@ -4,7 +4,7 @@
 // grip at its bottom-right corner (grid.spanItem, dragged to extend its span). Measured on every animation frame from
 // the page (coordinates.ts: the children's boxes and the tracks' own line positions), drawn in the canvas chrome,
 // never in the page.
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { locate, type NodeId } from '../../core/document/model.ts';
 import { manifest, type DoorEntry } from '../../manifest/runtime.ts';
 import { useEditorState } from '../store.ts';
@@ -21,7 +21,7 @@ interface Box {
   readonly height: number;
 }
 
-export function GridEditor() {
+export const GridEditor = memo(function GridEditor() {
   const editing = useEditorState((s) => gridEditOf(s.ui));
   const item = useEditorState((s) => (s.selection.length === 1 ? (s.selection[0] ?? null) : null));
   const document = useEditorState((s) => s.document);
@@ -109,4 +109,4 @@ export function GridEditor() {
           })()}
     </div>
   );
-}
+});

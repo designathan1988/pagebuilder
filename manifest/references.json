@@ -2217,6 +2217,21 @@
     },
     {
       "kind": "handler",
+      "id": "motion.setParallaxRange",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
+      "id": "motion.setPageTransition",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
+      "id": "motion.setLinkTransition",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
       "id": "data.select",
       "status": "registered"
     },
@@ -2312,6 +2327,16 @@
     },
     {
       "kind": "handler",
+      "id": "data.formatBinding",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
+      "id": "data.showWhen",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
       "id": "data.fill",
       "status": "registered"
     },
@@ -2328,6 +2353,11 @@
     {
       "kind": "handler",
       "id": "pages.fromCollection",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
+      "id": "pages.previewItem",
       "status": "registered"
     },
     {

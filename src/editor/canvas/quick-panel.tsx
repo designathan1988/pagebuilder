@@ -22,7 +22,7 @@ import { attributeApplies } from '../../core/elements/inputs.ts';
 import { shownForContext, type ElementContext } from '../../core/style/applies.ts';
 import { ATTRIBUTES } from '../inspector/attributes.ts';
 import { styleClassOf } from '../inspector/style-target.ts';
-import { BASE_STATE, activeState } from '../view/style-state.ts';
+import { BASE_STATE, activeState, stateName } from '../view/style-state.ts';
 import { activeBreakpoint } from '../view/breakpoints.ts';
 import { appliesTo, offsetOf, placeQuickPanel, quickPanelOffsets, quickPanelOpen, type Box, type Offset } from '../quick-panel/quick-panel.ts';
 import { TextStyleField, keptByFieldEnter, type FieldPart, KeptTextField, TextField, keptTextOf, useSelectionContext } from '../shell/field.tsx';
@@ -33,7 +33,7 @@ import { useT } from '../text.ts';
 import { canvasFrame, nodeBox } from './coordinates.ts';
 import { visiblePage } from './reveal.ts';
 import { breakpointWords, wordsOf } from '../../core/document/breakpoints.ts';
-import { usePointerValue } from '../input/pointer/use-views.ts';
+import { usePointerSelect } from '../input/pointer/use-views.ts';
 
 const REGION = 'quick-panel';
 // the panel's chip: the control of the panel that opens and closes it (a panel-control door of its own region; its
@@ -352,7 +352,7 @@ export function QuickPanel({ stage }: { readonly stage: RefObject<HTMLDivElement
   const contextTarget = useEditorState((s) => styleClassOf(s));
   const contextState = useEditorState((s) => {
     const state = activeState(s.ui);
-    return state.id === BASE_STATE.id ? null : state.labelKey;
+    return state.id === BASE_STATE.id ? null : state;
   });
   const contextBreakpoint = useEditorState((s) => {
     const breakpoint = activeBreakpoint(s);
@@ -366,7 +366,8 @@ export function QuickPanel({ stage }: { readonly stage: RefObject<HTMLDivElement
   const editing = useEditorState((s) => s.ui.textEdit.node !== null);
   const offsets = useEditorState((s) => quickPanelOffsets(s.ui));
   const open = useEditorState((s) => quickPanelOpen(s.ui));
-  const dragging = usePointerValue('drag');
+  // whether a drag goes on, never where it is: the panel hides for the drag, and is not drawn anew at every move
+  const dragging = usePointerSelect('drag', (drag) => drag !== null);
   const [placed, setPlaced] = useState<Placed | null>(null);
   const panel = useRef<HTMLDivElement>(null);
   const chip = useRef<HTMLButtonElement>(null);
@@ -382,7 +383,7 @@ export function QuickPanel({ stage }: { readonly stage: RefObject<HTMLDivElement
   const wasPlacedOpen = useRef(false);
   const fitFrames = useRef(0);
   const fitFrom = useRef<{ readonly left: number; readonly top: number } | null>(null);
-  const shown = node !== null && !editing && dragging === null;
+  const shown = node !== null && !editing && !dragging;
   const id = node?.id ?? null;
   const offset: Offset | null = id === null ? null : (offsets[id] ?? null);
 
@@ -510,7 +511,7 @@ export function QuickPanel({ stage }: { readonly stage: RefObject<HTMLDivElement
   );
   if (!open && !drawn) return <>{collapsed}</>;
   // the context of the writes (A3.8): the class the style target names, the state and the breakpoint in view
-  const contextLabel = [contextTarget === null ? null : `.${contextTarget}`, contextState === null ? null : t(contextState as MessageId), contextBreakpoint === null ? null : wordsOf(JSON.parse(contextBreakpoint) as ReturnType<typeof breakpointWords>, t)].filter((part) => part !== null).join(' · ');
+  const contextLabel = [contextTarget === null ? null : `.${contextTarget}`, contextState === null ? null : stateName(contextState, t), contextBreakpoint === null ? null : wordsOf(JSON.parse(contextBreakpoint) as ReturnType<typeof breakpointWords>, t)].filter((part) => part !== null).join(' · ');
   const actions = FIELDS.filter((entry) => isAction(entry) && applicable.split(' ').includes(entry.ref));
   const fields = FIELDS.filter((entry) => {
     if (isAction(entry)) return false;

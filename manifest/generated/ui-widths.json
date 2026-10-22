@@ -1,7 +1,7 @@
 {
   "$generated": {
     "by": "tools/ui-fit/measure.spec.ts",
-    "css": "971ef39eb3d76d272ff0da860eb824df6dfe1d6772596b95f1bfe913e04b0d10"
+    "css": "be87387e19af8dcdd7596c34a46e04dcd390e739999935e1f157fbd6eb70820c"
   },
   "regions": {
     "activity-bar": {
@@ -5159,6 +5159,58 @@
         "letterSpacing": 0,
         "textTransform": "none",
         "text": "Fixo ao rolar"
+      }
+    },
+    "motion.setLinkTransition#inspector-motion-link-transition": {
+      "default": {
+        "width": 111.96875,
+        "fontSize": 11,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "This link"
+      },
+      "windows": {
+        "width": 111.96875,
+        "fontSize": 11,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "This link"
+      },
+      "ptbr": {
+        "width": 111.96875,
+        "fontSize": 11,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Este link"
+      }
+    },
+    "motion.setPageTransition#inspector-motion-page-transition": {
+      "default": {
+        "width": 111.96875,
+        "fontSize": 11,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Between pages"
+      },
+      "windows": {
+        "width": 111.96875,
+        "fontSize": 11,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Between pages"
+      },
+      "ptbr": {
+        "width": 111.96875,
+        "fontSize": 11,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Entre páginas"
       }
     },
     "motion.toggleRecord#timeline-motion-record": {
@@ -11011,6 +11063,58 @@
         "text": "Antes"
       }
     },
+    "view.setStyleState#menu-style-state-empty": {
+      "default": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Empty"
+      },
+      "windows": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Empty"
+      },
+      "ptbr": {
+        "width": 1280,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Vazio"
+      }
+    },
+    "view.setStyleState#menu-style-state-even": {
+      "default": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Even children"
+      },
+      "windows": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Even children"
+      },
+      "ptbr": {
+        "width": 1280,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Filhos pares"
+      }
+    },
     "view.setStyleState#menu-style-state-first-child": {
       "default": {
         "width": 1440,
@@ -11089,6 +11193,32 @@
         "text": "Foco visível"
       }
     },
+    "view.setStyleState#menu-style-state-focus-within": {
+      "default": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Focus within"
+      },
+      "windows": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Focus within"
+      },
+      "ptbr": {
+        "width": 1280,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Foco dentro"
+      }
+    },
     "view.setStyleState#menu-style-state-hover": {
       "default": {
         "width": 1440,
@@ -11139,6 +11269,110 @@
         "letterSpacing": 0,
         "textTransform": "none",
         "text": "Último filho"
+      }
+    },
+    "view.setStyleState#menu-style-state-nth-child": {
+      "default": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Nth child…"
+      },
+      "windows": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Nth child…"
+      },
+      "ptbr": {
+        "width": 1280,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Filho na posição…"
+      }
+    },
+    "view.setStyleState#menu-style-state-odd": {
+      "default": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Odd children"
+      },
+      "windows": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Odd children"
+      },
+      "ptbr": {
+        "width": 1280,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Filhos ímpares"
+      }
+    },
+    "view.setStyleState#menu-style-state-parent": {
+      "default": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Parent state…"
+      },
+      "windows": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Parent state…"
+      },
+      "ptbr": {
+        "width": 1280,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Estado do pai…"
+      }
+    },
+    "view.setStyleState#menu-style-state-selection": {
+      "default": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Selected text"
+      },
+      "windows": {
+        "width": 1440,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Selected text"
+      },
+      "ptbr": {
+        "width": 1280,
+        "fontSize": 12,
+        "fontWeight": 400,
+        "letterSpacing": 0,
+        "textTransform": "none",
+        "text": "Texto selecionado"
       }
     },
     "view.toggleSideBySide#menu-view-side-by-side": {

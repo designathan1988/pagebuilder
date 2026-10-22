@@ -185,14 +185,21 @@ export const toggleSnapCommand = registerHandler<'motion.toggleSnap', EditorUi>(
 );
 
 // The canvas previews the open timeline: Play walks the playhead (the canvas owner's loop, as timeline/preview.ts
-// does), Pause holds it, Stop puts the playhead at 0 and the elements back to their own styles.
+// does) from where it is, or from the start when it stands at the end, Pause holds it, Stop puts the playhead at 0
+// and the elements back to their own styles.
 export const previewMotionCommand = registerHandler<'motion.preview', EditorUi>(
   'motion.preview',
   ({ state }, { operation }) => {
     const motion = motionUiOf(state.ui);
     const name = shownTimeline(state);
     if (name === null) return { kind: 'refused', message: message('status.motion.noTimeline') };
-    if (operation === 'play') return { kind: 'change', ui: withMotion(state.ui, { ...motion, previewing: true, playing: true }), message: message('status.motion.previewPlaying', { name }) };
+    if (operation === 'play') {
+      // a playhead at (or past) the timeline's end plays it again from the start: the walk would end it at once
+      const found = findTimeline(state.document, name);
+      const duration = found === null ? 0 : timelineDuration(found.timeline);
+      const time = duration > 0 && motion.time >= duration ? 0 : motion.time;
+      return { kind: 'change', ui: withMotion(state.ui, { ...motion, time, previewing: true, playing: true }), message: message('status.motion.previewPlaying', { name }) };
+    }
     const { playing: _playing, ...paused } = motion;
     void _playing;
     if (operation === 'pause') return motion.playing === true ? { kind: 'change', ui: withMotion(state.ui, paused) } : { kind: 'change' };

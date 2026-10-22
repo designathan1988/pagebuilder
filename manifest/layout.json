@@ -790,6 +790,18 @@
         "left",
         "right"
       ]
+    },
+    "dock-height": {
+      "axis": "y",
+      "grow": "up",
+      "size": 640,
+      "min": 120,
+      "max": 640,
+      "labelKey": "splitter.dockHeight",
+      "directions": [
+        "up",
+        "down"
+      ]
     }
   },
   "localControls": [

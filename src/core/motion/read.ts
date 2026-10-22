@@ -13,7 +13,7 @@ import { addressAllowed } from '../elements/address.ts';
 import { IDENTIFIER_SOURCE } from '../text/identifier.ts';
 import { EFFECTS, TARGETS, TRIGGERS, isEffectKind, isTargetKind, isTriggerKind, type TriggerParameter } from './catalog.ts';
 import { createEasing } from './easing.ts';
-import { RUNTIME_BEHAVIOURS, TRANSFORM_PARTS, type Behaviour, type Effect, type Marker, type MotionInteraction, type MotionKeyframe, type MotionTarget, type MotionTimeline, type PropertyTrack, type TimelineAction, type Trigger } from './model.ts';
+import { CONDITION_COMPARES, CONDITION_KINDS, ELEMENT_STATES, PAGE_TRANSITION_KINDS, RUNTIME_BEHAVIOURS, TRANSFORM_PARTS, type Behaviour, type Effect, type Marker, type MotionCondition, type MotionInteraction, type MotionKeyframe, type MotionTarget, type MotionTimeline, type PageTransition, type PropertyTrack, type TimelineAction, type Trigger } from './model.ts';
 import { BOTTOM, DIRECTION, DISPLAY, SCALE, TOP, VISIBILITY } from './words.ts';
 
 interface Issue {
@@ -35,6 +35,10 @@ const CSS_PROPERTY = /^-?[a-z][a-z0-9-]*$/;
 const CUSTOM_PROPERTY = /^--[A-Za-z_][A-Za-z0-9_-]*$/;
 // a timeline's name: what a person reads in the inspector's lists, letters and digits first, at most 64 characters
 export const TIMELINE_NAME = /^[\p{L}\p{N}][\p{L}\p{N} _.-]{0,63}$/u;
+// a variable of the application layer (state.name): a JavaScript identifier (core/logic's variables)
+export const APP_VARIABLE = /^[A-Za-z_$][A-Za-z0-9_$]{0,63}$/;
+// a breakpoint's id
+const BREAKPOINT_ID = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 // an event name a page's own code may listen to: a letter first, then letters, digits, ":", ".", "-" and "_"
 const EVENT_NAME = /^[A-Za-z][A-Za-z0-9:._-]{0,63}$/;
 // an attribute an action may set: an HTML attribute name that does not run code nor load anything (onâ€¦, the address
@@ -221,7 +225,7 @@ const EFFECT_FIELDS: Readonly<Record<Effect['kind'], readonly string[]>> = {
   navigate: ['to', 'address', 'newTab'],
   clipboard: ['source', 'text'],
   event: ['name', 'detail'],
-  variable: ['name', 'value'],
+  variable: ['name', 'value', 'scope'],
   theme: ['operation', 'remember'],
   wait: [],
   'split-text': ['by', 'tracks'],
@@ -322,8 +326,15 @@ function readEffect(reader: Reader, value: unknown, path: string, duration: numb
       if (held.detail === undefined) return { kind, name };
       return { kind, name, detail: reader.string(held.detail, at('detail'), (text) => text.length <= MAX_TEXT, 'a text') };
     }
-    case 'variable':
+    case 'variable': {
+      // an application variable (state.name) takes any text, read as JSON when it is JSON; a custom property, a CSS
+      // value
+      if (held.scope !== undefined) {
+        reader.oneOf(held.scope, at('scope'), ['app']);
+        return { kind, name: reader.string(held.name, at('name'), (text) => APP_VARIABLE.test(text), 'a variable name of the application (letters, digits, _ and $)'), value: reader.string(held.value, at('value'), (text) => text.length <= MAX_TEXT, `a text of at most ${MAX_TEXT} characters`), scope: 'app' };
+      }
       return { kind, name: reader.string(held.name, at('name'), (text) => CUSTOM_PROPERTY.test(text), 'a custom property (--name)'), value: reader.string(held.value, at('value'), safeValue, 'a CSS value') };
+    }
     case 'theme':
       return { kind, operation: reader.oneOf(held.operation, at('operation'), ['toggle', 'light', 'dark', 'system']), remember: reader.boolean(held.remember, at('remember')) };
     case 'wait':
@@ -429,7 +440,7 @@ function readTrigger(reader: Reader, value: unknown, path: string): Trigger {
     if (parameter === 'milliseconds') fields.milliseconds = reader.integer(given, at, kind === 'interval' ? 16 : 0, MAX_MS);
     if (parameter === DIRECTION) fields.direction = reader.oneOf(given, at, ['up', 'down']);
     if (parameter === 'axis') fields.axis = reader.oneOf(given, at, ['x', 'y']);
-    if (parameter === 'breakpoint') fields.breakpoint = reader.string(given, at, (text) => /^[a-z0-9]+(-[a-z0-9]+)*$/.test(text), 'a breakpoint');
+    if (parameter === 'breakpoint') fields.breakpoint = reader.string(given, at, (text) => BREAKPOINT_ID.test(text), 'a breakpoint');
     if (parameter === 'seconds') fields.seconds = reader.number(given, at, 0, MAX_MS / 1000);
     if (parameter === 'state') fields.state = reader.oneOf(given, at, ['visible', 'hidden']);
     if (parameter === 'event') fields.event = reader.string(given, at, (text) => EVENT_NAME.test(text), 'an event name');
@@ -439,7 +450,7 @@ function readTrigger(reader: Reader, value: unknown, path: string): Trigger {
 
 export function readInteraction(value: unknown): Read<MotionInteraction> {
   const reader = new Reader();
-  const held = reader.record(value, '', ['id', 'trigger', 'timeline', 'control', 'leave', 'scope', 'once', 'delay', 'breakpoints', 'reducedMotion', 'scrollStart', 'scrollEnd']);
+  const held = reader.record(value, '', ['id', 'trigger', 'timeline', 'control', 'leave', 'scope', 'once', 'delay', 'breakpoints', 'reducedMotion', 'scrollStart', 'scrollEnd', 'condition']);
   if (held === null) return reader.result({ id: '', trigger: { kind: 'click' }, timeline: '', control: 'play' });
   const id = reader.id(held.id, 'id', new Set());
   const trigger = readTrigger(reader, held.trigger, 'trigger');
@@ -470,12 +481,61 @@ export function readInteraction(value: unknown): Read<MotionInteraction> {
     if (end <= start) reader.bad('scrollEnd', 'the range ends after it starts');
     interaction = { ...interaction, scrollStart: start, scrollEnd: end };
   }
+  if (held.condition !== undefined) interaction = { ...interaction, condition: readCondition(reader, held.condition, 'condition') };
   return reader.result(interaction);
 }
 
+// An interaction's condition (model.ts MotionCondition): what its name is by its kind, a comparison for a variable
+// alone, a value for a comparison that names one, and `not` for every kind but a variable (whose comparison says it).
+function readCondition(reader: Reader, value: unknown, path: string): MotionCondition {
+  const held = reader.record(value, path, ['kind', 'name', 'not', 'compare', 'value']);
+  if (held === null) return { kind: 'class', name: '' };
+  const kind = reader.oneOf(held.kind, join(path, 'kind'), CONDITION_KINDS);
+  const at = (field: string): string => join(path, field);
+  const name =
+    kind === 'class'
+      ? reader.string(held.name, at('name'), (text) => CLASS_NAME.test(text), 'a class name')
+      : kind === 'breakpoint'
+        ? reader.string(held.name, at('name'), (text) => BREAKPOINT_ID.test(text), 'a breakpoint')
+        : kind === 'variable'
+          ? reader.string(held.name, at('name'), (text) => APP_VARIABLE.test(text), 'a variable name of the application')
+          : reader.oneOf(held.name, at('name'), ELEMENT_STATES);
+  const condition: MotionCondition = { kind, name };
+  if (kind === 'variable') {
+    if (held.not !== undefined) reader.bad(at('not'), 'a variable is compared, never negated');
+    const compare = reader.oneOf(held.compare, at('compare'), CONDITION_COMPARES);
+    if (compare === 'set' || compare === 'unset') {
+      if (held.value !== undefined) reader.bad(at('value'), `${compare} compares to no value`);
+      return { ...condition, compare };
+    }
+    const text = reader.string(held.value ?? '', at('value'), (one) => one.length <= MAX_TEXT, `a text of at most ${MAX_TEXT} characters`);
+    if ((compare === 'greater' || compare === 'less') && (text.trim() === '' || !Number.isFinite(Number(text)))) reader.bad(at('value'), `${compare} compares to a number`);
+    return { ...condition, compare, value: text };
+  }
+  if (held.compare !== undefined || held.value !== undefined) reader.bad(at('compare'), 'only a variable is compared to a value');
+  const not = reader.flag(held.not, at('not'));
+  return not === undefined ? condition : { ...condition, not };
+}
+
+// the longest a page transition animates, in ms
+export const MAX_PAGE_TRANSITION = 3000;
+
+// The site's page transition (model.ts PageTransition): its kind and how long each page animates.
+export function readPageTransition(value: unknown): Read<PageTransition> {
+  const reader = new Reader();
+  const held = reader.record(value, '', ['kind', 'duration']);
+  if (held === null) return reader.result({ kind: 'fade', duration: 0 });
+  const kind = reader.oneOf(held.kind, 'kind', PAGE_TRANSITION_KINDS);
+  const duration = reader.integer(held.duration, 'duration', 0, MAX_PAGE_TRANSITION);
+  return reader.result({ kind, duration });
+}
+
+// the most a parallax may be set to move either way, in px
+export const MAX_PARALLAX = 5000;
+
 export function readBehaviour(value: unknown): Read<Behaviour> {
   const reader = new Reader();
-  const held = reader.record(value, '', ['kind', 'amount', 'axis', 'reverse']);
+  const held = reader.record(value, '', ['kind', 'amount', 'axis', 'reverse', 'start', 'end', 'max']);
   if (held === null) return reader.result({ kind: 'parallax', amount: 0 });
   const kind = reader.oneOf(held.kind, 'kind', RUNTIME_BEHAVIOURS);
   const ranges: Readonly<Record<Behaviour['kind'], readonly [number, number]>> = { 'smooth-scroll': [0, 0], parallax: [-1, 1], marquee: [1, 2000], 'cursor-follow': [0, 0.95] };
@@ -484,5 +544,16 @@ export function readBehaviour(value: unknown): Read<Behaviour> {
   if (held.axis !== undefined) behaviour = { ...behaviour, axis: reader.oneOf(held.axis, 'axis', ['x', 'y']) };
   const reverse = reader.flag(held.reverse, 'reverse');
   if (reverse !== undefined) behaviour = { ...behaviour, reverse };
+  // a parallax's range: where it moves along its way across the screen, and how far at most
+  if (held.start !== undefined || held.end !== undefined || held.max !== undefined) {
+    if (kind !== 'parallax') reader.bad('start', 'only a parallax has a range');
+    if (held.start !== undefined || held.end !== undefined) {
+      const start = reader.number(held.start ?? 0, 'start', 0, 100);
+      const end = reader.number(held.end ?? 100, 'end', 0, 100);
+      if (end <= start) reader.bad('end', 'the range ends after it starts');
+      behaviour = { ...behaviour, start, end };
+    }
+    if (held.max !== undefined) behaviour = { ...behaviour, max: reader.number(held.max, 'max', 1, MAX_PARALLAX) };
+  }
   return reader.result(behaviour);
 }

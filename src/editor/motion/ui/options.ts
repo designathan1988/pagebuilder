@@ -73,7 +73,12 @@ export function effectOptions(effect: Effect, document: DocumentJson): readonly 
     case 'event':
       return [['name', { kind: 'text' }], ['detail', { kind: 'text' }]];
     case 'variable':
-      return [['name', { kind: 'text', suggestions: (document.tokens ?? []).map((token) => `--${token.name}`) }], ['value', { kind: 'text' }]];
+      // a custom property of the target (the project's tokens offered), or a variable of the application layer
+      return [
+        ['scope', choice('css', 'app')],
+        ['name', { kind: 'text', suggestions: effect.scope === 'app' ? (document.app?.variables ?? []).map((variable) => variable.name) : (document.tokens ?? []).map((token) => `--${token.name}`) }],
+        ['value', { kind: 'text' }],
+      ];
     case 'theme':
       return [['operation', choice('toggle', 'light', 'dark', 'system')], ['remember', { kind: 'switch' }]];
     case 'split-text':
@@ -93,6 +98,7 @@ export function effectOptions(effect: Effect, document: DocumentJson): readonly 
 // An option's value as its field shows it: a choice in words, a time in seconds, a switch as its state.
 export function optionText(effect: Effect, option: string): string {
   const held = (effect as unknown as Record<string, unknown>)[option];
+  if (option === 'scope' && effect.kind === 'variable') return effect.scope ?? 'css';
   if (held === undefined || held === null) return '';
   if (option === 'time' && typeof held === 'number') return String(held / 1000);
   return String(held);

@@ -63,4 +63,8 @@ export const MOTION_DOORS = {
   behaviourAmount: 'inspector-motion-behaviour-amount',
   behaviourAxis: (axis: 'x' | 'y') => `inspector-motion-behaviour-axis-${axis}`,
   behaviourRemove: 'inspector-motion-behaviour-remove',
+  parallaxRange: (field: 'start' | 'end' | 'max') => `inspector-motion-parallax-${field}`,
+  pageTransition: 'inspector-motion-page-transition',
+  pageTransitionDuration: 'inspector-motion-page-transition-duration',
+  linkTransition: 'inspector-motion-link-transition',
 } as const;

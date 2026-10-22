@@ -24,11 +24,11 @@
 // The selection's label has one place (DEC-70, canvas/placement.ts selectionLabelBox): above its element, touching the
 // top of its frame, at the frame's left edge. A drop label never covers page content (placeLabel): above its element
 // when that space is free, otherwise inside the element's top-left corner, otherwise below it.
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type Ref, type RefObject } from 'react';
+import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type Ref, type RefObject } from 'react';
 import { styleClassOf } from '../inspector/style-target.ts';
 import { useSelectionContext } from '../shell/field.tsx';
 import { activeBreakpoint } from '../view/breakpoints.ts';
-import { BASE_STATE, activeState } from '../view/style-state.ts';
+import { BASE_STATE, activeState, stateName } from '../view/style-state.ts';
 import { createPortal } from 'react-dom';
 import { message, type Message } from '../../core/commands/registry.ts';
 import { lineage, locate, type DocNode, type DocumentJson, type NodeId } from '../../core/document/model.ts';
@@ -134,6 +134,14 @@ const dotLies = (side: string, box: Box, room: Box, need: number): { readonly x:
     x: along(side.includes('w'), side.includes('e'), box.x, box.x + box.width, room.x, room.x + room.width),
     y: along(side.includes('n'), side.includes('s'), box.y, box.y + box.height, room.y, room.y + room.height),
   };
+};
+// Whether a handle's dot, with no room outside the element on its top or left side (the element at the canvas's top
+// or left edge in view), would lie centred over the element's start, where its text begins: the first letter of a
+// heading at the page's top-left read under the north-west dot (DEF-0809). That handle is not drawn; the side's whole
+// length still takes the resize (the edge grips, resize.edgeGrip), and the other handles stay.
+const coversStart = (side: string, box: Box, room: Box, need: number): boolean => {
+  const lies = dotLies(side, box, room, need);
+  return (side.includes('n') && lies.y === 'centred') || (side.includes('w') && lies.x === 'centred');
 };
 // the dot's ring (its outline, 1.5 px in canvas.css .chrome__handle::after): the dot lies past it too
 const DOT_RING = 1.5;
@@ -594,7 +602,7 @@ function MovingGhost({ dragged, at, refused, note }: { readonly dragged: readonl
 
 // The elements a drop has just placed flash for drop.flashDuration (spec drag-layout, row 10): an outline in the drop
 // colour that fades, drawn over each of them; at once gone when the person asks for reduced motion.
-function DropFlash() {
+const DropFlash = memo(function DropFlash() {
   const drop = usePointerValue('lastDrop');
   const [boxes, setBoxes] = useState<{ readonly id: number; readonly boxes: readonly Box[] } | null>(null);
   const layer = useRef<HTMLDivElement>(null);
@@ -613,12 +621,12 @@ function DropFlash() {
       {boxes?.boxes.map((b, i) => <div key={`${boxes.id}-${i}`} className="chrome__flash" data-chrome="drop-flash" style={{ left: b.x, top: b.y, width: b.width, height: b.height, animationDuration: `${FLASH_MS}ms` }} />)}
     </div>
   );
-}
+});
 
 // The element of a captured page the captured inspector or a press on the canvas selected (ui.capturedNode, spec
 // capture-url): its outline and a label with its tag, in the selection's colours, measured on every animation frame
 // (the page scrolls, zooms and lays out under it).
-function CapturedSelection() {
+const CapturedSelection = memo(function CapturedSelection() {
   const id = useEditorState((s) => s.ui.capturedNode ?? null);
   const [shown, setShown] = useState<{ readonly id: string; readonly box: Box; readonly tag: string; readonly edge: number } | null>(null);
   const layer = useRef<HTMLDivElement>(null);
@@ -661,7 +669,7 @@ function CapturedSelection() {
       )}
     </div>
   );
-}
+});
 
 // The ghost of a creation drag Escape cancelled (pointer.ts, ghostReturn) goes back to the tile it came from and fades
 // out over GHOST_RETURN_MS (spec drag-level-keys-escape, Problems in Pager 4), then is drawn no more; at once when the
@@ -697,10 +705,11 @@ function ReturningGhost({ view }: { readonly view: GhostReturn }) {
 
 // The selected nodes the canvas draws an outline for: those shown. A node hidden itself or inside a hidden element has
 // no box on the page, and the canvas draws nothing for it, neither outline nor label: its Layers row, selected and
-// marked hidden, says where it is (spec hide-element, Problems in Pager 1; the audit's A3.11). As one text, so the
-// store's selector returns the same value while nothing changes.
+// marked hidden, says where it is (spec hide-element, Problems in Pager 1; the audit's A3.11). An element its item's
+// content hides (dataHidden: a show binding, core/data/materialize.ts) has no box either. As one text, so the store's
+// selector returns the same value while nothing changes.
 function drawnTargets(document: DocumentJson, selection: readonly NodeId[]): string {
-  return JSON.stringify(selection.filter((id) => !lineage(document, id).some((n: DocNode) => n.hidden === true)));
+  return JSON.stringify(selection.filter((id) => !lineage(document, id).some((n: DocNode) => n.hidden === true || n.dataHidden === true)));
 }
 
 // Where the chrome draws what it draws (CanvasChrome): the boxes of the selection, the hovered element, the band, the
@@ -932,7 +941,7 @@ function useChromeLayout({ layer, label, bar, selection, targets, hovered, node,
 // the reason, and a press on it is no resize.
 function ResizeHandles({ box, shown }: { readonly box: Box; readonly shown: Layout }) {
   const t = useT();
-  return RESIZE_HANDLES.filter(isDoorBuilt).filter((entry) => roomFor(entry.door.kind === 'canvas-handle' ? entry.door.handle : '', box)).map((entry) => {
+  return RESIZE_HANDLES.filter(isDoorBuilt).filter((entry) => roomFor(entry.door.kind === 'canvas-handle' ? entry.door.handle : '', box)).filter((entry) => !coversStart(handleSide(entry.door.kind === 'canvas-handle' ? entry.door.handle : ''), box, shown.room, shown.handleSize / 2)).map((entry) => {
     const handle = entry.door.kind === 'canvas-handle' ? entry.door.handle : '';
     const held = startHeld(handle, shown.starts);
     // the hit area never covers a neighbouring element (handleHitBox); with the element turned it stays where
@@ -1084,7 +1093,7 @@ function SelectionLabel({ labelRef, selection, node, targets, shown, dropping, e
           ) : null}
           {/* the state as its selector writes it (the canonical "Assinar agora · :hover"), its name in the
              tooltip */}
-          {state.id !== BASE_STATE.id ? <small className="chrome__state" title={t(state.labelKey as MessageId)}>{state.pseudo}</small> : null}
+          {state.id !== BASE_STATE.id ? <small className="chrome__state" title={stateName(state, t)}>{state.pseudo}</small> : null}
           {breakpoint.base !== true ? <small className="chrome__breakpoint">{breakpointName(breakpoint, t)}</small> : null}
         </>
       )}
@@ -1130,7 +1139,7 @@ export function CanvasChrome() {
     if (s.selection.length !== 1 || s.selection[0] === undefined) return false;
     for (let at = locate(s.document, s.selection[0]), first = true; at !== null; at = at.parent === null ? null : locate(s.document, at.parent.id), first = false) {
       if (first && at.parent === null) return false;
-      if (at.node.locked === true || at.node.hidden === true) return false;
+      if (at.node.locked === true || at.node.hidden === true || at.node.dataHidden === true) return false;
     }
     return true;
   });
@@ -1180,6 +1189,8 @@ export function CanvasChrome() {
   return (
     // a state other than Base edited: the selection wears the state's colour (the canonical .ov-sel.is-state)
     <div className="chrome" ref={layer} data-canvas-chrome data-edited-state={state.id === BASE_STATE.id ? undefined : state.id} style={layerColour === null ? undefined : ({ '--color-layer-label': layerColourCss(layerColour) } as CSSProperties)}>
+      {/* the layers that take no props (GridOverlay, ViewOverlays, DropFlash, CapturedSelection, GridEditor) are memo:
+          the chrome is drawn anew at every move of a drag, they only when what they read changes */}
       <GridOverlay />
       <ViewOverlays />
       {shown.hovered ? <div className="chrome__hover" data-chrome="hover" style={at(shown.hovered)} /> : null}

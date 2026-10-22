@@ -331,3 +331,68 @@
 .data-shared .data-form > .door {
   align-self: flex-end;
 }
+
+/* The show row of the selected element (Connect fields): its title on its own line, then the field, when and the value
+   it compares with side by side, each menu as wide as its widest choice while the row has room, wrapping under each
+   other in a narrow sidebar */
+.data-show {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  padding: var(--space-1) var(--space-2);
+}
+
+.data-show__title {
+  flex: 1 1 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--color-text);
+}
+
+.data-field--show {
+  flex: 1 1 var(--size-label-column);
+  min-width: 0;
+}
+
+/* a bound part's format and currency menus go on the line under its field menu, sharing it */
+.data-field--format {
+  flex: 1 1 var(--size-label-column);
+  min-width: 0;
+}
+
+/* the template's item menu takes the section's width */
+.data-template {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* a control under its caption (the query's parts, a field's collection or source); a menu's part takes the row so its
+   choice reads whole */
+.data-part {
+  display: flex;
+  flex: 1 1 var(--size-label-column);
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.data-part--wide {
+  flex-basis: 100%;
+}
+
+.data-part__caption {
+  overflow-wrap: anywhere;
+  color: var(--color-text-muted);
+  font: var(--fw-micro) var(--fs-micro) / var(--lh-micro) var(--font-ui);
+}
+
+.data-part > .data-field {
+  flex: none;
+}
+
+/* (in a column a field's basis is a height: the item menu keeps its own) */
+.data-template > .data-field {
+  flex: none;
+}

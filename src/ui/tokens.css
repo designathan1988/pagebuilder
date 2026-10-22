@@ -97,6 +97,8 @@
   --size-drop-line: 4px;
   --size-dock-strip: 28px;
   --size-dock-body: 212px;
+  /* the least the dock's body takes in a short window (dock.css: a share of the window's height, up to the size above) */
+  --size-dock-body-min: 120px;
   --size-snap-line: 2px;
   --size-chip: 26px;
   --size-header: 32px;

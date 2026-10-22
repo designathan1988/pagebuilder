@@ -26,9 +26,20 @@ describe('readSelector', () => {
     expect(read('.a .b').combinators).toEqual([' ']);
   });
 
-  it('reads nothing for a pseudo-element, :not(), a sibling combinator or a selector list', () => {
-    expect(readSelector('.a::before')).toBeNull();
+  it('reads a pseudo-element and a child position a compound ends with (the states of core/style/state-keys.ts)', () => {
+    // a pseudo-element keeps one of its two colons, and counts as a type
+    expect(read('.a::before').compounds[0]?.pseudo).toBe(':before');
+    expect(read('.a:after').compounds[0]?.pseudo).toBe(':after');
+    expect(read('.a::placeholder').specificity).toEqual([0, 1, 1]);
+    // a child position's formula, its spaces and its "+" its own
+    expect(read('.row:nth-child(2n + 1)').compounds[0]?.pseudo).toBe('nth-child(2n+1)');
+    expect(read('.card:hover .card__title').compounds[0]?.pseudo).toBe('hover');
+  });
+
+  it('reads nothing for :not(), a chain of pseudo-classes, a sibling combinator or a selector list', () => {
     expect(readSelector('.a:not(.b)')).toBeNull();
+    expect(readSelector('.a:hover::before')).toBeNull();
+    expect(readSelector('.a:nth-last-child(2)')).toBeNull();
     expect(readSelector('.a + .b')).toBeNull();
     expect(readSelector('.a, .b')).toBeNull();
   });

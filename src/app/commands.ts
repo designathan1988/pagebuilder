@@ -26,7 +26,7 @@ import { addKeyframeCommand, createAnimationCommand, deleteAnimationCommand, del
 import { addInteractionCommand, removeInteractionCommand, updateInteractionCommand } from '../core/events/interactions.ts';
 import { makePicked, makePicking } from '../editor/inspector/pick-target.ts';
 import { setPlayheadCommand, showAnimationCommand } from '../editor/timeline/playhead.ts';
-import { addActionCommand, addMarkerCommand, addMotionCommand, createTimelineCommand, deleteKeyframesCommand, deleteTimelineCommand, editKeyframeCommand, moveActionsCommand, moveKeyframesCommand, moveMarkerCommand, pasteKeyframesCommand, removeActionsCommand, removeBehaviourCommand, removeMarkerCommand, removeMotionCommand, renameMarkerCommand, renameTimelineCommand, resizeActionCommand, setBehaviourCommand, setEffectOptionCommand, setKeyframeCommand, updateActionCommand, updateMotionCommand } from '../core/motion/commands.ts';
+import { addActionCommand, addMarkerCommand, addMotionCommand, createTimelineCommand, deleteKeyframesCommand, deleteTimelineCommand, editKeyframeCommand, moveActionsCommand, moveKeyframesCommand, moveMarkerCommand, pasteKeyframesCommand, removeActionsCommand, removeBehaviourCommand, removeMarkerCommand, removeMotionCommand, renameMarkerCommand, renameTimelineCommand, resizeActionCommand, setBehaviourCommand, setEffectOptionCommand, setKeyframeCommand, setLinkTransitionCommand, setPageTransitionCommand, setParallaxRangeCommand, updateActionCommand, updateMotionCommand } from '../core/motion/commands.ts';
 import { copyMotionKeyframesCommand, makeMotionPicked, makeMotionPicking, openTimelineCommand, previewMotionCommand, selectMotionCommand, setMotionPlayheadCommand, toggleRecordCommand, toggleRunCommand, toggleSnapCommand, zoomTimelineCommand } from '../editor/motion/state.ts';
 import { pauseCommand, playCommand, stopCommand, toggleLoopCommand } from '../editor/timeline/preview.ts';
 import { copyPane, downloadPane, setPane } from '../editor/code-panel/code-panel.ts';
@@ -113,7 +113,7 @@ import { setStyleState } from '../editor/view/style-state.ts';
 import { enterPreview, exitPreview } from '../editor/view/preview.ts';
 import { newBlankPage } from '../core/project/project.ts';
 import { addPageCommand, deletePageCommand, duplicatePageCommandFor, renamePageCommand, switchPageCommand } from '../core/project/pages.ts';
-import { addFieldCommand, addItemCommand, bindElementCommand, createCollectionCommand, deleteCollectionCommand, deleteItemsCommand, detachRegionCommand, fillCommand, moveItemCommand, pagesFromCollectionCommand, pagesFromNamesCommand, removeFieldCommand, renameCollectionCommand, setCellCommand, setFieldCommand, shareRegionCommand, stopSharingCommand, unbindCommand } from '../core/data/commands.ts';
+import { addFieldCommand, addItemCommand, bindElementCommand, createCollectionCommand, deleteCollectionCommand, deleteItemsCommand, detachRegionCommand, fillCommand, formatBindingCommand, moveItemCommand, pagesFromCollectionCommand, pagesFromNamesCommand, previewItemCommand, removeFieldCommand, renameCollectionCommand, setCellCommand, setFieldCommand, shareRegionCommand, showWhenCommand, stopSharingCommand, unbindCommand } from '../core/data/commands.ts';
 import { choosePreviewSheet, closePreview, importInto, importNew, previewFile, selectCollection, setPreviewType, setQuery } from '../editor/data/state.ts';
 import { restoreVersion } from '../core/project/recovery.ts';
 import { takeOverEditing } from '../core/project/tab-guard.ts';
@@ -169,10 +169,13 @@ export const COMMANDS = {
   'data.importNew': importNew,
   'data.importInto': importInto,
   'data.bindElement': bindElementCommand,
+  'data.formatBinding': formatBindingCommand,
+  'data.showWhen': showWhenCommand,
   'data.fill': fillCommand,
   'data.unbind': unbindCommand,
   'pages.fromNames': pagesFromNamesCommand<EditorUi>(),
   'pages.fromCollection': pagesFromCollectionCommand<EditorUi>(),
+  'pages.previewItem': previewItemCommand<EditorUi>(),
   'regions.share': shareRegionCommand,
   'regions.detach': detachRegionCommand,
   'regions.stopSharing': stopSharingCommand,
@@ -309,6 +312,9 @@ export const COMMANDS = {
   'motion.toggleRun': toggleRunCommand,
   'motion.setBehaviour': setBehaviourCommand,
   'motion.removeBehaviour': removeBehaviourCommand,
+  'motion.setParallaxRange': setParallaxRangeCommand,
+  'motion.setPageTransition': setPageTransitionCommand,
+  'motion.setLinkTransition': setLinkTransitionCommand,
   'pages.add': addPageCommand<EditorUi>(),
   'pages.rename': renamePageCommand,
   'pages.duplicate': duplicatePageCommandFor<EditorUi>(),

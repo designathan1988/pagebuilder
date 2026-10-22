@@ -71,6 +71,11 @@ describe('the Timeline\'s editor state', () => {
     run(made, 'motion.preview', { operation: 'play' });
     expect(nextPreviewTime(made.getState(), 500)).toEqual({ time: 800, ended: false });
     expect(nextPreviewTime(made.getState(), 5000)).toEqual({ time: 1200, ended: true });
+    // Play with the playhead at the end plays again from the start
+    run(made, 'motion.preview', { operation: 'pause' });
+    run(made, 'motion.setPlayhead', { time: 1200 });
+    run(made, 'motion.preview', { operation: 'play' });
+    expect(motionUiOf(made.getState().ui)).toMatchObject({ time: 0, playing: true });
     run(made, 'motion.preview', { operation: 'stop' });
     expect(motionUiOf(made.getState().ui)).toMatchObject({ time: 0 });
     expect(motionUiOf(made.getState().ui).previewing).toBeUndefined();

@@ -1352,17 +1352,19 @@
         "breakpoint-overrides"
       ],
       "intent": {
-        "title": "Style states: hover, focus, active, disabled, invalid and placeholder shown",
+        "title": "Style states: hover, focus, active, disabled, invalid, placeholder shown, checked, focus within, child positions, empty, pseudo-elements, current page and parent states",
         "steps": [
           "Select a Button, choose State Hover and set background colour and opacity.",
           "Choose Focus and set an outline; choose Base.",
           "Switch to Tablet and set a Hover value there.",
-          "Export."
+          "Export.",
+          "Select a card's title, choose Parent state (the card's class, Hover) and set a colour; select a grid's card, choose Nth child and type 2n+1."
         ],
         "expected": [
           "The State menu lists Base, Hover, Focus, Active, Disabled, Invalid and Placeholder shown; while a state is chosen a canvas badge reads 'Editing Hover' [canvas.badge.editingState] and the canvas shows the element with that state's values.",
           "State values are stored per state (and per breakpoint) in the document JSON and do not change the base values.",
-          "styles.css contains :hover, :focus and @media rules for them; in the exported page hovering the button changes its computed background."
+          "styles.css contains :hover, :focus and @media rules for them; in the exported page hovering the button changes its computed background.",
+          "styles.css writes .card:hover .title, :nth-child(2n+1), ::placeholder, ::marker, ::selection and [aria-current=\"page\"] rules; the exported page marks the links to itself with aria-current=\"page\"."
         ]
       },
       "scenarios": [
@@ -2437,13 +2439,7 @@
               "redoRestores": true
             },
             "render": {
-              "computed": [
-                {
-                  "node": "/Page/Hero/Actions",
-                  "property": "opacity",
-                  "value": "0.5"
-                }
-              ],
+              "computed": [],
               "geometry": [],
               "feedback": [
                 {
@@ -2521,13 +2517,7 @@
               "redoRestores": true
             },
             "render": {
-              "computed": [
-                {
-                  "node": "/Page/Hero/Actions",
-                  "property": "opacity",
-                  "value": "0.5"
-                }
-              ],
+              "computed": [],
               "geometry": [],
               "feedback": [
                 {
@@ -2977,6 +2967,1137 @@
                   "node": "/Page/Home main/Home heading",
                   "property": "font-size",
                   "value": "40px"
+                }
+              ],
+              "geometry": [],
+              "feedback": []
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          },
+          "refusals": []
+        },
+        {
+          "id": "the-checked-state-takes-the-value",
+          "setup": {
+            "fixture": "form-controls",
+            "selection": [
+              "/Page/Select/Option"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "view.setStyleState#menu-style-state-checked",
+              "args": {
+                "state": "checked"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "style.set#inspector-color",
+              "args": {
+                "property": "color",
+                "value": "#aa0000"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": "#aa0000\n"
+            }
+          ],
+          "doors": [
+            "view.setStyleState#menu-style-state-checked"
+          ],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Select/Option/@styles/desktop/checked/color",
+                "value": "#aa0000"
+              }
+            ],
+            "selection": [
+              "/Page/Select/Option"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [
+                {
+                  "node": "/Page/Select/Option",
+                  "property": "color",
+                  "value": "rgb(170, 0, 0)"
+                }
+              ],
+              "geometry": [],
+              "feedback": []
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          },
+          "refusals": []
+        },
+        {
+          "id": "the-focus-within-state-takes-the-value",
+          "setup": {
+            "fixture": "aurora",
+            "selection": [
+              "/Page/Plans/Grid/CardA"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "view.setStyleState#menu-style-state-focus-within",
+              "args": {
+                "state": "focus-within"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "style.set#inspector-color",
+              "args": {
+                "property": "color",
+                "value": "#aa0000"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": "#aa0000\n"
+            }
+          ],
+          "doors": [
+            "view.setStyleState#menu-style-state-focus-within"
+          ],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Plans/Grid/CardA/@styles/desktop/focus-within/color",
+                "value": "#aa0000"
+              }
+            ],
+            "selection": [
+              "/Page/Plans/Grid/CardA"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [
+                {
+                  "node": "/Page/Plans/Grid/CardA",
+                  "property": "color",
+                  "value": "rgb(170, 0, 0)"
+                }
+              ],
+              "geometry": [],
+              "feedback": []
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          },
+          "refusals": []
+        },
+        {
+          "id": "the-odd-children-state-takes-the-value",
+          "setup": {
+            "fixture": "aurora",
+            "selection": [
+              "/Page/Plans/Grid/CardA"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "view.setStyleState#menu-style-state-odd",
+              "args": {
+                "state": "odd"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "style.set#inspector-opacity",
+              "args": {
+                "property": "opacity",
+                "value": "50"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": "50\n"
+            }
+          ],
+          "doors": [
+            "view.setStyleState#menu-style-state-odd"
+          ],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Plans/Grid/CardA/@styles/desktop/odd/opacity",
+                "value": "0.5"
+              }
+            ],
+            "selection": [
+              "/Page/Plans/Grid/CardA"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [
+                {
+                  "node": "/Page/Plans/Grid/CardA",
+                  "property": "opacity",
+                  "value": "0.5"
+                }
+              ],
+              "geometry": [],
+              "feedback": []
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          },
+          "refusals": []
+        },
+        {
+          "id": "the-even-children-state-takes-the-value",
+          "setup": {
+            "fixture": "aurora",
+            "selection": [
+              "/Page/Plans/Grid/CardB"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "view.setStyleState#menu-style-state-even",
+              "args": {
+                "state": "even"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "style.set#inspector-opacity",
+              "args": {
+                "property": "opacity",
+                "value": "50"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": "50\n"
+            }
+          ],
+          "doors": [
+            "view.setStyleState#menu-style-state-even"
+          ],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Plans/Grid/CardB/@styles/desktop/even/opacity",
+                "value": "0.5"
+              }
+            ],
+            "selection": [
+              "/Page/Plans/Grid/CardB"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [
+                {
+                  "node": "/Page/Plans/Grid/CardB",
+                  "property": "opacity",
+                  "value": "0.5"
+                }
+              ],
+              "geometry": [],
+              "feedback": []
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          },
+          "refusals": []
+        },
+        {
+          "id": "the-nth-child-state-takes-the-value",
+          "setup": {
+            "fixture": "aurora",
+            "selection": [
+              "/Page/Plans/Grid/CardC"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "view.setStyleState#menu-style-state-nth-child",
+              "args": {
+                "state": "nth:3n"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "style.set#inspector-opacity",
+              "args": {
+                "property": "opacity",
+                "value": "50"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": "50\n"
+            }
+          ],
+          "doors": [
+            "view.setStyleState#menu-style-state-nth-child"
+          ],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Plans/Grid/CardC/@styles/desktop/nth:3n/opacity",
+                "value": "0.5"
+              }
+            ],
+            "selection": [
+              "/Page/Plans/Grid/CardC"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [
+                {
+                  "node": "/Page/Plans/Grid/CardC",
+                  "property": "opacity",
+                  "value": "0.5"
+                }
+              ],
+              "geometry": [],
+              "feedback": []
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          },
+          "refusals": []
+        },
+        {
+          "id": "a-typed-child-position-takes-the-value",
+          "setup": {
+            "fixture": "aurora",
+            "selection": [
+              "/Page/Plans/Grid/CardC"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "view.setStyleState#menu-style-state-nth-child",
+              "args": {
+                "state": "nth:3n"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "view.setStyleState#inspector-state-formula",
+              "args": {
+                "state": "nth:2n+1"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "style.set#inspector-opacity",
+              "args": {
+                "property": "opacity",
+                "value": "50"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": "50\n"
+            }
+          ],
+          "doors": [
+            "view.setStyleState#inspector-state-formula"
+          ],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Plans/Grid/CardC/@styles/desktop/nth:2n+1/opacity",
+                "value": "0.5"
+              }
+            ],
+            "selection": [
+              "/Page/Plans/Grid/CardC"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [
+                {
+                  "node": "/Page/Plans/Grid/CardC",
+                  "property": "opacity",
+                  "value": "0.5"
+                }
+              ],
+              "geometry": [],
+              "feedback": []
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          },
+          "refusals": []
+        },
+        {
+          "id": "the-empty-state-takes-the-value",
+          "setup": {
+            "fixture": "aurora",
+            "selection": [
+              "/Page/Hero/Actions"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "view.setStyleState#menu-style-state-empty",
+              "args": {
+                "state": "empty"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "style.set#inspector-opacity",
+              "args": {
+                "property": "opacity",
+                "value": "50"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": "50\n"
+            }
+          ],
+          "doors": [
+            "view.setStyleState#menu-style-state-empty"
+          ],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Hero/Actions/@styles/desktop/empty/opacity",
+                "value": "0.5"
+              }
+            ],
+            "selection": [
+              "/Page/Hero/Actions"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [
+                {
+                  "node": "/Page/Hero/Actions",
+                  "property": "opacity",
+                  "value": "0.5"
+                }
+              ],
+              "geometry": [],
+              "feedback": []
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          },
+          "refusals": []
+        },
+        {
+          "id": "the-placeholder-text-takes-the-value",
+          "setup": {
+            "fixture": "aurora",
+            "selection": [
+              "/Page/Hero/Actions"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "workspace.setPanelOpen#toolbar-activity-bar-insert",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "element.insert#elements-tile",
+              "args": {
+                "entry": "input-text"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "view.setStyleState#menu-style-state-placeholder",
+              "args": {
+                "state": "placeholder"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "style.set#inspector-color",
+              "args": {
+                "property": "color",
+                "value": "#aa0000"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": "#aa0000\n"
+            }
+          ],
+          "doors": [
+            "view.setStyleState#menu-style-state-placeholder"
+          ],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Hero/Actions/@children",
+                "value": [
+                  {
+                    "type": "input",
+                    "name": "Input",
+                    "tag": "input",
+                    "attributes": {
+                      "inputType": "text"
+                    },
+                    "classes": [],
+                    "styles": {
+                      "desktop": {
+                        "placeholder": {
+                          "color": "#aa0000"
+                        }
+                      }
+                    },
+                    "text": null,
+                    "children": []
+                  }
+                ]
+              }
+            ],
+            "selection": [
+              "/Page/Hero/Actions/Input"
+            ],
+            "history": {
+              "undoSteps": 2,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.style.set",
+                  "params": {
+                    "property": "Text colour",
+                    "name": "Input",
+                    "value": "#aa0000"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          },
+          "refusals": []
+        },
+        {
+          "id": "the-selected-text-takes-the-value",
+          "setup": {
+            "fixture": "aurora",
+            "selection": [
+              "/Page/Hero/Intro"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "view.setStyleState#menu-style-state-selection",
+              "args": {
+                "state": "selection"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "style.set#inspector-color",
+              "args": {
+                "property": "color",
+                "value": "#aa0000"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": "#aa0000\n"
+            }
+          ],
+          "doors": [
+            "view.setStyleState#menu-style-state-selection"
+          ],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Hero/Intro/@styles/desktop/selection/color",
+                "value": "#aa0000"
+              }
+            ],
+            "selection": [
+              "/Page/Hero/Intro"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.style.set",
+                  "params": {
+                    "property": "Text colour",
+                    "name": "Intro",
+                    "value": "#aa0000"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          },
+          "refusals": []
+        },
+        {
+          "id": "the-list-marker-takes-the-value",
+          "setup": {
+            "fixture": "aurora",
+            "selection": [
+              "/Page/Plans/Perks/PerkOne"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "view.setStyleState#menu-style-state-marker",
+              "args": {
+                "state": "marker"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "style.set#inspector-color",
+              "args": {
+                "property": "color",
+                "value": "#aa0000"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": "#aa0000\n"
+            }
+          ],
+          "doors": [
+            "view.setStyleState#menu-style-state-marker"
+          ],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Plans/Perks/PerkOne/@styles/desktop/marker/color",
+                "value": "#aa0000"
+              }
+            ],
+            "selection": [
+              "/Page/Plans/Perks/PerkOne"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.style.set",
+                  "params": {
+                    "property": "Text colour",
+                    "name": "PerkOne",
+                    "value": "#aa0000"
+                  }
+                }
+              ]
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          },
+          "refusals": []
+        },
+        {
+          "id": "the-current-page-state-takes-the-value",
+          "setup": {
+            "fixture": "content-site",
+            "selection": [
+              "/Page/Header/Nav/Home link"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "view.setStyleState#menu-style-state-current",
+              "args": {
+                "state": "current"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "style.set#inspector-color",
+              "args": {
+                "property": "color",
+                "value": "#aa0000"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": "#aa0000\n"
+            }
+          ],
+          "doors": [
+            "view.setStyleState#menu-style-state-current"
+          ],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Header/Nav/Home link/@styles/desktop/current/color",
+                "value": "#aa0000"
+              }
+            ],
+            "selection": [
+              "/Page/Header/Nav/Home link"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [
+                {
+                  "node": "/Page/Header/Nav/Home link",
+                  "property": "color",
+                  "value": "rgb(170, 0, 0)"
+                }
+              ],
+              "geometry": [],
+              "feedback": []
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          },
+          "refusals": []
+        },
+        {
+          "id": "the-parent-state-takes-the-value",
+          "setup": {
+            "fixture": "aurora",
+            "selection": [
+              "/Page/Plans/Grid/CardA/CardATitle"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "view.setStyleState#menu-style-state-parent",
+              "args": {
+                "state": "parent::hover"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "style.set#inspector-color",
+              "args": {
+                "property": "color",
+                "value": "#aa0000"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": "#aa0000\n"
+            }
+          ],
+          "doors": [
+            "view.setStyleState#menu-style-state-parent"
+          ],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Plans/Grid/CardA/CardATitle/@styles/desktop/parent:card:hover/color",
+                "value": "#aa0000"
+              }
+            ],
+            "selection": [
+              "/Page/Plans/Grid/CardA/CardATitle"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [
+                {
+                  "node": "/Page/Plans/Grid/CardA/CardATitle",
+                  "property": "color",
+                  "value": "rgb(170, 0, 0)"
+                }
+              ],
+              "geometry": [],
+              "feedback": []
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          },
+          "refusals": []
+        },
+        {
+          "id": "the-parent-class-is-chosen-in-the-selector-bar",
+          "setup": {
+            "fixture": "aurora",
+            "selection": [
+              "/Page/Plans/Grid/CardA/CardATitle"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "view.setStyleState#menu-style-state-parent",
+              "args": {
+                "state": "parent::hover"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "view.setStyleState#inspector-state-parent-class",
+              "args": {
+                "state": "parent:card:hover"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "style.set#inspector-color",
+              "args": {
+                "property": "color",
+                "value": "#aa0000"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": "#aa0000\n"
+            }
+          ],
+          "doors": [
+            "view.setStyleState#inspector-state-parent-class"
+          ],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Plans/Grid/CardA/CardATitle/@styles/desktop/parent:card:hover/color",
+                "value": "#aa0000"
+              }
+            ],
+            "selection": [
+              "/Page/Plans/Grid/CardA/CardATitle"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [
+                {
+                  "node": "/Page/Plans/Grid/CardA/CardATitle",
+                  "property": "color",
+                  "value": "rgb(170, 0, 0)"
+                }
+              ],
+              "geometry": [],
+              "feedback": []
+            },
+            "editor": null,
+            "persistence": null,
+            "export": null
+          },
+          "refusals": []
+        },
+        {
+          "id": "the-parent-state-is-chosen-in-the-selector-bar",
+          "setup": {
+            "fixture": "aurora",
+            "selection": [
+              "/Page/Plans/Grid/CardA/CardATitle"
+            ],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": 100
+          },
+          "steps": [
+            {
+              "door": "view.setStyleState#menu-style-state-parent",
+              "args": {
+                "state": "parent::hover"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "view.setStyleState#inspector-state-parent-state",
+              "args": {
+                "state": "parent:card:focus-within"
+              },
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            },
+            {
+              "door": "style.set#inspector-color",
+              "args": {
+                "property": "color",
+                "value": "#aa0000"
+              },
+              "target": null,
+              "drop": null,
+              "action": false,
+              "hold": false,
+              "type": "#aa0000\n"
+            }
+          ],
+          "doors": [
+            "view.setStyleState#inspector-state-parent-state"
+          ],
+          "expect": {
+            "document": [
+              {
+                "op": "set",
+                "path": "/Page/Plans/Grid/CardA/CardATitle/@styles/desktop/parent:card:focus-within/color",
+                "value": "#aa0000"
+              }
+            ],
+            "selection": [
+              "/Page/Plans/Grid/CardA/CardATitle"
+            ],
+            "history": {
+              "undoSteps": 1,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [
+                {
+                  "node": "/Page/Plans/Grid/CardA/CardATitle",
+                  "property": "color",
+                  "value": "rgb(170, 0, 0)"
                 }
               ],
               "geometry": [],

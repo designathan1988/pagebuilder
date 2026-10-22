@@ -330,7 +330,7 @@ export function createPlayer(win: Window, kit: MotionKit): PlayerKit {
         });
         return;
       }
-      if (effect.kind === 'variable' && action.duration > 0) {
+      if (effect.kind === 'variable' && effect.scope !== 'app' && action.duration > 0) {
         let tween: Animation | null = null;
         cues.push({
           time: start,

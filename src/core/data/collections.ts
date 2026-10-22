@@ -7,8 +7,8 @@ import { message, type Message, type MessageParam } from '../commands/registry.t
 import type { MessageId } from '../../generated/ids.ts';
 import { holdsControl, readAddress } from '../elements/address.ts';
 import { canonical, parseInline, plainText, type InlineRun } from '../text/inline.ts';
-import { fold } from '../text/fold.ts';
-import { FIELD_TYPES, type Cell, type Collection, type Field, type FieldType, type Filter, type Item, type Query } from './model.ts';
+import { fold, slug } from '../text/fold.ts';
+import { FIELD_TYPES, PAGINGS, isReferenceType, type Cell, type Collection, type Field, type FieldType, type Filter, type Item, type Query } from './model.ts';
 import { registerReferenceKind } from '../store/references.ts';
 
 // A predictable refusal of a content operation: the message the status bar says. Handlers catch it and answer
@@ -39,6 +39,11 @@ const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const TRUE_WORDS = ['true', 'yes', '1', 'sim', 'verdadeiro'];
 const FALSE_WORDS = ['false', 'no', '0', 'nao', 'falso'];
 const IMAGE_FILE = /\.(png|jpe?g|gif|webp|avif|svg|bmp|ico)$/i;
+// an email address: a name, an @ and a domain with a dot, nothing an address does not hold
+const EMAIL = /^[^\s@<>()",;:]+@[^\s@<>()",;:]+\.[^\s@<>()",;:.]+$/;
+const HEX_COLOR = /^#?([0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
+// a video's web address: a video service's page or a video file
+const VIDEO_ADDRESS = /^https?:\/\/((www\.|m\.)?(youtube\.com|youtu\.be|vimeo\.com|player\.vimeo\.com)\/|.*\.(mp4|webm|mov|m4v|ogv)([?#].*)?$)/i;
 const PAGE_PATH = /^[\w-]+(\/[\w-]+)*\.html?(#[\w-]*)?$/i;
 
 // A number grouped by thousands and maybe with a fraction, its group mark one of "." and "," and its decimal mark the
@@ -135,14 +140,137 @@ export function readCell(type: FieldType, value: unknown, language?: string): Ce
       const address = readAddress(text);
       return address.ok ? address.value : null;
     }
-    case 'image': {
+    case 'image':
+    case 'file': {
       // a control character hides a scheme from the check below (the URL parser strips it: DATA-8); no file holds one
       if (text === null || holdsControl(text)) return null;
       // a web address must be one the link rule allows; a path or a file name is resolved by the element that shows it
       if (/^[a-z][a-z0-9+.-]*:/i.test(text)) return readAddress(text).ok ? text : null;
       return /\s$|^\s/.test(text) ? null : text;
     }
+    case 'reference':
+    case 'option':
+      // the id of an item, or a choice: which one it names is the field's to say (readFieldCell)
+      return text;
+    case 'multireference': {
+      // the ids (or the names a person types, parted by commas, semicolons or lines), each once, in order
+      const parts: readonly unknown[] | null = Array.isArray(value) ? value : text === null ? null : text.split(/[,;\n]/);
+      if (parts === null || !parts.every((part) => typeof part === 'string')) return null;
+      const ids = [...new Set((parts as readonly string[]).map((part) => part.trim()).filter((part) => part !== ''))];
+      return ids.length === 0 ? undefined : ids;
+    }
+    case 'slug': {
+      // the words of an address: lower case, no accents, words joined by "-" (text/fold.ts slug)
+      if (text === null) return null;
+      const word = slug(text);
+      return word === '' ? null : word;
+    }
+    case 'email':
+      return text !== null && EMAIL.test(text) ? text : null;
+    case 'video': {
+      // a web address (a video service's page or a video file on the web)
+      if (text === null || !/^https?:\/\//i.test(text)) return null;
+      const address = readAddress(text);
+      return address.ok ? address.value : null;
+    }
+    case 'colour': {
+      // a hexadecimal colour, written in full and in lower case ("#F80" → "#ff8800")
+      const hex = text === null ? undefined : HEX_COLOR.exec(text)?.[1];
+      if (hex === undefined) return null;
+      const full = hex.length <= 4 ? [...hex].map((digit) => digit + digit).join('') : hex;
+      return `#${full.toLowerCase()}`;
+    }
   }
+}
+
+// ---------------------------------------------------------------- values of a field
+
+// The collections a value of a field may name: a collection of the project by its name (the document's).
+export type Lookup = (collection: string) => Collection | undefined;
+export const lookupIn =
+  (document: { readonly collections?: readonly Collection[] }): Lookup =>
+  (name) =>
+    collectionNamed(document, name);
+const NO_COLLECTIONS: Lookup = () => undefined;
+
+// The field whose value names an item for a person (its title): the first text field, else the first slug, else the
+// first field.
+export function titleField(collection: Collection): Field | undefined {
+  return collection.fields.find((f) => f.type === 'text') ?? collection.fields.find((f) => f.type === 'slug') ?? collection.fields[0];
+}
+
+// The words an item is named by: its title, else its id.
+export function itemTitle(collection: Collection, item: Item, language?: string): string {
+  const title = titleField(collection);
+  const value = title === undefined ? undefined : item.values[title.key];
+  const text = value === undefined || title === undefined || isReferenceType(title.type) ? '' : cellText(value, { yes: 'true', no: 'false' }, { language, decimals: title.decimals }).trim();
+  return text === '' ? item.id : text;
+}
+
+// The item a person names in a collection: by its id, its slug, or its title (accents and case aside); undefined when
+// no item answers.
+export function itemNamed(collection: Collection, typed: string): Item | undefined {
+  const named = typed.trim();
+  const byId = collection.items.find((item) => item.id === named);
+  if (byId !== undefined) return byId;
+  const slugs = collection.fields.filter((f) => f.type === 'slug');
+  const word = slug(named);
+  const bySlug = word === '' ? undefined : collection.items.find((item) => slugs.some((f) => item.values[f.key] === word));
+  if (bySlug !== undefined) return bySlug;
+  const folded = fold(named);
+  return collection.items.find((item) => fold(itemTitle(collection, item)) === folded);
+}
+
+// The canonical value a field takes for what a person typed or a file held (readCell), with what only the field knows:
+// an option is one of its choices (the choice's own spelling), a reference names an item of its collection (by id, slug
+// or title, kept as the item's id). `undefined` for an empty value, `null` for one the field cannot hold.
+export function readFieldCell(field: Field, value: unknown, language: string | undefined, lookup: Lookup): Cell | undefined | null {
+  const read = readCell(field.type, value, language);
+  if (read === null || read === undefined) return read;
+  if (field.type === 'option') {
+    const choice = (field.options ?? []).find((option) => fold(option) === fold(read as string));
+    return choice ?? null;
+  }
+  if (!isReferenceType(field.type)) return read;
+  const target = field.collection === undefined ? undefined : lookup(field.collection);
+  if (target === undefined) return null;
+  const names = field.type === 'reference' ? [read as string] : (read as readonly string[]);
+  const ids: string[] = [];
+  for (const name of names) {
+    const item = itemNamed(target, name);
+    if (item === undefined) return null;
+    if (!ids.includes(item.id)) ids.push(item.id);
+  }
+  return field.type === 'reference' ? (ids[0] ?? null) : ids;
+}
+
+// The ids a reference value names (one for a reference, the list for a multireference).
+export const referencedIds = (value: Cell | undefined): readonly string[] => (typeof value === 'string' ? [value] : Array.isArray(value) ? (value as readonly unknown[]).filter((id): id is string => typeof id === 'string') : []);
+
+// A value of a field as text, as a grid cell, a preview and a bound text show it: a reference by its item's title,
+// several by their titles parted by commas, any other as cellText says.
+export function fieldText(field: Field, value: Cell | undefined, words: { readonly yes: string; readonly no: string }, style: NumberStyle | undefined, lookup: Lookup): string {
+  if (value === undefined) return '';
+  if (isReferenceType(field.type)) {
+    const target = field.collection === undefined ? undefined : lookup(field.collection);
+    return referencedIds(value)
+      .map((id) => {
+        const item = target?.items.find((one) => one.id === id);
+        return item === undefined || target === undefined ? id : itemTitle(target, item, style?.language);
+      })
+      .join(', ');
+  }
+  return cellText(value, words, style);
+}
+
+// The value of a field already stored is one it can hold now: canonical for its type, one of its choices, an item of
+// its collection (a reference to an item that went is released by the derivation, derive.ts).
+export function fieldHolds(field: Field, value: unknown, lookup: Lookup): boolean {
+  if (!isCanonical(field.type, value)) return false;
+  if (field.type === 'option') return (field.options ?? []).includes(value as string);
+  if (!isReferenceType(field.type)) return true;
+  const target = field.collection === undefined ? undefined : lookup(field.collection);
+  return target !== undefined && referencedIds(value as Cell).every((id) => target.items.some((item) => item.id === id));
 }
 
 // The same value as the cell holds it, for a field of this type; a stored value that is not canonical is a defect.
@@ -215,7 +343,11 @@ export function guessType(values: readonly unknown[], language?: string): FieldT
   if (all('number') && !filled.some(digitCode)) return 'number';
   if (all('date')) return 'date';
   if (filled.every((value) => typeof value === 'string' && IMAGE_FILE.test(value.trim().split(/[?#]/)[0] ?? ''))) return 'image';
+  if (filled.every((value) => typeof value === 'string' && VIDEO_ADDRESS.test(value.trim()) && readCell('video', value) !== null)) return 'video';
   if (filled.every((value) => typeof value === 'string' && /^https?:\/\//i.test(value.trim()) && readCell('link', value) !== null)) return 'link';
+  if (all('email')) return 'email';
+  // a colour is written with its "#" in a file ("#e11d48"): six hexadecimal digits alone are a code
+  if (filled.every((value) => typeof value === 'string' && value.trim().startsWith('#')) && all('colour')) return 'colour';
   return 'text';
 }
 
@@ -248,6 +380,12 @@ export function schemaRefusal(collection: string, fields: readonly Field[]): Mes
     if (labels.has(label)) return message('status.data.fieldLabelTaken', { collection, label: field.label.trim() });
     if (!(FIELD_TYPES as readonly string[]).includes(field.type)) return message('status.data.badField', { collection, field: field.key });
     if (field.decimals !== undefined && (field.type !== 'number' || !Number.isInteger(field.decimals) || field.decimals < 0 || field.decimals > MAX_DECIMALS)) return message('status.data.badField', { collection, field: field.key });
+    // a reference names the collection of its items (whether it is one of the project's is the document's to say,
+    // data/validate.ts); the choices of an option are texts, each once; a slug is made from a field of its collection
+    if (isReferenceType(field.type) !== (typeof field.collection === 'string' && field.collection.trim() !== '')) return message('status.data.badField', { collection, field: field.key });
+    const options: unknown = field.options;
+    if ((field.type === 'option') !== (options !== undefined) || (options !== undefined && (!Array.isArray(options) || options.some((o) => typeof o !== 'string' || o.trim() !== o || o === '') || new Set(options.map((o: string) => fold(o))).size !== options.length))) return message('status.data.badField', { collection, field: field.key });
+    if (field.from !== undefined && (field.type !== 'slug' || !fields.some((f) => f.key === field.from && f.key !== field.key && !isReferenceType(f.type)))) return message('status.data.badField', { collection, field: field.key });
     keys.add(field.key);
     labels.add(label);
   }
@@ -267,11 +405,11 @@ export function nameRefusal(collections: readonly Collection[], name: string, ex
 // The values of an item read from a row (field key → what the row holds), each in its canonical form; a value that is
 // not one of its field's type is refused naming the row (counted from 1, as a person counts the rows of a file), the
 // column and the value.
-function valuesOf(collection: string, fields: readonly Field[], row: Readonly<Record<string, unknown>>, rowNumber: number, language: string | undefined): Record<string, Cell> {
+function valuesOf(collection: string, fields: readonly Field[], row: Readonly<Record<string, unknown>>, rowNumber: number, language: string | undefined, lookup: Lookup): Record<string, Cell> {
   const values: Record<string, Cell> = {};
   for (const field of fields) {
     if (!Object.hasOwn(row, field.key)) continue;
-    const read = readCell(field.type, row[field.key], language);
+    const read = readFieldCell(field, row[field.key], language, lookup);
     if (read === null) refuse('status.data.badValue', { collection, row: rowNumber, column: field.label, value: shownValue(row[field.key]), type: { key: `data.type.${field.type}` as MessageId } });
     if (read !== undefined) values[field.key] = read;
   }
@@ -284,7 +422,7 @@ export function createCollection(collections: readonly Collection[], name: strin
   if (named !== null) throw new DataRefusal(named);
   const schema = schemaRefusal(name.trim(), fields);
   if (schema !== null) throw new DataRefusal(schema);
-  return { name: name.trim(), fields: fields.map((f) => ({ key: f.key, label: f.label.trim(), type: f.type, ...(f.type === 'number' && f.decimals !== undefined && f.decimals > 0 ? { decimals: f.decimals } : {}) })), items: [] };
+  return { name: name.trim(), fields: fields.map((f) => ({ key: f.key, label: f.label.trim(), type: f.type, ...(f.type === 'number' && f.decimals !== undefined && f.decimals > 0 ? { decimals: f.decimals } : {}), ...(f.collection === undefined ? {} : { collection: f.collection }), ...(f.options === undefined ? {} : { options: f.options }), ...(f.from === undefined ? {} : { from: f.from }) })), items: [] };
 }
 
 export type ImportMode = 'append' | 'replace' | 'update';
@@ -294,7 +432,7 @@ export type ImportMode = 'append' | 'replace' | 'update';
 // that is filled and unique in the collection and in the rows; the whole import is refused at its first bad row.
 // A replace keeps the ids of the items it replaces (DATA-7), so the pages made for them and the links to those pages
 // stay: the item holding the row's key when a key is named, else the item at the row's place; a row past them is new.
-export function importRows(collection: Collection, rows: readonly Readonly<Record<string, unknown>>[], mode: ImportMode, key: string | null, next: () => string, language?: string): Collection {
+export function importRows(collection: Collection, rows: readonly Readonly<Record<string, unknown>>[], mode: ImportMode, key: string | null, next: () => string, language?: string, lookup: Lookup = NO_COLLECTIONS): Collection {
   const keyField = key === null ? undefined : collection.fields.find((f) => f.key === key);
   if (mode === 'update' && (keyField === undefined || keyField.type === 'richtext')) refuse('status.data.keyNeeded', { collection: collection.name });
   const items: Item[] = mode === 'replace' ? [] : [...collection.items];
@@ -323,7 +461,7 @@ export function importRows(collection: Collection, rows: readonly Readonly<Recor
   const seen = new Set<string>();
   rows.forEach((row, index) => {
     const rowNumber = index + 1;
-    const values = valuesOf(collection.name, collection.fields, row, rowNumber, language);
+    const values = valuesOf(collection.name, collection.fields, row, rowNumber, language, lookup);
     if (mode !== 'update' || keyField === undefined) {
       items.push({ id: mode === 'replace' ? replacedId(index, values) : next(), values });
       return;
@@ -338,22 +476,22 @@ export function importRows(collection: Collection, rows: readonly Readonly<Recor
     if (existing === undefined || previous === undefined) items.push({ id: next(), values });
     else items[existing] = { id: previous.id, values: { ...previous.values, ...values } };
   });
-  return { ...collection, items };
+  return slugsUnique({ ...collection, items });
 }
 
 // The collection with one value of an item set from what a person typed ('' empties it).
-export function setCell(collection: Collection, itemId: string, fieldKey: string, typed: unknown, language?: string): Collection {
+export function setCell(collection: Collection, itemId: string, fieldKey: string, typed: unknown, language?: string, lookup: Lookup = NO_COLLECTIONS): Collection {
   const field = collection.fields.find((f) => f.key === fieldKey);
   const index = collection.items.findIndex((item) => item.id === itemId);
   const item = collection.items[index];
   // a name of an item or a field the collection does not hold went stale under its door (the random probe)
   if (field === undefined || item === undefined) refuse('status.stale');
-  const read = readCell(field.type, typed, language);
+  const read = readFieldCell(field, typed, language, lookup);
   if (read === null) refuse('status.data.badValue', { collection: collection.name, row: index + 1, column: field.label, value: shownValue(typed), type: { key: `data.type.${field.type}` as MessageId } });
   const { [field.key]: _old, ...others } = item.values;
   void _old;
   const values = read === undefined ? others : { ...others, [field.key]: read };
-  return { ...collection, items: collection.items.map((one) => (one.id === itemId ? { id: one.id, values } : one)) };
+  return slugsUnique({ ...collection, items: collection.items.map((one) => (one.id === itemId ? { id: one.id, values } : one)) });
 }
 
 export function addItem(collection: Collection, id: string): Collection {
@@ -378,44 +516,113 @@ export function moveItem(collection: Collection, id: string, to: number): Collec
 
 // ---------------------------------------------------------------- fields
 
-export function addField(collection: Collection, label: string, type: FieldType): Collection {
-  const field: Field = { key: keyFor(label, collection.fields.map((f) => f.key)), label: label.trim(), type };
+// A new field: a reference names the collection given (the command chooses one), an option starts with no choice.
+export function addField(collection: Collection, label: string, type: FieldType, target?: string): Collection {
+  const field: Field = { key: keyFor(label, collection.fields.map((f) => f.key)), label: label.trim(), type, ...(isReferenceType(type) && target !== undefined ? { collection: target } : {}), ...(type === 'option' ? { options: [] } : {}) };
   const fields = [...collection.fields, field];
   const refused = schemaRefusal(collection.name, fields);
   if (refused !== null) throw new DataRefusal(refused);
   return { ...collection, fields };
 }
 
-// A field relabelled or given another type: every value it holds is read again as the new type, and the change is
-// refused at the first item whose value the new type cannot hold (nothing is converted silently or dropped).
-// A field changed: its label, its type, its decimal places (the field menu, DATA-1: how many decimals a number shows on
-// the page; 0 stores none, as a new field holds). The decimal places stay with a number field and go when it becomes
-// another type; asked of another type, or outside 0 to MAX_DECIMALS, they are refused with their own reason.
-export function setField(collection: Collection, key: string, change: { readonly label?: string; readonly type?: FieldType; readonly decimals?: number }): Collection {
+// A field changed (the field menu): its label, its type, its decimal places (DATA-1: how many decimals a number shows
+// on the page; 0 stores none, as a new field holds), the collection a reference names, the choices of an option, the
+// field a slug is made from. Every value it holds is read again whenever what it may hold changed — through the text
+// it shows (a number 42 becomes the text "42", a reference its item's title, a title the reference to the item it
+// names) — and the change is refused at the first item whose value the field can no longer hold: nothing is converted
+// silently or dropped. The decimal places stay with a number field and go when it becomes another type; asked of
+// another type, or outside 0 to MAX_DECIMALS, they are refused with their own reason.
+export interface FieldChange {
+  readonly label?: string;
+  readonly type?: FieldType;
+  readonly decimals?: number;
+  readonly collection?: string;
+  readonly options?: readonly string[];
+  readonly from?: string;
+}
+export function setField(collection: Collection, key: string, change: FieldChange, lookup: Lookup = NO_COLLECTIONS, language?: string): Collection {
   const field = collection.fields.find((f) => f.key === key);
   if (field === undefined) refuse('status.stale');
   const type = change.type ?? field.type;
   if (change.decimals !== undefined && type !== 'number') refuse('status.data.decimalsNumberOnly', { collection: collection.name, label: field.label });
   if (change.decimals !== undefined && (!Number.isInteger(change.decimals) || change.decimals < 0 || change.decimals > MAX_DECIMALS)) refuse('status.data.decimalsRange', { collection: collection.name, max: MAX_DECIMALS });
+  if ((change.collection !== undefined && !isReferenceType(type)) || (change.options !== undefined && type !== 'option') || (change.from !== undefined && type !== 'slug')) refuse('status.data.badField', { collection: collection.name, field: field.label });
   const decimals = change.decimals ?? (type === 'number' ? field.decimals : undefined);
-  const next: Field = { key, label: change.label === undefined ? field.label : change.label.trim(), type, ...(decimals !== undefined && decimals > 0 ? { decimals } : {}) };
+  const target = isReferenceType(type) ? (change.collection ?? field.collection) : undefined;
+  if (isReferenceType(type) && (target === undefined || lookup(target) === undefined)) refuse('status.data.noTarget', { collection: collection.name, label: field.label });
+  // a slug made from this field needs it to hold words (a reference holds ids)
+  const madeFrom = collection.fields.find((f) => f.type === 'slug' && f.from === key);
+  if (madeFrom !== undefined && isReferenceType(type)) refuse('status.data.slugSource', { collection: collection.name, label: field.label, slug: madeFrom.label });
+  // an option field's choices: the ones asked, else the ones it had, else the values it holds (each once)
+  const held = collection.items.map((item) => fieldText(field, item.values[key], { yes: 'true', no: 'false' }, { language, decimals: field.decimals }, lookup).trim()).filter((text) => text !== '');
+  const wanted = type !== 'option' ? undefined : (change.options ?? field.options ?? held);
+  const options = wanted === undefined ? undefined : wanted.map((option) => option.trim()).filter((option, i, all) => option !== '' && all.findIndex((other) => fold(other) === fold(option)) === i);
+  const from = type !== 'slug' ? undefined : change.from === undefined ? field.from : change.from === '' ? undefined : change.from;
+  const next: Field = {
+    key,
+    label: change.label === undefined ? field.label : change.label.trim(),
+    type,
+    ...(decimals !== undefined && decimals > 0 ? { decimals } : {}),
+    ...(target === undefined ? {} : { collection: target }),
+    ...(options === undefined ? {} : { options }),
+    ...(from === undefined ? {} : { from }),
+  };
   const fields = collection.fields.map((f) => (f.key === key ? next : f));
   const refused = schemaRefusal(collection.name, fields);
   if (refused !== null) throw new DataRefusal(refused);
-  if (next.type === field.type) return { ...collection, fields };
+  const reread = next.type !== field.type || next.collection !== field.collection || JSON.stringify(next.options) !== JSON.stringify(field.options);
+  if (!reread) return { ...collection, fields };
   const items = collection.items.map((item, index) => {
-    const held = item.values[key];
-    if (held === undefined) return item;
-    // a value goes to the new type through the text it shows (a number 42 becomes the text "42", the text "42" the
-    // number 42); rich text keeps its runs only as rich text
-    const source = Array.isArray(held) && next.type !== 'richtext' ? plainText(held as readonly InlineRun[]) : held;
-    const read = readCell(next.type, source);
-    if (read === null) refuse('status.data.badValue', { collection: collection.name, row: index + 1, column: next.label, value: cellText(held, { yes: 'true', no: 'false' }), type: { key: `data.type.${next.type}` as MessageId } });
+    const value = item.values[key];
+    if (value === undefined) return item;
+    // rich text keeps its runs only as rich text; any other value goes through the text it shows
+    const source = next.type === 'richtext' && field.type === 'richtext' ? value : fieldText(field, value, { yes: 'true', no: 'false' }, undefined, lookup);
+    const read = readFieldCell(next, source, undefined, lookup);
+    if (read === null) refuse('status.data.badValue', { collection: collection.name, row: index + 1, column: next.label, value: fieldText(field, value, { yes: 'true', no: 'false' }, undefined, lookup), type: { key: `data.type.${next.type}` as MessageId } });
     const { [key]: _old, ...others } = item.values;
     void _old;
     return { id: item.id, values: read === undefined ? others : { ...others, [key]: read } };
   });
-  return { ...collection, fields, items };
+  return slugsUnique({ ...collection, fields, items });
+}
+
+// The collection, refused when two of its items hold the same slug (a slug is the address of the item's page).
+export function slugsUnique(collection: Collection): Collection {
+  for (const field of collection.fields) {
+    if (field.type !== 'slug') continue;
+    const seen = new Set<string>();
+    collection.items.forEach((item, index) => {
+      const value = item.values[field.key];
+      if (typeof value !== 'string') return;
+      if (seen.has(value)) refuse('status.data.slugTaken', { collection: collection.name, row: index + 1, column: field.label, value });
+      seen.add(value);
+    });
+  }
+  return collection;
+}
+
+// The slugs an item has not been given, made from the field each is made from (its title): the words of the title,
+// numbered when another item holds them ("bolo", "bolo-2"). A slug a person typed stays as it is.
+export function filledSlugs(collection: Collection): Collection {
+  const slugFields = collection.fields.filter((f) => f.type === 'slug');
+  if (slugFields.length === 0) return collection;
+  let items = collection.items;
+  for (const field of slugFields) {
+    const source = collection.fields.find((f) => f.key === field.from) ?? collection.fields.find((f) => f.type === 'text');
+    if (source === undefined || !items.some((item) => item.values[field.key] === undefined && item.values[source.key] !== undefined)) continue;
+    const taken = new Set(items.map((item) => item.values[field.key]).filter((value): value is string => typeof value === 'string'));
+    items = items.map((item) => {
+      const title = item.values[source.key];
+      if (item.values[field.key] !== undefined || title === undefined) return item;
+      const base = slug(cellText(title, { yes: 'yes', no: 'no' }, { decimals: source.decimals }));
+      if (base === '') return item;
+      let word = base;
+      for (let n = 2; taken.has(word); n += 1) word = `${base}-${n}`;
+      taken.add(word);
+      return { id: item.id, values: { ...item.values, [field.key]: word } };
+    });
+  }
+  return items === collection.items ? collection : { ...collection, items };
 }
 
 export function removeField(collection: Collection, key: string): Collection {
@@ -445,18 +652,34 @@ function compare(a: Cell | undefined, b: Cell | undefined): number {
   return left.localeCompare(right, undefined, { sensitivity: 'base', numeric: true });
 }
 
-function holds(filter: Filter, field: Field, value: Cell | undefined): boolean {
+// What a value of a field is compared and sorted by: a reference by the titles of the items it names, parted by
+// commas, as the grid shows it; any other value as it is.
+const compared = (field: Field, value: Cell | undefined, lookup: Lookup): Cell | undefined => (value === undefined || !isReferenceType(field.type) ? value : fieldText(field, value, { yes: 'true', no: 'false' }, undefined, lookup));
+
+function holds(filter: Filter, field: Field, value: Cell | undefined, lookup: Lookup): boolean {
   if (filter.operator === 'empty') return value === undefined;
   if (filter.operator === 'filled') return value !== undefined;
   if (value === undefined) return false;
   const typed = filter.value ?? '';
+  // a reference holds a text when one of the items it names is titled so (eq), none is (neq), or a title holds it
+  if (isReferenceType(field.type)) {
+    const target = field.collection === undefined ? undefined : lookup(field.collection);
+    const titles = referencedIds(value).map((id) => {
+      const item = target?.items.find((one) => one.id === id);
+      return fold(item === undefined || target === undefined ? id : itemTitle(target, item));
+    });
+    const wanted = fold(typed.trim());
+    if (filter.operator === 'eq') return titles.includes(wanted);
+    if (filter.operator === 'neq') return !titles.includes(wanted);
+    if (filter.operator === 'contains') return titles.some((title) => title.includes(wanted));
+  }
   // a number holds the digits the site writes, with its decimal places and either decimal mark ("6,5" finds 6.50)
   if (filter.operator === 'contains' && typeof value === 'number') return numberText(value, { language: 'en', decimals: field.decimals }).includes(typed.trim().replace(',', '.'));
   if (filter.operator === 'contains') return fold(cellText(value, { yes: 'true', no: 'false' })).includes(fold(typed.trim()));
-  // the other operators compare with the typed text read as the field's type
-  const other = readCell(field.type, typed);
-  if (other === null || other === undefined) return false;
-  const order = compare(value, other);
+  // the other operators compare with the typed text read as the field's type (a reference: as the titles' text)
+  const other = isReferenceType(field.type) ? typed.trim() : readCell(field.type, typed);
+  if (other === null || other === undefined || other === '') return false;
+  const order = compare(compared(field, value, lookup), other);
   switch (filter.operator) {
     case 'eq':
       return order === 0;
@@ -479,19 +702,23 @@ export function queryRefusal(collection: Collection, query: Query): Message | nu
   const unknown = named.find((key) => !collection.fields.some((f) => f.key === key));
   if (unknown !== undefined) return message('status.data.unknownField', { collection: collection.name, field: unknown });
   for (const count of [query.offset, query.limit]) if (count !== undefined && (!Number.isSafeInteger(count) || count < 0)) return message('status.data.badCount', { collection: collection.name });
+  // a page shows one item at least
+  if (query.pageSize !== undefined && (!Number.isSafeInteger(query.pageSize) || query.pageSize < 1)) return message('status.data.badCount', { collection: collection.name });
+  if (query.paging !== undefined && !(PAGINGS as readonly string[]).includes(query.paging)) return message('status.data.badCount', { collection: collection.name });
   return null;
 }
 
 // The items a query shows, in order: the filters (every one, or any one), then a stable sort by each order key in
-// turn (items equal on every key keep the collection's order), then offset and limit.
-export function queryItems(collection: Collection, query: Query): readonly Item[] {
+// turn (items equal on every key keep the collection's order), then offset and limit. Every page of a paged list: the
+// canvas shows the first one (firstPage).
+export function queryItems(collection: Collection, query: Query, lookup: Lookup = NO_COLLECTIONS): readonly Item[] {
   const refused = queryRefusal(collection, query);
   if (refused !== null) throw new DataRefusal(refused);
   const fieldOf = (key: string): Field => collection.fields.find((f) => f.key === key) as Field;
   const filters = query.filters ?? [];
   const kept = collection.items.filter((item) => {
     if (filters.length === 0) return true;
-    const results = filters.map((filter) => holds(filter, fieldOf(filter.field), item.values[filter.field]));
+    const results = filters.map((filter) => holds(filter, fieldOf(filter.field), item.values[filter.field], lookup));
     return query.match === 'any' ? results.some(Boolean) : results.every(Boolean);
   });
   const order = query.order ?? [];
@@ -499,7 +726,8 @@ export function queryItems(collection: Collection, query: Query): readonly Item[
     .map((item, index) => ({ item, index }))
     .sort((a, b) => {
       for (const sort of order) {
-        const by = compare(a.item.values[sort.field], b.item.values[sort.field]);
+        const field = fieldOf(sort.field);
+        const by = compare(compared(field, a.item.values[sort.field], lookup), compared(field, b.item.values[sort.field], lookup));
         // an empty value stays last whichever the direction
         const empty = a.item.values[sort.field] === undefined || b.item.values[sort.field] === undefined;
         if (by !== 0) return sort.direction === 'desc' && !empty ? -by : by;
@@ -511,6 +739,9 @@ export function queryItems(collection: Collection, query: Query): readonly Item[
   return sorted.slice(offset, query.limit === undefined ? undefined : offset + query.limit);
 }
 
+// The items of a list's first page: what the canvas shows of a paged list (all of them while it has no page size).
+export const firstPage = <T>(rows: readonly T[], query: Query): readonly T[] => (query.pageSize === undefined ? rows : rows.slice(0, query.pageSize));
+
 // A query in its canonical form: no empty list, no default, so two equal queries are the same JSON.
 export function canonicalQuery(query: Query): Query {
   return {
@@ -519,6 +750,9 @@ export function canonicalQuery(query: Query): Query {
     ...(query.order !== undefined && query.order.length > 0 ? { order: query.order.map((s) => ({ field: s.field, direction: s.direction })) } : {}),
     ...(query.offset !== undefined && query.offset > 0 ? { offset: query.offset } : {}),
     ...(query.limit !== undefined ? { limit: query.limit } : {}),
+    ...(query.pageSize !== undefined ? { pageSize: query.pageSize } : {}),
+    // "load more" is the default way to the next pages
+    ...(query.pageSize !== undefined && query.paging === 'pages' ? { paging: 'pages' as const } : {}),
   };
 }
 

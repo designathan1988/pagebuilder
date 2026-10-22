@@ -2,29 +2,46 @@
 // audit, 7.3): assets.insertImageFile stores one image file in the project's files (`src/core/files/files.ts`, the
 // tree's owner) and places an Image that uses it in the document — at the drop position (parent + index), or, when the
 // drop landed on an image (`replace`), as that image's source. The drop position's grammar is element.insert's: the
-// same placementRefusal, the same locked parent.
-import { message, registerHandler } from '../commands/registry.ts';
-import type { DocNode, NodeId } from '../document/model.ts';
+// same placementRefusal, the same locked parent. An image the project already holds, dragged from an Explorer row
+// (`path`, DCS-071), is placed the same way without being stored again.
+import { message, registerHandler, type Message } from '../commands/registry.ts';
+import type { DocNode, DocumentJson, NodeId, ProjectFile } from '../document/model.ts';
 import { locate } from '../document/model.ts';
 import { placementRefusal } from '../elements/content-model.ts';
+import type { Patch } from '../history/transaction.ts';
 import { lockRefusal } from '../nodes/flags.ts';
 import { placement } from '../structure/insert.ts';
 import { newElement, nodeMaker } from '../structure/node-maker.ts';
-import { addRecords, fileList, recordsFor, unsupported } from './files.ts';
+import { addRecords, fileAt, fileList, nameOfPath, recordsFor, unsupported } from './files.ts';
 
 // the element type a dropped file is placed as, and the element a drop replaces the source of
 const IMAGE_TYPE = 'image';
+// the media type every image file's type begins with
+const IMAGE_MEDIA = 'image/';
 
-export const insertImageFileCommand = registerHandler('assets.insertImageFile', ({ state, ids, rules, words }, { file, parent, index, replace }) => {
+// The image the command places, and the patches that store it: an uploaded file is stored first; a project file
+// (`path`) is used as it is, refused when the project no longer holds it or it is not an image.
+function placedImage(document: DocumentJson, file: unknown, path: string | undefined): { readonly stored: ProjectFile; readonly held: readonly Patch[] } | { readonly refused: Message } {
+  if (path !== undefined) {
+    const found = fileAt(document, path);
+    if (found === null) return { refused: message('status.stale') };
+    if (!found.type.toLowerCase().startsWith(IMAGE_MEDIA)) return { refused: message('status.files.unsupportedType', { name: nameOfPath(path) }) };
+    return { stored: found, held: [] };
+  }
   const list = fileList(file).filter((f) => f !== null && typeof f === 'object');
-  const first = list[0];
-  if (first === undefined) throw new Error('assets.insertImageFile: no file');
+  if (list[0] === undefined) throw new Error('assets.insertImageFile: no file');
   const wrong = unsupported(list);
-  if (wrong !== undefined) return { kind: 'refused' as const, message: message('status.files.unsupportedType', { name: wrong.name }) };
-  const records = recordsFor(state.document, list, undefined);
+  if (wrong !== undefined) return { refused: message('status.files.unsupportedType', { name: wrong.name }) };
+  const records = recordsFor(document, list, undefined);
   const stored = records[0];
   if (stored === undefined) throw new Error('assets.insertImageFile: no file stored');
-  const held = addRecords(state.document, records);
+  return { stored, held: addRecords(document, records) };
+}
+
+export const insertImageFileCommand = registerHandler('assets.insertImageFile', ({ state, ids, rules, words }, { file, path, parent, index, replace }) => {
+  const placed = placedImage(state.document, file, path);
+  if ('refused' in placed) return { kind: 'refused' as const, message: placed.refused };
+  const { stored, held } = placed;
   // a drop on an image replaces its source (the user's real-use audit, 7.3): the file is stored, the image points at it
   const target = replace === undefined || replace === null ? null : locate(state.document, replace as NodeId);
   if (target !== null) {

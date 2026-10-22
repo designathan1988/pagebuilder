@@ -391,6 +391,16 @@ const textDecoration = registerCodec('text-decoration', {
   write(value) {
     return value.kind === 'longhands' ? value.text : '';
   },
+  // The longhands as one value, as a side's border reads (composeSide): a decoration with no line draws nothing and
+  // reads none; one with a line reads its line and the parts it holds other than their initial values. The page
+  // computes every longhand, so a plain heading's Decoration read "none auto solid rgb(26, 26, 26)", cut in its field.
+  compose([line = '', thickness = '', style = '', colour = '']) {
+    if (line === DECORATION_INITIAL.line) return line;
+    const text = [line, thickness === DECORATION_INITIAL.thickness ? '' : thickness, style === DECORATION_INITIAL.style ? '' : style, colour === DECORATION_INITIAL.color ? '' : colour]
+      .filter((part) => part !== '')
+      .join(' ');
+    return text === '' ? null : text;
+  },
 });
 
 // each white-space keyword as its white-space-collapse and text-wrap-mode (CSS Text 4, "white-space")

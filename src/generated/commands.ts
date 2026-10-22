@@ -79,12 +79,12 @@ export interface CommandArgs {
   "clipboard.copyStyle": Record<string, never>;
   "clipboard.pasteStyle": { readonly clipboard: ClipboardContent };
   "data.select": { readonly collection: string };
-  "data.setQuery": { readonly part: "filterField" | "filterOperator" | "filterValue" | "sortFirst" | "sortSecond" | "offset" | "limit" | "clear"; readonly value?: string };
+  "data.setQuery": { readonly part: "filterField" | "filterOperator" | "filterValue" | "sortFirst" | "sortSecond" | "offset" | "limit" | "clear" | "pageSize" | "paging"; readonly value?: string };
   "data.createCollection": { readonly name?: string };
   "data.renameCollection": { readonly collection: string; readonly name: string };
   "data.deleteCollection": { readonly collection: string };
-  "data.addField": { readonly label: string; readonly type: "text" | "richtext" | "image" | "number" | "date" | "link" | "boolean" };
-  "data.setField": { readonly collection: string; readonly field: string; readonly label?: string; readonly type?: "text" | "richtext" | "image" | "number" | "date" | "link" | "boolean"; readonly decimals?: number };
+  "data.addField": { readonly label: string; readonly type: "text" | "richtext" | "image" | "number" | "date" | "link" | "boolean" | "reference" | "multireference" | "option" | "slug" | "email" | "file" | "video" | "colour" };
+  "data.setField": { readonly collection: string; readonly field: string; readonly label?: string; readonly type?: "text" | "richtext" | "image" | "number" | "date" | "link" | "boolean" | "reference" | "multireference" | "option" | "slug" | "email" | "file" | "video" | "colour"; readonly decimals?: number; readonly target?: string; readonly options?: string; readonly from?: string };
   "data.removeField": { readonly collection: string; readonly field: string };
   "data.addItem": { readonly collection: string };
   "data.setCell": { readonly collection: string; readonly item: string; readonly field: string; readonly value: string };
@@ -92,15 +92,18 @@ export interface CommandArgs {
   "data.moveItem": { readonly collection: string; readonly item: string; readonly to: number };
   "data.preview": { readonly file: string };
   "data.previewSheet": { readonly sheet: string };
-  "data.previewType": { readonly column: string; readonly type: "text" | "richtext" | "image" | "number" | "date" | "link" | "boolean" };
+  "data.previewType": { readonly column: string; readonly type: "text" | "richtext" | "image" | "number" | "date" | "link" | "boolean" | "option" | "slug" | "email" | "file" | "video" | "colour" };
   "data.closePreview": Record<string, never>;
   "data.importNew": { readonly name: string };
   "data.importInto": { readonly collection: string; readonly mode: "append" | "replace" | "update" };
   "data.bindElement": { readonly node: NodeId; readonly field: string; readonly to: "text" | "image" | "alt" | "link" };
-  "data.fill": { readonly node: NodeId; readonly collection: string; readonly query: JsonValue };
+  "data.formatBinding": { readonly node: NodeId; readonly to: "text" | "image" | "alt" | "link"; readonly format?: "plain" | "grouped" | "currency" | "percent" | "date-short" | "date-medium" | "date-long" | "date-full" | "month-year" | "yes-no" | "true-false" | "on-off"; readonly currency?: "BRL" | "USD" | "EUR" | "GBP" | "JPY" | "CAD" | "AUD" | "CHF" | "CNY" | "INR" | "MXN" | "ARS" | "CLP" | "COP" };
+  "data.showWhen": { readonly node: NodeId; readonly field: string; readonly when?: "filled" | "empty" | "eq" | "neq"; readonly value?: string };
+  "data.fill": { readonly node: NodeId; readonly collection: string; readonly query: JsonValue; readonly via?: string };
   "data.unbind": { readonly node: NodeId };
   "pages.fromNames": { readonly names: string };
   "pages.fromCollection": { readonly collection: string; readonly nameField: string };
+  "pages.previewItem": { readonly item: string };
   "regions.share": { readonly pages: JsonValue };
   "regions.detach": { readonly node: NodeId };
   "regions.stopSharing": { readonly component: string };
@@ -174,7 +177,7 @@ export interface CommandArgs {
   "files.closeTab": { readonly path: string };
   "files.upload": { readonly files: string; readonly folder?: string };
   "files.saveContent": { readonly path: string; readonly content: string };
-  "assets.insertImageFile": { readonly file: string; readonly parent?: NodeId; readonly index?: number; readonly replace?: NodeId };
+  "assets.insertImageFile": { readonly file?: string; readonly path?: string; readonly parent?: NodeId; readonly index?: number; readonly replace?: NodeId };
   "focus.next": Record<string, never>;
   "focus.menuBar": Record<string, never>;
   "focus.nextMenu": Record<string, never>;
@@ -226,8 +229,8 @@ export interface CommandArgs {
   "logic.updateHandler": { readonly handler: number; readonly event?: string; readonly code?: string; readonly target?: NodeId };
   "logic.removeHandler": { readonly handler: number; readonly target?: NodeId };
   "logic.clear": Record<string, never>;
-  "motion.add": { readonly trigger?: "click" | "double-click" | "pointer-down" | "pointer-up" | "pointer-enter" | "pointer-leave" | "hover" | "pointer-move" | "focus" | "blur" | "focus-within" | "key" | "input" | "change" | "form-submit" | "form-invalid" | "long-press" | "scroll-into-view" | "scroll-out-of-view" | "while-visible" | "page-scroll" | "scroll-direction" | "page-load" | "page-leave" | "visibility" | "resize" | "breakpoint" | "timer" | "interval" | "idle" | "media-play" | "media-pause" | "media-end" | "media-time" | "dropdown-open" | "dropdown-close" | "tab-change" | "slide-change" | "dialog-open" | "dialog-close" | "details-open" | "mobile-menu-open" | "custom"; readonly timeline?: string; readonly preset?: "fade-up" | "fade-in" | "zoom-in" | "slide-in" };
-  "motion.update": { readonly interaction?: number; readonly field?: "trigger" | "timeline" | "control" | "leave" | "scope" | "once" | "delay" | "breakpoints" | "reducedMotion" | "key" | "threshold" | "milliseconds" | "direction" | "axis" | "breakpoint" | "seconds" | "state" | "event" | "scrollStart" | "scrollEnd"; readonly value?: JsonValue };
+  "motion.add": { readonly trigger?: "click" | "double-click" | "pointer-down" | "pointer-up" | "pointer-enter" | "pointer-leave" | "hover" | "pointer-move" | "focus" | "blur" | "focus-within" | "key" | "input" | "change" | "form-submit" | "form-invalid" | "long-press" | "scroll-into-view" | "scroll-out-of-view" | "while-visible" | "page-scroll" | "scroll-direction" | "page-load" | "page-leave" | "visibility" | "resize" | "breakpoint" | "timer" | "interval" | "idle" | "media-play" | "media-pause" | "media-end" | "media-time" | "dropdown-open" | "dropdown-close" | "tab-change" | "slide-change" | "dialog-open" | "dialog-close" | "details-open" | "mobile-menu-open" | "custom"; readonly timeline?: string; readonly preset?: "fade-in" | "slide-up" | "slide-from-left" | "slide-from-right" | "scale-in" };
+  "motion.update": { readonly interaction?: number; readonly field?: "trigger" | "timeline" | "control" | "leave" | "scope" | "once" | "delay" | "breakpoints" | "reducedMotion" | "key" | "threshold" | "milliseconds" | "direction" | "axis" | "breakpoint" | "seconds" | "state" | "event" | "scrollStart" | "scrollEnd" | "condition" | "conditionName" | "conditionCompare" | "conditionValue"; readonly value?: JsonValue };
   "motion.remove": { readonly interaction?: number };
   "motion.createTimeline": { readonly name?: string };
   "motion.renameTimeline": { readonly timeline: string; readonly name: string };
@@ -235,7 +238,7 @@ export interface CommandArgs {
   "motion.openTimeline": { readonly timeline: string };
   "motion.addAction": { readonly timeline: string; readonly kind: "animate" | "class" | "attribute" | "style" | "text" | "display" | "timeline" | "css-animation" | "scroll" | "dialog" | "details" | "tab" | "slide" | "media" | "focus" | "form" | "navigate" | "clipboard" | "event" | "variable" | "theme" | "wait" | "split-text" | "lottie"; readonly placement?: "after" | "with" | "at" };
   "motion.updateAction": { readonly timeline: string; readonly action?: string; readonly at?: number; readonly field: "kind" | "target" | "targetValue" | "start" | "duration" | "easing" | "repeat" | "yoyo" | "staggerEach" | "staggerFrom"; readonly value?: JsonValue };
-  "motion.setEffectOption": { readonly timeline: string; readonly action?: string; readonly at?: number; readonly option: "operation" | "className" | "name" | "value" | "property" | "transition" | "mode" | "timeline" | "animation" | "time" | "to" | "offset" | "smooth" | "block" | "index" | "address" | "newTab" | "source" | "text" | "detail" | "remember" | "by" | "file" | "loop" | "speed" | "from"; readonly value?: JsonValue };
+  "motion.setEffectOption": { readonly timeline: string; readonly action?: string; readonly at?: number; readonly option: "operation" | "className" | "name" | "value" | "property" | "transition" | "mode" | "timeline" | "animation" | "time" | "to" | "offset" | "smooth" | "block" | "index" | "address" | "newTab" | "source" | "text" | "detail" | "remember" | "by" | "file" | "loop" | "speed" | "from" | "scope"; readonly value?: JsonValue };
   "motion.removeActions": { readonly timeline: string; readonly actions?: JsonValue; readonly at?: number };
   "motion.moveActions": { readonly timeline: string; readonly actions?: JsonValue; readonly at?: number; readonly delta?: number; readonly distance?: number };
   "motion.resizeAction": { readonly timeline: string; readonly action?: string; readonly at?: number; readonly edge: "start" | "end"; readonly delta?: number; readonly distance?: number };
@@ -258,6 +261,9 @@ export interface CommandArgs {
   "motion.toggleRun": Record<string, never>;
   "motion.setBehaviour": { readonly behaviour: "sticky" | "scroll-snap" | "smooth-scroll" | "parallax" | "marquee" | "cursor-follow"; readonly amount?: number; readonly axis?: "x" | "y" };
   "motion.removeBehaviour": { readonly behaviour: "smooth-scroll" | "parallax" | "marquee" | "cursor-follow" };
+  "motion.setParallaxRange": { readonly field: "start" | "end" | "max"; readonly value?: JsonValue };
+  "motion.setPageTransition": { readonly field: "kind" | "duration"; readonly value?: JsonValue };
+  "motion.setLinkTransition": { readonly transition: "" | "fade" | "slide" | "none" };
   "layers.startRename": Record<string, never>;
   "layers.cancelRename": Record<string, never>;
   "element.rename": { readonly target: NodeId; readonly name: string };
@@ -637,12 +643,13 @@ export const FEATURE_COMMANDS: Readonly<Record<FeatureId, readonly CommandId[]>>
   "motion-timeline": ["motion.createTimeline","motion.renameTimeline","motion.deleteTimeline","motion.openTimeline","motion.addAction","motion.updateAction","motion.setEffectOption","motion.removeActions","motion.moveActions","motion.resizeAction","motion.select","motion.setPlayhead","motion.zoomTimeline","motion.toggleSnap","motion.addMarker","motion.moveMarker","motion.renameMarker","motion.removeMarker","workspace.setPanelOpen"],
   "motion-keyframes": ["motion.setKeyframe","motion.editKeyframe","motion.moveKeyframes","motion.deleteKeyframes","motion.copyKeyframes","motion.pasteKeyframes","motion.toggleRecord","motion.select"],
   "motion-preview": ["motion.preview","motion.toggleRun"],
-  "motion-behaviours": ["motion.setBehaviour","motion.removeBehaviour"],
+  "motion-behaviours": ["motion.setBehaviour","motion.removeBehaviour","motion.setParallaxRange"],
   "export-motion-js": ["view.enterPreview","project.export"],
+  "page-transitions": ["motion.setPageTransition","motion.setLinkTransition"],
   "data-collections": ["data.select","data.setQuery","data.createCollection","data.renameCollection","data.deleteCollection","data.addField","data.setField","data.removeField","data.addItem","data.setCell","data.deleteItems","data.moveItem","workspace.setPanelOpen"],
   "data-import": ["data.preview","data.previewSheet","data.previewType","data.closePreview","data.importNew","data.importInto","data.select","workspace.setPanelOpen"],
-  "data-binding": ["data.bindElement","data.fill","data.unbind","data.setCell","data.select","workspace.setPanelOpen"],
-  "data-pages": ["pages.fromNames","pages.fromCollection","pages.duplicate","workspace.setPanelOpen"],
+  "data-binding": ["data.bindElement","data.fill","data.unbind","data.setCell","data.select","workspace.setPanelOpen","data.formatBinding","data.showWhen"],
+  "data-pages": ["pages.fromNames","pages.fromCollection","pages.duplicate","workspace.setPanelOpen","pages.previewItem"],
   "shared-regions": ["regions.share","regions.detach","regions.stopSharing","text.set","pages.add","workspace.setPanelOpen"],
   "project-breakpoints": ["breakpoints.add","breakpoints.rename","breakpoints.setWidth","breakpoints.remove","workspace.openDialog","view.setBreakpoint","view.setViewportWidth","style.set","project.export"],
   "side-by-side-view": ["view.toggleSideBySide","view.setBreakpoint"],

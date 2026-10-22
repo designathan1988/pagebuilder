@@ -86,7 +86,10 @@ export type Effect =
   | { readonly kind: 'navigate'; readonly to: 'url' | 'page' | 'back' | 'forward'; readonly address?: string; readonly newTab: boolean }
   | { readonly kind: 'clipboard'; readonly source: 'text' | 'target-text'; readonly text?: string }
   | { readonly kind: 'event'; readonly name: string; readonly detail?: string }
-  | { readonly kind: 'variable'; readonly name: string; readonly value: string }
+  // a CSS custom property of the target (--name, tweened over the action's duration), or, with `scope: 'app'`, a
+  // variable of the application layer (state.name, core/logic), set at the action's start to the value read as JSON
+  // (a number, true, false, a quoted text), else as the text itself
+  | { readonly kind: 'variable'; readonly name: string; readonly value: string; readonly scope?: 'app' }
   | { readonly kind: 'theme'; readonly operation: 'toggle' | 'light' | 'dark' | 'system'; readonly remember: boolean }
   | { readonly kind: 'wait' }
   | { readonly kind: 'split-text'; readonly by: 'letter' | 'word' | 'line'; readonly tracks: readonly PropertyTrack[] }
@@ -185,6 +188,42 @@ export interface MotionInteraction {
   // a continuous scroll trigger's range, in percent of its progress: where the timeline starts and ends
   readonly scrollStart?: number;
   readonly scrollEnd?: number;
+  // the interaction runs only while this holds, read when the trigger fires; absent: always
+  readonly condition?: MotionCondition;
+}
+
+// What must hold for an interaction to run, read on the element its trigger fired on (the source):
+//  - class: the source has the class (`not`: lacks it);
+//  - breakpoint: the page is laid out at that breakpoint (`not`: at any other);
+//  - variable: a variable of the application layer (state.name) compares to a value; `set` and `unset` read whether
+//    it holds anything (a value that is not false, 0, empty or absent);
+//  - state: the source is open (a details or dialog element, data-state="open"), checked (a checkbox, aria-checked,
+//    aria-pressed), expanded (aria-expanded), selected (aria-selected, an option) or disabled (`not`: is not).
+export const CONDITION_KINDS = ['class', 'breakpoint', 'variable', 'state'] as const;
+export const CONDITION_COMPARES = ['equals', 'not-equals', 'greater', 'less', 'set', 'unset'] as const;
+export const ELEMENT_STATES = ['open', 'checked', 'expanded', 'selected', 'disabled'] as const;
+export type ConditionCompare = (typeof CONDITION_COMPARES)[number];
+export interface MotionCondition {
+  readonly kind: (typeof CONDITION_KINDS)[number];
+  // the class, the breakpoint, the variable or the state
+  readonly name: string;
+  readonly not?: true;
+  // a variable's comparison, and the value it compares to (equals, not-equals, greater, less)
+  readonly compare?: ConditionCompare;
+  readonly value?: string;
+}
+
+// The transition between two pages of the site (spec page-transitions): the page leaving and the page arriving
+// animate, through the browser's View Transitions API where it has them across documents and a script of its own
+// elsewhere; less motion asked, no animation. Set for the whole site (DocumentJson.pageTransition), and per link by
+// its PAGE_TRANSITION_ATTRIBUTE (a link's own choice, "none" for no transition), which the export writes as it is.
+export const PAGE_TRANSITION_KINDS = ['fade', 'slide'] as const;
+export type PageTransitionKind = (typeof PAGE_TRANSITION_KINDS)[number];
+export const PAGE_TRANSITION_ATTRIBUTE = 'data-page-transition';
+export interface PageTransition {
+  readonly kind: PageTransitionKind;
+  // ms the leaving and the arriving page each animate
+  readonly duration: number;
 }
 
 // The behaviours an element can take that need a script (plan: comportamentos), each a small runtime of its own with
@@ -204,4 +243,11 @@ export interface Behaviour {
   readonly axis?: 'x' | 'y';
   // marquee: runs the other way
   readonly reverse?: true;
+  // parallax: the part of the element's way across the screen it moves in, in percent (0: its leading edge enters the
+  // screen, 100: its trailing edge leaves it); outside it the element holds the shift at that end. Absent: 0 and 100.
+  readonly start?: number;
+  readonly end?: number;
+  // parallax: the most it moves either way, in px; absent: as far as its parent's box lets it, so it never leaves the
+  // section it stands in (the audit's photo 18: an image slid over the next section's heading)
+  readonly max?: number;
 }

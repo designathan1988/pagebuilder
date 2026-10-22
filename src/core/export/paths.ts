@@ -12,6 +12,8 @@ export const MOTION_SCRIPT = 'js/motion.js';
 export const LOTTIE_SCRIPT = 'js/lottie.min.js';
 // the web components' script (carousel, lightbox, tabs, cart…): written when a page holds one (data-wc)
 export const WIDGETS_SCRIPT = 'js/widgets.js';
+// the paged lists' script (core/export/lists.ts): written when a page holds a list paged by a button or page links
+export const LISTS_SCRIPT = 'js/lists.js';
 
 // the application's script and the folder of its modules (spec app-logic, core/logic/compile.ts): the runtime, the
 // project's scripts and code components
@@ -22,6 +24,6 @@ export const APP_RUNTIME_SCRIPT = `${APP_MODULES_FOLDER}/runtime.js`;
 // modules' files when served, from their text when opened from disk (app-start.ts)
 export const APP_START_SCRIPT = `${APP_MODULES_FOLDER}/start.js`;
 // every path the export may write a generated file at: no stored file may take one
-export const GENERATED_PATHS: readonly string[] = [STYLESHEET, INTERACTIONS_SCRIPT, FORMS_SCRIPT, MOTION_SCRIPT, LOTTIE_SCRIPT, WIDGETS_SCRIPT, APP_START_SCRIPT, APP_MAIN_SCRIPT, APP_RUNTIME_SCRIPT];
+export const GENERATED_PATHS: readonly string[] = [STYLESHEET, INTERACTIONS_SCRIPT, FORMS_SCRIPT, MOTION_SCRIPT, LOTTIE_SCRIPT, WIDGETS_SCRIPT, LISTS_SCRIPT, APP_START_SCRIPT, APP_MAIN_SCRIPT, APP_RUNTIME_SCRIPT];
 // the folders whose every path the export writes (a stored file may take none of them)
 export const GENERATED_FOLDERS: readonly string[] = [APP_MODULES_FOLDER];

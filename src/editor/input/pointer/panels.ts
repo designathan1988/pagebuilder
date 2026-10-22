@@ -7,6 +7,7 @@ import type { Point } from '../../canvas/coordinates.ts';
 import { panelHintAt, showPanelHint } from '../../workspace/panel-drag.ts';
 import { formatColor, hsbToRgb, pickedAlpha } from '../../../core/style/color.ts';
 import { offsetFromTrackX, playheadTimeFromTrackX, shownAnimation } from '../../timeline/playhead.ts';
+import { showExplorerImageDrag } from '../file-drop.ts';
 import { scrubModifier } from './common.ts';
 import type { PointerOwner } from './owner.ts';
 
@@ -91,6 +92,8 @@ export function pointerPanels(p: PointerOwner): Pick<PointerOwner, 'pickColor' |
   };
   const moveExplorer = (at: Point): void => {
     if (ps.exploring === null) return;
+    // over the canvas, an image file shows where it would land (input/file-drop.ts; DCS-071)
+    ps.exploring.onCanvas = showExplorerImageDrag(store, ps.exploring.press.path, at, ps.exploring.onCanvas);
     const over = p.folderUnder(at)?.getAttribute('data-folder') ?? null;
     if (over === ps.exploring.over) return;
     ps.exploring = { ...ps.exploring, over };

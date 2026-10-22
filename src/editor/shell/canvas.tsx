@@ -3,7 +3,7 @@
 // and the page's iframe (src/editor/canvas/frame.tsx) at the camera's zoom (src/editor/view/camera.ts): the chosen one,
 // or in Fit mode the one that fits the frame to the stage; the frame, as tall as the whole page (DCS-035: the canvas is
 // an artboard), is placed on the stage where the camera puts it, on both axes.
-import { useCallback, useContext, useLayoutEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useContext, useLayoutEffect, useRef, useState } from 'react';
 import type { MessageId } from '../../generated/ids.ts';
 import { manifest, type DoorEntry } from '../../manifest/runtime.ts';
 import { CanvasFrame } from '../canvas/frame.tsx';
@@ -17,7 +17,7 @@ import { useEditorState } from '../store.ts';
 import { isEmptyProject } from '../../core/document/model.ts';
 import { fitZoom, frameLeftOf, frameTopOf, registerStage, reportFrame, topOf } from '../view/camera.ts';
 import { activeBreakpoint, viewportWidth } from '../view/breakpoints.ts';
-import { activeState } from '../view/style-state.ts';
+import { activeState, stateName } from '../view/style-state.ts';
 import { editorView } from '../view/editor-view.ts';
 import { CodePane } from './code-pane.tsx';
 import { SideBySide } from './side-by-side.tsx';
@@ -29,7 +29,7 @@ import { ReportFitZoom, Slots, useFitZoom } from './slots.tsx';
 import { QuickPanel } from '../canvas/quick-panel.tsx';
 import { RevealSelection } from '../canvas/reveal-selection.tsx';
 import { AnchorTabs } from '../canvas/anchor-tabs.tsx';
-import { usePointerValue } from '../input/pointer/use-views.ts';
+import { usePointerSelect, usePointerValue } from '../input/pointer/use-views.ts';
 import { StartScreen } from './start-screen.tsx';
 
 const PAGE_ICON = manifest.elements.elements.find((e) => e.tag === 'body')?.icon ?? null;
@@ -84,13 +84,23 @@ function ZoomValue() {
   return <span className="zoom-value">{t('view.zoomValue', { zoom: Math.round(zoom * 100) })}</span>;
 }
 
-// A hint of the canvas toolbar: the toolbar's room left over, its words cut there with an ellipsis and read whole in
-// its tooltip (CLAUDE.md, rule G5: a text edited in place at 1280 with the sidebar open pushed the toolbar 8 px past
-// its side)
+// A hint of the canvas toolbar: the toolbar's room left over (CLAUDE.md, rule G5: a text edited in place at 1280 with
+// the sidebar open pushed the toolbar 8 px past its side). Its keys, parted by " · ", each stay whole on a line, and
+// the hint breaks between them onto a second line of the toolbar where one line does not fit: a drag's keys read
+// "Ctrl sem en…" at 1280 in pt-BR with the buttons already icons alone. The whole sentence stays its tooltip.
+const HINT_PARTS = ' · ';
 function Hint({ chrome, text }: { readonly chrome: string; readonly text: string }) {
+  const parts = text.split(HINT_PARTS);
   return (
     <span className="canvas-toolbar__hint" data-chrome={chrome} title={text}>
-      {text}
+      {/* the space between two keys is a text of its own, which the flex row draws as no box: the hint's text reads
+          as the sentence */}
+      {parts.map((part, i) => (
+        <Fragment key={i}>
+          {i > 0 ? ' ' : null}
+          <span className="canvas-toolbar__hint-part">{i < parts.length - 1 ? `${part}${HINT_PARTS.trimEnd()}` : part}</span>
+        </Fragment>
+      ))}
     </span>
   );
 }
@@ -98,8 +108,8 @@ function Hint({ chrome, text }: { readonly chrome: string; readonly text: string
 // The keys of a drag, in the canvas toolbar while one goes on (the user's real-use audit, item 3.3)
 function DragHint() {
   const t = useT();
-  const dragging = usePointerValue('drag');
-  return dragging === null ? null : <Hint chrome="drag-hint" text={t('canvas.drag.hint')} />;
+  const dragging = usePointerSelect('drag', (drag) => drag !== null);
+  return !dragging ? null : <Hint chrome="drag-hint" text={t('canvas.drag.hint')} />;
 }
 
 // The Edit on canvas mode in force, in the same toolbar (the audit's item 4.1: "Mode: Padding · Esc exits"): the mode
@@ -107,14 +117,15 @@ function DragHint() {
 function ModeHint() {
   const t = useT();
   const mode = useEditorState((s) => editMode(s.ui));
-  const dragging = usePointerValue('drag');
+  // whether a drag goes on, never where it is (the hint is not drawn anew at every move)
+  const dragging = usePointerSelect('drag', (drag) => drag !== null);
   // a text edited in place: its keys (the canonical toolbar's hint while text is edited)
   const editing = useEditorState((s) => s.ui.textEdit.node !== null);
   const altMeasuring = usePointerValue('measuring');
-  if (editing && dragging === null) return <Hint chrome="text-hint" text={t('canvas.textEdit.hint')} />;
+  if (editing && !dragging) return <Hint chrome="text-hint" text={t('canvas.textEdit.hint')} />;
   // Alt held over the canvas: the distances are measured (the canonical toolbar's hint)
-  if (altMeasuring && dragging === null) return <Hint chrome="measure-hint" text={t('canvas.measure.hint')} />;
-  if (mode === NO_MODE || dragging !== null) return null;
+  if (altMeasuring && !dragging) return <Hint chrome="measure-hint" text={t('canvas.measure.hint')} />;
+  if (mode === NO_MODE || dragging) return null;
   return <Hint chrome="mode-hint" text={t('canvas.editMode.hint', { mode: t(`canvas.editMode.${mode}` as MessageId) })} />;
 }
 
@@ -143,7 +154,8 @@ function CanvasToolbar() {
     const fit = () => {
       const drawnCompact = element.classList.contains('is-compact');
       element.classList.remove('is-compact');
-      const cut = [...element.querySelectorAll<HTMLElement>('.canvas-toolbar__hint')].some((hint) => hint.scrollWidth > hint.clientWidth + 0.5);
+      // cut sideways (a key longer than the room) or below (more lines than the toolbar holds)
+      const cut = [...element.querySelectorAll<HTMLElement>('.canvas-toolbar__hint')].some((hint) => hint.scrollWidth > hint.clientWidth + 0.5 || hint.scrollHeight > hint.clientHeight + 0.5);
       const overflows = cut || element.scrollWidth > element.clientWidth + 0.5;
       element.classList.toggle('is-compact', drawnCompact);
       setCompact(overflows);
@@ -275,7 +287,7 @@ function StateBadge() {
   return (
     <div className="canvas-state-badge" data-canvas-badge="state">
       {/* its words in a box of their own: the selection's label keeps clear of them (BAND_WORDS, DCS-064) */}
-      <span>{t('canvas.badge.editingState', { state: t(state.labelKey as MessageId) })}</span>
+      <span>{t('canvas.badge.editingState', { state: stateName(state, t) })}</span>
     </div>
   );
 }

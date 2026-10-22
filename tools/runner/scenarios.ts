@@ -1793,6 +1793,20 @@ async function runStep(page: Page, step: Step, ref: string, held: { current: Hel
     await page.keyboard.type(barLabel(d, { ...d.args, ...own }, nameOf));
     await expect(control(page, ref, { args: own }), `step ${ref}: the command bar offers it`).toBeVisible();
     await control(page, ref, { args: own }).click();
+  } else if (d.kind === 'panel-drag' && d.source === 'explorer-row' && step.drop !== null) {
+    // An image of the project dragged from its Explorer row onto the canvas (spec explorer-assets-use; DCS-071):
+    // pressed on the row that stands for the file the step's path names, moved over the node the step's drop names,
+    // released.
+    const row = page.locator(`[data-file="${String(args.path)}"] .row__main`);
+    await expect(row, `step ${ref}: the file's row is drawn`).toHaveCount(1);
+    await row.scrollIntoViewIfNeeded();
+    const box = await row.boundingBox();
+    if (box === null) throw new Error(`step ${ref}: the file's row is not laid out`);
+    const to = await nodePoint(page, nodeAt(document, step.drop.reference).id, isRoot(document, step.drop.reference), step.drop.reference);
+    await page.mouse.move(Math.round(box.x + box.width / 2), Math.round(box.y + box.height / 2));
+    await page.mouse.down();
+    await page.mouse.move(Math.round(to.x), Math.round(to.y), { steps: 12 });
+    await page.mouse.up();
   } else if (d.kind === 'panel-drag' && d.source === 'data-column') {
     // A column of the Data panel dragged onto an element's part in Connect fields (spec content-data, "binding"):
     // pressed on the column the step's field names, moved onto the part its node and target stand for, released there.

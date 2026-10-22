@@ -292,25 +292,29 @@
       "id": "hover",
       "labelKey": "styleState.hover",
       "pseudo": ":hover",
-      "elements": null
+      "elements": null,
+      "ancestor": true
     },
     {
       "id": "focus",
       "labelKey": "styleState.focus",
       "pseudo": ":focus",
-      "elements": null
+      "elements": null,
+      "ancestor": true
     },
     {
       "id": "focus-visible",
       "labelKey": "styleState.focusVisible",
       "pseudo": ":focus-visible",
-      "elements": null
+      "elements": null,
+      "ancestor": true
     },
     {
       "id": "active",
       "labelKey": "styleState.active",
       "pseudo": ":active",
-      "elements": null
+      "elements": null,
+      "ancestor": true
     },
     {
       "id": "visited",
@@ -395,6 +399,73 @@
         "input",
         "textarea",
         "select"
+      ]
+    },
+    {
+      "id": "checked",
+      "labelKey": "styleState.checked",
+      "pseudo": ":checked",
+      "elements": [
+        "input",
+        "option"
+      ]
+    },
+    {
+      "id": "focus-within",
+      "labelKey": "styleState.focusWithin",
+      "pseudo": ":focus-within",
+      "elements": null,
+      "ancestor": true
+    },
+    {
+      "id": "odd",
+      "labelKey": "styleState.odd",
+      "pseudo": ":nth-child(odd)",
+      "elements": null
+    },
+    {
+      "id": "even",
+      "labelKey": "styleState.even",
+      "pseudo": ":nth-child(even)",
+      "elements": null
+    },
+    {
+      "id": "empty",
+      "labelKey": "styleState.empty",
+      "pseudo": ":empty",
+      "elements": null
+    },
+    {
+      "id": "placeholder",
+      "labelKey": "styleState.placeholder",
+      "pseudo": "::placeholder",
+      "elements": [
+        "input",
+        "textarea"
+      ]
+    },
+    {
+      "id": "selection",
+      "labelKey": "styleState.selection",
+      "pseudo": "::selection",
+      "elements": null
+    },
+    {
+      "id": "marker",
+      "labelKey": "styleState.marker",
+      "pseudo": "::marker",
+      "elements": [
+        "listItem",
+        "summary"
+      ]
+    },
+    {
+      "id": "current",
+      "labelKey": "styleState.current",
+      "pseudo": "[aria-current=\"page\"]",
+      "elements": [
+        "link",
+        "linkBlock"
       ]
     }
   ],

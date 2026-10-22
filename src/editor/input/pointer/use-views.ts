@@ -15,6 +15,14 @@ export function usePointerValue<K extends Published>(key: K): ReturnType<Pointer
   return useSyncExternalStore(view.subscribe, view.get);
 }
 
+// What a control draws of a pointer view, derived from it: the control redraws when the derived value changes (by
+// Object.is, so select returns a primitive or a reference it keeps), not at every change of the view. A drag changes
+// at every pointer move; a control that only says whether one goes on, or one Layers row's own mark, stays as drawn.
+export function usePointerSelect<K extends Published, T>(key: K, select: (value: ReturnType<PointerViews[K]['get']>) => T): T {
+  const view = usePointerViews()[key] as { get: () => ReturnType<PointerViews[K]['get']>; subscribe: (listener: () => void) => () => void };
+  return useSyncExternalStore(view.subscribe, () => select(view.get()));
+}
+
 // whether the key that duplicates a drag is held (pointer.ts duplicating)
 export function useDuplicating(): boolean {
   const store = useStore();

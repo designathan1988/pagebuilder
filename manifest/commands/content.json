@@ -68,7 +68,9 @@
             "sortSecond",
             "offset",
             "limit",
-            "clear"
+            "clear",
+            "pageSize",
+            "paging"
           ],
           "optional": false
         },
@@ -317,6 +319,62 @@
           "args": {
             "part": "clear"
           }
+        },
+        {
+          "id": "data-page-size",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "data-collections",
+          "panel": "data",
+          "control": "page-size",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "data.pageSize",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "data-collection",
+            "order": 19
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "part": "pageSize"
+          }
+        },
+        {
+          "id": "data-paging",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "data-collections",
+          "panel": "data",
+          "control": "paging",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "data.paging",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "data-collection",
+            "order": 20
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "part": "paging"
+          }
         }
       ]
     },
@@ -519,7 +577,15 @@
             "number",
             "date",
             "link",
-            "boolean"
+            "boolean",
+            "reference",
+            "multireference",
+            "option",
+            "slug",
+            "email",
+            "file",
+            "video",
+            "colour"
           ],
           "optional": false
         }
@@ -601,12 +667,35 @@
             "number",
             "date",
             "link",
-            "boolean"
+            "boolean",
+            "reference",
+            "multireference",
+            "option",
+            "slug",
+            "email",
+            "file",
+            "video",
+            "colour"
           ],
           "optional": true
         },
         "decimals": {
           "type": "integer",
+          "values": [],
+          "optional": true
+        },
+        "target": {
+          "type": "string",
+          "values": [],
+          "optional": true
+        },
+        "options": {
+          "type": "string",
+          "values": [],
+          "optional": true
+        },
+        "from": {
+          "type": "string",
           "values": [],
           "optional": true
         }
@@ -627,7 +716,11 @@
         "status.data.locked",
         "status.data.listOwned",
         "status.regions.conflict",
-        "status.regions.locked"
+        "status.regions.locked",
+        "status.data.badField",
+        "status.data.noTarget",
+        "status.data.slugTaken",
+        "status.data.slugSource"
       ],
       "confirmation": null,
       "history": {
@@ -707,6 +800,84 @@
           "placement": {
             "region": "data-collection",
             "order": 7
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "data-field-target",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "data-collections",
+          "panel": "data",
+          "control": "field-target",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "data.fieldTarget",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "data-collection",
+            "order": 8
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "data-field-options",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "data-collections",
+          "panel": "data",
+          "control": "field-options",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "data.fieldOptions",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "data-collection",
+            "order": 9
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "data-field-from",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "data-collections",
+          "panel": "data",
+          "control": "field-from",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "data.fieldFrom",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "data-collection",
+            "order": 18
           },
           "adapter": {
             "selection": "none",
@@ -885,7 +1056,8 @@
         "status.data.locked",
         "status.data.listOwned",
         "status.regions.conflict",
-        "status.regions.locked"
+        "status.regions.locked",
+        "status.data.slugTaken"
       ],
       "confirmation": null,
       "history": {
@@ -1228,7 +1400,13 @@
             "number",
             "date",
             "link",
-            "boolean"
+            "boolean",
+            "option",
+            "slug",
+            "email",
+            "file",
+            "video",
+            "colour"
           ],
           "optional": false
         }
@@ -1356,7 +1534,8 @@
         "status.data.locked",
         "status.data.listOwned",
         "status.regions.conflict",
-        "status.regions.locked"
+        "status.regions.locked",
+        "status.data.slugTaken"
       ],
       "confirmation": null,
       "history": {
@@ -1447,7 +1626,8 @@
         "status.data.locked",
         "status.data.listOwned",
         "status.regions.conflict",
-        "status.regions.locked"
+        "status.regions.locked",
+        "status.data.slugTaken"
       ],
       "confirmation": null,
       "history": {
@@ -1646,6 +1826,283 @@
       ]
     },
     {
+      "id": "data.formatBinding",
+      "labelKey": "command.data.formatBinding",
+      "owner": "src/core/data/commands.ts",
+      "introducedBy": "data-binding",
+      "args": {
+        "node": {
+          "type": "node",
+          "values": [],
+          "optional": false
+        },
+        "to": {
+          "type": "enum",
+          "values": [
+            "text",
+            "image",
+            "alt",
+            "link"
+          ],
+          "optional": false
+        },
+        "format": {
+          "type": "enum",
+          "values": [
+            "plain",
+            "grouped",
+            "currency",
+            "percent",
+            "date-short",
+            "date-medium",
+            "date-long",
+            "date-full",
+            "month-year",
+            "yes-no",
+            "true-false",
+            "on-off"
+          ],
+          "optional": true
+        },
+        "currency": {
+          "type": "enum",
+          "values": [
+            "BRL",
+            "USD",
+            "EUR",
+            "GBP",
+            "JPY",
+            "CAD",
+            "AUD",
+            "CHF",
+            "CNY",
+            "INR",
+            "MXN",
+            "ARS",
+            "CLP",
+            "COP"
+          ],
+          "optional": true
+        }
+      },
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [
+        "status.data.notBound",
+        "status.locked.edit",
+        "status.locked.byAncestor",
+        "status.data.badValue",
+        "status.data.imageNotFound",
+        "status.data.badLink",
+        "status.data.pageLink",
+        "status.data.locked",
+        "status.data.listOwned",
+        "status.regions.conflict",
+        "status.regions.locked"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "data-bind-format",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "data-binding",
+          "panel": "data",
+          "control": "bind-format",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "data.bindFormat",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "data-mapping",
+            "order": 5
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "data-bind-currency",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "data-binding",
+          "panel": "data",
+          "control": "bind-currency",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "data.bindCurrency",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "data-mapping",
+            "order": 6
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        }
+      ]
+    },
+    {
+      "id": "data.showWhen",
+      "labelKey": "command.data.showWhen",
+      "owner": "src/core/data/commands.ts",
+      "introducedBy": "data-binding",
+      "args": {
+        "node": {
+          "type": "node",
+          "values": [],
+          "optional": false
+        },
+        "field": {
+          "type": "string",
+          "values": [],
+          "optional": false
+        },
+        "when": {
+          "type": "enum",
+          "values": [
+            "filled",
+            "empty",
+            "eq",
+            "neq"
+          ],
+          "optional": true
+        },
+        "value": {
+          "type": "string",
+          "values": [],
+          "optional": true
+        }
+      },
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [
+        "status.locked.edit",
+        "status.locked.byAncestor",
+        "status.data.badValue",
+        "status.data.imageNotFound",
+        "status.data.badLink",
+        "status.data.pageLink",
+        "status.data.locked",
+        "status.data.listOwned",
+        "status.regions.conflict",
+        "status.regions.locked"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "data-show-field",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "data-binding",
+          "panel": "data",
+          "control": "show-field",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "data.showField",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "data-mapping",
+            "order": 7
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "data-show-when",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "data-binding",
+          "panel": "data",
+          "control": "show-when",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "data.showWhenLabel",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "data-mapping",
+            "order": 8
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "data-show-value",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "data-binding",
+          "panel": "data",
+          "control": "show-value",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "data.showValue",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "data-mapping",
+            "order": 9
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        }
+      ]
+    },
+    {
       "id": "data.fill",
       "labelKey": "command.data.fill",
       "owner": "src/core/data/commands.ts",
@@ -1666,6 +2123,11 @@
           "type": "json",
           "values": [],
           "optional": false
+        },
+        "via": {
+          "type": "string",
+          "values": [],
+          "optional": true
         }
       },
       "availability": {
@@ -1690,7 +2152,9 @@
         "status.data.locked",
         "status.data.listOwned",
         "status.regions.conflict",
-        "status.regions.locked"
+        "status.regions.locked",
+        "status.data.viaField",
+        "status.data.nestedAlone"
       ],
       "confirmation": null,
       "history": {
@@ -1718,6 +2182,32 @@
           "placement": {
             "region": "data-mapping",
             "order": 2
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "data-fill-nested",
+          "kind": "panel-control",
+          "drawnAs": "primary",
+          "pressed": false,
+          "feature": "data-binding",
+          "panel": "data",
+          "control": "fill-nested",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.data.fillNested",
+          "faceLabelKey": "data.fillNestedFace",
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "data-mapping",
+            "order": 4
           },
           "adapter": {
             "selection": "none",
@@ -1874,7 +2364,6 @@
         "refusalKey": null
       },
       "refusals": [
-        "status.data.emptyName",
         "status.data.templateIsItemPage",
         "status.data.badValue",
         "status.data.imageNotFound",
@@ -1883,7 +2372,8 @@
         "status.data.locked",
         "status.data.listOwned",
         "status.regions.conflict",
-        "status.regions.locked"
+        "status.regions.locked",
+        "status.data.templateExists"
       ],
       "confirmation": null,
       "history": {
@@ -1911,6 +2401,71 @@
           "placement": {
             "region": "data-pages",
             "order": 2
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        }
+      ]
+    },
+    {
+      "id": "pages.previewItem",
+      "labelKey": "command.pages.previewItem",
+      "owner": "src/core/data/commands.ts",
+      "introducedBy": "data-pages",
+      "args": {
+        "item": {
+          "type": "string",
+          "values": [],
+          "optional": false
+        }
+      },
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [
+        "status.data.notTemplate",
+        "status.stale",
+        "status.data.badValue",
+        "status.data.imageNotFound",
+        "status.data.badLink",
+        "status.data.pageLink",
+        "status.data.locked",
+        "status.data.listOwned",
+        "status.regions.conflict",
+        "status.regions.locked"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "data-preview-item",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "data-pages",
+          "panel": "data",
+          "control": "preview-item",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "data.previewItem",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "data-pages",
+            "order": 3
           },
           "adapter": {
             "selection": "none",

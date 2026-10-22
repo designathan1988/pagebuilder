@@ -139,19 +139,26 @@ export function Insert() {
   }, []);
   return (
     <section className="view" aria-label={t('activity.insert')} data-region="insert">
-      <ViewTitle panel="elements" title={t('activity.insert')} />
-      <InsertDestination />
+      {/* the view's head stays at its top while the tiles scroll under it: its title, where a click inserts, the search
+          and the densities (a search scrolled away with the tiles, so a person far down the list had to scroll back up
+          to look for another element) */}
+      <div className="insert__head">
+        <ViewTitle panel="elements" title={t('activity.insert')} />
+        <InsertDestination />
+        <div className="insert insert__controls">
+          <input className="search" type="search" placeholder={t('insert.search')} aria-label={t('insert.search')} data-local="search" value={query} onChange={(event) => setQuery(event.target.value)} />
+          {/* the densities, each the small button of its icon with its name as its tooltip (the canonical .seg.icons);
+              they are one Tab stop, the density shown, and the arrows move among them (a roving group) */}
+          <div className="segmented segmented--icons" role="group">
+            <Slots region="insert" render={(slot) => (slot.kind === 'door' && drawnAs(slot.entry) === 'segment' ? <DoorControl key={slot.entry.ref} entry={slot.entry} roving /> : null)} />
+          </div>
+        </div>
+      </div>
       <div
         className={`insert insert--${density}`}
         onFocus={(event) => setAim('focused', tileOf(event.target))}
         onBlur={() => setAim('focused', null)}
       >
-        <input className="search" type="search" placeholder={t('insert.search')} aria-label={t('insert.search')} data-local="search" value={query} onChange={(event) => setQuery(event.target.value)} />
-        {/* the densities, each the small button of its icon with its name as its tooltip (the canonical .seg.icons); they
-            are one Tab stop, the density shown, and the arrows move among them (a roving group) */}
-        <div className="segmented segmented--icons" role="group">
-          <Slots region="insert" render={(slot) => (slot.kind === 'door' && drawnAs(slot.entry) === 'segment' ? <DoorControl key={slot.entry.ref} entry={slot.entry} roving /> : null)} />
-        </div>
         {groups.map(({ group: g, entries }) => {
           if (searching && entries.length === 0) return null;
           // a search shows every group that matches, collapsed or not

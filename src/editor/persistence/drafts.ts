@@ -7,7 +7,7 @@ import type { CommandArgs } from '../../generated/commands.ts';
 import { startEdit } from '../canvas/text-edit.ts';
 import { setOpen } from '../quick-panel/quick-panel.ts';
 import { setStyleTarget } from '../inspector/style-target.ts';
-import { activeLayer, setStyleState, STATES } from '../view/style-state.ts';
+import { activeLayer, BASE_STATE, setStyleState, styleStateOf } from '../view/style-state.ts';
 import { setBreakpoint } from '../view/breakpoints.ts';
 import { keyframeTarget, setPlayheadCommand, showAnimationCommand, timelineOf } from '../timeline/playhead.ts';
 import { setPanelOpen } from '../workspace/panels.ts';
@@ -178,8 +178,9 @@ export function startDrafts(owner: EditorStore, currentRevision: () => number, c
     const draft = held;
     const breakpoint = draft.context.breakpoint ?? null;
     if (breakpoint !== null && activeLayer(owner.getState()).breakpoint !== breakpoint) owner.dispatch(setBreakpoint.command, { breakpoint } as CommandArgs[typeof setBreakpoint.command]);
-    const styleState = STATES.find(s => s.id === draft.context.styleState);
-    if (styleState) owner.dispatch(setStyleState.command, { state: styleState.id as CommandArgs[typeof setStyleState.command]['state'] });
+    // a state of properties.json, a child position or a parent state (core/style/state-keys.ts)
+    const styleState = draft.context.styleState === null ? BASE_STATE : styleStateOf(draft.context.styleState);
+    if (styleState.id !== BASE_STATE.id) owner.dispatch(setStyleState.command, { state: styleState.id as CommandArgs[typeof setStyleState.command]['state'] });
     if (draft.context.styleTarget && owner.getState().document.classes?.some(c => c.name === draft.context.styleTarget)) owner.dispatch(setStyleTarget.command, { target: 'class', className: draft.context.styleTarget });
     // the keyframe the typing began on: the Timeline open, its animation shown and the playhead where it was
     const keyframe = draft.context.keyframe ?? null;

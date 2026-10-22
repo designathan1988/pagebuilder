@@ -15,6 +15,7 @@ import { IDLE, type Effect, type Press } from './machine.ts';
 import { argsFor, clickDoor, editEndDoor, laysGrid, type PressFacts } from './press.ts';
 import { CONTAINERS, isInside, ROW_DROP, ROW_SELECT } from '../drop-proposals.ts';
 import type { Inserting } from './views.ts';
+import { explorerImageDrop, hideExplorerImageDrag } from '../file-drop.ts';
 import { viewportWidth } from '../../view/breakpoints.ts';
 import { zoomOf } from '../../view/camera.ts';
 import { MARQUEE, MARQUEE_ELEMENT, marqueeMode, ELEMENT_DRAGS, FREE_DRAG, dropDoor, DUPLICATE_KEY, DUPLICATE_DRAG, DRAG_MODIFIERS, DRAG_ONLY_MODIFIERS, tileDrag, SIDE_ELEMENT, wrapped, sideTileFor, FRAME_EDGE, EXPLORER_OPEN, pickingOf } from './common.ts';
@@ -89,7 +90,7 @@ export function pointerEffects(p: PointerOwner): Pick<PointerOwner, 'factsOf' | 
       // a press on the quick panel's grip starts its drag, which the moves run
       if (press.on === 'grip') ps.gripping = { press, start: ps.machine.start };
       // a press on a row of the Explorer's tree starts its drag; the moves mark the folder under the pointer
-      if (press.on === 'explorer') ps.exploring = { press, over: null };
+      if (press.on === 'explorer') ps.exploring = { press, over: null, onCanvas: false };
       // a press on a column of the Data panel starts its drag; the moves mark the element's part under the pointer
       if (press.on === 'column') ps.columning = { press, over: null };
       // a press on a splitter starts its drag, which the moves run; the size it shows now is the one Escape puts back
@@ -200,9 +201,15 @@ export function pointerEffects(p: PointerOwner): Pick<PointerOwner, 'factsOf' | 
       if (ps.exploring !== null && effect === 'commit' && ps.exploring.press.path !== '') {
         const into = ps.exploring.over;
         const exploringNow = ps.exploring.press;
+        // an image released over the canvas lands where the drag showed it (input/file-drop.ts; DCS-071)
+        const placed = ps.exploring.onCanvas ? explorerImageDrop(store, exploringNow.path, ps.pointerAt) : null;
         // a release over a folder moves the file there; a release anywhere else (a click) opens it in the code pane
-        if (into !== null) closing?.dispatch(exploringNow.entry.command.id as CommandId, { ...exploringNow.entry.door.args, ...exploringNow.args, to: into } as never);
+        if (placed !== null) closing?.dispatch(placed.door.command.id as CommandId, placed.args as never);
+        else if (into !== null) closing?.dispatch(exploringNow.entry.command.id as CommandId, { ...exploringNow.entry.door.args, ...exploringNow.args, to: into } as never);
         else if (EXPLORER_OPEN !== null) closing?.dispatch(EXPLORER_OPEN.command.id as CommandId, { ...EXPLORER_OPEN.door.args, path: exploringNow.path } as never);
+      }
+      if (ps.exploring !== null) {
+        if (ps.exploring.onCanvas) hideExplorerImageDrag(store);
         document.querySelectorAll('[data-folder].is-over').forEach((el) => el.classList.remove('is-over'));
       }
       ps.exploring = null;

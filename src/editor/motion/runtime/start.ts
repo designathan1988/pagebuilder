@@ -99,6 +99,48 @@ export function startMotion(win: Window, config: RuntimeConfig, factories: Facto
     }
   }
 
+  // An interaction's condition (core/motion/model.ts MotionCondition), read on the element its trigger fired on when it
+  // fires: a class, the breakpoint, a variable of the application layer (its bridge, app-runtime/runtime.js), a state.
+  const appValue = (text: string): unknown => {
+    try {
+      return JSON.parse(text) as unknown;
+    } catch {
+      // not JSON: the text itself
+      return text;
+    }
+  };
+  const holds = (condition: NonNullable<RuntimeConfig['bindings'][number]['interaction']['condition']>, source: Element): boolean => {
+    const element = source as HTMLElement & { open?: unknown; checked?: unknown; selected?: unknown; disabled?: unknown };
+    let held: boolean;
+    if (condition.kind === 'class') held = source.classList.contains(condition.name);
+    else if (condition.kind === 'breakpoint') held = kit.activeBreakpoint() === condition.name;
+    else if (condition.kind === 'state') {
+      const aria = (name: string): boolean => source.getAttribute(name) === 'true';
+      if (condition.name === 'open') held = element.open === true || source.hasAttribute('open') || source.getAttribute('data-state') === 'open';
+      else if (condition.name === 'checked') held = element.checked === true || aria('aria-checked') || aria('aria-pressed');
+      else if (condition.name === 'expanded') held = aria('aria-expanded');
+      else if (condition.name === 'selected') held = element.selected === true || aria('aria-selected');
+      else held = element.disabled === true || aria('aria-disabled');
+    } else {
+      const bridge = (win as Window & { __builderApp?: { get(name: string): unknown } }).__builderApp;
+      const value = bridge === undefined ? undefined : bridge.get(condition.name);
+      const compare = condition.compare ?? 'set';
+      const wanted = appValue(condition.value ?? '');
+      const filled = value !== undefined && value !== null && value !== false && value !== 0 && value !== '' && !(Array.isArray(value) && value.length === 0);
+      if (compare === 'set') return filled;
+      if (compare === 'unset') return !filled;
+      if (compare === 'greater') return Number(value) > Number(wanted);
+      if (compare === 'less') return Number(value) < Number(wanted);
+      const same = value === wanted || String(value) === String(wanted);
+      return compare === 'equals' ? same : !same;
+    }
+    return condition.not === true ? !held : held;
+  };
+  // the entrances: a trigger that fires once the page is there (its load, the element coming into view, a time after
+  // it), played forwards — with less motion asked, its element shows its end state from the start, never its first
+  // keyframe first (core/motion/first-paint.ts writes no first state for it either)
+  const ENTRANCES = ['page-load', 'scroll-into-view', 'timer'];
+
   for (const binding of options.triggers === false ? [] : config.bindings) {
     const interaction = binding.interaction;
     const respect = interaction.reducedMotion !== 'ignore';
@@ -107,7 +149,9 @@ export function startMotion(win: Window, config: RuntimeConfig, factories: Facto
     for (const source of all(binding.selector)) {
       const run = kit.player.run(interaction.timeline, source);
       if (run === null) continue;
-      const applies = (): boolean => interaction.breakpoints === undefined || interaction.breakpoints.includes(kit.activeBreakpoint());
+      const applies = (): boolean =>
+        (interaction.breakpoints === undefined || interaction.breakpoints.includes(kit.activeBreakpoint())) && (interaction.condition === undefined || holds(interaction.condition, source));
+      if (respect && kit.reducedMotion() && ENTRANCES.includes(interaction.trigger.kind) && (interaction.control === 'play' || interaction.control === 'restart') && applies()) kit.player.apply(run, 'play', true);
       let fired = false;
       let pending = 0;
       const later = (act: () => void): void => {
@@ -139,7 +183,7 @@ export function startMotion(win: Window, config: RuntimeConfig, factories: Facto
       const kind = interaction.trigger.kind;
       // a scroll progress trigger rides the browser's own scroll timeline when it can: off the main thread
       const scrolling = kind === 'while-visible' || kind === 'page-scroll';
-      if (scrolling && interaction.breakpoints === undefined && !(respect && kit.reducedMotion()) && run.attachScroll(kind, start, end)) continue;
+      if (scrolling && interaction.breakpoints === undefined && interaction.condition === undefined && !(respect && kit.reducedMotion()) && run.attachScroll(kind, start, end)) continue;
       disposers.push(kit.triggers.bind(interaction.trigger, source, handlers, { start, end }));
       disposers.push(() => win.clearTimeout(pending));
     }
@@ -148,6 +192,10 @@ export function startMotion(win: Window, config: RuntimeConfig, factories: Facto
   for (const { selector, behaviour } of options.triggers === false ? [] : config.behaviours) {
     for (const element of all(selector)) disposers.push(kit.behaviours.install(element, behaviour));
   }
+
+  // every run holds its first state now: the first-paint rules that held it until here go, in this same task, so no
+  // frame draws the page between the two (core/motion/first-paint.ts FIRST_PAINT_CLASS)
+  if (options.mode === 'page') win.document.documentElement.classList.remove('bm-motion-start');
 
   const runsOf = (timeline: string, source?: Element | null) => kit.player.runs().filter((run) => run.timeline.name === timeline && (source === undefined || source === null || run.source === source));
 
