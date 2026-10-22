@@ -3570,7 +3570,7 @@
   "breakpoints.removeMenu": "Remove {name}",
   "command.resizeViewport": "Drag the frame's edge to change the width",
   "command.toggleSideBySide": "Side by side",
-  "command.selectTool": "Select (V)",
+  "command.selectTool": "Select",
   "sideBySide.edit": "Edit at this breakpoint",
   "sideBySide.label": "The other breakpoints, side by side",
   "feature.sideBySideView": "Breakpoints side by side",

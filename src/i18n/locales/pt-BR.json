@@ -3570,7 +3570,7 @@
   "breakpoints.removeMenu": "Remover {name}",
   "command.resizeViewport": "Arraste a borda do quadro para mudar a largura",
   "command.toggleSideBySide": "Lado a lado",
-  "command.selectTool": "Seleção (V)",
+  "command.selectTool": "Seleção",
   "sideBySide.edit": "Editar neste breakpoint",
   "sideBySide.label": "Os outros breakpoints, lado a lado",
   "feature.sideBySideView": "Breakpoints lado a lado",
