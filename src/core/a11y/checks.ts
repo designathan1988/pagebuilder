@@ -211,6 +211,13 @@ export function checksOf(document: DocumentJson, properties: CheckProperties): r
     }
     return node.children.reduce((carried, child) => visit(child, isHidden, own, carried, inLabel || node.tag === 'label'), heading);
   };
-  for (const page of document.pages) visit(page.tree, false, null, 0);
+  for (const page of document.pages) {
+    // what search engines and a shared link show of the page: its title and its description (the SEO category had no
+    // check, and a page with neither passed with "No issues")
+    const attributes = page.tree.attributes as Readonly<Record<string, unknown>>;
+    if (String(attributes.pageTitle ?? '').trim() === '') issues.push({ node: page.tree.id, category: 'seo', rule: 'checks.pageTitle', fix: 'checks.pageTitle.fix' });
+    if (String(attributes.pageDescription ?? '').trim() === '') issues.push({ node: page.tree.id, category: 'seo', rule: 'checks.pageDescription', fix: 'checks.pageDescription.fix' });
+    visit(page.tree, false, null, 0);
+  }
   return issues;
 }

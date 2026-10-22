@@ -95,7 +95,9 @@ function useIssueWords(): (issue: CheckIssue) => { category: string; name: strin
   const document = useEditorState((s) => s.document);
   return (issue) => {
     const category = manifest.checks.categories.find((one) => one.id === issue.category);
-    return { category: t((category?.labelKey ?? 'checks.title') as MessageId), name: locate(document, issue.node)?.node.name ?? '' };
+    // a page's own issue (its title, its description) names the page (Home), not its root layer (Page)
+    const page = document.pages.find((one) => one.tree.id === issue.node);
+    return { category: t((category?.labelKey ?? 'checks.title') as MessageId), name: page?.name ?? locate(document, issue.node)?.node.name ?? '' };
   };
 }
 function Checks() {
