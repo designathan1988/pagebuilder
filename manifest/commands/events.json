@@ -29,17 +29,17 @@
             "show",
             "hide",
             "toggle",
-            "toggle-class",
-            "play-animation",
-            "scroll-to",
-            "open-link",
             "add-class",
             "remove-class",
+            "toggle-class",
+            "scroll-to",
+            "open-link",
             "focus",
             "open-dialog",
             "close-dialog",
             "play-media",
-            "pause-media"
+            "pause-media",
+            "play-animation"
           ],
           "optional": true
         },

@@ -146,6 +146,8 @@ export function PanelField({
   }, [store, command]);
   const keep = (event: FormEvent) => {
     event.preventDefault();
+    // Enter is done with the list, as a choice from it is
+    closeList();
     // nothing typed since the field last showed the document's value: nothing to keep (the draft is that old value)
     if (!edited) return;
     const refused = runWith(accept === undefined ? draft : accept(draft)) && newName;

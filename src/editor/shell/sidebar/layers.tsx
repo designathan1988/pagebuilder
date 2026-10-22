@@ -263,6 +263,20 @@ const LayersRow = memo(function LayersRow({ node, depth, view }: { readonly node
     const onName = on !== null && on !== event.currentTarget && on.getAttribute('data-door') === LAYERS_NAME.ref;
     if (on !== event.currentTarget && !onName) return;
     const held = modifierOf(event);
+    // while a target is being picked, a press on the row picks it, as its pick button does (the person points at the
+    // row, not at the small button at its end); selecting would leave the card being picked for
+    const dispatch = store.dispatch as (id: CommandId, args: unknown) => DispatchResult;
+    const ui = store.getState().ui;
+    const picking = pickingTarget(ui);
+    const motion = motionPicking(ui);
+    if (held === null && picking !== null && LAYERS_PICK !== null) {
+      dispatch(LAYERS_PICK.command.id as CommandId, { ...LAYERS_PICK.door.args, interaction: picking, changes: { target: node.id } });
+      return;
+    }
+    if (held === null && motion !== null && LAYERS_MOTION_PICK !== null) {
+      dispatch(LAYERS_MOTION_PICK.command.id as CommandId, { ...LAYERS_MOTION_PICK.door.args, timeline: motion.timeline, action: motion.action, value: { kind: 'element', node: node.id } });
+      return;
+    }
     if (held === null) {
       if (onName && event.detail === NAME_CLICKS) rename.run();
       else door.run();

@@ -259,13 +259,18 @@ function changedByText(node: DocNode, interaction: Interaction, field: string, t
   }
   if (field === 'action') {
     if (!applicableActions(node).includes(typed)) return { refused: message('status.interactions.notApplicable', { name: { key: actionLabel(typed) }, element: node.name }) };
-    // a new action takes the values it needs with it: what the old one held goes
-    const { className: _c, animation: _a, address: _ad, newTab: _n, ...rest } = interaction;
-    void _c;
-    void _a;
-    void _ad;
-    void _n;
-    return { next: { ...rest, action: typed } };
+    // a new action keeps the values it needs too (Add class → Remove class keeps the class typed); the rest goes
+    const { className, animation, address, newTab, ...rest } = interaction;
+    return {
+      next: {
+        ...rest,
+        action: typed,
+        ...(needsClassName(typed) && className !== undefined ? { className } : {}),
+        ...(needsAnimation(typed) && animation !== undefined ? { animation } : {}),
+        ...(needsAddress(typed) && address !== undefined ? { address } : {}),
+        ...(needsAddress(typed) && newTab !== undefined ? { newTab } : {}),
+      },
+    };
   }
   // the action's own value: the class it toggles, the animation it plays, the address it opens
   if (field === 'value') {

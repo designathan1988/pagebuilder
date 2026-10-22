@@ -772,13 +772,13 @@
   visibility: hidden;
 }
 
-/* while a target is picked, a row at rest shows the pick button alone and keeps the room of that one button: the room of
-   every action, the others unseen, cut "Parágrafo" to "Parágr…" */
-.row--tree:has(.row__actions .row__button):not(:hover, :focus-visible, :has(:focus-visible)) {
+/* while a target is picked, a row shows the pick button alone, hovered or not (a press anywhere on it picks, layers.tsx),
+   and keeps the room of that one button: the room of every action cut "Parágrafo" to "Parágr…" */
+.row--tree:has(.row__actions .row__button) {
   --row-actions-room: var(--size-target-min);
 }
 
-.row--tree:has(.row__actions .row__button):not(:hover, :focus-visible, :has(:focus-visible)) .row__actions > :not(.row__button) {
+.row--tree:has(.row__actions .row__button) .row__actions > :not(.row__button) {
   display: none;
 }
 
