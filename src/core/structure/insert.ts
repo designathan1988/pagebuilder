@@ -8,12 +8,12 @@
 // new element is named by its type in the person's language, with a number when a node already has that name, holds
 // its default text and styles (elements.json), and becomes the selection.
 import type { NodeId } from '../../generated/commands.ts';
-import type { ElementType, MessageId } from '../../generated/ids.ts';
+import type { BreakpointId, ElementType, MessageId } from '../../generated/ids.ts';
 import type { TemplateNode } from '../../manifest/schema.ts';
 import type { WrapperId } from '../document/validate.ts';
 import { message, registerHandler, registerPredicate, type HandlerContext, type Message, type Outcome } from '../commands/registry.ts';
 import { pageLanguage } from '../export/names.ts';
-import { allNodes, locate, walk, type DocNode, type DocumentJson, type Location, type Selection, type Styles } from '../document/model.ts';
+import { allNodes, locate, walk, type DocNode, type DocumentJson, type Location, type Selection, type StateKey, type Styles } from '../document/model.ts';
 import { releaseReferencesPatch } from '../document/tree.ts';
 import type { ModelRules } from '../document/validate.ts';
 import { placementRefusal } from '../elements/content-model.ts';
@@ -374,7 +374,8 @@ export function pageWordsAt(context: Pick<HandlerContext<unknown>, 'state' | 'wo
 export const insertCommand = registerHandler('element.insert', (context, { entry, parent, index }): Outcome<never> => {
   const { state, ids, rules, words, clock } = context;
   const near = parent ?? state.selection[0];
-  const node = paletteNode(nodeMaker(state.document, rules, ids, words, clock.now(), pageWordsAt(context, near)), entry);
+  const maker = nodeMaker(state.document, rules, ids, words, clock.now(), pageWordsAt(context, near));
+  const node = withPageLinks(maker, state.document, paletteNode(maker, entry));
   const at = insertLanding(state, rules, node, parent, index);
   if (at === null) throw new Error(`element.insert: the document has no node ${String(parent)}`);
   const receiver = at.parent.node;
@@ -406,6 +407,22 @@ export const insertCommand = registerHandler('element.insert', (context, { entry
     message: message('status.placed', { element: node.name, parent: receiver.name, position: at.index + 1, count: receiver.children.length + 1 }),
   };
 });
+
+// A Navigation placed empty was a dashed box: it starts with a link to each page of the project, by the page's name,
+// side by side (a row with its gap), as the link picker writes a page's address; the person removes or reorders them
+function withPageLinks(make: NodeMaker, document: DocumentJson, node: DocNode): DocNode {
+  if (node.type !== 'nav' || node.children.length > 0 || document.pages.length === 0) return node;
+  const breakpoint = make.rules.baseLayer.breakpoint as BreakpointId;
+  const state = make.rules.baseLayer.state as StateKey;
+  const atBreakpoint = node.styles[breakpoint] ?? {};
+  const row = { ...atBreakpoint[state], display: 'flex', 'flex-wrap': 'wrap', 'column-gap': '24px', 'row-gap': '8px' };
+  const styles: Styles = { ...node.styles, [breakpoint]: { ...atBreakpoint, [state]: row } };
+  const links = document.pages.map((page) => {
+    const link = newElement(make, 'link');
+    return { ...link, text: page.name, attributes: { ...link.attributes, href: page.file } };
+  });
+  return { ...node, styles, children: links };
+}
 
 // an entry of the palette an argument names (manifest refers: palette-entry)
 registerReferenceKind('palette-entry', (_document, entry, rules) => rules.palette.has(entry));

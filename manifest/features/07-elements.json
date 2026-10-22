@@ -188,12 +188,29 @@
                           "padding-top": "20px",
                           "padding-right": "40px",
                           "padding-bottom": "20px",
-                          "padding-left": "40px"
+                          "padding-left": "40px",
+                          "display": "flex",
+                          "flex-wrap": "wrap",
+                          "column-gap": "24px",
+                          "row-gap": "8px"
                         }
                       }
                     },
                     "text": null,
-                    "children": []
+                    "children": [
+                      {
+                        "type": "link",
+                        "name": "Link",
+                        "tag": "a",
+                        "attributes": {
+                          "href": "index.html"
+                        },
+                        "classes": [],
+                        "styles": {},
+                        "text": "Home",
+                        "children": []
+                      }
+                    ]
                   }
                 ]
               }
