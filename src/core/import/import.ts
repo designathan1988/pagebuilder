@@ -56,6 +56,7 @@ import { matches, readSelector, type Compound, type Facts, type Selector } from 
 import { nthKey, parentKey } from '../style/state-keys.ts';
 import { linksToFile } from '../render/output.ts';
 import { readDeclarations, readStylesheet, type CssRule, type CssSheet } from './stylesheet.ts';
+import { parseColor } from '../style/color.ts';
 import { baseCss, capturedBaseCss, CAPTURE_BASE_LAYER, widgetStateCss } from '../render/base.ts';
 import { ELEMENTS_HEADING, underClassesHeading } from '../export/sheet-headings.ts';
 import { LISTS_CSS } from '../export/lists.ts';
@@ -904,6 +905,10 @@ function storedDeclarations(builder: Builder, text: string, line: number, file: 
     add(builder.report.declarations, file, line);
     return [];
   }
+  // the background shorthand written with one colour ("background: #fef3c7"), the commonest way a page paints a box:
+  // the shorthand was refused whole and the box imported unpainted. It is that background colour.
+  const value = text.slice(colon + 1).trim();
+  if (property === 'background' && parseColor(value.replace(/!\s*important\s*$/i, '').trim()) !== null) return storedDeclarations(builder, `background-color: ${value}`, line, file);
   const fields = builder.rules.structures.get(property);
   if (fields !== undefined) {
     const layers = shadowLayersFromCss(text.slice(colon + 1), fields);
