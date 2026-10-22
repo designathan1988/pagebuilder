@@ -204,14 +204,14 @@
   "checks.fix.headingLevel": "Use the next level",
   "checks.fix.imageAlt": "Write the Alt text",
   "checks.fix.imageSource": "Choose the Source",
-  "checks.fix.iframeTitle": "Write the Title",
+  "checks.fix.iframeTitle": "Write the Tooltip",
   "checks.fix.linkHref": "Choose the address",
   "checks.formSubmit": "{category} · Form without a submit button in {name}",
   "checks.formSubmit.fix": "Add a button inside it, or set a button’s Button type to submit",
   "checks.headingLevel": "{category} · Heading level skips a step in {name}",
   "checks.headingLevel.fix": "Use the level right below the heading before it",
   "checks.iframeTitle": "{category} · Embedded frame without a title in {name}",
-  "checks.iframeTitle.fix": "Write its Title in Settings",
+  "checks.iframeTitle.fix": "Write its Tooltip in Settings (screen readers name the frame by it)",
   "checks.fieldName": "{category} · Form field without a name in {name}",
   "checks.fieldName.fix": "Put it in a Label, or write its Accessible name in Settings",
   "checks.imageAlt": "{category} · Image without alt text in {name}",
@@ -4498,5 +4498,6 @@
   "interactions.classOverridden.one": "{name} has its own value for {properties}, and it wins over this class. Clear it in Style to let the class decide.",
   "logic.bind.example": "For example {value}",
   "checks.linkTemplate": "{category} · Link to a template page in {name}: the site has one page per item, not this one",
-  "checks.linkTemplate.fix": "Link to one of its item pages in Link to › A page"
+  "checks.linkTemplate.fix": "Link to one of its item pages in Link to › A page",
+  "checks.fix.fieldName": "Write the Accessible name"
 }

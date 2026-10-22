@@ -458,6 +458,7 @@ export const DOOR_IDS = [
   "checks.applyFix#checks-fix-image-source",
   "checks.applyFix#checks-fix-iframe-title",
   "checks.applyFix#checks-fix-link-href",
+  "checks.applyFix#checks-fix-field-name",
   "clipboard.copy#key-ctrl-c-in-global",
   "clipboard.copy#context-menu",
   "clipboard.copy#menu-edit",
@@ -7707,5 +7708,6 @@ export const MESSAGE_IDS = [
   "logic.bind.example",
   "checks.linkTemplate",
   "checks.linkTemplate.fix",
+  "checks.fix.fieldName",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];

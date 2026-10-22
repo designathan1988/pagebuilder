@@ -72,7 +72,7 @@ export interface CommandArgs {
   "breakpoints.remove": { readonly breakpoint: string; readonly styles: "discard" | "wider" | "narrower" };
   "capture.edit": { readonly target: string; readonly operation: "text" | "attribute" | "insert" | "remove" | "move"; readonly name?: string; readonly value?: string; readonly parent?: string; readonly index?: number };
   "capture.select": { readonly target: string };
-  "checks.applyFix": { readonly target: NodeId; readonly rule: "checks.formSubmit" | "checks.headingLevel" | "checks.imageAlt" | "checks.imageSource" | "checks.iframeTitle" | "checks.linkHref" };
+  "checks.applyFix": { readonly target: NodeId; readonly rule: "checks.formSubmit" | "checks.headingLevel" | "checks.imageAlt" | "checks.imageSource" | "checks.iframeTitle" | "checks.linkHref" | "checks.fieldName" };
   "clipboard.copy": Record<string, never>;
   "clipboard.paste": { readonly clipboard: ClipboardContent };
   "clipboard.cut": Record<string, never>;

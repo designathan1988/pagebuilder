@@ -3,10 +3,10 @@
     "features": 218,
     "built": 218,
     "commands": 396,
-    "doors": 1455,
+    "doors": 1456,
     "scenarios": 1909,
     "modules": 534,
-    "lines": 99401,
+    "lines": 99403,
     "fields": 207,
     "interactive": 312
   },
@@ -1730,7 +1730,7 @@
         "workspace.setPanelOpen",
         "checks.applyFix"
       ],
-      "doors": 44,
+      "doors": 45,
       "scenarios": 8
     },
     {

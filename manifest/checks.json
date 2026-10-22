@@ -56,6 +56,12 @@
       "door": "checks.applyFix#checks-fix-link-href",
       "kind": "reveal",
       "attribute": "href"
+    },
+    {
+      "rule": "checks.fieldName",
+      "door": "checks.applyFix#checks-fix-field-name",
+      "kind": "reveal",
+      "attribute": "ariaLabel"
     }
   ]
 }

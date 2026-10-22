@@ -20,7 +20,8 @@
             "checks.imageAlt",
             "checks.imageSource",
             "checks.iframeTitle",
-            "checks.linkHref"
+            "checks.linkHref",
+            "checks.fieldName"
           ],
           "optional": false
         }
@@ -217,6 +218,34 @@
           },
           "args": {
             "rule": "checks.linkHref"
+          }
+        },
+        {
+          "id": "checks-fix-field-name",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "accessibility-checks",
+          "panel": "checks",
+          "control": "fix",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "checks.fix.fieldName",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "dock-checks",
+            "order": 8
+          },
+          "adapter": {
+            "selection": "target",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "rule": "checks.fieldName"
           }
         }
       ]

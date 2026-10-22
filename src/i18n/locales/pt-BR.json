@@ -204,14 +204,14 @@
   "checks.fix.headingLevel": "Usar o próximo nível",
   "checks.fix.imageAlt": "Escrever o texto Alt",
   "checks.fix.imageSource": "Escolher a Origem",
-  "checks.fix.iframeTitle": "Escrever o Título",
+  "checks.fix.iframeTitle": "Escrever a Dica",
   "checks.fix.linkHref": "Escolher o endereço",
   "checks.formSubmit": "{category} · Formulário sem botão de envio em {name}",
   "checks.formSubmit.fix": "Adicione um botão dentro dele ou defina o Tipo de botão de um botão como submit",
   "checks.headingLevel": "{category} · Nível de título pula uma etapa em {name}",
   "checks.headingLevel.fix": "Use o nível logo abaixo do título anterior",
   "checks.iframeTitle": "{category} · Quadro incorporado sem título em {name}",
-  "checks.iframeTitle.fix": "Escreva o Título nas Configurações",
+  "checks.iframeTitle.fix": "Escreva a Dica nas Configurações (leitores de tela nomeiam o quadro por ela)",
   "checks.fieldName": "{category} · Campo de formulário sem nome em {name}",
   "checks.fieldName.fix": "Coloque-o num Rótulo, ou escreva seu Nome acessível em Configurações",
   "checks.imageAlt": "{category} · Imagem sem texto alternativo em {name}",
@@ -4498,5 +4498,6 @@
   "interactions.classOverridden.one": "{name} tem valor próprio para {properties}, e ele vale mais que esta classe. Limpe-o em Estilo para a classe decidir.",
   "logic.bind.example": "Por exemplo {value}",
   "checks.linkTemplate": "{category} · Link para uma página modelo em {name}: o site tem uma página por item, não esta",
-  "checks.linkTemplate.fix": "Aponte para uma das páginas dos itens em Link para › Uma página"
+  "checks.linkTemplate.fix": "Aponte para uma das páginas dos itens em Link para › Uma página",
+  "checks.fix.fieldName": "Escrever o Nome acessível"
 }
