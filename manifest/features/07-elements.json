@@ -10710,7 +10710,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Text",
                     "tag": "input",
                     "attributes": {
                       "inputType": "text"
@@ -10724,7 +10724,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Text"
             ],
             "history": {
               "undoSteps": 1,
@@ -10738,7 +10738,7 @@
                 {
                   "key": "status.placed",
                   "params": {
-                    "element": "Input",
+                    "element": "Text",
                     "parent": "Page",
                     "position": 1,
                     "count": 1
@@ -10802,7 +10802,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Email",
                     "tag": "input",
                     "attributes": {
                       "inputType": "email"
@@ -10816,7 +10816,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Email"
             ],
             "history": {
               "undoSteps": 1,
@@ -10830,7 +10830,7 @@
                 {
                   "key": "status.placed",
                   "params": {
-                    "element": "Input",
+                    "element": "Email",
                     "parent": "Page",
                     "position": 1,
                     "count": 1
@@ -10889,7 +10889,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Password",
                     "tag": "input",
                     "attributes": {
                       "inputType": "password"
@@ -10903,7 +10903,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Password"
             ],
             "history": {
               "undoSteps": 1,
@@ -10917,7 +10917,7 @@
                 {
                   "key": "status.placed",
                   "params": {
-                    "element": "Input",
+                    "element": "Password",
                     "parent": "Page",
                     "position": 1,
                     "count": 1
@@ -10976,7 +10976,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Number",
                     "tag": "input",
                     "attributes": {
                       "inputType": "number"
@@ -10990,7 +10990,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Number"
             ],
             "history": {
               "undoSteps": 1,
@@ -11004,7 +11004,7 @@
                 {
                   "key": "status.placed",
                   "params": {
-                    "element": "Input",
+                    "element": "Number",
                     "parent": "Page",
                     "position": 1,
                     "count": 1
@@ -11063,7 +11063,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Telephone",
                     "tag": "input",
                     "attributes": {
                       "inputType": "tel"
@@ -11077,7 +11077,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Telephone"
             ],
             "history": {
               "undoSteps": 1,
@@ -11091,7 +11091,7 @@
                 {
                   "key": "status.placed",
                   "params": {
-                    "element": "Input",
+                    "element": "Telephone",
                     "parent": "Page",
                     "position": 1,
                     "count": 1
@@ -11150,7 +11150,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "URL",
                     "tag": "input",
                     "attributes": {
                       "inputType": "url"
@@ -11164,7 +11164,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/URL"
             ],
             "history": {
               "undoSteps": 1,
@@ -11178,7 +11178,7 @@
                 {
                   "key": "status.placed",
                   "params": {
-                    "element": "Input",
+                    "element": "URL",
                     "parent": "Page",
                     "position": 1,
                     "count": 1
@@ -11237,7 +11237,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Search",
                     "tag": "input",
                     "attributes": {
                       "inputType": "search"
@@ -11251,7 +11251,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Search"
             ],
             "history": {
               "undoSteps": 1,
@@ -11265,7 +11265,7 @@
                 {
                   "key": "status.placed",
                   "params": {
-                    "element": "Input",
+                    "element": "Search",
                     "parent": "Page",
                     "position": 1,
                     "count": 1
@@ -11324,7 +11324,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Date",
                     "tag": "input",
                     "attributes": {
                       "inputType": "date"
@@ -11338,7 +11338,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Date"
             ],
             "history": {
               "undoSteps": 1,
@@ -11352,7 +11352,7 @@
                 {
                   "key": "status.placed",
                   "params": {
-                    "element": "Input",
+                    "element": "Date",
                     "parent": "Page",
                     "position": 1,
                     "count": 1
@@ -11411,7 +11411,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Time",
                     "tag": "input",
                     "attributes": {
                       "inputType": "time"
@@ -11425,7 +11425,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Time"
             ],
             "history": {
               "undoSteps": 1,
@@ -11439,7 +11439,7 @@
                 {
                   "key": "status.placed",
                   "params": {
-                    "element": "Input",
+                    "element": "Time",
                     "parent": "Page",
                     "position": 1,
                     "count": 1
@@ -11498,7 +11498,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Color",
                     "tag": "input",
                     "attributes": {
                       "inputType": "color"
@@ -11512,7 +11512,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Color"
             ],
             "history": {
               "undoSteps": 1,
@@ -11526,7 +11526,7 @@
                 {
                   "key": "status.placed",
                   "params": {
-                    "element": "Input",
+                    "element": "Color",
                     "parent": "Page",
                     "position": 1,
                     "count": 1
@@ -11585,7 +11585,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Range",
                     "tag": "input",
                     "attributes": {
                       "inputType": "range"
@@ -11599,7 +11599,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Range"
             ],
             "history": {
               "undoSteps": 1,
@@ -11613,7 +11613,7 @@
                 {
                   "key": "status.placed",
                   "params": {
-                    "element": "Input",
+                    "element": "Range",
                     "parent": "Page",
                     "position": 1,
                     "count": 1
@@ -11672,7 +11672,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Checkbox",
                     "tag": "input",
                     "attributes": {
                       "inputType": "checkbox"
@@ -11686,7 +11686,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Checkbox"
             ],
             "history": {
               "undoSteps": 1,
@@ -11700,7 +11700,7 @@
                 {
                   "key": "status.placed",
                   "params": {
-                    "element": "Input",
+                    "element": "Checkbox",
                     "parent": "Page",
                     "position": 1,
                     "count": 1
@@ -11759,7 +11759,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Radio",
                     "tag": "input",
                     "attributes": {
                       "inputType": "radio"
@@ -11773,7 +11773,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Radio"
             ],
             "history": {
               "undoSteps": 1,
@@ -11787,7 +11787,7 @@
                 {
                   "key": "status.placed",
                   "params": {
-                    "element": "Input",
+                    "element": "Radio",
                     "parent": "Page",
                     "position": 1,
                     "count": 1
@@ -11846,7 +11846,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "File",
                     "tag": "input",
                     "attributes": {
                       "inputType": "file"
@@ -11860,7 +11860,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/File"
             ],
             "history": {
               "undoSteps": 1,
@@ -11874,7 +11874,7 @@
                 {
                   "key": "status.placed",
                   "params": {
-                    "element": "Input",
+                    "element": "File",
                     "parent": "Page",
                     "position": 1,
                     "count": 1
@@ -11954,7 +11954,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Text",
                     "tag": "input",
                     "attributes": {
                       "inputType": "text",
@@ -11969,7 +11969,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Text"
             ],
             "history": {
               "undoSteps": 2,
@@ -11984,7 +11984,7 @@
                   "key": "status.attribute.set",
                   "params": {
                     "attribute": "Placeholder",
-                    "name": "Input",
+                    "name": "Text",
                     "value": "Your name"
                   }
                 }
@@ -12067,7 +12067,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Text",
                     "tag": "input",
                     "attributes": {
                       "inputType": "text",
@@ -12082,7 +12082,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Text"
             ],
             "history": {
               "undoSteps": 2,
@@ -12097,7 +12097,7 @@
                   "key": "status.attribute.set",
                   "params": {
                     "attribute": "Value",
-                    "name": "Input",
+                    "name": "Text",
                     "value": "Ada"
                   }
                 }
@@ -12180,7 +12180,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Email",
                     "tag": "input",
                     "attributes": {
                       "inputType": "email",
@@ -12195,7 +12195,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Email"
             ],
             "history": {
               "undoSteps": 2,
@@ -12210,7 +12210,7 @@
                   "key": "status.attribute.set",
                   "params": {
                     "attribute": "Name",
-                    "name": "Input",
+                    "name": "Email",
                     "value": "email"
                   }
                 }
@@ -12293,7 +12293,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Telephone",
                     "tag": "input",
                     "attributes": {
                       "inputType": "tel",
@@ -12308,7 +12308,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Telephone"
             ],
             "history": {
               "undoSteps": 2,
@@ -12323,7 +12323,7 @@
                   "key": "status.attribute.set",
                   "params": {
                     "attribute": "Pattern",
-                    "name": "Input",
+                    "name": "Telephone",
                     "value": "[0-9]+"
                   }
                 }
@@ -12406,7 +12406,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Number",
                     "tag": "input",
                     "attributes": {
                       "inputType": "number",
@@ -12421,7 +12421,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Number"
             ],
             "history": {
               "undoSteps": 2,
@@ -12436,7 +12436,7 @@
                   "key": "status.attribute.set",
                   "params": {
                     "attribute": "Minimum",
-                    "name": "Input",
+                    "name": "Number",
                     "value": "1"
                   }
                 }
@@ -12519,7 +12519,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Number",
                     "tag": "input",
                     "attributes": {
                       "inputType": "number",
@@ -12534,7 +12534,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Number"
             ],
             "history": {
               "undoSteps": 2,
@@ -12549,7 +12549,7 @@
                   "key": "status.attribute.set",
                   "params": {
                     "attribute": "Maximum",
-                    "name": "Input",
+                    "name": "Number",
                     "value": "10"
                   }
                 }
@@ -12632,7 +12632,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Range",
                     "tag": "input",
                     "attributes": {
                       "inputType": "range",
@@ -12647,7 +12647,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Range"
             ],
             "history": {
               "undoSteps": 2,
@@ -12662,7 +12662,7 @@
                   "key": "status.attribute.set",
                   "params": {
                     "attribute": "Step",
-                    "name": "Input",
+                    "name": "Range",
                     "value": "5"
                   }
                 }
@@ -12745,7 +12745,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Email",
                     "tag": "input",
                     "attributes": {
                       "inputType": "email",
@@ -12760,7 +12760,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Email"
             ],
             "history": {
               "undoSteps": 2,
@@ -12775,7 +12775,7 @@
                   "key": "status.attribute.set",
                   "params": {
                     "attribute": "Autocomplete",
-                    "name": "Input",
+                    "name": "Email",
                     "value": "email"
                   }
                 }
@@ -12858,7 +12858,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Text",
                     "tag": "input",
                     "attributes": {
                       "inputType": "text",
@@ -12873,7 +12873,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Text"
             ],
             "history": {
               "undoSteps": 2,
@@ -12888,7 +12888,7 @@
                   "key": "status.attribute.set",
                   "params": {
                     "attribute": "Required",
-                    "name": "Input",
+                    "name": "Text",
                     "value": "✓"
                   }
                 }
@@ -12971,7 +12971,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Text",
                     "tag": "input",
                     "attributes": {
                       "inputType": "text",
@@ -12986,7 +12986,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Text"
             ],
             "history": {
               "undoSteps": 2,
@@ -13001,7 +13001,7 @@
                   "key": "status.attribute.set",
                   "params": {
                     "attribute": "Disabled",
-                    "name": "Input",
+                    "name": "Text",
                     "value": "✓"
                   }
                 }
@@ -13084,7 +13084,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Text",
                     "tag": "input",
                     "attributes": {
                       "inputType": "text",
@@ -13099,7 +13099,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Text"
             ],
             "history": {
               "undoSteps": 2,
@@ -13114,7 +13114,7 @@
                   "key": "status.attribute.set",
                   "params": {
                     "attribute": "Read only",
-                    "name": "Input",
+                    "name": "Text",
                     "value": "✓"
                   }
                 }
@@ -13197,7 +13197,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Checkbox",
                     "tag": "input",
                     "attributes": {
                       "inputType": "checkbox",
@@ -13212,7 +13212,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Checkbox"
             ],
             "history": {
               "undoSteps": 2,
@@ -13227,7 +13227,7 @@
                   "key": "status.attribute.set",
                   "params": {
                     "attribute": "Checked",
-                    "name": "Input",
+                    "name": "Checkbox",
                     "value": "✓"
                   }
                 }
@@ -13362,7 +13362,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Text",
                     "tag": "input",
                     "attributes": {
                       "inputType": "checkbox",
@@ -13377,7 +13377,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Text"
             ],
             "history": {
               "undoSteps": 4,
@@ -13391,7 +13391,7 @@
                 {
                   "key": "status.input.typeSet",
                   "params": {
-                    "name": "Input",
+                    "name": "Text",
                     "type": "checkbox"
                   }
                 }
@@ -13567,7 +13567,7 @@
             {
               "door": "inspector.reveal#canvas-double-click-form-control",
               "args": {},
-              "target": "/Page/Input",
+              "target": "/Page/Text",
               "drop": null,
               "action": true,
               "hold": false,
@@ -13585,7 +13585,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Text",
                     "tag": "input",
                     "attributes": {
                       "inputType": "text",
@@ -13600,7 +13600,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Text"
             ],
             "history": {
               "undoSteps": 2,
@@ -13615,7 +13615,7 @@
                   "key": "status.attribute.set",
                   "params": {
                     "attribute": "Value",
-                    "name": "Input",
+                    "name": "Text",
                     "value": "Ada"
                   }
                 }
@@ -13811,7 +13811,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 1",
                         "children": []
                       },
                       {
@@ -13821,7 +13821,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 2",
                         "children": []
                       },
                       {
@@ -13831,7 +13831,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 3",
                         "children": []
                       }
                     ]
@@ -14338,7 +14338,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 1",
                         "children": []
                       },
                       {
@@ -14348,7 +14348,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 2",
                         "children": []
                       },
                       {
@@ -14358,7 +14358,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 3",
                         "children": []
                       },
                       {
@@ -14368,7 +14368,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 4",
                         "children": []
                       }
                     ]
@@ -14487,7 +14487,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 1",
                         "children": []
                       },
                       {
@@ -14497,7 +14497,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 2",
                         "children": []
                       },
                       {
@@ -14507,7 +14507,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 3",
                         "children": []
                       },
                       {
@@ -14648,7 +14648,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 1",
                         "children": []
                       },
                       {
@@ -14658,7 +14658,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 2",
                         "children": []
                       },
                       {
@@ -14668,7 +14668,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 3",
                         "children": []
                       }
                     ]
@@ -14789,7 +14789,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 1",
                         "children": []
                       },
                       {
@@ -14799,7 +14799,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 2",
                         "children": []
                       },
                       {
@@ -14809,7 +14809,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 3",
                         "children": []
                       }
                     ]
@@ -15028,7 +15028,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 1",
                         "children": []
                       },
                       {
@@ -15040,7 +15040,7 @@
                         },
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 2",
                         "children": []
                       },
                       {
@@ -15050,7 +15050,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 3",
                         "children": []
                       }
                     ]
@@ -15211,7 +15211,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 1",
                         "children": []
                       },
                       {
@@ -15221,7 +15221,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 2",
                         "children": []
                       },
                       {
@@ -15231,7 +15231,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 3",
                         "children": []
                       },
                       {
@@ -21637,7 +21637,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 1",
                         "children": []
                       },
                       {
@@ -21647,7 +21647,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 2",
                         "children": []
                       },
                       {
@@ -21657,7 +21657,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 3",
                         "children": []
                       },
                       {
@@ -21667,7 +21667,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 4",
                         "children": []
                       }
                     ]
@@ -22924,7 +22924,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Text",
                     "tag": "input",
                     "attributes": {
                       "inputType": "text"
@@ -22946,7 +22946,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Text"
             ],
             "history": {
               "undoSteps": 4,
@@ -22956,17 +22956,17 @@
             "render": {
               "computed": [
                 {
-                  "node": "/Page/Input",
+                  "node": "/Page/Text",
                   "property": "accent-color",
                   "value": "rgb(255, 0, 0)"
                 },
                 {
-                  "node": "/Page/Input",
+                  "node": "/Page/Text",
                   "property": "caret-color",
                   "value": "rgb(0, 255, 0)"
                 },
                 {
-                  "node": "/Page/Input",
+                  "node": "/Page/Text",
                   "property": "appearance",
                   "value": "none"
                 }
@@ -22977,7 +22977,7 @@
                   "key": "status.style.set",
                   "params": {
                     "property": "Appearance",
-                    "name": "Input",
+                    "name": "Text",
                     "value": "none"
                   }
                 }
@@ -24641,7 +24641,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "File",
                     "tag": "input",
                     "attributes": {
                       "inputType": "file",
@@ -24656,7 +24656,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/File"
             ],
             "history": {
               "undoSteps": 2,
@@ -24671,7 +24671,7 @@
                   "key": "status.attribute.set",
                   "params": {
                     "attribute": "Accepted file types",
-                    "name": "Input",
+                    "name": "File",
                     "value": "image/png"
                   }
                 }
@@ -24754,7 +24754,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "File",
                     "tag": "input",
                     "attributes": {
                       "inputType": "file",
@@ -24769,7 +24769,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/File"
             ],
             "history": {
               "undoSteps": 2,
@@ -24784,7 +24784,7 @@
                   "key": "status.attribute.set",
                   "params": {
                     "attribute": "Accepts several",
-                    "name": "Input",
+                    "name": "File",
                     "value": "✓"
                   }
                 }
@@ -26247,7 +26247,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Number",
                     "tag": "input",
                     "attributes": {
                       "inputType": "number"
@@ -26261,7 +26261,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Number"
             ],
             "history": {
               "undoSteps": 1,
@@ -26362,7 +26362,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Number",
                     "tag": "input",
                     "attributes": {
                       "inputType": "number"
@@ -26376,7 +26376,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Number"
             ],
             "history": {
               "undoSteps": 1,
@@ -26490,7 +26490,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Number",
                     "tag": "input",
                     "attributes": {
                       "inputType": "number",
@@ -26505,7 +26505,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Number"
             ],
             "history": {
               "undoSteps": 2,
@@ -26721,7 +26721,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Text",
                     "tag": "input",
                     "attributes": {
                       "inputType": "text"
@@ -26735,7 +26735,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Text"
             ],
             "history": {
               "undoSteps": 1,
@@ -27003,7 +27003,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 1",
                         "children": []
                       },
                       {
@@ -27015,7 +27015,7 @@
                         },
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 2",
                         "children": []
                       },
                       {
@@ -27025,7 +27025,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 3",
                         "children": []
                       }
                     ]
@@ -27159,7 +27159,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Text",
                     "tag": "input",
                     "attributes": {
                       "inputType": "text",
@@ -27174,7 +27174,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Text"
             ],
             "history": {
               "undoSteps": 2,
@@ -32270,7 +32270,7 @@
                 "value": [
                   {
                     "type": "input",
-                    "name": "Input",
+                    "name": "Number",
                     "tag": "input",
                     "attributes": {
                       "inputType": "text"
@@ -32284,7 +32284,7 @@
               }
             ],
             "selection": [
-              "/Page/Input"
+              "/Page/Number"
             ],
             "history": {
               "undoSteps": 2,
@@ -32298,7 +32298,7 @@
                 {
                   "key": "status.input.typeSet",
                   "params": {
-                    "name": "Input",
+                    "name": "Number",
                     "type": "text"
                   }
                 }

@@ -2406,6 +2406,8 @@ export const PALETTE_ENTRY_IDS = [
   "template-table",
   "template-form",
   "template-select",
+  "template-checkbox",
+  "template-radio",
   "template-figure",
   "template-card",
   "template-hero",
@@ -7664,5 +7666,9 @@ export const MESSAGE_IDS = [
   "canvas.badge.logicInPreview",
   "canvas.badge.tryInPreview",
   "inspector.parts.open",
+  "palette.entry.templateCheckbox",
+  "palette.entry.templateRadio",
+  "template.form.agree",
+  "template.form.choice",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];

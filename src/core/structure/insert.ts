@@ -256,7 +256,8 @@ export function paletteNode(make: NodeMaker, entry: string): DocNode {
   const item = make.rules.palette.get(entry);
   // every door offers an entry of the palette, so an unknown one is a defect of the door
   if (item === undefined || make.rules.elements.get(item.element) === undefined) throw new Error(`the palette has no entry ${entry}`);
-  const made = item.template === null ? newElement(make, item.element, startingParts(item.element)) : withFreeHtmlIds(templateElement(make, item.template, item.labelKey), make.htmlIds);
+  // a field tile's element is named by its tile (a Checkbox, an Email field), not by the element it is ("Input 4")
+  const made = item.template === null ? newElement(make, item.element, startingParts(item.element), item.inputType === null ? undefined : item.labelKey) : withFreeHtmlIds(templateElement(make, item.template, item.labelKey), make.htmlIds);
   if (item.inputType === null) return made;
   // a field placed says what it takes, in the page's language (an empty box asked nothing: the real-use pass of
   // 2026-10-22, an Email field placed was a blank white box)

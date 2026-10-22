@@ -1672,7 +1672,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 1",
                         "children": []
                       },
                       {
@@ -1682,7 +1682,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 2",
                         "children": []
                       },
                       {
@@ -1692,7 +1692,7 @@
                         "attributes": {},
                         "classes": [],
                         "styles": {},
-                        "text": "Option",
+                        "text": "Option 3",
                         "children": []
                       }
                     ]

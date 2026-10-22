@@ -4469,5 +4469,9 @@
   "canvas.badge.runsInPreview": "Esta página tem lógica e interações: elas rodam na pré-visualização, e as interações também rodam no canvas com Exibir › Executar interações.",
   "canvas.badge.logicInPreview": "O canvas roda as interações; a lógica da página roda na pré-visualização.",
   "canvas.badge.tryInPreview": "Testar",
-  "inspector.parts.open": "Abrir os ajustes desta parte: o texto e o valor"
+  "inspector.parts.open": "Abrir os ajustes desta parte: o texto e o valor",
+  "palette.entry.templateCheckbox": "Caixa de seleção com rótulo",
+  "palette.entry.templateRadio": "Opção única com rótulo",
+  "template.form.agree": "Concordo com os termos",
+  "template.form.choice": "Opção"
 }

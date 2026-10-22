@@ -12274,6 +12274,68 @@
           }
         },
         {
+          "id": "template-checkbox",
+          "labelKey": "palette.entry.templateCheckbox",
+          "element": "label",
+          "kind": "template",
+          "inputType": null,
+          "feature": "templates-content",
+          "template": {
+            "element": "label",
+            "wrapper": "row",
+            "styles": {
+              "column-gap": "8px",
+              "align-items": "center"
+            },
+            "children": [
+              {
+                "element": "input",
+                "attributes": {
+                  "inputType": "checkbox",
+                  "name": "agree"
+                }
+              },
+              {
+                "element": "paragraph",
+                "tag": "span",
+                "textKey": "template.form.agree"
+              }
+            ]
+          },
+          "icon": "square-check"
+        },
+        {
+          "id": "template-radio",
+          "labelKey": "palette.entry.templateRadio",
+          "element": "label",
+          "kind": "template",
+          "inputType": null,
+          "feature": "templates-content",
+          "template": {
+            "element": "label",
+            "wrapper": "row",
+            "styles": {
+              "column-gap": "8px",
+              "align-items": "center"
+            },
+            "children": [
+              {
+                "element": "input",
+                "attributes": {
+                  "inputType": "radio",
+                  "name": "choice"
+                }
+              },
+              {
+                "element": "paragraph",
+                "tag": "span",
+                "textKey": "template.form.choice"
+              }
+            ]
+          },
+          "icon": "circle-dot"
+        },
+        {
           "id": "template-figure",
           "labelKey": "palette.entry.templateFigure",
           "element": "figure",
