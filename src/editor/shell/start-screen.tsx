@@ -1,7 +1,8 @@
 // The first look at an empty project: a card over the blank page that offers a whole landing page, or one ready
 // section, each the Insert view's own tile (element.insert with its palette entry), so the person never starts at a
-// white page with no idea what to do. Starting blank is the card's last line: the Insert view stays to the left. The
-// card is drawn only while the project is the empty one (isEmptyProject): the first element placed takes it away.
+// white page with no idea what to do. Starting blank is the card's first choice (workspace.startBlank): the card steps
+// aside and Insert opens. The card is drawn only while the project is the empty one (isEmptyProject) and was not set
+// aside: the first element placed takes it away.
 import type { MessageId } from '../../generated/ids.ts';
 import { isEmptyProject } from '../../core/document/model.ts';
 import { isFeatureBuilt } from '../../core/commands/registry.ts';
@@ -26,6 +27,8 @@ const OPEN_EXAMPLE = doorSlots('start-examples')[0];
 const OPEN_TEMPLATE = doorSlots('start-templates')[0];
 // the site the assistant makes from a description: the brief (the assistant's draft) and the button that opens it
 const [AI_BRIEF, AI_OPEN] = doorSlots('start-ai');
+// the blank page: the card steps aside and Insert opens
+const START_BLANK = doorSlots('start-blank')[0];
 
 // The description of the site, kept as the assistant's draft as it is typed: the Assistant opens with it, to send.
 function BriefField({ entry }: { readonly entry: NonNullable<typeof AI_BRIEF> }) {
@@ -69,15 +72,18 @@ export interface StartBox {
 }
 export function StartScreen({ box }: { readonly box: StartBox }) {
   const t = useT();
-  const empty = useEditorState((s) => isEmptyProject(s.document));
-  if (!empty) return null;
+  const shown = useEditorState((s) => isEmptyProject(s.document) && s.ui.startBlank !== true);
+  if (!shown) return null;
   const [landing, ...sections] = ENTRIES;
   const top = Math.max(0, box.top);
   return (
     <div className="start-screen" data-start-screen style={{ top, left: box.left, width: Math.max(0, box.right - box.left), height: Math.max(0, box.bottom - top) }}>
       <div className="start-screen__card" data-own-scroll>
         <h2 className="start-screen__title">{t('start.title')}</h2>
-        <p className="start-screen__lead">{t('start.lead')}</p>
+        <div className="start-screen__head">
+          <p className="start-screen__lead">{t('start.lead')}</p>
+          {START_BLANK === undefined ? null : <DoorControl entry={START_BLANK} className="start-screen__blank" />}
+        </div>
         {AI_BRIEF === undefined || AI_OPEN === undefined ? null : (
           <div className="start-screen__ai" data-region="start-ai">
             <p className="start-screen__ai-title">
@@ -118,7 +124,6 @@ export function StartScreen({ box }: { readonly box: StartBox }) {
             <ExampleButtons entry={OPEN_EXAMPLE} className="start-screen__examples" />
           </>
         )}
-        <p className="start-screen__blank">{t('start.blank')}</p>
       </div>
     </div>
   );

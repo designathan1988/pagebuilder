@@ -26,8 +26,8 @@ import { addKeyframeCommand, createAnimationCommand, deleteAnimationCommand, del
 import { addInteractionCommand, removeInteractionCommand, updateInteractionCommand } from '../core/events/interactions.ts';
 import { makePicked, makePicking } from '../editor/inspector/pick-target.ts';
 import { setPlayheadCommand, showAnimationCommand } from '../editor/timeline/playhead.ts';
-import { addActionCommand, addMarkerCommand, addMotionCommand, createTimelineCommand, deleteKeyframesCommand, deleteTimelineCommand, editKeyframeCommand, moveActionsCommand, moveKeyframesCommand, moveMarkerCommand, pasteKeyframesCommand, removeActionsCommand, removeBehaviourCommand, removeMarkerCommand, removeMotionCommand, renameMarkerCommand, renameTimelineCommand, resizeActionCommand, setBehaviourCommand, setEffectOptionCommand, setKeyframeCommand, setLinkTransitionCommand, setPageTransitionCommand, setParallaxRangeCommand, updateActionCommand, updateMotionCommand } from '../core/motion/commands.ts';
-import { copyMotionKeyframesCommand, makeMotionPicked, makeMotionPicking, openTimelineCommand, previewMotionCommand, selectMotionCommand, setMotionPlayheadCommand, toggleRecordCommand, toggleRunCommand, toggleSnapCommand, zoomTimelineCommand } from '../editor/motion/state.ts';
+import { addActionCommand, addMarkerCommand, createTimelineCommand, deleteKeyframesCommand, deleteTimelineCommand, editKeyframeCommand, moveActionsCommand, moveKeyframesCommand, moveMarkerCommand, pasteKeyframesCommand, removeActionsCommand, removeBehaviourCommand, removeMarkerCommand, removeMotionCommand, renameMarkerCommand, renameTimelineCommand, resizeActionCommand, setBehaviourCommand, setEffectOptionCommand, setKeyframeCommand, setLinkTransitionCommand, setPageTransitionCommand, setParallaxRangeCommand, updateActionCommand, updateMotionCommand } from '../core/motion/commands.ts';
+import { addMotionInEditorCommand, copyMotionKeyframesCommand, makeMotionPicked, makeMotionPicking, openTimelineCommand, previewMotionCommand, selectMotionCommand, setMotionPlayheadCommand, toggleRecordCommand, toggleRunCommand, toggleSnapCommand, zoomTimelineCommand } from '../editor/motion/state.ts';
 import { pauseCommand, playCommand, stopCommand, toggleLoopCommand } from '../editor/timeline/preview.ts';
 import { copyPane, downloadPane, setPane } from '../editor/code-panel/code-panel.ts';
 import { setEditorView } from '../editor/view/editor-view.ts';
@@ -134,7 +134,7 @@ import { setEditMode } from '../editor/canvas/edit-mode.ts';
 import { stepHandle } from '../editor/canvas/handles.ts';
 import { openCommandBar } from '../editor/command-bar/command-bar.ts';
 import { movePanel, resetWorkspace, resizeSplitter, setActiveTab, setWorkbenchState } from '../editor/workspace/layout.ts';
-import { collapseDocks, setPanelOpen, toggleDeveloperTools, toggleInspector, toggleLeftDock } from '../editor/workspace/panels.ts';
+import { collapseDocks, setPanelOpen, startBlank, toggleDeveloperTools, toggleInspector, toggleLeftDock } from '../editor/workspace/panels.ts';
 import { setCodeLanguage, setProjectLanguage } from '../core/project/language.ts';
 import { renameManyCommand } from '../core/nodes/rename-many.ts';
 import { captureUrlCommand } from '../editor/import/capture.ts';
@@ -280,7 +280,7 @@ export const COMMANDS = {
   'interactions.add': addInteractionCommand,
   'interactions.update': INTERACTIONS_UPDATE,
   'interactions.remove': removeInteractionCommand,
-  'motion.add': addMotionCommand,
+  'motion.add': addMotionInEditorCommand,
   'motion.update': updateMotionCommand,
   'motion.remove': removeMotionCommand,
   'motion.createTimeline': createTimelineCommand,
@@ -500,6 +500,7 @@ export const COMMANDS = {
   'workspace.toggleLeftDock': toggleLeftDock,
   'workspace.toggleInspector': toggleInspector,
   'workspace.collapseDocks': collapseDocks,
+  'workspace.startBlank': startBlank,
   'workspace.toggleDeveloperTools': toggleDeveloperTools,
   'workspace.reset': resetWorkspace,
   'workspace.setWorkbenchState': setWorkbenchState,

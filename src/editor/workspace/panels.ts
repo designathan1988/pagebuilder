@@ -133,6 +133,14 @@ export const toggleDeveloperTools = registerHandler<'workspace.toggleDeveloperTo
 );
 
 // Ctrl+\: collapses every dock; the second press puts back exactly what was open (spec dock-toggles).
+// workspace.startBlank (the start card's "Start blank"): the card steps aside for the blank page and Insert opens,
+// with the focus in it, to pick the first element
+export const startBlank = registerHandler<'workspace.startBlank', EditorUi>('workspace.startBlank', ({ state }) => ({
+  kind: 'change',
+  ui: { ...asking(showPanel(state.ui, 'elements'), 'panel:elements'), startBlank: true },
+  message: message('status.start.blank'),
+}));
+
 export const collapseDocks = registerHandler<'workspace.collapseDocks', EditorUi>('workspace.collapseDocks', ({ state }) => {
   const { ui } = state;
   const p = ui.panels;

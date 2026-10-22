@@ -6,7 +6,7 @@
 //  - A trigger: click; hover (pointerenter, and pointerleave for the actions that reverse: show and hide); entering
 //    the screen (an IntersectionObserver, once); the page loading (the script runs deferred, so the page is parsed); a
 //    form's submit (the browser's own submit, never navigated away).
-//  - An action: show and hide (the hidden property the editor's eye and a hidden element's export agree on); toggle a
+//  - An action: show, hide and toggle (the hidden property the editor's eye and a hidden element's export agree on); toggle a
 //    class; play an animation (the class rule the export writes beside its @keyframes, restarted when it fires again);
 //    scroll to an element; open a link (a new tab like the element's own link, or the same one).
 import { walk, type DocNode, type DocumentJson, type Interaction, type NodeId } from '../document/model.ts';
@@ -37,6 +37,8 @@ function actionJs(node: DocNode, interaction: Interaction, selectorOf: SelectorO
   const act: string | null = (() => {
     if (interaction.action === 'show') return `if (target) target.hidden = false;`;
     if (interaction.action === 'hide') return `if (target) target.hidden = true;`;
+    // shown when hidden, hidden when shown: a button that opens and closes a part of the page
+    if (interaction.action === 'toggle') return `if (target) target.hidden = !target.hidden;`;
     if (interaction.action === 'toggle-class')
       return interaction.className === undefined ? null : `if (target) target.classList.toggle(${quoted(interaction.className)});`;
     if (needsAnimation(interaction.action)) {

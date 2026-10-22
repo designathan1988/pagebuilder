@@ -161,6 +161,9 @@ function presetAction<Ui>(context: HandlerContext<Ui>, preset: MotionPreset): Ti
   return { id: id(), target: { kind: 'self' }, start: 0, duration: PRESET_DURATION, effect: { kind: 'animate', tracks }, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' };
 }
 
+// an entry effect (motion.add with a preset): played once as the element enters the page, on the element itself
+const isEntryEffect = (motion: MotionInteraction): boolean => motion.once === true && motion.scope === undefined && (ENTRY_TRIGGERS as readonly string[]).includes(motion.trigger.kind);
+
 export const addMotionCommand = registerHandler('motion.add', (context, { trigger, timeline, preset }): Outcome<never> => {
   const found = primaryNode(context.state.document, context.state.selection);
   if (found === null) return { kind: 'change' };
@@ -170,6 +173,15 @@ export const addMotionCommand = registerHandler('motion.add', (context, { trigge
   const locked = lockedRefusal(context, found.node);
   if (locked !== null) return { kind: 'refused', message: locked };
   const patches: Patch[] = [];
+  // an entry effect replaces the element's earlier one: picking Slide up after Fade in changes the effect (both
+  // stayed, two entries fighting over one element's look); the earlier effect's timeline goes with it when nothing
+  // else plays or controls it
+  const replaced = preset === undefined ? [] : motionsOf(found.node).filter(isEntryEffect);
+  const gone = new Set(replaced.map((motion) => motion.timeline).filter((played) => {
+    const uses = timelineUses(context.state.document, played);
+    return uses.actions === 0 && uses.interactions === replaced.filter((motion) => motion.timeline === played).length;
+  }));
+  const keptTimelines = timelinesOf(context.state.document).filter((one) => !gone.has(one.name));
   let name: string;
   if (timeline !== undefined && timeline !== '') {
     // reusing a timeline by its name
@@ -179,7 +191,7 @@ export const addMotionCommand = registerHandler('motion.add', (context, { trigge
     // an entry effect's timeline is named after the effect ("Hero slide-up"), a look another element may play by name
     name = timelineNameFor(context.state.document, found.node, context.words(preset === undefined ? triggerLabel(kind) : (`motion.quick.${preset}` as MessageId)));
     const made: MotionTimeline = { id: context.ids.next(), name, actions: [preset === undefined ? firstAction(context) : presetAction(context, preset)], markers: [] };
-    patches.push(...writeTimelines(context.state.document, [...timelinesOf(context.state.document), made]));
+    patches.push(...writeTimelines(context.state.document, [...keptTimelines, made]));
   }
   const spec = TRIGGERS[kind];
   const interaction: MotionInteraction = {
@@ -193,7 +205,8 @@ export const addMotionCommand = registerHandler('motion.add', (context, { trigge
   };
   const read = readInteraction(interaction);
   if (!read.ok) return invalid(kind);
-  patches.push(...writeMotions(found.node, found.path, [...motionsOf(found.node), read.value]));
+  if (gone.size > 0 && timeline !== undefined && timeline !== '') patches.push(...writeTimelines(context.state.document, keptTimelines));
+  patches.push(...writeMotions(found.node, found.path, [...motionsOf(found.node).filter((motion) => !replaced.includes(motion)), read.value]));
   return { kind: 'change', patches, message: message('status.motion.added', { name: { key: triggerLabel(kind) }, element: found.node.name, timeline: name }) };
 });
 

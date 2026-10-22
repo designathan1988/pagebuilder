@@ -23,6 +23,7 @@
           "values": [
             "show",
             "hide",
+            "toggle",
             "toggle-class",
             "play-animation",
             "scroll-to",

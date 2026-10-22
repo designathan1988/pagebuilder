@@ -104,7 +104,10 @@ export function useCanvasMotion(frameWindow: () => Window | null, page: unknown)
       if (next === null) return;
       const dispatch = store.dispatch as (id: string, args: unknown) => unknown;
       dispatch(commandOf(MOTION_DOORS.playhead), { time: next.time });
-      if (next.ended) dispatch(commandOf(MOTION_DOORS.preview('pause')), { operation: 'pause' });
+      // a one-time show of an effect just picked stops at its end (the element back to its own styles); a play of the
+      // Timeline holds its last frame
+      const once = motionUiOf(store.getState().ui).showing === true;
+      if (next.ended) dispatch(commandOf(MOTION_DOORS.preview(once ? 'stop' : 'pause')), { operation: once ? 'stop' : 'pause' });
     };
     tick = window.requestAnimationFrame(walk);
     return () => {

@@ -8,7 +8,8 @@
       "commands": [
         "project.open",
         "assistant.update",
-        "workspace.setPanelOpen"
+        "workspace.setPanelOpen",
+        "workspace.startBlank"
       ],
       "dependsOn": [
         "app-logic"
@@ -17,7 +18,8 @@
         "title": "Whole ready-made sites to start from: restaurant, store, agency, portfolio, blog, event, clinic and SaaS",
         "steps": [
           "On the start screen, pick a ready-made site; it opens as the project, every page, text and image editable.",
-          "Or describe the business and press Create with AI: the Assistant opens with the description, and builds the pages from the ready sections and components."
+          "Or describe the business and press Create with AI: the Assistant opens with the description, and builds the pages from the ready sections and components.",
+          "Or press Start blank: the card steps aside, the page is empty and Insert opens to pick the first element."
         ],
         "expected": [
           "Each site has its pages linked by its menu, a theme of its own and a layout that fits a phone.",
@@ -226,6 +228,56 @@
               ],
               "computed": []
             },
+            "persistence": null,
+            "export": null
+          }
+        },
+        {
+          "id": "a-blank-page-from-the-start-screen",
+          "setup": {
+            "fixture": "empty",
+            "selection": [],
+            "context": "global",
+            "breakpoint": "desktop",
+            "state": "base",
+            "locale": "en",
+            "viewport": "desktop-1440",
+            "zoom": "fit"
+          },
+          "steps": [
+            {
+              "door": "workspace.startBlank#start-blank",
+              "args": {},
+              "target": null,
+              "drop": null,
+              "action": true,
+              "hold": false,
+              "type": null
+            }
+          ],
+          "doors": [
+            "workspace.startBlank#start-blank"
+          ],
+          "refusals": [],
+          "expect": {
+            "document": [],
+            "selection": [],
+            "history": {
+              "undoSteps": 0,
+              "undoRestores": true,
+              "redoRestores": true
+            },
+            "render": {
+              "computed": [],
+              "geometry": [],
+              "feedback": [
+                {
+                  "key": "status.start.blank",
+                  "params": {}
+                }
+              ]
+            },
+            "editor": null,
             "persistence": null,
             "export": null
           }

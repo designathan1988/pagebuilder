@@ -1200,9 +1200,9 @@
     },
     {
       "id": "timeline.playheadTick",
-      "value": 100,
+      "value": 0,
       "unit": "ms",
-      "note": "While an animation plays, the playhead marker follows it this often."
+      "note": "While an animation plays, the playhead and the canvas follow it at every frame of the screen (0: no wait between frames), as the published page plays it."
     },
     {
       "id": "autosave.retryDelay",

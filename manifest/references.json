@@ -1032,6 +1032,11 @@
     },
     {
       "kind": "handler",
+      "id": "workspace.startBlank",
+      "status": "registered"
+    },
+    {
+      "kind": "handler",
       "id": "workspace.toggleLeftDock",
       "status": "registered"
     },

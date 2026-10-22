@@ -11,7 +11,7 @@ const TRIGGERS: Readonly<Record<NonNullable<AddArgs['trigger']>, true>> = {
   click: true, hover: true, 'scroll-into-view': true, 'page-load': true, 'form-submit': true,
 };
 const ACTIONS: Readonly<Record<NonNullable<AddArgs['action']>, true>> = {
-  show: true, hide: true, 'toggle-class': true, 'play-animation': true, 'scroll-to': true, 'open-link': true,
+  show: true, hide: true, toggle: true, 'toggle-class': true, 'play-animation': true, 'scroll-to': true, 'open-link': true,
 };
 
 // the longest wait an action takes (10 s): a longer one reads as a site that does not answer

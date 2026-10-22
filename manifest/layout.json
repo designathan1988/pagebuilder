@@ -400,6 +400,10 @@
       "area": "centre"
     },
     {
+      "id": "start-blank",
+      "area": "centre"
+    },
+    {
       "id": "start-examples",
       "area": "centre"
     }

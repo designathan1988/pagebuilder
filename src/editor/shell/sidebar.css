@@ -772,6 +772,16 @@
   visibility: hidden;
 }
 
+/* while a target is picked, a row at rest shows the pick button alone and keeps the room of that one button: the room of
+   every action, the others unseen, cut "Parágrafo" to "Parágr…" */
+.row--tree:has(.row__actions .row__button):not(:hover, :focus-visible, :has(:focus-visible)) {
+  --row-actions-room: var(--size-target-min);
+}
+
+.row--tree:has(.row__actions .row__button):not(:hover, :focus-visible, :has(:focus-visible)) .row__actions > :not(.row__button) {
+  display: none;
+}
+
 /* a hidden node's row (spec hide-element): dimmed, its Hide pressed and shown in place of the tag */
 .row--hidden > .icon,
 .row--hidden > .row__name {

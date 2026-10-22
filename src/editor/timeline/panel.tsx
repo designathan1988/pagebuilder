@@ -10,6 +10,7 @@ import { animationsOf, defaultSetting, durationMs, SETTINGS, settingLabel } from
 import { seconds } from '../../core/motion/view.ts';
 import { locate, type Animation } from '../../core/document/model.ts';
 import type { DoorEntry } from '../../manifest/runtime.ts';
+import type { MessageId } from '../../generated/ids.ts';
 import { manifest } from '../../manifest/runtime.ts';
 import { Icon } from '../doors/door.tsx';
 import { PanelButton, PanelField, offeredValues } from '../shell/panel-field.tsx';
@@ -73,6 +74,36 @@ function NewAnimation({ ready }: { readonly ready: boolean }) {
     );
   }
   return <PanelField entry={NEW_ANIMATION} value="" label={t('timeline.name')} disabled={!ready} autoFocus onDone={() => setAsking(false)} />;
+}
+
+// the words of a property a keyframe sets: the inspector's name of it, its CSS name where the inspector has none
+const PROPERTY_WORDS = new Map<string, MessageId>(manifest.properties.properties.map((property) => [property.id, property.labelKey as MessageId] as const));
+
+// What the keyframe under the playhead does, said under the track: the properties it sets and their values, or how to
+// give it some (the Style tab writes into the keyframe the playhead stands on), or how to reach a keyframe. "At 0%"
+// alone said nothing of it, and a value set in the Style tab went into the keyframe with no sign of it here.
+function FrameDetails({ animation, offset, onKeyframe }: { readonly animation: Animation; readonly offset: number; readonly onKeyframe: boolean }) {
+  const t = useT();
+  const frame = onKeyframe ? animation.keyframes.find((keyframe) => keyframe.offset === offset) : undefined;
+  if (frame === undefined) return <p className="timeline__hint">{t('timeline.frameNone', { offset: String(offset) })}</p>;
+  const set = Object.entries(frame.declarations).filter((entry): entry is [string, string | readonly unknown[]] => entry[1] !== undefined);
+  if (set.length === 0) return <p className="timeline__hint">{t('timeline.frameEmpty', { offset: String(offset) })}</p>;
+  return (
+    <div className="timeline__frame">
+      <p className="timeline__hint">{t('timeline.frameSets', { offset: String(offset) })}</p>
+      <ul className="timeline__frame-values">
+        {set.map(([property, value]) => {
+          const words = PROPERTY_WORDS.get(property);
+          return (
+            <li key={property} title={property}>
+              <span className="timeline__frame-property">{words === undefined ? property : t(words)}</span>
+              <span className="timeline__frame-value">{typeof value === 'string' ? value : '…'}</span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
 }
 
 // the ruler's quarters, where the canonical ruler names its times (design/final .tl-ruler: 0 s, 0.3 s … 1.2 s)
@@ -239,7 +270,7 @@ export function TimelinePanel() {
             <PanelButton entry={DELETE_KEYFRAME} args={{ animation: shownName ?? '', keyframe: playhead }} label={t('command.animation.deleteKeyframe')} icon={<Icon name="trash" size="sm" />} onDone={() => undefined} />
           ) : null}
         </div>
-        {shown === null ? null : <p className="timeline__hint">{t('timeline.keyframeOffset', { offset: String(Math.round(percent)) })}</p>}
+        {shown === null ? null : <FrameDetails animation={shown.animation} offset={Math.round(percent)} onKeyframe={playhead !== null} />}
       </div>
     </div>
   );

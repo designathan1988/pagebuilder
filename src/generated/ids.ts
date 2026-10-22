@@ -396,6 +396,7 @@ export const COMMAND_IDS = [
   "colorPicker.cancel",
   "colorPicker.apply",
   "quickPanel.setOpen",
+  "workspace.startBlank",
 ] as const;
 export type CommandId = (typeof COMMAND_IDS)[number];
 
@@ -1839,6 +1840,7 @@ export const DOOR_IDS = [
   "quickPanel.setOpen#key-ctrl-shift-q-in-global",
   "quickPanel.setOpen#key-escape-in-quick-panel",
   "quickPanel.setOpen#key-ctrl-shift-q-in-quick-panel",
+  "workspace.startBlank#start-blank",
 ] as const;
 export type DoorId = (typeof DOOR_IDS)[number];
 
@@ -2733,6 +2735,7 @@ export const REGION_IDS = [
   "data-shared",
   "start-templates",
   "start-ai",
+  "start-blank",
   "start-examples",
 ] as const;
 export type RegionId = (typeof REGION_IDS)[number];
@@ -7078,7 +7081,6 @@ export const MESSAGE_IDS = [
   "start.lead",
   "start.landing.note",
   "start.sections",
-  "start.blank",
   "motion.quick.title",
   "motion.quick.label",
   "motion.quick.when",
@@ -7512,5 +7514,12 @@ export const MESSAGE_IDS = [
   "inspector.cart.whatsapp",
   "inspector.cart.whatsapp.placeholder",
   "status.attribute.whatsappNumber",
+  "command.startBlank",
+  "status.start.blank",
+  "panelField.showOptions",
+  "interactions.action.toggle",
+  "timeline.frameSets",
+  "timeline.frameEmpty",
+  "timeline.frameNone",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];

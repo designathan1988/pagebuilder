@@ -3,8 +3,11 @@
 // from the manifest; the text it holds is the one argument of its command that neither the door nor the drawing gives
 // (textArgument: the command's manifest contract). The field is a form of one input, so Enter submits it and runs the
 // door with what it holds; what the document holds is shown again as soon as the field is left. The values the door
-// offers are drawn as a datalist, so the person may pick one or type their own.
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+// offers open in a list under the field, by its arrow, a click in it or Arrow down: every value while the field shows
+// the document's, the ones matching what is typed while typing; a value picked is kept at once. (A datalist hid them:
+// its arrow showed only in focus and it listed only what matched the value already there, so "Show" offered "Show".)
+import { useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
+import { createPortal } from 'react-dom';
 import type { EditContext } from '../../core/store/store.ts';
 import type { CommandId } from '../../generated/ids.ts';
 import { heldDraft, type HeldDraft } from '../input/held-draft.ts';
@@ -14,6 +17,9 @@ import type { DispatchResult } from '../../core/store/store.ts';
 import { useStore } from '../store.ts';
 import { isDoorBuilt, useDoor } from '../doors/door.tsx';
 import { EasingCurveButton } from './easing-curve.tsx';
+import { followBelow, type Placed } from './float.ts';
+import { Icon } from '../doors/door.tsx';
+import { useT } from '../text.ts';
 
 // The one argument a door's text goes in: the argument its command declares that neither the door fixes (its own
 // `args`) nor the drawing gives. A command whose fields do not come to exactly one is a defect of the manifest.
@@ -84,6 +90,29 @@ export function PanelField({
   }, [autoFocus]);
   const list = offered ?? [];
   const id = `panel-field-${entry.ref.replaceAll('#', '-')}-${String(args.animation ?? args.interaction ?? '')}`;
+  const t = useT();
+  // the list of the offered values: open or not, the option the arrows stand on, and where it floats
+  const [listOpen, setListOpen] = useState(false);
+  const [active, setActive] = useState(-1);
+  const [at, setAt] = useState<Placed | null>(null);
+  const options = useRef<HTMLDivElement>(null);
+  const words = (one: string): string => (display === undefined ? one : display(one));
+  const query = edited ? draft.trim().toLowerCase() : '';
+  const choices = query === '' ? list : list.filter((one) => words(one).toLowerCase().includes(query) || one.toLowerCase().includes(query));
+  const showList = listOpen && choices.length > 0;
+  useLayoutEffect(() => {
+    const anchor = input.current;
+    const panel = options.current;
+    if (!showList || anchor === null || panel === null) return undefined;
+    const edge = parseFloat(getComputedStyle(panel).getPropertyValue('--space-4')) || 0;
+    return followBelow(anchor, panel, edge, 2, setAt);
+  }, [showList]);
+  const closeList = () => {
+    setListOpen(false);
+    setActive(-1);
+    setAt(null);
+  };
+  const optionsId = `${id}-options`;
   // the door run with a text in its free argument (typed and kept, or a curve chosen beside the field), in the context
   // the typing began in when the registry keeps it
   // whether the command refused the text
@@ -129,6 +158,36 @@ export function PanelField({
     held.current?.done();
   };
   const ready = door.built && !disabled;
+  // a value picked from the list is kept at once, as Enter keeps a typed one
+  const choose = (one: string) => {
+    closeList();
+    const refused = runWith(one) && newName;
+    setInvalid(refused);
+    if (refused) return;
+    setEdited(false);
+    held.current?.done();
+  };
+  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (list.length === 0) return;
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      if (!listOpen) {
+        setListOpen(true);
+        setActive(0);
+        return;
+      }
+      const last = choices.length - 1;
+      setActive((was) => (event.key === 'ArrowDown' ? (was >= last ? 0 : was + 1) : was <= 0 ? last : was - 1));
+    } else if (event.key === 'Enter' && showList && active >= 0 && active < choices.length) {
+      event.preventDefault();
+      choose(choices[active] as string);
+    } else if (event.key === 'Escape' && showList) {
+      // the list closes alone: the panel or the dialog around it stays
+      event.preventDefault();
+      event.stopPropagation();
+      closeList();
+    }
+  };
   return (
     <div ref={row} className={`field-row panel-field${ready ? '' : ' is-unavailable'}`} data-door={entry.ref} data-args={JSON.stringify({ ...entry.door.args, ...args })} title={door.title}>
       <label className="field-row__label" htmlFor={`${id}-input`}>
@@ -150,9 +209,20 @@ export function PanelField({
           title={value === '' ? undefined : display === undefined ? value : display(value)}
           placeholder={placeholder}
           disabled={!ready}
-          list={list.length > 0 ? `${id}-list` : undefined}
+          role={list.length > 0 ? 'combobox' : undefined}
+          aria-expanded={list.length > 0 ? showList : undefined}
+          aria-autocomplete={list.length > 0 ? 'list' : undefined}
+          // the list is part of the field (aria-controls: the field's own layer, rule G2)
+          aria-controls={showList ? optionsId : undefined}
+          aria-activedescendant={showList && active >= 0 ? `${optionsId}-${String(active)}` : undefined}
           aria-invalid={invalid ? true : undefined}
+          onClick={() => {
+            if (list.length > 0 && ready) setListOpen(true);
+          }}
+          onKeyDown={onKeyDown}
           onChange={(event) => {
+            setListOpen(true);
+            setActive(-1);
             setInvalid(false);
             setEdited(true);
             setDraft(event.target.value);
@@ -161,24 +231,66 @@ export function PanelField({
           }}
           // left, the typing is kept (rule G2, DEF-0514), and the document's value shows again (the audit's FD2)
           onBlur={() => {
+            closeList();
             refusedNow.current = false;
             held.current?.left();
             if (!refusedNow.current) setEdited(false);
           }}
         />
         {/* the curve that applies: the value, else what the empty field shows it takes (its placeholder) */}
+        {list.length > 0 ? (
+          // the arrow says the field offers values, and opens or closes them (the focus stays in the field)
+          <button
+            type="button"
+            className="panel-field__open"
+            tabIndex={-1}
+            aria-label={t('panelField.showOptions')}
+            title={t('panelField.showOptions')}
+            disabled={!ready}
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={() => {
+              input.current?.focus();
+              if (showList) closeList();
+              else setListOpen(true);
+            }}
+          >
+            <Icon name="chevron-down" size="sm" />
+          </button>
+        ) : null}
         {curve ? <EasingCurveButton value={value === '' && placeholder !== undefined ? placeholder : value} label={label} disabled={!ready} run={runWith} /> : null}
         <button type="submit" className="visually-hidden" tabIndex={-1}>
           {label}
         </button>
       </form>
-      {list.length > 0 ? (
-        <datalist id={`${id}-list`}>
-          {list.map((one) => (
-            <option key={one} value={display === undefined ? one : display(one)} />
-          ))}
-        </datalist>
-      ) : null}
+      {showList
+        ? createPortal(
+            <div
+              ref={options}
+              id={optionsId}
+              className="menu panel-field__options"
+              role="listbox"
+              aria-label={label}
+              style={at === null ? { position: 'fixed', visibility: 'hidden', left: 0, top: 0, minWidth: input.current?.offsetWidth } : { position: 'fixed', left: at.left, top: at.top, maxHeight: at.maxHeight, overflowY: 'auto', minWidth: input.current?.offsetWidth }}
+            >
+              {choices.map((one, index) => (
+                <div
+                  key={one}
+                  id={`${optionsId}-${String(index)}`}
+                  role="option"
+                  aria-selected={one === value}
+                  className={`panel-field__option${index === active ? ' is-active' : ''}${one === value ? ' is-current' : ''}`}
+                  // pressed, the field keeps the focus: the press is part of the field, not a leaving of it
+                  onMouseDown={(event) => event.preventDefault()}
+                  onMouseEnter={() => setActive(index)}
+                  onClick={() => choose(one)}
+                >
+                  {words(one)}
+                </div>
+              ))}
+            </div>,
+            document.body,
+          )
+        : null}
     </div>
   );
 }

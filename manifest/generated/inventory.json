@@ -2,13 +2,13 @@
   "totals": {
     "features": 218,
     "built": 218,
-    "commands": 393,
-    "doors": 1438,
-    "scenarios": 1908,
+    "commands": 394,
+    "doors": 1439,
+    "scenarios": 1909,
     "modules": 526,
-    "lines": 96708,
+    "lines": 96881,
     "fields": 207,
-    "interactive": 278
+    "interactive": 279
   },
   "features": [
     {
@@ -2478,10 +2478,11 @@
       "commands": [
         "project.open",
         "assistant.update",
-        "workspace.setPanelOpen"
+        "workspace.setPanelOpen",
+        "workspace.startBlank"
       ],
-      "doors": 34,
-      "scenarios": 3
+      "doors": 35,
+      "scenarios": 4
     }
   ],
   "fields": [
@@ -4155,7 +4156,7 @@
   "interactive": {
     "owners": {
       "door": 96,
-      "inside-door": 45,
+      "inside-door": 46,
       "local": 20,
       "none": 87,
       "spread": 6,
@@ -5945,12 +5946,24 @@
         "owner": "inside-door"
       },
       {
-        "key": "src/editor/shell/panel-field.tsx|input|aria-invalid,className,disabled,id,list,onBlur,onChange,placeholder,ref,spellCheck,title,type,value|1",
+        "key": "src/editor/shell/panel-field.tsx|input|aria-activedescendant,aria-autocomplete,aria-controls,aria-expanded,aria-invalid,className,disabled,id,onBlur,onChange,onClick,onKeyDown,placeholder,ref,role,spellCheck,title,type,value|1",
         "tag": "input",
         "role": null,
         "handlers": [
+          "onClick",
+          "onKeyDown",
           "onChange",
           "onBlur"
+        ],
+        "owner": "inside-door"
+      },
+      {
+        "key": "src/editor/shell/panel-field.tsx|button|aria-label,className,disabled,onClick,onMouseDown,tabIndex,title,type|1",
+        "tag": "button",
+        "role": null,
+        "handlers": [
+          "onMouseDown",
+          "onClick"
         ],
         "owner": "inside-door"
       },
@@ -5962,10 +5975,13 @@
         "owner": "inside-door"
       },
       {
-        "key": "src/editor/shell/panel-field.tsx|option|key,value|1",
-        "tag": "option",
-        "role": null,
-        "handlers": [],
+        "key": "src/editor/shell/panel-field.tsx|div|aria-selected,className,id,key,onClick,onMouseDown,onMouseEnter,role|1",
+        "tag": "div",
+        "role": "option",
+        "handlers": [
+          "onMouseDown",
+          "onClick"
+        ],
         "owner": "inside-door"
       },
       {

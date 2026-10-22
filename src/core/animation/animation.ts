@@ -155,8 +155,11 @@ export const playedClassDeclarations = (animation: Animation): readonly string[]
 
 // What the canvas draws an animation previewed at the playhead with (spec timeline-preview): the animation properties
 // with the playhead as a negative delay, the fill mode the animation's own (the element keeps what the keyframes say
-// before the first one and after the last) and the play state the preview holds. Editor-only, never exported.
-export function previewDeclarations(animation: Animation, time: number, playing: boolean, loop: boolean): readonly string[] {
+// before the first one and after the last), and paused: the editor's clock alone moves it (the playhead walks, the delay
+// follows), playing or not. Running, the browser's animation also counted its own time from the moment it was drawn,
+// so the two clocks added up past its end and Play showed the last frame only (a 0 % red background never showed).
+// Editor-only, never exported.
+export function previewDeclarations(animation: Animation, time: number, _playing: boolean, loop: boolean): readonly string[] {
   const controlOf = (control: string): string | null => SETTING_DOORS.find(({ entry }) => controlNameOf(entry) === control)?.setting ?? null;
   const delay = controlOf('setting-delay');
   const iterations = controlOf('setting-iterations');
@@ -166,7 +169,7 @@ export function previewDeclarations(animation: Animation, time: number, playing:
   if (delay !== null) overrides[delay] = `${-Math.round(time)}ms`;
   if (iterations !== null) overrides[iterations] = loop ? 'infinite' : '1';
   if (fill !== null) overrides[fill] = 'both';
-  if (playState !== null) overrides[playState] = playing ? 'running' : 'paused';
+  if (playState !== null) overrides[playState] = 'paused';
   return animationDeclarations(animation, overrides);
 }
 

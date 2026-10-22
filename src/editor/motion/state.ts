@@ -4,7 +4,8 @@
 // commands that change it. None of them changes the document or records an undo step: the document's own commands are
 // core/motion/commands.ts, which the panel's doors run with what this state says (the playhead's time, the selection,
 // the clipboard).
-import { message, registerHandler } from '../../core/commands/registry.ts';
+import { message, registerHandler, type HandlerContext } from '../../core/commands/registry.ts';
+import { addMotionCommand } from '../../core/motion/commands.ts';
 import type { StoreState } from '../../core/store/store.ts';
 import { locate } from '../../core/document/model.ts';
 import { findTimeline, motionsOf, timelinesOf } from '../../core/motion/document.ts';
@@ -31,6 +32,9 @@ export interface MotionUiState {
   // the canvas draws the timeline at the playhead (set by a scrub and by Play, cleared by Stop)
   readonly previewing?: true | undefined;
   readonly playing?: true | undefined;
+  // the play is a one-time show of an effect just picked (motion.add with a preset): at its end it stops, and the
+  // element goes back to its own styles, instead of holding the Timeline's preview
+  readonly showing?: true | undefined;
   // the canvas runs the interactions (spec motion-run-in-editor)
   readonly running?: true | undefined;
   // the action whose target the next press on the canvas or a Layers row gives
@@ -200,15 +204,29 @@ export const previewMotionCommand = registerHandler<'motion.preview', EditorUi>(
       const time = duration > 0 && motion.time >= duration ? 0 : motion.time;
       return { kind: 'change', ui: withMotion(state.ui, { ...motion, time, previewing: true, playing: true }), message: message('status.motion.previewPlaying', { name }) };
     }
-    const { playing: _playing, ...paused } = motion;
+    const { playing: _playing, showing: _showing, ...paused } = motion;
     void _playing;
+    void _showing;
     if (operation === 'pause') return motion.playing === true ? { kind: 'change', ui: withMotion(state.ui, paused) } : { kind: 'change' };
     const { previewing: _previewing, ...stopped } = paused;
     void _previewing;
+    // the end of a one-time show of an effect just picked is silent: the status bar keeps saying what was added
+    if (motion.showing === true) return { kind: 'change', ui: withMotion(state.ui, { ...stopped, time: 0 }) };
     return { kind: 'change', ui: withMotion(state.ui, { ...stopped, time: 0 }), message: message('status.motion.previewStopped') };
   },
   (state, args) => args.operation === 'play' && motionUiOf(state.ui).playing === true,
 );
+
+// motion.add as the editor runs it: an entry effect picked in one click (Fade in, Slide up…) plays once on the canvas
+// at once. The canvas stood still after the click, and an effect the person could not see read as one that does not
+// work; the page itself plays it only in Preview and on the site.
+export const addMotionInEditorCommand = registerHandler<'motion.add', EditorUi>('motion.add', (context, args) => {
+  const outcome = addMotionCommand.run(context as unknown as HandlerContext<never>, args);
+  const named = outcome.kind === 'change' ? outcome.message?.params.timeline : undefined;
+  if (args.preset === undefined || outcome.kind !== 'change' || typeof named !== 'string') return outcome;
+  const motion = motionUiOf(context.state.ui);
+  return { ...outcome, ui: withMotion(context.state.ui, { ...motion, timeline: named, time: 0, previewing: true, playing: true, showing: true }) };
+});
 
 // Run mode (plan: "Run interactions"): the canvas runs the interactions as the page does, until it is turned off.
 export const toggleRunCommand = registerHandler<'motion.toggleRun', EditorUi>(

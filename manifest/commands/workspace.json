@@ -211,7 +211,7 @@
           "feature": "css-variables-tokens",
           "menu": "view",
           "checked": "checkbox",
-          "labelKey": "panel.variables",
+          "labelKey": "activity.styles",
           "faceLabelKey": null,
           "icon": "palette",
           "disabledReasonKey": "common.notAvailableYet",
@@ -3908,6 +3908,50 @@
       },
       "refusals": [],
       "confirmation": null
+    },
+    {
+      "id": "workspace.startBlank",
+      "labelKey": "command.startBlank",
+      "owner": "src/editor/workspace/panels.ts",
+      "introducedBy": "site-templates",
+      "args": {},
+      "availability": {
+        "predicate": "always",
+        "refusalKey": null
+      },
+      "refusals": [],
+      "confirmation": null,
+      "history": {
+        "undoable": false
+      },
+      "entryPoints": [
+        {
+          "id": "start-blank",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "site-templates",
+          "labelKey": "command.startBlank",
+          "faceLabelKey": null,
+          "icon": "file",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "start-blank",
+            "order": 1
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {},
+          "panel": "elements",
+          "control": "start-blank",
+          "modifier": null,
+          "gesture": null
+        }
+      ]
     }
   ]
 }

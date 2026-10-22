@@ -69,6 +69,8 @@ export interface EditorUi {
   readonly gridEdit?: NodeId | undefined;
   // the page the editor shows (pages.switch, core/project/pages.ts); absent while it is the project's first page
   readonly page?: string | undefined;
+  // the start card was set aside for a blank page (workspace.startBlank); absent while it shows on an empty project
+  readonly startBlank?: true | undefined;
   // the field the inspector was last asked to show (inspector.reveal); absent until one is
   readonly revealed?: Revealed | undefined;
   // the Edit on canvas mode (canvas/edit-mode.ts); absent while none is on

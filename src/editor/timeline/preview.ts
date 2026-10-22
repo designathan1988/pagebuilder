@@ -13,6 +13,7 @@ import type { StoreState } from '../../core/store/store.ts';
 import type { EditorStore } from '../store.ts';
 import { PLAYHEAD_DOOR, shownAnimation, timelineOf } from './playhead.ts';
 import type { EditorUi } from '../state.ts';
+import { isPanelOpen } from '../workspace/panels.ts';
 
 export const playCommand = registerHandler<'timeline.play', EditorUi>('timeline.play', ({ state }) => {
   const shown = shownAnimation(state);
@@ -50,12 +51,14 @@ export const toggleLoopCommand = registerHandler<'timeline.toggleLoop', EditorUi
 });
 
 // What the canvas draws while the timeline previews the shown animation (frame.tsx hands it to the renderer's
-// previewTimeline): the element, the animation's name, where the playhead sits and whether it plays and loops. Null
-// while nothing is previewed (Stop, or no animation shown), when the element draws its own styles.
+// previewTimeline): the element, the animation's name, where the playhead sits and whether it plays and loops. While
+// the Timeline panel is open on an animation, the canvas shows the element as it is at the playhead, so a keyframe
+// edited in the Style tab shows on the element (a red 0 % keyframe left the element grey until Play). Null while
+// nothing is previewed (the panel closed and nothing played, or no animation shown): the element draws its own styles.
 export function timelinePreview(state: StoreState<EditorUi>): { readonly node: string; readonly animation: string; readonly time: number; readonly playing: boolean; readonly loop: boolean } | null {
   const timeline = timelineOf(state.ui);
   const shown = shownAnimation(state);
-  if (shown === null || timeline.live !== true) return null;
+  if (shown === null || (timeline.live !== true && !isPanelOpen(state.ui, 'timeline'))) return null;
   return { node: shown.node.id, animation: shown.animation.name, time: timeline.time, playing: timeline.playing === true, loop: timeline.loop === true };
 }
 

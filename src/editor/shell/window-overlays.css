@@ -974,6 +974,37 @@
   padding: var(--space-2) var(--space-4);
 }
 
+/* what the keyframe under the playhead sets: one line per property, its name and its value */
+.timeline__frame-values {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0 var(--space-4) var(--space-3);
+  list-style: none;
+}
+
+.timeline__frame-values > li {
+  display: flex;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.timeline__frame-property {
+  flex: none;
+  color: var(--color-text-muted);
+  font: var(--fw-caption) var(--fs-caption) / var(--lh-caption) var(--font-ui);
+}
+
+.timeline__frame-value {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--color-origin-here);
+  font: var(--fw-code) var(--fs-code) / var(--lh-code) var(--font-mono);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .timeline__rows {
   display: flex;
   flex-direction: column;
@@ -1388,7 +1419,8 @@
   border-radius: var(--radius-xs);
   background: var(--color-origin-here-soft);
   color: var(--color-origin-here);
-  font: var(--weight-semibold) var(--fs-code) / var(--lh-code) var(--font-mono);
+  /* the interface's face, as the inspector's other values: the code face cut "Every time · no delay" to "no dela" */
+  font: var(--weight-semibold) var(--fs-caption) / var(--lh-caption) var(--font-ui);
 }
 
 .interaction-card .interaction-card__fields .panel-field__text:hover:not(:disabled) {
@@ -1492,6 +1524,73 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xs);
+}
+
+/* a field that offers values wears its arrow inside, at its end, always: it says the values are there and opens them;
+   the text stops before it */
+.panel-field__form {
+  position: relative;
+  min-width: 0;
+}
+
+/* the form's hidden submit button (Enter keeps the field) sits at the form's start: at its end it stood 4 px past the
+   inspector and gave it a sideways scrollbar */
+.panel-field__form > .visually-hidden {
+  top: 0;
+  left: 0;
+}
+
+.panel-field__form:has(.panel-field__open) .panel-field__text {
+  padding-right: var(--size-control);
+}
+
+.panel-field__open {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: var(--size-control);
+  height: var(--size-control);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.panel-field__open:hover:not(:disabled) {
+  color: var(--color-text);
+}
+
+.panel-field__form:has(.easing-curve__button) .panel-field__open {
+  right: calc(var(--size-control) + var(--space-2));
+}
+
+/* the offered values: a menu under the field, each value whole, the one the arrows or the pointer stand on lit, the
+   field's own value marked */
+.panel-field__options {
+  overflow-y: auto;
+}
+
+.panel-field__option {
+  display: flex;
+  align-items: center;
+  min-height: var(--size-chip);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.panel-field__option.is-current {
+  font-weight: var(--weight-semibold);
+}
+
+.panel-field__option.is-active {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
 }
 
 /* The canvas grid editor (grid-editor.tsx; the user real-use audit, item 8.2): the column numbers at their starts,
