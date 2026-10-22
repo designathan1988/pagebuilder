@@ -3,20 +3,23 @@
 // component it draws, its bindings (an attribute, a class, a style or a component's prop that follows an expression)
 // and its events (code that runs on click, on a key, on mount, every frame or on a timer). Every control is a door the
 // manifest places in the inspector-logic region; the code fields complete the project's names (scope.ts).
-import { useId, type ReactNode } from 'react';
+import { useId, useState, type ReactNode } from 'react';
 import { primaryNodeOf } from '../../core/events/interactions.ts';
 import { logicOf, type NodeLogic } from '../../core/logic/model.ts';
 import type { NodeId } from '../../generated/commands.ts';
-import type { MessageId } from '../../generated/ids.ts';
+import type { CommandId, MessageId } from '../../generated/ids.ts';
+import type { DispatchResult } from '../../core/store/store.ts';
 import { elementIcon } from '../../manifest/runtime.ts';
 import { DoorField, DoorForm, doorOf, type Option } from '../data/controls.tsx';
 import { DoorControl, Icon } from '../doors/door.tsx';
-import { useEditorState } from '../store.ts';
+import { useEditorState, useStore } from '../store.ts';
 import { useT } from '../text.ts';
 import type { CodeScope } from './code-editor.tsx';
 import { DoorCode } from './door-code.tsx';
 import { LogicTextField } from './logic-field.tsx';
 import { localsAt, projectScope } from './scope.ts';
+import { logicChoices, repeatAround, type Choice } from './logic-choices.ts';
+import { LogicEvents } from './logic-events.tsx';
 import './panel.css';
 
 const REGION = 'inspector-logic';
@@ -51,6 +54,41 @@ function Row({ label, children }: { readonly label: string; readonly children: R
   );
 }
 
+const CUSTOM = '\u0000custom';
+
+// A Logic field as a person fills it: a list of what it can use, in words (logic-choices.ts), and the code editor only
+// for code of one's own — shown when the field holds code the list does not name, or when "Custom code…" is picked.
+// A choice is kept at once, through the field's own door (the element as its target).
+function ChoiceOrCode({ field, value, choices, code, target }: { readonly field: ExpressionField; readonly value: string; readonly choices: readonly Choice[]; readonly code: ReactNode; readonly target: string }): ReactNode {
+  const t = useT();
+  const store = useStore();
+  const known = choices.some((one) => one.value === value);
+  const [asked, setAsked] = useState(false);
+  const custom = asked || !known;
+  const choose = (picked: string) => {
+    if (picked === CUSTOM) {
+      setAsked(true);
+      return;
+    }
+    setAsked(false);
+    if (FIELD === null || picked === value) return;
+    (store.dispatch as (id: CommandId, a: unknown) => DispatchResult)(FIELD.command.id as CommandId, { ...FIELD.door.args, field, target, value: picked });
+  };
+  return (
+    <div className="logic-choice">
+      <select className="input logic-choice__list" aria-label={t('logic.pick.label', { field: t(`logic.field.${field}` as MessageId) })} value={custom ? CUSTOM : value} onChange={(event) => choose(event.currentTarget.value)}>
+        {choices.map((one) => (
+          <option key={one.value} value={one.value}>
+            {one.label}
+          </option>
+        ))}
+        <option value={CUSTOM}>{t('logic.pick.custom')}</option>
+      </select>
+      {custom ? code : null}
+    </div>
+  );
+}
+
 export function LogicTab(): ReactNode {
   const t = useT();
   const example = useId();
@@ -69,7 +107,14 @@ export function LogicTab(): ReactNode {
   const inside: CodeScope = { ...project, locals: localsAt(document, node.id as NodeId, true) };
   const outside: CodeScope = { ...project, locals: localsAt(document, node.id as NodeId, false) };
   const expression = (field: ExpressionField, scope: CodeScope, hint?: MessageId) => (
-    <DoorCode entry={FIELD} args={{ field }} name="value" value={logic[field] ?? ''} kind="expression" scope={scope} target={node.id} label={t(`logic.field.${field}` as MessageId)} {...(hint === undefined ? {} : { placeholder: t(hint) })} />
+    <ChoiceOrCode
+      key={field}
+      field={field}
+      value={logic[field] ?? ''}
+      choices={logicChoices(document, node.id as NodeId, field, t)}
+      code={<DoorCode entry={FIELD} args={{ field }} name="value" value={logic[field] ?? ''} kind="expression" scope={scope} target={node.id} label={t(`logic.field.${field}` as MessageId)} {...(hint === undefined ? {} : { placeholder: t(hint) })} />}
+      target={node.id}
+    />
   );
   const components: Option[] = [{ value: '', label: '—' }, ...(document.app?.components ?? []).map((one) => ({ value: one.name, label: one.name }))];
   const binds = Object.entries(logic.binds ?? {});
@@ -124,18 +169,19 @@ export function LogicTab(): ReactNode {
           </DoorForm>
         </Group>
         <Group title={t('logic.section.events')}>
-          {handlers.length === 0 ? <p className="logic-tab__note">{t('logic.events.none')}</p> : null}
-          {handlers.map((handler, index) => (
-            // a handler is named by its place (logic.updateHandler)
-            <div key={index} className="logic-handler">
-              <div className="logic-handler__row">
-                <LogicTextField entry={HANDLER_EVENT} args={{ handler: index }} name="event" value={handler.event} target={node.id} className="logic-handler__event" />
-                <DoorControl entry={HANDLER_REMOVE} args={{ handler: index }} label={`${t('command.logic.removeHandler')} ${handler.event}`} />
-              </div>
+          <LogicEvents
+            document={document}
+            node={node}
+            handlers={handlers}
+            item={(() => {
+              const around = repeatAround(document, node.id as NodeId, true);
+              return around === null ? null : { name: around.item, list: around.list };
+            })()}
+            doors={{ add: ADD_HANDLER, event: HANDLER_EVENT, code: HANDLER_CODE, remove: HANDLER_REMOVE }}
+            codeOf={(index, handler) => (
               <DoorCode entry={HANDLER_CODE} args={{ handler: index }} name="code" value={handler.code} kind="statements" scope={{ ...inside, event: true }} target={node.id} label={`${t('logic.handler.code')} · ${handler.event}`} />
-            </div>
-          ))}
-          <DoorControl entry={ADD_HANDLER} />
+            )}
+          />
           <p className="logic-tab__note">{t('logic.events.help')}</p>
         </Group>
       </div>

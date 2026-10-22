@@ -382,3 +382,97 @@
 .logic-row > .data-field {
   flex: none;
 }
+
+/* a Logic field: the list of what it can use, and under it the code editor for code of one's own */
+.logic-choice {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.logic-choice__list {
+  width: 100%;
+  min-width: 0;
+}
+
+/* an event's actions in words, each with its remove button */
+.logic-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.logic-actions__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-xs);
+  background: var(--color-origin-here-soft);
+}
+
+.logic-actions__words,
+.logic-actions__code {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--color-text);
+  font: var(--fw-caption) var(--fs-caption) / var(--lh-caption) var(--font-ui);
+}
+
+.logic-actions__code {
+  font: var(--fw-code) var(--fs-code) / var(--lh-code) var(--font-mono);
+  color: var(--color-text-muted);
+}
+
+.logic-actions__none {
+  color: var(--color-text-subtle);
+  font: var(--fw-caption) var(--fs-caption) / var(--lh-caption) var(--font-ui);
+}
+
+/* the row that adds an action: what to do, what it needs, and Add */
+.logic-pick {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.logic-pick__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.logic-pick__label {
+  color: var(--color-text-muted);
+  font: var(--fw-caption) var(--fs-caption) / var(--lh-caption) var(--font-ui);
+}
+
+.logic-pick__add {
+  align-self: flex-start;
+}
+
+/* the when takes the row beside its remove button (as wide as the row it pushed the button to a line of its own) */
+.logic-handler__when {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+}
+
+.logic-handler__code-toggle {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text-muted);
+  font: var(--fw-caption) var(--fs-caption) / var(--lh-caption) var(--font-ui);
+  text-decoration: underline;
+  cursor: pointer;
+}
