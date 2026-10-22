@@ -6935,6 +6935,7 @@ export const MESSAGE_IDS = [
   "canvas.badge.breakpoint",
   "canvas.badge.breakpointScope",
   "layers.instanceOf",
+  "layers.hasLogic",
   "assetPicker.search",
   "panel.dockBack",
   "quickPanel.key.image",

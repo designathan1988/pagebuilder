@@ -651,6 +651,14 @@
 /* an instance's row names its component, in the accent (layers.tsx LayersRow, J21). The row's own name comes first:
    where both do not fit, the chip keeps only its component icon, the component's name in its tooltip and read out
    (name-first.ts sets data-component-compact; "Site header 3" read "Site h…" beside "Site hea…", the last check's L11) */
+/* the mark of an element with logic: its icon alone, its meaning in the tooltip */
+.row__logic {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  color: var(--color-text-subtle);
+}
+
 .row__component {
   display: inline-flex;
   align-items: center;

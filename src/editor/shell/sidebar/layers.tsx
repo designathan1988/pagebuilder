@@ -352,6 +352,14 @@ const LayersRow = memo(function LayersRow({ node, depth, view }: { readonly node
             <span className="row__component-name">{node.component}</span>
           </span>
         ) : null}
+        {node.logic === undefined ? null : (
+          // an element with logic (its text, a list, its visibility from the App's variables) says so: the canvas shows
+          // it as written, and nothing in its row told the person why Preview showed it otherwise
+          <span className="row__logic" title={t('layers.hasLogic')}>
+            <Icon name="braces" size="sm" />
+            <span className="visually-hidden">{t('layers.hasLogic')}</span>
+          </span>
+        )}
         <RowDetails node={node} />
         <EmptyMark node={node} />
         <span className="row__actions">
