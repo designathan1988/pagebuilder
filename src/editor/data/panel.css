@@ -197,16 +197,26 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* a row's Move and Delete stay at the panel's right edge while the row's fields scroll sideways beneath them: at the
-   table's end they were cut by the panel's edge even with one field (a 216 px table in a 199 px sidebar) */
-.data-grid__actions {
+/* a row's number, Move and Delete stay at the table's start while the row's fields scroll sideways beneath them: held at
+   its end, they lay over the last field (a Price cell under them could not be typed in) */
+.data-grid__table .data-grid__number {
   position: sticky;
-  right: 0;
-  display: flex;
-  gap: var(--space-1);
+  left: 0;
+  z-index: 1;
   background: var(--color-surface);
   /* the edge the fields scroll under */
-  border-left: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+}
+
+.data-grid__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.data-grid__actions {
+  display: flex;
+  gap: var(--space-1);
 }
 
 /* a column: the handle a column is dragged by onto an element (the pointer owner runs the drag) */

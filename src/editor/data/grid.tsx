@@ -68,7 +68,8 @@ function Fields({ collection }: { readonly collection: Collection }): ReactNode 
           {/* Delete beside the name it removes: the type menu, as wide as its longest type, takes the next line */}
           <DoorControl entry={FIELD_REMOVE} args={{ collection: collection.name, field: field.key }} label={t('data.removeFieldNamed', { label: field.label })} />
           <DoorField entry={FIELD_TYPE} args={{ collection: collection.name, field: field.key }} name="type" value={field.type} options={types} className="data-field--type" />
-          {field.type === 'number' ? <DoorField entry={FIELD_DECIMALS} args={{ collection: collection.name, field: field.key }} name="decimals" value={String(field.decimals ?? 0)} options={DECIMAL_PLACES} transform={Number} className="data-field--decimals" /> : null}
+          {/* its name in sight: a lone "0" under the type said nothing */}
+          {field.type === 'number' ? part(t('data.fieldDecimals'), <DoorField entry={FIELD_DECIMALS} args={{ collection: collection.name, field: field.key }} name="decimals" value={String(field.decimals ?? 0)} options={DECIMAL_PLACES} transform={Number} className="data-field--decimals" />, true) : null}
           {isReferenceType(field.type) ? part(t('data.fieldTarget'), <DoorField entry={FIELD_TARGET} args={{ collection: collection.name, field: field.key }} name="target" value={field.collection ?? ''} options={targets} />, true) : null}
           {field.type === 'option' ? part(t('data.fieldOptions'), <DoorField entry={FIELD_OPTIONS} args={{ collection: collection.name, field: field.key }} name="options" value={(field.options ?? []).join(', ')} />, true) : null}
           {field.type === 'slug' ? part(t('data.fieldFrom'), <DoorField entry={FIELD_FROM} args={{ collection: collection.name, field: field.key }} name="from" value={field.from ?? ''} options={sources} />, true) : null}
@@ -160,9 +161,6 @@ function Grid({ collection, query }: { readonly collection: Collection; readonly
                 </span>
               </th>
             ))}
-            <th scope="col">
-              <span className="visually-hidden">{t('data.actions')}</span>
-            </th>
           </tr>
         </thead>
         <tbody>
@@ -170,17 +168,21 @@ function Grid({ collection, query }: { readonly collection: Collection; readonly
             const at = collection.items.indexOf(item);
             return (
               <tr key={item.id}>
+                {/* the row's number with its Move and Delete, held at the table's start while the fields scroll sideways:
+                    held at its end, they lay over the last field (Price could not be typed in) */}
                 <th scope="row" className="data-grid__number">
-                  {at + 1}
+                  <span className="data-grid__row">
+                    {at + 1}
+                    <span className="data-grid__actions">
+                      <DoorControl entry={ITEM_UP} args={{ collection: collection.name, item: item.id, to: at - 1 }} ready={at > 0} label={t('data.moveUp', { row: at + 1 })} />
+                      <DoorControl entry={ITEM_DOWN} args={{ collection: collection.name, item: item.id, to: at + 1 }} ready={at < collection.items.length - 1} label={t('data.moveDown', { row: at + 1 })} />
+                      <DoorControl entry={ITEM_DELETE} args={{ collection: collection.name, items: [item.id] }} label={t('data.deleteRow', { row: at + 1 })} />
+                    </span>
+                  </span>
                 </th>
                 {collection.fields.map((field) => (
                   <td key={field.key}>{cell(field, field.type === 'reference' ? String(item.values[field.key] ?? '') : fieldText(field, item.values[field.key], words, { language, decimals: field.decimals }, lookup), item.id)}</td>
                 ))}
-                <td className="data-grid__actions">
-                  <DoorControl entry={ITEM_UP} args={{ collection: collection.name, item: item.id, to: at - 1 }} ready={at > 0} label={t('data.moveUp', { row: at + 1 })} />
-                  <DoorControl entry={ITEM_DOWN} args={{ collection: collection.name, item: item.id, to: at + 1 }} ready={at < collection.items.length - 1} label={t('data.moveDown', { row: at + 1 })} />
-                  <DoorControl entry={ITEM_DELETE} args={{ collection: collection.name, items: [item.id] }} label={t('data.deleteRow', { row: at + 1 })} />
-                </td>
               </tr>
             );
           })}
