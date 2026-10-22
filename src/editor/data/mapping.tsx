@@ -213,6 +213,9 @@ export function MappingView({ collection: shown, query, selected }: { readonly c
         </div>
       )}
       {nested.length === 0 || nestedOuter === undefined || nestedNode === null ? null : <p className="data-panel__note">{t('data.fillNestedHelp', { name: nestedNode.name, outer: nestedOuter.name, field: nested[0]?.label ?? '', collection: nested[0]?.collection ?? '' })}</p>}
+      {/* the list on the page keeps the query of its last Fill (decisoes.md, DCS-092): a filter or a sort changed here
+          showed in the grid and not on the page, and nothing said why */}
+      {template.list?.dataList !== undefined && template.list.dataList.collection === collection.name && JSON.stringify(template.list.dataList.query ?? {}) !== JSON.stringify(usedQuery) ? <p className="data-panel__note" role="note">{t('data.queryPending', { name: template.list.name })}</p> : null}
       <div className="data-panel__actions">
         {via !== undefined || (template.list === null && isInsideItem(document, template.root)) ? null : <DoorControl entry={FILL} args={{ node: template.root.id, collection: collection.name, query: usedQuery }} />}
         {nested.map((field) => (

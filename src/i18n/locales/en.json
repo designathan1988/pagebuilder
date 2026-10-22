@@ -4499,5 +4499,6 @@
   "logic.bind.example": "For example {value}",
   "checks.linkTemplate": "{category} · Link to a template page in {name}: the site has one page per item, not this one",
   "checks.linkTemplate.fix": "Link to one of its item pages in Link to › A page",
-  "checks.fix.fieldName": "Write the Accessible name"
+  "checks.fix.fieldName": "Write the Accessible name",
+  "data.queryPending": "{name} on the page still shows its last filter and sort. Press Fill to show this one."
 }

@@ -7709,5 +7709,6 @@ export const MESSAGE_IDS = [
   "checks.linkTemplate",
   "checks.linkTemplate.fix",
   "checks.fix.fieldName",
+  "data.queryPending",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];

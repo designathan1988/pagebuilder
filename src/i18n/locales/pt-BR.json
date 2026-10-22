@@ -4499,5 +4499,6 @@
   "logic.bind.example": "Por exemplo {value}",
   "checks.linkTemplate": "{category} · Link para uma página modelo em {name}: o site tem uma página por item, não esta",
   "checks.linkTemplate.fix": "Aponte para uma das páginas dos itens em Link para › Uma página",
-  "checks.fix.fieldName": "Escrever o Nome acessível"
+  "checks.fix.fieldName": "Escrever o Nome acessível",
+  "data.queryPending": "{name} na página ainda mostra o último filtro e ordem. Aperte Preencher para mostrar este."
 }
