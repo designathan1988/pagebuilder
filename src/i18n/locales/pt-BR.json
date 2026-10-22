@@ -4486,5 +4486,6 @@
   "settings.map": "Mapa",
   "status.map.selectMap": "Selecione um mapa para definir o lugar.",
   "status.map.emptyPlace": "Escreva um endereço, ou uma latitude e uma longitude.",
-  "status.map.placed": "O mapa mostra {place}."
+  "status.map.placed": "O mapa mostra {place}.",
+  "inspector.codeViewNotice": "A vista Código não desenha a página: os valores que ela calcula aparecem em Tela ou Dividido. O que for escrito aqui é mantido."
 }

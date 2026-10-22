@@ -33,6 +33,7 @@ import { CONCEPT_ROWS, pairItem, rowClosed, rowOfItem, shortLabelOf } from '../i
 import { ConceptRowView } from './concept-row.tsx';
 import { valueOrigin } from '../inspector/origin.ts';
 import { styleClassOf } from '../inspector/style-target.ts';
+import { editorView } from '../view/editor-view.ts';
 import { MODEL_RULES, useEditorState, useStore, layeredRules } from '../store.ts';
 import { FieldOrigin } from './field-origin.tsx';
 import './settings.css';
@@ -605,6 +606,14 @@ function SelectedElement() {
 }
 
 
+// The Code view draws no canvas, so the values the page computes (what a field shows where nothing is written) are
+// not there to read: the fields stood empty ("0 tracks", no Display) as if the element had nothing. The tab says why.
+function CodeViewNotice() {
+  const t = useT();
+  const code = useEditorState((s) => editorView(s.ui) === 'code');
+  return code ? <p className="inspector-notice" role="note">{t('inspector.codeViewNotice')}</p> : null;
+}
+
 // The notice an element of an instance wears in the Style tab (the user's real-use audit, item A3.12): a style write
 // there reaches the component and every copy of it, and the person is told before anything is typed.
 function ComponentNotice() {
@@ -683,6 +692,7 @@ function StyleTab() {
         <div className="inspector-scroll">
         <div className="inspector-body">
           <LockNotice />
+          <CodeViewNotice />
           <ComponentNotice />
           <div className="inspector-sections" data-region="inspector-sections">
             <StyleSections />

@@ -7695,5 +7695,6 @@ export const MESSAGE_IDS = [
   "status.map.selectMap",
   "status.map.emptyPlace",
   "status.map.placed",
+  "inspector.codeViewNotice",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];

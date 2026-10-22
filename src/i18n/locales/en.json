@@ -4486,5 +4486,6 @@
   "settings.map": "Map",
   "status.map.selectMap": "Select a map to set its place.",
   "status.map.emptyPlace": "Write an address, or a latitude and a longitude.",
-  "status.map.placed": "The map shows {place}."
+  "status.map.placed": "The map shows {place}.",
+  "inspector.codeViewNotice": "The Code view draws no page: the values it computes show in Canvas or Split. What is written here is kept."
 }
