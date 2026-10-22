@@ -3115,6 +3115,7 @@ export const PREDICATE_IDS = [
   "mapSelected",
   "media",
   "multicol",
+  "openPageNotHome",
   "organizableSelection",
   "parentValueIn",
   "perspectiveContext",

@@ -65,6 +65,8 @@ export interface DoorState {
   // why the control is disabled: "not available yet" while its command is not built,
   // then the door's own reason (disabledReasonKey) while its predicate does not hold; null when it is enabled
   readonly reason: MessageId | null;
+  // the words the reason fills in (its predicate's refusal: which page, which collection), for a panel that says it
+  readonly reasonParams: Message['params'] | null;
   readonly run: () => void;
 }
 
@@ -172,7 +174,7 @@ export function useDoor(entry: DoorEntry, args: Readonly<Record<string, unknown>
       if (bytes !== null) dispatch(entry.command.id, { ...given, [file]: await projectFileText(bytes) });
     });
   };
-  return { label, face, title, built, available, current, chord, reason, run };
+  return { label, face, title, built, available, current, chord, reason, reasonParams: said?.params ?? null, run };
 }
 
 // The browser's file chooser, as a user opens it; the chosen file's text, or null when nothing was chosen.

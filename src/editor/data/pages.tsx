@@ -9,7 +9,7 @@ import { collectionNamed, itemTitle } from '../../core/data/collections.ts';
 import type { Collection } from '../../core/data/model.ts';
 import { NEW_PAGES } from '../../core/data/regions.ts';
 import { locate, walk, type DocumentJson, type Page } from '../../core/document/model.ts';
-import { DoorControl } from '../doors/door.tsx';
+import { DoorControl, useDoor } from '../doors/door.tsx';
 import { useEditorState } from '../store.ts';
 import { useT } from '../text.ts';
 import { DoorField, DoorForm, doorOf } from './controls.tsx';
@@ -31,6 +31,8 @@ export function PagesView({ page, collection }: { readonly page: Page; readonly 
   const document = useEditorState((state) => state.document);
   const mark = page.tree.dataItem;
   const templated = mark?.template === true ? collectionNamed(document, mark.collection) : undefined;
+  const door = useDoor(FROM_COLLECTION, { collection: collection?.name ?? '', nameField: nameField?.key ?? '' });
+  const templateRefusal = door.built && !door.available && door.reason !== null ? t(door.reason, door.reasonParams ?? { name: page.name }) : null;
   return (
     <section className="data-pages" data-region="data-pages" aria-label={t('data.pagesTitle')}>
       <p className="data-panel__note">{t('data.pagesFromHelp', { name: page.name })}</p>
@@ -48,7 +50,8 @@ export function PagesView({ page, collection }: { readonly page: Page; readonly 
           <DoorControl entry={FROM_COLLECTION} args={{ collection: collection.name, nameField: nameField.key }} label={t('data.templatePerItem', { name: page.name, collection: collection.name, field: nameField.label })}>
             <span className="door__label">{t('data.templatePerItem', { name: page.name, collection: collection.name, field: nameField.label })}</span>
           </DoorControl>
-          <span className="data-panel__note">{t('data.itemPagesCount', { count: collection.items.length, examples: collection.items.slice(0, 2).map((item) => itemTitle(collection, item, language)).join(', ') })}</span>
+          {/* why the page cannot be the template (the start page), said under the button where the count stood */}
+          {templateRefusal === null ? <span className="data-panel__note">{t('data.itemPagesCount', { count: collection.items.length, examples: collection.items.slice(0, 2).map((item) => itemTitle(collection, item, language)).join(', ') })}</span> : <span className="data-panel__note">{templateRefusal}</span>}
         </div>
       )}
     </section>

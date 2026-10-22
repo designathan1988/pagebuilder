@@ -2360,8 +2360,8 @@
         }
       },
       "availability": {
-        "predicate": "always",
-        "refusalKey": null
+        "predicate": "openPageNotHome",
+        "refusalKey": "status.data.templateIsHome"
       },
       "refusals": [
         "status.data.templateIsItemPage",

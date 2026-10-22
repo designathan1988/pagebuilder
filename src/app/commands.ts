@@ -115,7 +115,7 @@ import { setStyleState } from '../editor/view/style-state.ts';
 import { enterPreview, exitPreview } from '../editor/view/preview.ts';
 import { newBlankPage } from '../core/project/project.ts';
 import { addPageCommand, deletePageCommand, duplicatePageCommandFor, renamePageCommand, switchPageCommand } from '../core/project/pages.ts';
-import { addFieldCommand, addItemCommand, bindElementCommand, createCollectionCommand, deleteCollectionCommand, deleteItemsCommand, detachRegionCommand, fillCommand, formatBindingCommand, moveItemCommand, pagesFromCollectionCommand, pagesFromNamesCommand, previewItemCommand, removeFieldCommand, renameCollectionCommand, setCellCommand, setFieldCommand, shareRegionCommand, showWhenCommand, stopSharingCommand, unbindCommand } from '../core/data/commands.ts';
+import { openPageNotHome, addFieldCommand, addItemCommand, bindElementCommand, createCollectionCommand, deleteCollectionCommand, deleteItemsCommand, detachRegionCommand, fillCommand, formatBindingCommand, moveItemCommand, pagesFromCollectionCommand, pagesFromNamesCommand, previewItemCommand, removeFieldCommand, renameCollectionCommand, setCellCommand, setFieldCommand, shareRegionCommand, showWhenCommand, stopSharingCommand, unbindCommand } from '../core/data/commands.ts';
 import { choosePreviewSheet, closePreview, importInto, importNew, previewFile, selectCollection, setPreviewType, setQuery } from '../editor/data/state.ts';
 import { restoreVersion } from '../core/project/recovery.ts';
 import { takeOverEditing } from '../core/project/tab-guard.ts';
@@ -556,6 +556,7 @@ export const PREDICATES = {
   inTable,
   mapSelected,
   importDestinationReady,
+  openPageNotHome,
   hasNaturalChild,
   flexOrGridContainer,
   instanceSelected,

@@ -6,7 +6,7 @@
 // is answered before any patch, naming the row, the column or the element at fault.
 import type { NodeId } from '../../generated/commands.ts';
 import type { MessageId } from '../../generated/ids.ts';
-import { message, registerHandler, type HandlerContext, type Message, type Outcome } from '../commands/registry.ts';
+import { message, registerHandler, registerPredicate, type HandlerContext, type Message, type Outcome } from '../commands/registry.ts';
 import { lineage, locate, walk, type ComponentDefinition, type DocNode, type DocumentJson, type Page } from '../document/model.ts';
 import { refreshCopiedIdentities } from '../document/clone.ts';
 import { componentName, copied, createRefusal, marked } from '../design/components.ts';
@@ -622,6 +622,30 @@ export function pagesFromNamesCommand<Ui extends WithPage>() {
   );
 }
 
+// The page open is not the site's start page (index.html, else the first): the one page that writes its own file and
+// is never a template. The Data panel offered "Make Home the template of Products" on Home and refused it once pressed.
+const startPageIndex = (document: DocumentJson): number => {
+  const home = document.pages.findIndex((page) => page.file === HOME_FILE);
+  return home < 0 ? 0 : home;
+};
+// nor is the collection's template another page already (Contact offered it while About was the Products template)
+const otherTemplate = (state: { readonly document: DocumentJson }, page: number, args: unknown): Page | undefined => {
+  const collection = (args as { readonly collection?: unknown } | undefined)?.collection;
+  const held = typeof collection === 'string' ? templateOf(state.document, collection) : undefined;
+  return held !== undefined && held.id !== state.document.pages[page]?.id ? held : undefined;
+};
+export const openPageNotHome = registerPredicate(
+  'openPageNotHome',
+  (state, _rules, args) => openedPage(state) !== startPageIndex(state.document) && otherTemplate(state, openedPage(state), args) === undefined,
+  (state, _rules, args) => {
+    // the start page's own reason first: it holds whatever the collection's template is
+    if (openedPage(state) === startPageIndex(state.document)) return message('status.data.templateIsHome', { name: state.document.pages[openedPage(state)]?.name ?? '' });
+    const other = otherTemplate(state, openedPage(state), args);
+    if (other !== undefined && other.tree.dataItem !== undefined) return message('status.data.templateExists', { collection: other.tree.dataItem.collection, name: other.name });
+    return message('status.data.templateIsHome', { name: state.document.pages[openedPage(state)]?.name ?? '' });
+  },
+);
+
 // pages.fromCollection: the open page becomes the template of a collection's item pages (spec content-data, "one page
 // per item"): one page, which the export writes once per item — in the folder of the collection, at the item's slug
 // (its slug field, else the words of the field named here) — and which the editor shows with the item chosen
@@ -637,8 +661,7 @@ export function pagesFromCollectionCommand<Ui extends WithPage>() {
       if (source.tree.dataItem !== undefined && source.tree.dataItem.template !== true) refuse('status.data.templateIsItemPage', { name: source.name });
       // the site's start page (index.html, else the first page: where the site opens) writes its own file, never one
       // per item: made a template, the site would have no home page (the review's R-3)
-      const home = document.pages.findIndex((page) => page.file === HOME_FILE);
-      if (at === (home < 0 ? 0 : home)) refuse('status.data.templateIsHome', { name: source.name });
+      if (at === startPageIndex(document)) refuse('status.data.templateIsHome', { name: source.name });
       const field = held.fields.find((f) => f.key === nameField);
       if (field === undefined) refuse('status.stale');
       const other = templateOf(document, held.name);

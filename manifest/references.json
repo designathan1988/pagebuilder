@@ -1242,6 +1242,11 @@
     },
     {
       "kind": "predicate",
+      "id": "openPageNotHome",
+      "status": "registered"
+    },
+    {
+      "kind": "predicate",
       "id": "positionedSelection",
       "status": "registered"
     },
