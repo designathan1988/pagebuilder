@@ -13,11 +13,11 @@ import { DoorControl, Icon } from '../doors/door.tsx';
 import { MenuButton } from '../doors/menu.tsx';
 import { GLYPHS, doorSlots, slotsIn } from '../doors/placement.ts';
 import { codeTabs } from '../explorer/file-tabs.ts';
-import { useEditorState, useStore } from '../store.ts';
-import { isEmptyProject, walk } from '../../core/document/model.ts';
+import { useEditorState } from '../store.ts';
+import { isEmptyProject, locate, walk, type NodeId } from '../../core/document/model.ts';
+import { overflowingNode } from '../canvas/coordinates.ts';
+import { onPageChange } from '../canvas/page-clock.ts';
 import { openedPage } from '../../core/project/pages.ts';
-import type { DispatchResult } from '../../core/store/store.ts';
-import type { CommandId } from '../../generated/ids.ts';
 import { fitZoom, frameLeftOf, frameTopOf, registerStage, reportFrame, topOf } from '../view/camera.ts';
 import { activeBreakpoint, viewportWidth } from '../view/breakpoints.ts';
 import { activeState, stateName } from '../view/style-state.ts';
@@ -38,6 +38,11 @@ import { StartScreen } from './start-screen.tsx';
 
 const PAGE_ICON = manifest.elements.elements.find((e) => e.tag === 'body')?.icon ?? null;
 const NO_CODE: readonly string[] = [];
+// the buttons of the bands over the page (manifest canvas-bands): Try it opens the Preview, Select it selects the
+// element that runs past the screen's edge
+const BAND_DOORS = doorSlots('canvas-bands');
+const BAND_TRY = BAND_DOORS.find((d) => d.door.kind === 'panel-control' && d.door.control === 'try');
+const BAND_SELECT = BAND_DOORS.find((d) => d.door.kind === 'panel-control' && d.door.control === 'overflow');
 
 const drawnAs = (entry: DoorEntry): string | null => (entry.door.kind === 'toolbar' || entry.door.kind === 'panel-control' ? entry.door.drawnAs : null);
 
@@ -339,7 +344,6 @@ function BreakpointBadge() {
 // band says so, with the way to try them. Without it the logic read as broken.
 function RunsInPreviewBadge() {
   const t = useT();
-  const store = useStore();
   // while the canvas runs the interactions, only the logic is left to Preview
   const running = useEditorState((s) => motionUiOf(s.ui).running === true);
   const runs = useEditorState((s) => {
@@ -350,10 +354,29 @@ function RunsInPreviewBadge() {
   return (
     <div className="canvas-run-badge" data-canvas-badge="runs">
       <span className="canvas-run-badge__words">{t(running ? 'canvas.badge.logicInPreview' : 'canvas.badge.runsInPreview')}</span>
-      <button type="button" className="canvas-run-badge__try" onClick={() => (store.dispatch as (id: CommandId, a: unknown) => DispatchResult)('view.enterPreview' as CommandId, {})}>
-        <Icon name="play" size="sm" />
-        <span>{t('canvas.badge.tryInPreview')}</span>
-      </button>
+      {BAND_TRY === undefined ? null : <DoorControl entry={BAND_TRY} className="canvas-run-badge__try" />}
+    </div>
+  );
+}
+
+// A page wider than the screen being edited (a row that does not wrap, a fixed width): visitors on that screen scroll
+// sideways, and the canvas, which cuts the page at the frame's edge, kept it out of sight — a row of controls ran past
+// the Tablet screen with every check passing. A band names the element that runs past the edge, and selects it.
+function OverflowBadge() {
+  const t = useT();
+  const document = useEditorState((s) => s.document);
+  const [over, setOver] = useState<string | null>(null);
+  useEffect(() => {
+    const measure = () => setOver(overflowingNode());
+    measure();
+    return onPageChange(measure);
+  }, []);
+  const name = over === null ? null : (locate(document, over as NodeId)?.node.name ?? null);
+  if (over === null || name === null) return null;
+  return (
+    <div className="canvas-run-badge canvas-overflow-badge" data-canvas-badge="overflow">
+      <span className="canvas-run-badge__words">{t('canvas.badge.overflow', { name })}</span>
+      {BAND_SELECT === undefined ? null : <DoorControl entry={BAND_SELECT} args={{ target: over }} className="canvas-run-badge__try" />}
     </div>
   );
 }
@@ -450,6 +473,7 @@ export function CanvasColumn() {
                         <BreakpointBadge />
                         <StateBadge />
                         <RunsInPreviewBadge />
+                        <OverflowBadge />
                       </div>
                     </div>
                     {/* the edge first: the page's overlay (its handles at the page's edge) is drawn over it */}

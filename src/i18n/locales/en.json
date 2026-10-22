@@ -4475,6 +4475,8 @@
   "logic.bind.hideCode": "Hide the code form",
   "canvas.badge.runsInPreview": "This page has logic and interactions: they run in Preview, and the interactions also run on the canvas with View › Run interactions.",
   "canvas.badge.logicInPreview": "The canvas runs the interactions; the page's logic runs in Preview.",
+  "canvas.badge.overflow": "The page is wider than this screen: {name} runs past its edge, so visitors scroll sideways.",
+  "canvas.badge.overflowSelect": "Select it",
   "canvas.badge.tryInPreview": "Try it",
   "inspector.parts.open": "Open this part's settings: its text and its value",
   "palette.entry.templateCheckbox": "Checkbox with label",

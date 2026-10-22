@@ -3,12 +3,12 @@
     "features": 218,
     "built": 218,
     "commands": 396,
-    "doors": 1457,
+    "doors": 1459,
     "scenarios": 1909,
     "modules": 534,
-    "lines": 99679,
+    "lines": 99733,
     "fields": 207,
-    "interactive": 314
+    "interactive": 313
   },
   "features": [
     {
@@ -45,7 +45,7 @@
         "selection.clear",
         "view.selectTool"
       ],
-      "doors": 14,
+      "doors": 15,
       "scenarios": 7
     },
     {
@@ -56,7 +56,7 @@
         "layers.setExpanded",
         "workspace.setPanelOpen"
       ],
-      "doors": 40,
+      "doors": 41,
       "scenarios": 5
     },
     {
@@ -1303,7 +1303,7 @@
         "layers.search",
         "selection.select"
       ],
-      "doors": 9,
+      "doors": 10,
       "scenarios": 4
     },
     {
@@ -1540,7 +1540,7 @@
         "view.exitPreview",
         "project.export"
       ],
-      "doors": 25,
+      "doors": 26,
       "scenarios": 11
     },
     {
@@ -1628,7 +1628,7 @@
         "components.startCreate",
         "selection.range"
       ],
-      "doors": 252,
+      "doors": 253,
       "scenarios": 56
     },
     {
@@ -1719,7 +1719,7 @@
         "view.setBreakpoint",
         "view.setStyleState"
       ],
-      "doors": 48,
+      "doors": 49,
       "scenarios": 2
     },
     {
@@ -1730,7 +1730,7 @@
         "workspace.setPanelOpen",
         "checks.applyFix"
       ],
-      "doors": 45,
+      "doors": 46,
       "scenarios": 8
     },
     {
@@ -1766,7 +1766,7 @@
         "layers.collapseOrFocusParent",
         "selection.range"
       ],
-      "doors": 64,
+      "doors": 65,
       "scenarios": 7
     },
     {
@@ -1831,7 +1831,7 @@
         "view.enterPreview",
         "project.importHtml"
       ],
-      "doors": 10,
+      "doors": 11,
       "scenarios": 2
     },
     {
@@ -1882,7 +1882,7 @@
       "commands": [
         "selection.select"
       ],
-      "doors": 8,
+      "doors": 9,
       "scenarios": 2
     },
     {
@@ -1988,7 +1988,7 @@
         "view.enterPreview",
         "project.export"
       ],
-      "doors": 11,
+      "doors": 12,
       "scenarios": 3
     },
     {
@@ -2127,7 +2127,7 @@
         "files.createFile",
         "files.saveContent"
       ],
-      "doors": 25,
+      "doors": 26,
       "scenarios": 3
     },
     {
@@ -2138,7 +2138,7 @@
         "selection.select",
         "classes.apply"
       ],
-      "doors": 14,
+      "doors": 15,
       "scenarios": 3
     },
     {
@@ -2318,7 +2318,7 @@
         "view.enterPreview",
         "project.export"
       ],
-      "doors": 11,
+      "doors": 12,
       "scenarios": 2
     },
     {
@@ -4158,7 +4158,7 @@
       "door": 97,
       "inside-door": 46,
       "local": 20,
-      "none": 121,
+      "none": 120,
       "spread": 6,
       "wraps-door": 24
     },
@@ -5085,15 +5085,6 @@
         "role": "separator",
         "handlers": [],
         "owner": "door"
-      },
-      {
-        "key": "src/editor/shell/canvas.tsx|button|className,onClick,type|1",
-        "tag": "button",
-        "role": null,
-        "handlers": [
-          "onClick"
-        ],
-        "owner": "none"
       },
       {
         "key": "src/editor/shell/capture-url.tsx|form|className,onSubmit|1",

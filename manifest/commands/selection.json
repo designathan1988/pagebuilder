@@ -217,6 +217,32 @@
           "args": {
             "target": ""
           }
+        },
+        {
+          "id": "canvas-band-overflow",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "accessibility-checks",
+          "panel": "canvas-tools",
+          "control": "overflow",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "canvas.badge.overflowSelect",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "canvas-bands",
+            "order": 2
+          },
+          "adapter": {
+            "selection": "target",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
         }
       ]
     },

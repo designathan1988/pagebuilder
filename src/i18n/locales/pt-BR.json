@@ -4475,6 +4475,8 @@
   "logic.bind.hideCode": "Esconder o formulário de código",
   "canvas.badge.runsInPreview": "Esta página tem lógica e interações: elas rodam na pré-visualização, e as interações também rodam no canvas com Exibir › Executar interações.",
   "canvas.badge.logicInPreview": "O canvas roda as interações; a lógica da página roda na pré-visualização.",
+  "canvas.badge.overflow": "A página é mais larga que esta tela: {name} passa da borda, e o visitante rola para o lado.",
+  "canvas.badge.overflowSelect": "Selecionar",
   "canvas.badge.tryInPreview": "Testar",
   "inspector.parts.open": "Abrir os ajustes desta parte: o texto e o valor",
   "palette.entry.templateCheckbox": "Caixa de seleção com rótulo",

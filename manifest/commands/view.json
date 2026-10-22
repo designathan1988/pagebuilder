@@ -1937,6 +1937,32 @@
             "fields": []
           },
           "args": {}
+        },
+        {
+          "id": "canvas-band-try",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "preview-mode",
+          "panel": "canvas-tools",
+          "control": "try",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "canvas.badge.tryInPreview",
+          "faceLabelKey": null,
+          "icon": "play",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "canvas-bands",
+            "order": 1
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
         }
       ]
     },

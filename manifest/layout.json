@@ -65,6 +65,10 @@
       "area": "centre"
     },
     {
+      "id": "canvas-bands",
+      "area": "centre"
+    },
+    {
       "id": "canvas-side-by-side",
       "area": "centre"
     },

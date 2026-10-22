@@ -657,6 +657,24 @@ export function canvasDocument(): Document | null {
   return current?.contentDocument ?? null;
 }
 
+// The element that runs past the right edge of the page the canvas shows, when the page is wider than its screen (the
+// canvas's band over the page says so, shell/canvas.tsx): the deepest one along the first such branch — a row's
+// child, not the row and the section around it. Null while the page fits its screen.
+export function overflowingNode(): string | null {
+  const page = current?.contentDocument;
+  // a frame still loading has a document with no root yet
+  const root = page?.documentElement;
+  if (!page || !root) return null;
+  const width = root.clientWidth;
+  if (root.scrollWidth <= width + 1) return null;
+  let found: Element | null = null;
+  for (const element of page.querySelectorAll('[data-node]')) {
+    if (element.getBoundingClientRect().right <= width + 1) continue;
+    if (found === null || found.contains(element)) found = element;
+  }
+  return found?.getAttribute('data-node') ?? null;
+}
+
 // Whether the page moves on its own now (a CSS animation or transition running, a timeline or motion preview playing):
 // its readers then measure at every frame while it lasts (canvas/page-clock.ts), never otherwise.
 export function pageAnimating(): boolean {
