@@ -76,7 +76,8 @@ input[type='radio'] {
   color: var(--color-accent);
 }
 
-.field-row.field-row--toggles {
+.field-row.field-row--toggles,
+.field-row.field-row--actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);

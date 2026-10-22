@@ -5426,6 +5426,32 @@
             "fields": []
           },
           "args": {}
+        },
+        {
+          "id": "inspector-settings",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "table-commands",
+          "panel": "inspector",
+          "control": "table-add-column-after",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.table.addColumnAfter",
+          "faceLabelKey": null,
+          "icon": "plus",
+          "disabledReasonKey": "status.table.selectCell",
+          "placement": {
+            "region": "inspector-settings",
+            "order": 76
+          },
+          "adapter": {
+            "selection": "single",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
         }
       ]
     },
@@ -5483,6 +5509,32 @@
           "placement": {
             "region": "command-palette",
             "order": 9
+          },
+          "adapter": {
+            "selection": "single",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "inspector-settings",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "table-commands",
+          "panel": "inspector",
+          "control": "table-add-column-end",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.table.addColumnEnd",
+          "faceLabelKey": null,
+          "icon": "plus",
+          "disabledReasonKey": "status.table.selectPart",
+          "placement": {
+            "region": "inspector-settings",
+            "order": 77
           },
           "adapter": {
             "selection": "single",
@@ -5557,6 +5609,32 @@
             "fields": []
           },
           "args": {}
+        },
+        {
+          "id": "inspector-settings",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "table-commands",
+          "panel": "inspector",
+          "control": "table-remove-column",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.table.removeColumn",
+          "faceLabelKey": null,
+          "icon": "minus",
+          "disabledReasonKey": "status.table.selectCell",
+          "placement": {
+            "region": "inspector-settings",
+            "order": 78
+          },
+          "adapter": {
+            "selection": "single",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
         }
       ]
     },
@@ -5614,6 +5692,123 @@
           "placement": {
             "region": "command-palette",
             "order": 11
+          },
+          "adapter": {
+            "selection": "single",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "inspector-settings",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "table-commands",
+          "panel": "inspector",
+          "control": "table-add-row-after",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.table.addRowAfter",
+          "faceLabelKey": null,
+          "icon": "plus",
+          "disabledReasonKey": "status.table.selectCell",
+          "placement": {
+            "region": "inspector-settings",
+            "order": 73
+          },
+          "adapter": {
+            "selection": "single",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        }
+      ]
+    },
+    {
+      "id": "table.addRowEnd",
+      "labelKey": "command.table.addRowEnd",
+      "owner": "src/core/elements/table.ts",
+      "introducedBy": "table-commands",
+      "args": {},
+      "availability": {
+        "predicate": "inTable",
+        "refusalKey": "status.table.selectPart"
+      },
+      "refusals": [
+        "status.locked.edit"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "context-menu",
+          "kind": "context-menu",
+          "feature": "table-commands",
+          "labelKey": "command.table.addRowEnd",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "status.table.selectPart",
+          "placement": {
+            "region": "context-menu",
+            "order": 23
+          },
+          "adapter": {
+            "selection": "single",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "command-bar",
+          "kind": "command-bar",
+          "feature": "command-bar",
+          "entry": "command",
+          "labelKey": "command.table.addRowEnd",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "status.table.selectPart",
+          "placement": {
+            "region": "command-palette",
+            "order": 13
+          },
+          "adapter": {
+            "selection": "single",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "inspector-settings",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "table-commands",
+          "panel": "inspector",
+          "control": "table-add-row-end",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.table.addRowEnd",
+          "faceLabelKey": null,
+          "icon": "plus",
+          "disabledReasonKey": "status.table.selectPart",
+          "placement": {
+            "region": "inspector-settings",
+            "order": 74
           },
           "adapter": {
             "selection": "single",
@@ -5680,6 +5875,32 @@
           "placement": {
             "region": "command-palette",
             "order": 12
+          },
+          "adapter": {
+            "selection": "single",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "inspector-settings",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "table-commands",
+          "panel": "inspector",
+          "control": "table-remove-row",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.table.removeRow",
+          "faceLabelKey": null,
+          "icon": "minus",
+          "disabledReasonKey": "status.table.selectCell",
+          "placement": {
+            "region": "inspector-settings",
+            "order": 75
           },
           "adapter": {
             "selection": "single",

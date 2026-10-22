@@ -488,7 +488,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "command-palette",
-            "order": 74
+            "order": 75
           },
           "adapter": {
             "selection": "none",
@@ -782,7 +782,7 @@
           "disabledReasonKey": "status.needsSingleSelection",
           "placement": {
             "region": "context-menu",
-            "order": 25
+            "order": 26
           },
           "adapter": {
             "selection": "single",
@@ -1063,7 +1063,7 @@
           "disabledReasonKey": "status.components.notInstance",
           "placement": {
             "region": "context-menu",
-            "order": 26
+            "order": 27
           },
           "adapter": {
             "selection": "single",
@@ -1228,7 +1228,7 @@
           "disabledReasonKey": "status.needsSingleSelection",
           "placement": {
             "region": "command-palette",
-            "order": 71
+            "order": 72
           },
           "adapter": {
             "selection": "single",
@@ -1675,7 +1675,7 @@
           "disabledReasonKey": "status.components.notInstance",
           "placement": {
             "region": "context-menu",
-            "order": 34
+            "order": 35
           },
           "adapter": {
             "selection": "single",

@@ -27,6 +27,9 @@ import { instanceRootOf } from '../../core/design/instances.ts';
 const SETTINGS_FIELDS = doorSlots('inspector-settings').filter((d) => d.door.kind === 'inspector-field' && d.door.attribute !== null && !d.door.control.startsWith('forms-'));
 // the toggles of a table's parts (caption, head, foot; core/elements/parts.ts), drawn while the selection is in a table
 const TABLE_PART_DOORS = doorSlots('inspector-settings').filter((d) => d.door.kind === 'panel-control' && d.door.drawnAs === 'toggle');
+// a table's rows and columns, added and removed (core/elements/table.ts): they stood only in the context menu and the
+// command bar, and a person in the table's Settings found no way to add a row
+const TABLE_EDIT_DOORS = doorSlots('inspector-settings').filter((d) => d.door.kind === 'panel-control' && d.door.drawnAs === 'button' && d.command.id.startsWith('table.'));
 // the parts editor (core/elements/parts.ts): the buttons that add a part of a type (their door fixes the type), and the
 // buttons of each part that stand for it (their command takes the part as its target: move up, move down, remove)
 const ADD_PART_DOORS = doorSlots('inspector-settings').filter((d) => d.door.kind === 'panel-control' && d.door.drawnAs === 'button' && typeof d.door.args.type === 'string');
@@ -454,6 +457,11 @@ export function SettingsTab({ head = null }: { readonly head?: ReactNode } = {})
                 {section.id === 'attributes' && inTable ? (
                   <div className="field-row field-row--toggles">
                     {TABLE_PART_DOORS.map((entry) => <DoorControl key={entry.ref} entry={entry} />)}
+                  </div>
+                ) : null}
+                {section.id === 'attributes' && inTable ? (
+                  <div className="field-row field-row--actions">
+                    {TABLE_EDIT_DOORS.map((entry) => <DoorControl key={entry.ref} entry={entry} />)}
                   </div>
                 ) : null}
               </section>

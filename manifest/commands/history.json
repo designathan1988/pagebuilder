@@ -118,7 +118,7 @@
           "disabledReasonKey": "status.undo.nothing",
           "placement": {
             "region": "command-palette",
-            "order": 21
+            "order": 22
           },
           "adapter": {
             "selection": "none",
@@ -241,7 +241,7 @@
           "disabledReasonKey": "status.redo.nothing",
           "placement": {
             "region": "command-palette",
-            "order": 22
+            "order": 23
           },
           "adapter": {
             "selection": "none",

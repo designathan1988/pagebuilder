@@ -383,7 +383,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "context-menu",
-            "order": 23
+            "order": 24
           },
           "adapter": {
             "selection": "primary",
@@ -499,7 +499,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "context-menu",
-            "order": 24
+            "order": 25
           },
           "adapter": {
             "selection": "all",

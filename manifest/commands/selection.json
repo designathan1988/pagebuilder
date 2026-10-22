@@ -206,7 +206,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "command-palette",
-            "order": 73
+            "order": 74
           },
           "adapter": {
             "selection": "none",
@@ -311,7 +311,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "command-palette",
-            "order": 33
+            "order": 34
           },
           "adapter": {
             "selection": "none",
@@ -740,7 +740,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "command-palette",
-            "order": 34
+            "order": 35
           },
           "adapter": {
             "selection": "primary",

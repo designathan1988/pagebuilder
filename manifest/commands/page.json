@@ -54,7 +54,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "command-palette",
-            "order": 26
+            "order": 27
           },
           "adapter": {
             "selection": "none",

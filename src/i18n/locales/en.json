@@ -4473,5 +4473,8 @@
   "palette.entry.templateCheckbox": "Checkbox with label",
   "palette.entry.templateRadio": "Radio with label",
   "template.form.agree": "I agree to the terms",
-  "template.form.choice": "Option"
+  "template.form.choice": "Option",
+  "table.headerCellText": "Heading",
+  "table.cellText": "Cell",
+  "command.table.addRowEnd": "Add a row at the end"
 }

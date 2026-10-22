@@ -65,7 +65,7 @@
           "disabledReasonKey": "layout.noContainer",
           "placement": {
             "region": "context-menu",
-            "order": 32
+            "order": 33
           },
           "adapter": {
             "selection": "single",

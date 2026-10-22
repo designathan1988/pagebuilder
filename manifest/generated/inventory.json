@@ -2,11 +2,11 @@
   "totals": {
     "features": 218,
     "built": 218,
-    "commands": 394,
-    "doors": 1446,
+    "commands": 395,
+    "doors": 1454,
     "scenarios": 1909,
     "modules": 533,
-    "lines": 98973,
+    "lines": 99018,
     "fields": 207,
     "interactive": 310
   },
@@ -1005,7 +1005,7 @@
         "table.addRowAfter",
         "table.removeRow"
       ],
-      "doors": 10,
+      "doors": 15,
       "scenarios": 5
     },
     {
@@ -1628,7 +1628,7 @@
         "components.startCreate",
         "selection.range"
       ],
-      "doors": 246,
+      "doors": 251,
       "scenarios": 56
     },
     {

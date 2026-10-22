@@ -87,7 +87,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "command-palette",
-            "order": 56
+            "order": 57
           },
           "adapter": {
             "selection": "all",
@@ -984,7 +984,7 @@
           "disabledReasonKey": "status.align.needsPositioned",
           "placement": {
             "region": "command-palette",
-            "order": 13
+            "order": 14
           },
           "adapter": {
             "selection": "all",
@@ -1056,7 +1056,7 @@
           "disabledReasonKey": "status.align.needsPositioned",
           "placement": {
             "region": "command-palette",
-            "order": 14
+            "order": 15
           },
           "adapter": {
             "selection": "all",
@@ -1128,7 +1128,7 @@
           "disabledReasonKey": "status.align.needsPositioned",
           "placement": {
             "region": "command-palette",
-            "order": 15
+            "order": 16
           },
           "adapter": {
             "selection": "all",
@@ -1200,7 +1200,7 @@
           "disabledReasonKey": "status.align.needsPositioned",
           "placement": {
             "region": "command-palette",
-            "order": 16
+            "order": 17
           },
           "adapter": {
             "selection": "all",
@@ -1272,7 +1272,7 @@
           "disabledReasonKey": "status.align.needsPositioned",
           "placement": {
             "region": "command-palette",
-            "order": 17
+            "order": 18
           },
           "adapter": {
             "selection": "all",
@@ -1344,7 +1344,7 @@
           "disabledReasonKey": "status.align.needsPositioned",
           "placement": {
             "region": "command-palette",
-            "order": 18
+            "order": 19
           },
           "adapter": {
             "selection": "all",
@@ -1450,7 +1450,7 @@
           "disabledReasonKey": "status.align.needsPositioned",
           "placement": {
             "region": "command-palette",
-            "order": 19
+            "order": 20
           },
           "adapter": {
             "selection": "all",
@@ -1522,7 +1522,7 @@
           "disabledReasonKey": "status.align.needsPositioned",
           "placement": {
             "region": "command-palette",
-            "order": 20
+            "order": 21
           },
           "adapter": {
             "selection": "all",

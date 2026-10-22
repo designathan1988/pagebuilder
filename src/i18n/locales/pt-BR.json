@@ -4473,5 +4473,8 @@
   "palette.entry.templateCheckbox": "Caixa de seleção com rótulo",
   "palette.entry.templateRadio": "Opção única com rótulo",
   "template.form.agree": "Concordo com os termos",
-  "template.form.choice": "Opção"
+  "template.form.choice": "Opção",
+  "table.headerCellText": "Título",
+  "table.cellText": "Célula",
+  "command.table.addRowEnd": "Adicionar uma linha no fim"
 }

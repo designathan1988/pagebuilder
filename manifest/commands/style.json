@@ -4596,7 +4596,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "command-palette",
-            "order": 57
+            "order": 58
           },
           "adapter": {
             "selection": "all",
@@ -5871,7 +5871,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "command-palette",
-            "order": 58
+            "order": 59
           },
           "adapter": {
             "selection": "all",
@@ -6656,7 +6656,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "command-palette",
-            "order": 59
+            "order": 60
           },
           "adapter": {
             "selection": "all",
@@ -7018,7 +7018,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "command-palette",
-            "order": 60
+            "order": 61
           },
           "adapter": {
             "selection": "all",
@@ -7697,7 +7697,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "command-palette",
-            "order": 61
+            "order": 62
           },
           "adapter": {
             "selection": "all",
@@ -8560,7 +8560,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "command-palette",
-            "order": 62
+            "order": 63
           },
           "adapter": {
             "selection": "all",
@@ -9128,7 +9128,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "command-palette",
-            "order": 63
+            "order": 64
           },
           "adapter": {
             "selection": "all",
@@ -9318,7 +9318,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "command-palette",
-            "order": 64
+            "order": 65
           },
           "adapter": {
             "selection": "all",
@@ -9643,7 +9643,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "command-palette",
-            "order": 46
+            "order": 47
           },
           "adapter": {
             "selection": "all",
@@ -11124,7 +11124,7 @@
           "disabledReasonKey": "status.swap.unavailable",
           "placement": {
             "region": "context-menu",
-            "order": 29
+            "order": 30
           },
           "adapter": {
             "selection": "roots",
@@ -11179,7 +11179,7 @@
           "disabledReasonKey": "status.swap.unavailable",
           "placement": {
             "region": "command-palette",
-            "order": 68
+            "order": 69
           },
           "adapter": {
             "selection": "roots",
@@ -11304,7 +11304,7 @@
           "disabledReasonKey": "status.stack.unavailable",
           "placement": {
             "region": "context-menu",
-            "order": 30
+            "order": 31
           },
           "adapter": {
             "selection": "roots",
@@ -11359,7 +11359,7 @@
           "disabledReasonKey": "status.stack.unavailable",
           "placement": {
             "region": "command-palette",
-            "order": 69
+            "order": 70
           },
           "adapter": {
             "selection": "roots",
@@ -11501,7 +11501,7 @@
           "disabledReasonKey": "status.organize.unavailable",
           "placement": {
             "region": "context-menu",
-            "order": 31
+            "order": 32
           },
           "adapter": {
             "selection": "single",
@@ -11564,7 +11564,7 @@
           "disabledReasonKey": "status.organize.unavailable",
           "placement": {
             "region": "command-palette",
-            "order": 70
+            "order": 71
           },
           "adapter": {
             "selection": "single",

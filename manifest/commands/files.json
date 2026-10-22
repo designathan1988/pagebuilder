@@ -349,7 +349,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "command-palette",
-            "order": 72
+            "order": 73
           },
           "adapter": {
             "selection": "none",

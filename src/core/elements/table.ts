@@ -30,10 +30,18 @@ const CELL = 'cell';
 const GROUPS = new Set([HEAD, BODY, FOOT]);
 const CELLS = new Set([HEADER_CELL, CELL]);
 
+// a cell of a kind holding its paragraph, which says what it is: a header cell "Heading", a cell "Cell" (each read "A
+// freshly created paragraph.", six times in a new table, the head no different from the body)
+function newCell(make: NodeMaker, kind: string): DocNode {
+  const cell = newElement(make, kind);
+  const words = make.pageWords(kind === HEADER_CELL ? 'table.headerCellText' : 'table.cellText');
+  return { ...cell, children: cell.children.map((child, i) => (i === 0 && child.text !== null ? { ...child, text: words } : child)) };
+}
+
 // a row of `count` cells of the group's kind (header cells in a head), each holding its paragraph
 export function newRow(make: NodeMaker, group: string, count: number): DocNode {
   const kind = group === HEAD ? HEADER_CELL : CELL;
-  return newElement(make, ROW, (m) => Array.from({ length: count }, () => newElement(m, kind)));
+  return newElement(make, ROW, (m) => Array.from({ length: count }, () => newCell(m, kind)));
 }
 
 // The parts a new element of a type starts with instead of its natural children, or undefined: a table's head row of
@@ -88,7 +96,7 @@ function addColumn(table: Location, make: NodeMaker, index: (row: DocNode) => nu
   return rowsOf(table).map(({ group, groupIndex, row, rowIndex }): Patch => ({
     op: 'add',
     path: [...table.path, 'children', groupIndex, 'children', rowIndex, 'children', index(row)],
-    value: newElement(make, group.type === HEAD ? HEADER_CELL : CELL),
+    value: newCell(make, group.type === HEAD ? HEADER_CELL : CELL),
   }));
 }
 
@@ -141,6 +149,21 @@ export const addRowAfterCommand = registerHandler('table.addRowAfter', ({ state,
   if (refused !== null) return { kind: 'refused', message: refused };
   const row = newRow(nodeMaker(state.document, rules, ids, words), at.group.node.type, at.row.node.children.length);
   return { kind: 'change', patches: [{ op: 'add', path: [...at.group.path, 'children', at.row.index + 1], value: row }], message: message('status.table.rowCreated', { name: row.name }) };
+});
+
+// a row at the end of the table's body (of its last group when it has no body), as many cells as its first row: with
+// the table itself selected no row could be added, Add a row after takes a cell
+export const addRowEndCommand = registerHandler('table.addRowEnd', ({ state, rules, ids, words }): Outcome<never> => {
+  const table = selectedTable(state);
+  if (table === null) return { kind: 'refused', message: message('status.table.selectPart') };
+  const refused = locked(state.document, table);
+  if (refused !== null) return { kind: 'refused', message: refused };
+  const groups = table.node.children.map((group, index) => ({ group, index })).filter(({ group }) => GROUPS.has(group.type));
+  const at = groups.find(({ group }) => group.type === BODY) ?? groups.at(-1);
+  if (at === undefined) return { kind: 'refused', message: message('status.table.selectPart') };
+  const count = Math.max(1, ...rowsOf(table).map(({ row }) => row.children.length));
+  const row = newRow(nodeMaker(state.document, rules, ids, words), at.group.type, count);
+  return { kind: 'change', patches: [{ op: 'add', path: [...table.path, 'children', at.index, 'children', at.group.children.length], value: row }], message: message('status.table.rowCreated', { name: row.name }) };
 });
 
 export const removeRowCommand = registerHandler('table.removeRow', ({ state }): Outcome<never> => {

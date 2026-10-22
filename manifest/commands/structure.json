@@ -146,7 +146,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "command-palette",
-            "order": 54
+            "order": 55
           },
           "adapter": {
             "selection": "primary",
@@ -540,7 +540,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "command-palette",
-            "order": 35
+            "order": 36
           },
           "adapter": {
             "selection": "roots-same-parent",
@@ -671,7 +671,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "command-palette",
-            "order": 36
+            "order": 37
           },
           "adapter": {
             "selection": "roots-same-parent",
@@ -811,7 +811,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "command-palette",
-            "order": 37
+            "order": 38
           },
           "adapter": {
             "selection": "roots-same-parent",
@@ -951,7 +951,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "command-palette",
-            "order": 38
+            "order": 39
           },
           "adapter": {
             "selection": "roots-same-parent",
@@ -1190,7 +1190,7 @@
           "disabledReasonKey": "status.nest.noPrevious",
           "placement": {
             "region": "command-palette",
-            "order": 39
+            "order": 40
           },
           "adapter": {
             "selection": "single",
@@ -1328,7 +1328,7 @@
           "disabledReasonKey": "status.needsSingleSelection",
           "placement": {
             "region": "command-palette",
-            "order": 40
+            "order": 41
           },
           "adapter": {
             "selection": "single",
@@ -1438,7 +1438,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "command-palette",
-            "order": 41
+            "order": 42
           },
           "adapter": {
             "selection": "roots",
@@ -1584,7 +1584,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "context-menu",
-            "order": 99
+            "order": 100
           },
           "adapter": {
             "selection": "roots",
@@ -1627,7 +1627,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "command-palette",
-            "order": 42
+            "order": 43
           },
           "adapter": {
             "selection": "roots",
@@ -1723,7 +1723,7 @@
           "disabledReasonKey": "status.unwrap.unavailable",
           "placement": {
             "region": "command-palette",
-            "order": 43
+            "order": 44
           },
           "adapter": {
             "selection": "single",
@@ -1790,7 +1790,7 @@
           "disabledReasonKey": "status.naturalChild.none",
           "placement": {
             "region": "command-palette",
-            "order": 44
+            "order": 45
           },
           "adapter": {
             "selection": "single",
@@ -1915,7 +1915,7 @@
           "disabledReasonKey": "status.needsSingleSelection",
           "placement": {
             "region": "command-palette",
-            "order": 45
+            "order": 46
           },
           "adapter": {
             "selection": "single",
@@ -2258,7 +2258,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "context-menu",
-            "order": 27
+            "order": 28
           },
           "adapter": {
             "selection": "roots-same-parent",
@@ -2301,7 +2301,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "command-palette",
-            "order": 66
+            "order": 67
           },
           "adapter": {
             "selection": "roots-same-parent",
@@ -2398,7 +2398,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "context-menu",
-            "order": 28
+            "order": 29
           },
           "adapter": {
             "selection": "roots-same-parent",
@@ -2441,7 +2441,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "command-palette",
-            "order": 67
+            "order": 68
           },
           "adapter": {
             "selection": "roots-same-parent",

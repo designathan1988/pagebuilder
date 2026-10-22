@@ -36,7 +36,7 @@ import { openFile, startRenameFile } from '../editor/explorer/explorer.ts';
 import { closeFileTab } from '../editor/explorer/file-tabs.ts';
 import { setInputTypeCommand, setLabelTargetCommand } from '../core/elements/inputs.ts';
 import { addPartCommand, movePartCommand, removePartCommand, togglePartCommand } from '../core/elements/parts.ts';
-import { addColumnAfterCommand, addColumnEndCommand, addRowAfterCommand, cellSelected, inTable, removeColumnCommand, removeRowCommand } from '../core/elements/table.ts';
+import { addColumnAfterCommand, addColumnEndCommand, addRowAfterCommand, addRowEndCommand, cellSelected, inTable, removeColumnCommand, removeRowCommand } from '../core/elements/table.ts';
 import { setTagCommand } from '../core/elements/tag.ts';
 import { canRedo, canUndo, redoCommand, undoCommand } from '../core/history/history.ts';
 import { editableSelection, setLayerColorCommand, toggleHiddenCommand, toggleLockCommand } from '../core/nodes/flags.ts';
@@ -276,6 +276,7 @@ export const COMMANDS = {
   'table.addColumnEnd': addColumnEndCommand,
   'table.removeColumn': removeColumnCommand,
   'table.addRowAfter': addRowAfterCommand,
+  'table.addRowEnd': addRowEndCommand,
   'table.removeRow': removeRowCommand,
   'interactions.add': addInteractionCommand,
   'interactions.update': INTERACTIONS_UPDATE,

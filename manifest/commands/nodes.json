@@ -141,7 +141,7 @@
           "disabledReasonKey": "status.needsSingleSelection",
           "placement": {
             "region": "command-palette",
-            "order": 23
+            "order": 24
           },
           "adapter": {
             "selection": "single",
@@ -364,7 +364,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "command-palette",
-            "order": 24
+            "order": 25
           },
           "adapter": {
             "selection": "primary",
@@ -485,7 +485,7 @@
           "disabledReasonKey": "refusal.nothingSelected",
           "placement": {
             "region": "command-palette",
-            "order": 25
+            "order": 26
           },
           "adapter": {
             "selection": "primary",
