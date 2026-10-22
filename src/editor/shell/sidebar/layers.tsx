@@ -484,7 +484,11 @@ export function LayersSection() {
   const view = useMemo(() => (tree ? searchView(tree, query) : null), [tree, query]);
   // where a click on the tile aimed at would insert now, as one JSON text (the hook's value stays stable)
   const aimed = useAimedTile();
+  // only while the Insert panel is open: the line says where its click would insert, and with that panel closed it
+  // stood under the selected row in every other panel, meaning nothing there
+  const inserting = useEditorState((s) => isPanelOpen(s.ui, 'elements'));
   const said = useEditorState((s) => {
+    if (!inserting) return null;
     const at = insertDestination(s, aimed);
     return at === null ? null : JSON.stringify({ parent: at.parent.node.id, previous: at.previous?.id ?? null });
   });
