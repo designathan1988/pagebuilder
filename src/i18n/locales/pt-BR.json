@@ -3793,6 +3793,8 @@
   "feature.componentMasterEdit": "Uma instância editada no lugar atualiza o componente e todas as instâncias",
   "command.components.setVariant": "Variante",
   "settings.component": "Componente {name}",
+  "settings.component.variantPlaceholder": "Dê nome a uma variante, ex.: escura",
+  "settings.component.variantHelp": "Uma variante é um visual só desta instância: dar um nome acrescenta a classe .{base}--nome, que a aba Estilo então estiliza. As outras instâncias mantêm o visual delas.",
   "status.components.badVariant": "{variant} não é um nome de variante: uma letra, depois letras, dígitos e hífens.",
   "status.components.variantSet": "{name} mostra a variante {variant}.",
   "status.components.variantCleared": "{name} mostra o componente como ele é.",

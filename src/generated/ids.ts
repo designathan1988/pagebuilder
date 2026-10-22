@@ -6986,6 +6986,8 @@ export const MESSAGE_IDS = [
   "feature.componentMasterEdit",
   "command.components.setVariant",
   "settings.component",
+  "settings.component.variantPlaceholder",
+  "settings.component.variantHelp",
   "status.components.badVariant",
   "status.components.variantSet",
   "status.components.variantCleared",

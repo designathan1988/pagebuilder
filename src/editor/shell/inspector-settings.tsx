@@ -350,7 +350,9 @@ function ComponentSettings({ node }: { readonly node: DocNode }) {
       <div className="settings-section__header">
         <h3>{t('settings.component', { name: root.component })}</h3>
       </div>
-      <PanelField entry={COMPONENT_VARIANT} value={current} label={t('command.components.setVariant')} offered={offered} />
+      <PanelField entry={COMPONENT_VARIANT} value={current} label={t('command.components.setVariant')} offered={offered} placeholder={t('settings.component.variantPlaceholder')} />
+      {/* what a variant is: an empty field said nothing of it */}
+      <p className="settings-section__note">{t('settings.component.variantHelp', { base: variantBase(root.component) })}</p>
       {COMPONENT_UPDATE === undefined && COMPONENT_DETACH === undefined ? null : (
         <div className="settings-section__actions">
           {COMPONENT_UPDATE === undefined ? null : <DoorControl entry={COMPONENT_UPDATE} />}

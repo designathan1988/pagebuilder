@@ -3793,6 +3793,8 @@
   "feature.componentMasterEdit": "An instance edited in place updates its component and every instance",
   "command.components.setVariant": "Variant",
   "settings.component": "Component {name}",
+  "settings.component.variantPlaceholder": "Name a variant, e.g. dark",
+  "settings.component.variantHelp": "A variant is a look of this instance alone: naming one adds the class .{base}--name, which the Style tab then styles. Its other instances keep their look.",
   "status.components.badVariant": "{variant} is no variant name: a letter, then letters, digits and dashes.",
   "status.components.variantSet": "{name} shows the variant {variant}.",
   "status.components.variantCleared": "{name} shows its component as it is.",
