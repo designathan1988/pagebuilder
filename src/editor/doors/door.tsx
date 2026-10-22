@@ -23,6 +23,11 @@ import { afterRead } from '../input/after-read.ts';
 import { isCurrent, labelParamsOf } from './current.ts';
 import { GLYPHS } from './placement.ts';
 import { readPickedDataFile } from '../data/read-file.ts';
+import { manifest } from '../../manifest/runtime.ts';
+
+// a step named by its command's own label (manifest labelKey), when the command has one
+const COMMAND_LABELS = new Map(manifest.commands.map((command) => [command.id, command.labelKey]));
+const hasCommandWords = (step: string | null): boolean => step !== null && COMMAND_LABELS.has(step as CommandId);
 
 export function Icon({ name, size = 'md' }: { readonly name: string; readonly size?: 'xs' | 'sm' | 'md' | 'lg' }) {
   return (
@@ -89,7 +94,17 @@ export function useDoor(entry: DoorEntry, args: Readonly<Record<string, unknown>
   const chord = chordHint(entry.command.id, keysIn);
   const said = refused === null ? null : (JSON.parse(refused) as Message);
   const reason: MessageId | null = !built ? 'common.notAvailableYet' : available ? null : (said?.key ?? (entry.door.disabledReasonKey as MessageId));
-  const title = reason !== null ? t('common.disabledTitle', { label, reason: { key: reason, params: said?.params ?? {} } }) : chord !== null ? t('common.withShortcut', { label, shortcut: chord }) : label;
+  // Undo and Redo say in their title which step they take back or do again (the command that made it): the person
+  // read "Undo" and pressed it not knowing what it would change
+  const step = useEditorState((s) => {
+    if (entry.command.id !== 'history.undo' && entry.command.id !== 'history.redo') return null;
+    const entries = entry.command.id === 'history.undo' ? s.history.past : s.history.future;
+    const last = entries[entries.length - 1];
+    return last === undefined ? null : last.command;
+  });
+  const named = step === null ? label : t('common.historyStep', { label, step: { key: (COMMAND_LABELS.get(step as CommandId) ?? 'command.undo') as MessageId, params: {} } });
+  const shown = hasCommandWords(step) ? named : label;
+  const title = reason !== null ? t('common.disabledTitle', { label, reason: { key: reason, params: said?.params ?? {} } }) : chord !== null ? t('common.withShortcut', { label: shown, shortcut: chord }) : shown;
   const run = () => {
     if (!built || !available) return;
     const dispatch = store.dispatch as (id: CommandId, args: unknown) => DispatchResult;

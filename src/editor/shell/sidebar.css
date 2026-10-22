@@ -203,6 +203,12 @@
 .splitter--column-start {
   left: 0;
 }
+/* the press takes twice the line's room, inside the column (beside it the ruler takes presses): a 6 px target was missed
+   and the press selected the text beside it */
+.splitter--column-end,
+.splitter--column-start {
+  width: calc(var(--space-3) * 2);
+}
 
 /* the keyboard's focus on a splitter wears the one ring, drawn inside its 6 px (the audit's U-030: it had none) */
 .splitter:focus-visible {

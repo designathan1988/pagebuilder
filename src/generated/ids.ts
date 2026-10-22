@@ -7701,5 +7701,6 @@ export const MESSAGE_IDS = [
   "assistant.disconnectedAsked",
   "checks.rowNoWrap",
   "checks.rowNoWrap.fix",
+  "common.historyStep",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];

@@ -4492,5 +4492,6 @@
   "assistant.configureCompanion": "Your key is saved. To start, connect the Companion in Assistant preferences (run npm run assistant beside the editor).",
   "assistant.disconnectedAsked": "Disconnected from the Companion.",
   "checks.rowNoWrap": "{category} · Row that never wraps in {name}: on a phone it runs past the screen",
-  "checks.rowNoWrap.fix": "Set Wrap to wrap in Style › Layout, or Direction to a column on the Phone breakpoint"
+  "checks.rowNoWrap.fix": "Set Wrap to wrap in Style › Layout, or Direction to a column on the Phone breakpoint",
+  "common.historyStep": "{label}: {step}"
 }
