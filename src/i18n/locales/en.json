@@ -4514,5 +4514,8 @@
   "data.cellVideoHint": "A video address or file",
   "data.cellFileHint": "A file of the project or https://…",
   "data.cellLinkHint": "about.html or https://…",
-  "data.cellColourHint": "#2563eb"
+  "data.cellColourHint": "#2563eb",
+  "data.cellEmailHint": "name@example.com",
+  "data.cellItemsHint": "Titles, separated by commas",
+  "data.cellRichHint": "Text over several lines"
 }

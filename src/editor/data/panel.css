@@ -186,6 +186,13 @@
   min-width: var(--size-tag-field);
 }
 
+/* a text over several lines (a rich text cell) takes a reading width: sized to its content, an empty one shrank to
+   a few letters and its hint broke a word a line */
+.data-grid__table td textarea.input {
+  min-width: calc(var(--size-tag-field) * 3);
+  field-sizing: fixed;
+}
+
 /* a column's type menu as wide as the type it shows: squeezed to a column of short values it read "N" for Number
    (DEF-0590); the table scrolls sideways, so the column takes the room */
 .data-grid__table th .input {

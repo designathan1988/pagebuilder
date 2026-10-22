@@ -7724,5 +7724,8 @@ export const MESSAGE_IDS = [
   "data.cellFileHint",
   "data.cellLinkHint",
   "data.cellColourHint",
+  "data.cellEmailHint",
+  "data.cellItemsHint",
+  "data.cellRichHint",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];
