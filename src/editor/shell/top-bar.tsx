@@ -5,10 +5,12 @@ import { DoorControl, useDoor } from '../doors/door.tsx';
 import { GLYPHS, breaksIn, drawnAsOf } from '../doors/placement.ts';
 import { useEditorState } from '../store.ts';
 import { pageShown } from '../../core/project/pages.ts';
+import { pageFileLabel } from '../explorer/explorer.ts';
 import { Slots } from './slots.tsx';
 import { Icon } from '../doors/door.tsx';
 import { MenuGroup, useMenuLayer } from '../doors/menu.tsx';
 import { useRef } from 'react';
+import { useT } from '../text.ts';
 import type { DoorEntry } from '../../manifest/runtime.ts';
 import { TopBarSaveState } from './status-bar.tsx';
 import { chordCap } from '../input/keymap.ts';
@@ -20,6 +22,7 @@ const BREAKS = breaksIn('top-bar');
 // project's pages, each item the switcher's own door standing for its page (pages.switch), the page shown checked;
 // choosing one shows it and closes the list, whose Escape and backdrop close it as every menu's do.
 function PageSwitcher({ entry }: { readonly entry: DoorEntry }) {
+  const t = useT();
   const page = useEditorState((s) => pageShown(s));
   const pages = useEditorState((s) => s.document.pages);
   const button = useRef<HTMLButtonElement>(null);
@@ -44,15 +47,15 @@ function PageSwitcher({ entry }: { readonly entry: DoorEntry }) {
       >
         {/* each whole in its tooltip: a long one ends in an ellipsis (top-bar.css, DEF-0613) */}
         <b title={page?.name}>{page?.name}</b>
-        <span className="top-bar__file" title={page?.file}>
-          {page?.file}
+        <span className="top-bar__file" title={page === null ? undefined : pageFileLabel(page, t).title}>
+          {page === null ? null : pageFileLabel(page, t).text}
         </span>
         <Icon name={GLYPHS.dropdown} size="xs" />
       </button>
       {layer.open ? (
         <div className="menu top-bar__page-menu" role="menu" tabIndex={-1} ref={list} aria-label={door.label} data-key-context="menu">
           {pages.map((one) => (
-            <PageItem key={one.tree.id} entry={entry} page={one.tree.id} name={one.name} file={one.file} shown={one.tree.id === page?.tree.id} onDone={layer.close} />
+            <PageItem key={one.tree.id} entry={entry} page={one.tree.id} name={one.name} file={pageFileLabel(one, t).text} shown={one.tree.id === page?.tree.id} onDone={layer.close} />
           ))}
         </div>
       ) : null}

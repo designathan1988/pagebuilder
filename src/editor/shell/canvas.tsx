@@ -13,6 +13,7 @@ import { DoorControl, Icon } from '../doors/door.tsx';
 import { MenuButton } from '../doors/menu.tsx';
 import { GLYPHS, doorSlots, slotsIn } from '../doors/placement.ts';
 import { codeTabs } from '../explorer/file-tabs.ts';
+import { pageFileLabel } from '../explorer/explorer.ts';
 import { useEditorState } from '../store.ts';
 import { isEmptyProject, locate, walk, type NodeId } from '../../core/document/model.ts';
 import { overflowingNode } from '../canvas/coordinates.ts';
@@ -51,6 +52,7 @@ const drawnAs = (entry: DoorEntry): string | null => (entry.door.kind === 'toolb
 // marked by its door's own current state (pages.switch); a click opens that page ("Files, tabs and
 // code": the tabs list the open pages and code files, and a page tab shows the page on the canvas)
 function FileTabs() {
+  const t = useT();
   const pages = useEditorState((s) => s.document.pages);
   // the code files the pane holds open (explorer/file-tabs.ts), in the order they were opened
   const code = useEditorState((s) => codeTabs(s.ui)?.open ?? NO_CODE);
@@ -67,7 +69,7 @@ function FileTabs() {
           <DoorControl entry={tab} args={{ page: one.tree.id }} className="file-tab__main">
             {PAGE_ICON !== null ? <Icon name={PAGE_ICON} size="sm" /> : null}
             <span className="file-tab__name">{one.name}</span>
-            <span className="file-tab__file">{one.file}</span>
+            <span className="file-tab__file" title={pageFileLabel(one, t).title}>{pageFileLabel(one, t).text}</span>
           </DoorControl>
         </div>
       ))}

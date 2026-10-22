@@ -15,6 +15,7 @@ import { APP_MAIN_SCRIPT, APP_RUNTIME_SCRIPT, APP_START_SCRIPT } from '../../cor
 import { siteScripts } from '../forms/script.ts';
 import type { ModelRules } from '../../core/document/validate.ts';
 import type { EditorUi } from '../state.ts';
+import type { useT } from '../text.ts';
 import { editorView } from '../view/editor-view.ts';
 import { isFileShown, openedFile } from './file-tabs.ts';
 
@@ -193,3 +194,12 @@ export const startRenameFile = registerHandler<'files.startRename', EditorUi>(
   },
   (state, { path }) => state.ui.renamingFile === path,
 );
+
+// What stands for a page's file beside its name (the page menu, the page tabs, the Explorer): its file, or, for a
+// collection's template, "template" with the collection in its tooltip. The export never writes a template at its
+// own file (about.html): the menu and the tabs named a file the site never had, while the Explorer said "template".
+export function pageFileLabel(page: Page, t: ReturnType<typeof useT>): { readonly text: string; readonly title: string } {
+  const item = page.tree.dataItem;
+  if (item?.template !== true) return { text: page.file, title: page.file };
+  return { text: t('explorer.pageTemplate'), title: t('explorer.pageTemplateOf', { collection: item.collection }) };
+}
