@@ -55,6 +55,7 @@ import { rootCss } from '../../../core/design/tokens.ts';
 import { objectUrl, resolvedSource } from '../../../core/files/files.ts';
 import { isReference } from '../../../core/files/values.ts';
 import { filesOf } from '../../../core/document/model.ts';
+import { readFormConfig } from '../../../core/forms/config.ts';
 import { fontFaceCss } from '../../../core/files/fonts.ts';
 import { animationsOf, keyframesCss, previewDeclarations } from '../../../core/animation/animation.ts';
 import { outputForTable } from '../../../core/document/breakpoint-rules.ts';
@@ -69,6 +70,27 @@ export const NODE_STYLE_ATTRIBUTE = 'data-node-style';
 // the editor-only marks: an element of a container, a hidden node's element, and the editor's own style element
 const CONTAINER_ATTRIBUTE = 'data-container';
 export const HIDDEN_ATTRIBUTE = 'data-hidden';
+// editor-only: a form's success or error message (formMessagesOf)
+const FORM_MESSAGE_ATTRIBUTE = 'data-form-message';
+// The HTML ids the project's forms show once sent (their submission's successId and errorId), with which: read once per
+// document. The page hides them until then (forms/runtime.ts); the canvas showed "Thanks! We got your message." under
+// every form as if it were its text.
+const FORM_MESSAGES = new WeakMap<DocumentJson, ReadonlyMap<string, string>>();
+function formMessagesOf(doc: DocumentJson | null): ReadonlyMap<string, string> {
+  if (doc === null) return new Map();
+  const held = FORM_MESSAGES.get(doc);
+  if (held !== undefined) return held;
+  const found = new Map<string, string>();
+  for (const page of doc.pages) {
+    for (const node of walk(page.tree)) {
+      const config = readFormConfig(node.attributes.formSubmit);
+      if (config?.successId !== undefined) found.set(config.successId, 'success');
+      if (config?.errorId !== undefined) found.set(config.errorId, 'error');
+    }
+  }
+  FORM_MESSAGES.set(doc, found);
+  return found;
+}
 // editor-only: a text element whose text is empty (the audit's A3.38)
 export const EMPTY_TEXT_ATTRIBUTE = 'data-empty-text';
 const EDITOR_STYLE_ATTRIBUTE = 'data-editor-style';
@@ -209,7 +231,7 @@ export function editorCss(model: RenderModel, screenHeight?: number, artboard = 
   // A phone's or a tablet's browser draws its scrollbar over the page, taking no width, so a screen narrower than
   // OVERLAY_SCROLLBAR_BELOW keeps its whole width: the phone breakpoint measured 375 px for its 390 (the user's audit
   // order of 2026-10-05). The media query reads the frame's own width, the breakpoint's.
-  return `html { padding-right: ${scrollbarWidth()}px; scrollbar-width: none; }\n@media (max-width: ${OVERLAY_SCROLLBAR_BELOW - 0.02}px) { html { padding-right: 0; } }\n:where(body:empty) { min-height: ${screenHeight === undefined ? '100vh' : artboard ? `${screenHeight}px` : `min(${screenHeight}px, 100vh)`}; }\n:where([${CONTAINER_ATTRIBUTE}]:empty) { min-height: ${model.emptyContainerMinHeight}px; }\n:where([${EMPTY_TEXT_ATTRIBUTE}]) { min-height: ${model.emptyTextMinHeight}px; outline: 1px dashed currentColor; outline-offset: -1px; }\n[${HIDDEN_ATTRIBUTE}] { display: none !important; }\n[${EMBED_FRAME_ATTRIBUTE}] { display: block; width: 100%; min-height: ${model.emptyContainerMinHeight}px; border: 0; pointer-events: none; }\n:where([${COMPONENT_ATTRIBUTE}]:empty)::before { content: '{ } ' attr(${COMPONENT_ATTRIBUTE}); display: flex; align-items: center; justify-content: center; min-height: ${model.emptyContainerMinHeight * 2}px; border: 1px dashed currentColor; opacity: 0.55; font: 13px/1.4 ui-monospace, monospace; }`;
+  return `html { padding-right: ${scrollbarWidth()}px; scrollbar-width: none; }\n@media (max-width: ${OVERLAY_SCROLLBAR_BELOW - 0.02}px) { html { padding-right: 0; } }\n:where(body:empty) { min-height: ${screenHeight === undefined ? '100vh' : artboard ? `${screenHeight}px` : `min(${screenHeight}px, 100vh)`}; }\n:where([${CONTAINER_ATTRIBUTE}]:empty) { min-height: ${model.emptyContainerMinHeight}px; }\n:where([${EMPTY_TEXT_ATTRIBUTE}]) { min-height: ${model.emptyTextMinHeight}px; outline: 1px dashed currentColor; outline-offset: -1px; }\n[${HIDDEN_ATTRIBUTE}] { display: none !important; }\n[${FORM_MESSAGE_ATTRIBUTE}] { outline: 1px dashed #16a34a; outline-offset: 2px; }\n[${FORM_MESSAGE_ATTRIBUTE}='error'] { outline-color: #dc2626; }\n[${EMBED_FRAME_ATTRIBUTE}] { display: block; width: 100%; min-height: ${model.emptyContainerMinHeight}px; border: 0; pointer-events: none; }\n:where([${COMPONENT_ATTRIBUTE}]:empty)::before { content: '{ } ' attr(${COMPONENT_ATTRIBUTE}); display: flex; align-items: center; justify-content: center; min-height: ${model.emptyContainerMinHeight * 2}px; border: 1px dashed currentColor; opacity: 0.55; font: 13px/1.4 ui-monospace, monospace; }`;
 }
 
 // The selector of a node's element: its id quoted as a CSS string.
@@ -811,6 +833,10 @@ export class PageRenderer {
     if (!root && this.model.elements.get(node.type)?.content === 'children' && element.localName !== SVG_TAG) wanted.set(CONTAINER_ATTRIBUTE, '');
     // a hidden node (editor-only: see the top of this file)
     if (node.hidden === true) wanted.set(HIDDEN_ATTRIBUTE, '');
+    // editor-only: a form's success or error message, which the page shows only once the form is sent, drawn on the
+    // canvas so it can be edited, outlined so it does not read as part of the page as it opens
+    const said = typeof node.attributes.id === 'string' ? formMessagesOf(this.doc).get(node.attributes.id) : undefined;
+    if (said !== undefined) wanted.set(FORM_MESSAGE_ATTRIBUTE, said);
     const edited = this.edit?.node === node.id ? this.edit : null;
     if (edited) {
       wanted.set(EDITABLE_ATTRIBUTE, EDITABLE_VALUE);
