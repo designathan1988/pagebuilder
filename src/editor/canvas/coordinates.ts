@@ -355,6 +355,9 @@ const DRAWN_BY_PARENT = new Set(['option', 'optgroup', 'source', 'track']);
 export function nodeBox(iframe: HTMLIFrameElement, id: string): { x: number; y: number; width: number; height: number } | null {
   let element = iframe.contentDocument?.querySelector(nodeSelector(id as NodeId)) ?? null;
   while (element !== null && DRAWN_BY_PARENT.has(element.localName) && element.getClientRects().length === 0) element = element.parentElement;
+  // an element the page does not draw (it or an ancestor hidden) has no box: its frame and its chip were drawn where
+  // it stood before, over whatever is there now
+  if (element !== null && element.getClientRects().length === 0) return null;
   return element ? screenBox(iframe, element) : null;
 }
 
