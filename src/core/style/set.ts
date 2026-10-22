@@ -295,7 +295,16 @@ export function longhandValues(property: string, value: Value, rules: ModelRules
 // What a text means for a property in the fields of the selection: read by its codec against what the property offers,
 // a bare number in the field's default unit (the codec's; Problems in Pager 4); null when it means nothing the
 // property takes or the browser does not take it.
+// A variable of the project named as the Styles panel shows it ("space-lg", no dashes) is that variable, where the
+// text is no plain value of the property: a person who made a size variable typed its name in Padding and was refused
 export function readValue<Ui>(context: HandlerContext<Ui>, property: string, typedText: string): ReadValue | null {
+  const plain = readTypedValue(context, property, typedText);
+  if (plain !== null) return plain;
+  const name = typedText.trim();
+  return (context.state.document.tokens ?? []).some((token) => token.name === name) ? readTypedValue(context, property, `--${name}`) : null;
+}
+
+function readTypedValue<Ui>(context: HandlerContext<Ui>, property: string, typedText: string): ReadValue | null {
   const { state, rules, css } = context;
   // a variable named without var() ("--brand", as a person types it in any field; the plan's stage 3) is var(--brand)
   const bare = new RegExp(`^\\s*--(${IDENTIFIER_SOURCE})\\s*$`, 'u').exec(typedText);
