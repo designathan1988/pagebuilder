@@ -482,7 +482,7 @@
           "pressed": false,
           "feature": "zoom-keyboard-buttons",
           "labelKey": "command.zoomFit",
-          "faceLabelKey": null,
+          "faceLabelKey": "command.zoomFit.face",
           "icon": "scan",
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {

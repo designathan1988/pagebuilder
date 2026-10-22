@@ -3765,6 +3765,7 @@ export const MESSAGE_IDS = [
   "command.setDivider",
   "command.zoomAt",
   "command.zoomFit",
+  "command.zoomFit.face",
   "command.zoomIn",
   "command.zoomOut",
   "command.zoomReset",
