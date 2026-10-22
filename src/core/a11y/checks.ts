@@ -211,12 +211,22 @@ export function checksOf(document: DocumentJson, properties: CheckProperties): r
     }
     return node.children.reduce((carried, child) => visit(child, isHidden, own, carried, inLabel || node.tag === 'label'), heading);
   };
+  // the same title or description on two pages: a duplicated page kept its original's, and search results showed
+  // two pages under one name
+  const said = (page: DocumentJson['pages'][number], key: string): string => String((page.tree.attributes as Readonly<Record<string, unknown>>)[key] ?? '').trim();
+  const shared = (key: string): ReadonlySet<string> => {
+    const seen = document.pages.map((page) => said(page, key)).filter((text) => text !== '');
+    return new Set(seen.filter((text, i) => seen.indexOf(text) !== i));
+  };
+  const sharedTitles = shared('pageTitle');
+  const sharedDescriptions = shared('pageDescription');
   for (const page of document.pages) {
     // what search engines and a shared link show of the page: its title and its description (the SEO category had no
     // check, and a page with neither passed with "No issues")
-    const attributes = page.tree.attributes as Readonly<Record<string, unknown>>;
-    if (String(attributes.pageTitle ?? '').trim() === '') issues.push({ node: page.tree.id, category: 'seo', rule: 'checks.pageTitle', fix: 'checks.pageTitle.fix' });
-    if (String(attributes.pageDescription ?? '').trim() === '') issues.push({ node: page.tree.id, category: 'seo', rule: 'checks.pageDescription', fix: 'checks.pageDescription.fix' });
+    if (said(page, 'pageTitle') === '') issues.push({ node: page.tree.id, category: 'seo', rule: 'checks.pageTitle', fix: 'checks.pageTitle.fix' });
+    else if (sharedTitles.has(said(page, 'pageTitle'))) issues.push({ node: page.tree.id, category: 'seo', rule: 'checks.pageTitleShared', fix: 'checks.pageTitleShared.fix' });
+    if (said(page, 'pageDescription') === '') issues.push({ node: page.tree.id, category: 'seo', rule: 'checks.pageDescription', fix: 'checks.pageDescription.fix' });
+    else if (sharedDescriptions.has(said(page, 'pageDescription'))) issues.push({ node: page.tree.id, category: 'seo', rule: 'checks.pageDescriptionShared', fix: 'checks.pageDescriptionShared.fix' });
     visit(page.tree, false, null, 0);
   }
   return issues;
