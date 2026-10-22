@@ -49,6 +49,7 @@ import type { SiteScripts } from '../ports/site-scripts.ts';
 import { addressedMotionNodes, treeUsesMotion } from '../motion/document.ts';
 import { motionConfig, siteUsesLottie } from '../motion/export.ts';
 import { motionHeadLines } from '../motion/head.ts';
+import { pageTransitionOf } from '../motion/page-transition.ts';
 import { rulesForDocument } from '../document/breakpoint-rules.ts';
 import { capturedExportHtml, exportedCapturedRoot, type CapturedHead } from '../render/captured.ts';
 import { captureSnapshotPath, type CapturedSnapshotPackage } from '../document/captured.ts';
@@ -576,6 +577,24 @@ export function capturedSnapshotText(document: DocumentJson, page: DocumentJson[
 // String.replace through a function, so its $&, $' and $` stay as they are (RP1).
 const inlineScript = (code: string): string => code.replace(/<\/script/gi, '<\\/script');
 
+// The preview's links to the site's own pages (a relative address): the page asks the editor for the page
+// (preview.tsx builderPreviewPage), which opens it, or says the site has no such page. Without it a site with no page
+// transition (whose script asks the same, page-transition.ts) left the link to the page's <base target="_blank">: a new
+// tab at the address read against the editor's own, which loaded the editor instead of the page.
+const PREVIEW_LINKS = [
+  '  <script>',
+  "  document.addEventListener('click', function (event) {",
+  '    if (event.defaultPrevented || event.button !== 0) return;',
+  "    var link = event.target && event.target.closest ? event.target.closest('a[href]') : null;",
+  "    if (!link || link.hasAttribute('download')) return;",
+  "    var address = link.getAttribute('href');",
+  "    if (!address || address.charAt(0) === '#' || /^[a-z][a-z0-9+.-]*:/i.test(address) || address.indexOf('//') === 0) return;",
+  '    event.preventDefault();',
+  "    window.parent.postMessage({ builderPreviewPage: address }, '*');",
+  '  });',
+  '  </script>',
+].join('\n');
+
 export function previewPage(document: DocumentJson, rules: ModelRules, pageIndex = 0, scripts?: SiteScripts): string {
   // the preview writes the paths as the document holds them, then draws each through its data URL: its frame has an
   // opaque origin, where a blob: URL of the editor's origin does not load (files.ts dataUrl)
@@ -644,7 +663,8 @@ ${inlineScript(LISTS_JS)}
   }
   // the stylesheet through a function too, so its $&, $' and $` stay as they are (RP1), and with its "</style" written
   // "<\/style" as the captured page's CSS above is: a value holding either never cuts the page (the audit's RENDER-6)
-  return html.replace(link, () => `  <base target="_blank">\n  <style>\n${css.replace(/<\/style/gi, '<\\/style')}  </style>`);
+  const links = pageTransitionOf(document) === null ? `${PREVIEW_LINKS}\n` : '';
+  return html.replace(link, () => `  <base target="_blank">\n${links}  <style>\n${css.replace(/<\/style/gi, '<\\/style')}  </style>`);
 }
 
 // The site's archive (spec export-zip): the pages, the stylesheet, the scripts the project needs and every file of
