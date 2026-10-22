@@ -25,12 +25,15 @@ const CATALOGUES: Readonly<Record<Locale, Catalogue>> = { en, 'pt-BR': ptBR };
 
 // Placeholders are written as {name}. A placeholder without a value is a bug, so it throws.
 export function formatMessage(template: string, params: MessageParams = {}): string {
-  return template.replace(/\{(\w+)\}/g, (_placeholder, name: string) => {
+  // a value that ends its own sentence (a description typed as one: "…across the country.") takes no second period
+  // from the words around it ("Description: {value}." read "country..")
+  return template.replace(/\{(\w+)\}(\.?)/g, (_placeholder, name: string, period: string) => {
     const value = params[name];
     if (value === undefined) {
       throw new Error(`Missing parameter "${name}" in "${template}".`);
     }
-    return String(value);
+    const text = String(value);
+    return period !== '' && /[.!?…]$/u.test(text) ? text : `${text}${period}`;
   });
 }
 
