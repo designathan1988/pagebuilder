@@ -59,12 +59,22 @@ export function projectOverLimit(bytes: number): { readonly megabytes: number; r
   return bytes > PROJECT_FILE_BYTES ? { megabytes: Math.ceil(bytes / MEGABYTE), limit: Math.floor(PROJECT_FILE_BYTES / MEGABYTE) } : null;
 }
 
+// The saved file named by the site's title ("Bluebird Shop | Home" -> bluebird-shop.zip): every project saved as
+// project.zip, a second one replaced or renamed the first in the person's downloads. With no title, project.zip.
+function archiveName(document: DocumentJson): string {
+  const start = document.pages.find((page) => page.file === 'index.html') ?? document.pages[0];
+  const title = String((start?.tree.attributes as Readonly<Record<string, unknown>> | undefined)?.pageTitle ?? '').split(/[|·–—-]\s/u)[0]?.trim() ?? '';
+  const slug = title.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/[^a-z0-9]+/gu, '-').replace(/^-+|-+$/gu, '').slice(0, 60);
+  return slug === '' ? PROJECT_ARCHIVE : `${slug}.zip`;
+}
+
 export const saveProject = registerHandler('project.save', ({ state, clock }) => {
   const document = projectDocumentBytes(state.document);
   const over = projectOverLimit(document.length);
   if (over !== null) return { kind: 'refused' as const, message: message('status.project.tooLarge', over) };
   const bytes = zip([{ path: PROJECT_DOCUMENT, bytes: document }], clock.now());
-  return { kind: 'change' as const, message: message('status.project.saved', { file: PROJECT_ARCHIVE }), download: { name: PROJECT_ARCHIVE, type: 'application/zip', bytes } };
+  const name = archiveName(state.document);
+  return { kind: 'change' as const, message: message('status.project.saved', { file: name }), download: { name, type: 'application/zip', bytes } };
 });
 
 // The text of project.json in a chosen file (spec project-open-json, Problems in Pager 2): the archive's
