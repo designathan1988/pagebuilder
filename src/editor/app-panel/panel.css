@@ -161,7 +161,15 @@
 .logic-binding__add {
   display: flex;
   flex-direction: column;
+  /* the fields across the column and the button at its end, as the Data panel's forms place theirs: the form's row
+     rule (align-items: center) drew Add library alone in the middle */
+  align-items: stretch;
   gap: var(--space-2);
+}
+
+.app-library__add > .door,
+.logic-binding__add > .door {
+  align-self: flex-end;
 }
 
 /* their fields keep their own height: the form's rule for a row (data/panel.css .data-form .input, flex 1 1 0%) gave
