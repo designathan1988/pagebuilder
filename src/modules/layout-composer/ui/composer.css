@@ -66,6 +66,13 @@
   white-space: nowrap;
 }
 
+/* a region's name stands over its top-left corner, inside it: over a region as tall as a line of text it covered the
+   text (a card's title and price could not be read). Every region keeps its outline; the name shows on the selected
+   one (its label is its move handle), the one under the pointer and the one the keyboard reads */
+.layout-composer__region:not(.is-selected):not(.is-visited):not(:hover) > .layout-composer__label {
+  opacity: 0;
+}
+
 .layout-composer__area {
   position: absolute;
   border: 1px dashed var(--color-canvas-drop);
