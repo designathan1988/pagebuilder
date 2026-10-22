@@ -87,6 +87,11 @@
   height: var(--size-control);
 }
 
+/* a field whose values are words (a form's destination, data format): the interface font, as its list draws them */
+[data-region='inspector-settings'] .input--words {
+  font-family: var(--font-ui);
+}
+
 /* the person's own attributes: the row that adds one is the name field and its button; a row that holds one keeps the
    action row's three cells — its label, its value and its remove button on one line (spec custom-attributes: the
    remove button is centred on the field's line), which a two-cell rule here sent to a second row */

@@ -1941,6 +1941,7 @@
   "status.preview.on": "Pré-visualização: use a página como um visitante. Pressione Esc para voltar à edição.",
   "status.preview.noPage": "A página {address} não está neste projeto; a pré-visualização continua nesta página.",
   "status.preview.formUnsent": "O formulário não foi enviado: ele ainda não tem destino. Selecione o formulário e defina o Envio em Configurações.",
+  "status.forms.namingElement": "Dando nome ao elemento que o formulário mostra…",
   "status.project.blankPage": "Nova página em branco iniciada.",
   "status.project.saved": "Projeto salvo como {file}.",
   "status.project.tooLarge": "O projeto não foi salvo: ele ocupa {megabytes} MB, e um arquivo de projeto comporta no máximo {limit} MB. Remova ou reduza alguns dos arquivos dele e salve de novo.",

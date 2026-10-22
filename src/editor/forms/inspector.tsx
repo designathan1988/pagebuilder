@@ -11,11 +11,11 @@ import type { FieldConfig, FormConfig } from '../../core/forms/types.ts';
 import type { CommandId, MessageId } from '../../generated/ids.ts';
 import { translate } from '../../i18n/index.ts';
 import type { FeatureId } from '../../generated/ids.ts';
-import { isFeatureBuilt } from '../../core/commands/registry.ts';
+import { isFeatureBuilt, message } from '../../core/commands/registry.ts';
 import { LOCALES, type Locale } from '../../generated/ids.ts';
 import { validationMessageKeys } from '../../core/forms/catalog.ts';
 import type { DispatchResult } from '../../core/store/store.ts';
-import type { DoorEntry } from '../../manifest/runtime.ts';
+import { manifest, type DoorEntry } from '../../manifest/runtime.ts';
 import { doorSlots } from '../doors/placement.ts';
 import { DoorControl, useDoor } from '../doors/door.tsx';
 import { useEditorState, useStore } from '../store.ts';
@@ -28,6 +28,9 @@ import { FieldFormSettings, FormSubmissionSettings, type FormsSettingsPorts } fr
 const entries = doorSlots('inspector-settings').filter(entry => entry.door.kind === 'inspector-field' && entry.door.control.startsWith('forms-'));
 type FieldControl = Parameters<FormsSettingsPorts['field']>[0];
 const entryFor = (key: string) => entries.find(entry => entry.door.labelKey === key);
+// an element offered by its node rather than its HTML id (FormsInspector's choices), and the command that gives it one
+const NAMED_BY_NODE = '@node:';
+const SET_ID = manifest.elements.attributes.find(attribute => attribute.html === 'id')?.command;
 // the one-click switch of a field that cannot take a mask to a text field: its own door (manifest elements.json)
 const textForMasksDoor = doorSlots('inspector-settings').find(entry => entry.door.kind === 'inspector-field' && entry.door.control === 'forms-text-for-masks');
 
@@ -89,7 +92,8 @@ function ConfigurationField({ control, entry }: { readonly control: FieldControl
       : control.options
         // the values the field takes, behind a button of their own (field-options.tsx): a datalist hid them
         ? <span className="settings-field__value">
-          <input {...common} ref={field as React.RefObject<HTMLInputElement>} />
+          {/* the values are words (Browser form submission), drawn in the interface font: in the code font they were cut */}
+          <input {...common} className="input input--words" ref={field as React.RefObject<HTMLInputElement>} />
           <FieldOptions field={field} options={control.options.map(option => option.label)} current={shown} label={label} disabled={!door.available} choose={(chosen) => {
             if (field.current !== null) field.current.value = chosen;
             keep();
@@ -120,7 +124,11 @@ export function FormsInspector({ node }: { readonly node: DocNode }): ReactNode 
       // the language the exported page declares (its own, else the project's): the runtime's locale()
       language: pageLanguage(page?.tree.attributes['pageLanguage' as keyof DocNode['attributes']], document.language),
       fields: nodes.filter(one => ['input', 'textarea', 'select'].includes(one.tag ?? '') && typeof one.attributes.name === 'string').map(one => ({ value: String(one.attributes.name), label: `${one.name} · ${String(one.attributes.name)}` })),
-      elements: nodes.filter(one => typeof one.attributes.id === 'string' && one.attributes.id !== '').map(one => ({ value: String(one.attributes.id), label: `${one.name} · ${String(one.attributes.id)}` })),
+      // every element of the page but the page itself: one with an HTML id by it, one without by its node (NAMED_BY_NODE),
+      // which is given an id when it is chosen (a page of no ids offered None alone: no success message could be chosen)
+      elements: nodes.filter(one => one.id !== page?.tree.id).map(one => typeof one.attributes.id === 'string' && one.attributes.id !== ''
+        ? { value: String(one.attributes.id), label: `${one.name} · ${String(one.attributes.id)}` }
+        : { value: `${NAMED_BY_NODE}${one.id}`, label: one.name }),
     };
   }, [document, node.id]);
   const form = node.tag === 'form';
@@ -143,7 +151,28 @@ export function FormsInspector({ node }: { readonly node: DocNode }): ReactNode 
   const write = (next: FieldConfig | FormConfig) => {
     const entry = entries.find(one => one.door.kind === 'inspector-field' && one.door.attribute === attribute);
     if (entry === undefined) throw new Error(`Missing forms attribute: ${attribute}`);
-    (store.dispatch as (id: CommandId, args: unknown) => DispatchResult)(entry.command.id, { target: node.id, attribute, value: JSON.stringify(next) });
+    // an element chosen by its node (a success or failure element with no id yet) is given an id from its name first,
+    // and the form names it by that id: one undo step
+    const named = Object.entries(next).filter((pair): pair is [string, string] => typeof pair[1] === 'string' && pair[1].startsWith(NAMED_BY_NODE));
+    if (named.length === 0 || SET_ID === undefined) {
+      (store.dispatch as (id: CommandId, args: unknown) => DispatchResult)(entry.command.id, { target: node.id, attribute, value: JSON.stringify(next) });
+      return;
+    }
+    const group = store.commandGroup(message('status.forms.namingElement'));
+    const taken = new Set([...document.pages.flatMap(page => [...walk(page.tree)])].map(one => one.attributes.id).filter((id): id is string => typeof id === 'string'));
+    const ids: Record<string, string> = {};
+    for (const [key, value] of named) {
+      const chosen = value.slice(NAMED_BY_NODE.length);
+      const found = [...document.pages.flatMap(page => [...walk(page.tree)])].find(one => one.id === chosen);
+      const base = (found?.name ?? 'message').toLowerCase().normalize('NFD').replace(/\p{M}/gu, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'message';
+      let id = /^[a-z]/.test(base) ? base : `m-${base}`;
+      for (let n = 2; taken.has(id); n += 1) id = `${base}-${n}`;
+      taken.add(id);
+      group.dispatch(SET_ID as CommandId, { target: chosen, id } as never);
+      ids[key] = id;
+    }
+    group.dispatch(entry.command.id, { target: node.id, attribute, value: JSON.stringify({ ...next, ...ids }) } as never);
+    group.commit();
   };
   return <section className="settings-section" data-region="forms-settings" aria-label={t(form ? 'forms.submission.title' : 'forms.title')}>
     <div className="settings-section__header"><h3>{t(form ? 'forms.submission.title' : 'forms.title')}</h3></div>
