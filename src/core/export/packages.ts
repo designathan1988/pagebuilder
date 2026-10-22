@@ -15,7 +15,8 @@ import en from '../../i18n/locales/en.json' with { type: 'json' };
 import ptBR from '../../i18n/locales/pt-BR.json' with { type: 'json' };
 import { formatMessage } from '../../i18n/index.ts';
 import { walk, type DocNode, type DocumentJson } from '../document/model.ts';
-import { relativePath } from '../files/files.ts';
+import { fileBytes, relativePath } from '../files/files.ts';
+import { readPng, type RgbaImage } from './png-read.ts';
 import { crc32, type ZipEntry } from '../project/zip.ts';
 import { manifest } from '../../manifest/runtime.ts';
 import { pageLanguage } from './names.ts';
@@ -68,6 +69,8 @@ export interface AppIdentity {
   readonly background: string;
   readonly start: string;
   readonly language: string;
+  // the start page's favicon when it is a PNG of the project the core reads: the icons are drawn from it
+  readonly logo: RgbaImage | null;
 }
 
 const HEX = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/iu;
@@ -113,7 +116,7 @@ export function appIdentity(document: DocumentJson): AppIdentity {
   // the language the start page's <html lang> says (core/render/output.ts): its own setting, else the project's, else
   // English, so the README and the package metadata speak the site's language
   const language = pageLanguage(attributes.pageLanguage, document.language);
-  return { name, appName, shortName, id: `com.webconstructor.site${seed}`, slug, color: token ?? accent ?? DEFAULT_COLOR, background: background ?? DEFAULT_BACKGROUND, start, language };
+  return { name, appName, shortName, id: `com.webconstructor.site${seed}`, slug, color: token ?? accent ?? DEFAULT_COLOR, background: background ?? DEFAULT_BACKGROUND, start, language, logo: logoOf(document, start, attributes.pageFavicon) };
 }
 
 // ---- icons: a PNG drawn here (no canvas in the core), the app's initial on its colour ----
@@ -227,16 +230,162 @@ export function iconPng(size: number, color: string, letter: string, maskable = 
   return out;
 }
 
+// The start page's favicon, read: a path of the project's files (relative to the start page) to a PNG; null for an
+// address elsewhere, another format or a PNG the reader does not take (the icons keep their drawn initial).
+function logoOf(document: DocumentJson, start: string, favicon: unknown): RgbaImage | null {
+  if (typeof favicon !== 'string' || favicon.trim() === '' || /^[a-z][a-z0-9+.-]*:/iu.test(favicon.trim())) return null;
+  const file = (document.files ?? []).find((one) => relativePath(start, one.path) === favicon.trim() || one.path === favicon.trim().replace(/^\.?\//u, ''));
+  return file === undefined || file.type !== 'image/png' ? null : readPng(fileBytes(file));
+}
+
+// zlib (RFC 1950) of one deflate block of the fixed codes (RFC 1951 BTYPE 01), its repeats found by a hash of three
+// bytes (LZ77, the last place each was seen): a drawn icon is mostly long runs, which the stored blocks wrote whole
+// (a 512 px logo icon weighed 1 MB)
+function zlibFixed(raw: Uint8Array): Uint8Array {
+  const out: number[] = [0x78, 0x01];
+  let bit = 0;
+  let bits = 0;
+  const put = (value: number, count: number) => {
+    bit |= value << bits;
+    bits += count;
+    while (bits >= 8) {
+      out.push(bit & 0xff);
+      bit >>>= 8;
+      bits -= 8;
+    }
+  };
+  // a Huffman code is written from its highest bit
+  const putCode = (code: number, length: number) => {
+    let reversed = 0;
+    for (let i = 0; i < length; i += 1) reversed |= ((code >> i) & 1) << (length - 1 - i);
+    put(reversed, length);
+  };
+  const literal = (value: number) => {
+    if (value < 144) putCode(0x30 + value, 8);
+    else if (value < 256) putCode(0x190 + value - 144, 9);
+    else if (value < 280) putCode(value - 256, 7);
+    else putCode(0xc0 + value - 280, 8);
+  };
+  const LENGTHS = [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258];
+  const DISTANCES = [1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577];
+  const LENGTH_EXTRA = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0];
+  const DISTANCE_EXTRA = [0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13];
+  put(1, 1);
+  put(1, 2);
+  const seen = new Int32Array(1 << 15).fill(-1);
+  const hash = (at: number) => (((raw[at] ?? 0) << 10) ^ ((raw[at + 1] ?? 0) << 5) ^ (raw[at + 2] ?? 0)) & 0x7fff;
+  let at = 0;
+  while (at < raw.length) {
+    let length = 0;
+    let distance = 0;
+    if (at + 3 <= raw.length) {
+      const key = hash(at);
+      const from = seen[key] ?? -1;
+      seen[key] = at;
+      if (from >= 0 && at - from <= 32768) {
+        while (length < 258 && at + length < raw.length && raw[from + length] === raw[at + length]) length += 1;
+        distance = at - from;
+      }
+    }
+    if (length < 3) {
+      literal(raw[at] ?? 0);
+      at += 1;
+      continue;
+    }
+    let li = LENGTHS.length - 1;
+    while ((LENGTHS[li] ?? 0) > length) li -= 1;
+    literal(257 + li);
+    put(length - (LENGTHS[li] ?? 0), LENGTH_EXTRA[li] ?? 0);
+    let di = DISTANCES.length - 1;
+    while ((DISTANCES[di] ?? 0) > distance) di -= 1;
+    putCode(di, 5);
+    put(distance - (DISTANCES[di] ?? 0), DISTANCE_EXTRA[di] ?? 0);
+    for (let i = 1; i < length && at + i + 3 <= raw.length; i += 1) seen[hash(at + i)] = at + i;
+    at += length;
+  }
+  literal(256);
+  if (bits > 0) out.push(bit & 0xff);
+  let a = 1;
+  let b = 0;
+  for (const byte of raw) {
+    a = (a + byte) % 65521;
+    b = (b + a) % 65521;
+  }
+  const sum = ((b << 16) | a) >>> 0;
+  out.push((sum >>> 24) & 0xff, (sum >>> 16) & 0xff, (sum >>> 8) & 0xff, sum & 0xff);
+  return new Uint8Array(out);
+}
+
+// An RGBA PNG (colour type 6) of a picture, its rows stored
+function rgbaPng(size: number, pixels: Uint8Array): Uint8Array {
+  const raw = new Uint8Array((size * 4 + 1) * size);
+  for (let y = 0; y < size; y += 1) raw.set(pixels.subarray(y * size * 4, (y + 1) * size * 4), y * (size * 4 + 1) + 1);
+  const header = new Uint8Array(13);
+  const view = new DataView(header.buffer);
+  view.setUint32(0, size);
+  view.setUint32(4, size);
+  header[8] = 8;
+  header[9] = 6;
+  const parts = [new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', header), chunk('IDAT', zlibFixed(raw)), chunk('IEND', new Uint8Array())];
+  const out = new Uint8Array(parts.reduce((sum, part) => sum + part.length, 0));
+  let at = 0;
+  for (const part of parts) {
+    out.set(part, at);
+    at += part.length;
+  }
+  return out;
+}
+
+// A square icon of the project's logo: a rounded square of the page's background (the whole square for a maskable
+// one) with the logo fitted in its middle (80 %, 60 % inside a maskable icon's safe zone), smoothed as it is scaled.
+export function logoIconPng(size: number, logo: RgbaImage, background: string, maskable = false): Uint8Array {
+  const [br, bg, bb] = rgb(background);
+  const radius = maskable ? 0 : size * 0.22;
+  const room = size * (maskable ? 0.6 : 0.8);
+  const scale = Math.min(room / logo.width, room / logo.height);
+  const w = logo.width * scale;
+  const h = logo.height * scale;
+  const left = (size - w) / 2;
+  const top = (size - h) / 2;
+  const sample = (x: number, y: number, c: number): number => logo.pixels[(Math.min(logo.height - 1, Math.max(0, y)) * logo.width + Math.min(logo.width - 1, Math.max(0, x))) * 4 + c] ?? 0;
+  const pixels = new Uint8Array(size * size * 4);
+  for (let y = 0; y < size; y += 1) {
+    for (let x = 0; x < size; x += 1) {
+      const o = (y * size + x) * 4;
+      const dx = Math.max(radius - x - 0.5, x + 0.5 - (size - radius), 0);
+      const dy = Math.max(radius - y - 0.5, y + 0.5 - (size - radius), 0);
+      if (dx * dx + dy * dy > radius * radius) continue;
+      let colour = [br, bg, bb];
+      const u = (x + 0.5 - left) / scale - 0.5;
+      const v = (y + 0.5 - top) / scale - 0.5;
+      if (u > -1 && v > -1 && u < logo.width && v < logo.height) {
+        const x0 = Math.floor(u);
+        const y0 = Math.floor(v);
+        const fx = u - x0;
+        const fy = v - y0;
+        const at = (c: number) => sample(x0, y0, c) * (1 - fx) * (1 - fy) + sample(x0 + 1, y0, c) * fx * (1 - fy) + sample(x0, y0 + 1, c) * (1 - fx) * fy + sample(x0 + 1, y0 + 1, c) * fx * fy;
+        const alpha = at(3) / 255;
+        colour = colour.map((base, c) => Math.round(at(c) * alpha + base * (1 - alpha)));
+      }
+      pixels.set([colour[0] ?? 0, colour[1] ?? 0, colour[2] ?? 0, 255], o);
+    }
+  }
+  return rgbaPng(size, pixels);
+}
+
+// The app's icon of a size: drawn from the project's logo when it has one, else its initial on its colour
+const appIcon = (size: number, identity: AppIdentity, maskable = false): Uint8Array =>
+  identity.logo === null ? iconPng(size, identity.color, initialOf(identity.appName), maskable) : logoIconPng(size, identity.logo, identity.background, maskable);
+
 const initialOf = (name: string): string => [...name.normalize('NFD').replace(/[̀-ͯ]/gu, '').toUpperCase()].find((c) => GLYPHS[c] !== undefined) ?? 'A';
 
 // the icons, unless the project holds its own at the same paths
 function icons(entries: readonly ZipEntry[], identity: AppIdentity): ZipEntry[] {
   const held = new Set(entries.map((entry) => entry.path));
-  const letter = initialOf(identity.appName);
   return [
-    { path: ICON_192, bytes: iconPng(192, identity.color, letter) },
-    { path: ICON_512, bytes: iconPng(512, identity.color, letter) },
-    { path: ICON_MASKABLE, bytes: iconPng(512, identity.color, letter, true) },
+    { path: ICON_192, bytes: appIcon(192, identity) },
+    { path: ICON_512, bytes: appIcon(512, identity) },
+    { path: ICON_MASKABLE, bytes: appIcon(512, identity, true) },
   ].filter((icon) => !held.has(icon.path));
 }
 
@@ -431,7 +580,7 @@ export function androidEntries(entries: readonly ZipEntry[], document: DocumentJ
       devDependencies: { '@capacitor/assets': CAPACITOR_ASSETS_VERSION, '@capacitor/cli': CAPACITOR_VERSION },
     }),
     json('capacitor.config.json', { appId: identity.id, appName: identity.appName, webDir: 'www', backgroundColor: identity.background, android: { backgroundColor: identity.background } }),
-    { path: NATIVE_ICON, bytes: iconPng(1024, identity.color, initialOf(identity.appName)) },
+    { path: NATIVE_ICON, bytes: appIcon(1024, identity) },
     text('.gitignore', GITIGNORE),
     readme(identity, 'export.readme.android'),
     ...inFolder('www', site),
@@ -455,8 +604,7 @@ export function desktopEntries(entries: readonly ZipEntry[], document: DocumentJ
   const identity = appIdentity(document);
   const site = [...entries, ...icons(entries, identity)];
   const forgeName = identity.slug.replace(/-/gu, '_');
-  const letter = initialOf(identity.appName);
-  const png = (size: number): Uint8Array => (size === 512 ? (ownIcon(entries) ?? iconPng(512, identity.color, letter)) : iconPng(size, identity.color, letter));
+  const png = (size: number): Uint8Array => (size === 512 ? (ownIcon(entries) ?? appIcon(512, identity)) : appIcon(size, identity));
   return [
     json('package.json', {
       name: identity.slug,
@@ -487,8 +635,8 @@ export function desktopEntries(entries: readonly ZipEntry[], document: DocumentJ
     }),
     text('main.js', electronMain(identity)),
     { path: `${DESKTOP_ICON}.png`, bytes: png(512) },
-    { path: `${DESKTOP_ICON}.ico`, bytes: icoOf(iconPng(256, identity.color, letter), 256) },
-    { path: `${DESKTOP_ICON}.icns`, bytes: icnsOf([['ic08', iconPng(256, identity.color, letter)], ['ic09', png(512)], ['ic10', iconPng(1024, identity.color, letter)]]) },
+    { path: `${DESKTOP_ICON}.ico`, bytes: icoOf(appIcon(256, identity), 256) },
+    { path: `${DESKTOP_ICON}.icns`, bytes: icnsOf([['ic08', appIcon(256, identity)], ['ic09', png(512)], ['ic10', appIcon(1024, identity)]]) },
     text('.gitignore', GITIGNORE),
     readme(identity, 'export.readme.desktop'),
     ...inFolder('app', site),
