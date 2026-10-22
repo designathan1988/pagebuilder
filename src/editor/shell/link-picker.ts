@@ -4,6 +4,7 @@
 // this module owns the three commands that open it, switch the kind of link and close it.
 import { message, registerHandler, type RegisteredHandler } from '../../core/commands/registry.ts';
 import { locate, type DocumentJson, type NodeId } from '../../core/document/model.ts';
+import { templatePaths } from '../../core/data/bindings.ts';
 import type { EditorUi } from '../state.ts';
 
 // The kind of link a stored href is (the picker's kinds): a page of the project (its file), an element of the page (a
@@ -13,6 +14,9 @@ export function linkKindOf(document: DocumentJson, href: string): string {
   if (href.startsWith('mailto:')) return 'email';
   if (href.startsWith('tel:')) return 'phone';
   if (href !== '' && document.pages.some((page) => page.file === href)) return 'page';
+  // an item's page of a template (products/red-mug.html): a page of the site too, offered under A page (the picker
+  // opened such a link on A web address)
+  if (href !== '' && [...templatePaths(document).values()].some((paths) => [...paths.values()].includes(href))) return 'page';
   return 'url';
 }
 
