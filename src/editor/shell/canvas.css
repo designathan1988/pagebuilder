@@ -493,6 +493,12 @@
   flex-direction: column;
 }
 
+.frame__bands {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
 .frame__header.is-pinned {
   z-index: var(--z-canvas-edge);
   background: var(--color-canvas);

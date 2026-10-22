@@ -444,9 +444,13 @@ export function CanvasColumn() {
                       <BreakpointTabs seen={{ from: Math.max(0, -left), to: Math.min(pageWidth * zoom, size.width - left) }} />
                       {/* the bands of what the edits reach, in the flow between the tabs and the page: the breakpoint's,
                           then the state's (window-overlays.css) */}
-                      <BreakpointBadge />
-                      <StateBadge />
-                      <RunsInPreviewBadge />
+                      {/* over the part of the frame the stage shows: zoomed in, the frame runs past the stage and the bands'
+                          words, at their start, stood off screen (the run band read empty at 200 %) */}
+                      <div className="frame__bands" style={{ marginLeft: Math.max(0, -left), width: Math.max(0, Math.min(pageWidth * zoom, size.width - left) - Math.max(0, -left)) }}>
+                        <BreakpointBadge />
+                        <StateBadge />
+                        <RunsInPreviewBadge />
+                      </div>
                     </div>
                     {/* the edge first: the page's overlay (its handles at the page's edge) is drawn over it */}
                     <FrameEdge width={pageWidth} />
