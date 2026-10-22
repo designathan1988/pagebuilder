@@ -33,7 +33,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:file",
-            "order": 10
+            "order": 1
           },
           "adapter": {
             "selection": "none",
@@ -192,7 +192,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:file",
-            "order": 1
+            "order": 2
           },
           "adapter": {
             "selection": "none",
@@ -266,7 +266,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:file",
-            "order": 2
+            "order": 3
           },
           "adapter": {
             "selection": "none",
@@ -419,7 +419,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:file",
-            "order": 3
+            "order": 4
           },
           "adapter": {
             "selection": "none",
@@ -514,7 +514,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:file",
-            "order": 4
+            "order": 5
           },
           "adapter": {
             "selection": "none",
@@ -557,7 +557,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:file",
-            "order": 5
+            "order": 6
           },
           "adapter": {
             "selection": "none",
@@ -696,7 +696,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:file",
-            "order": 6
+            "order": 7
           },
           "adapter": {
             "selection": "none",
@@ -718,7 +718,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:file",
-            "order": 7
+            "order": 8
           },
           "adapter": {
             "selection": "none",
@@ -742,7 +742,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:file",
-            "order": 8
+            "order": 9
           },
           "adapter": {
             "selection": "none",
@@ -766,7 +766,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:file",
-            "order": 9
+            "order": 10
           },
           "adapter": {
             "selection": "none",
