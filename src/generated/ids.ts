@@ -5479,6 +5479,7 @@ export const MESSAGE_IDS = [
   "command.grid.trackSize",
   "keyContext.gridEdit",
   "status.gridEdit.unavailable",
+  "status.gridEdit.selectGrid",
   "status.gridEdit.notGrid",
   "status.gridEdit.cellTaken",
   "status.gridEdit.nothingToSplit",

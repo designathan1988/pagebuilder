@@ -2268,6 +2268,7 @@
   "command.grid.trackSize": "Size this column",
   "keyContext.gridEdit": "Grid editor",
   "status.gridEdit.unavailable": "Open the grid editor on a grid container first.",
+  "status.gridEdit.selectGrid": "Select a grid, or an item inside one, first.",
   "status.gridEdit.notGrid": "{name} is not a grid, nor inside one.",
   "status.gridEdit.cellTaken": "The next cell holds {name}.",
   "status.gridEdit.nothingToSplit": "{name} covers one cell.",

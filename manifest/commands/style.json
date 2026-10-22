@@ -10643,11 +10643,12 @@
         }
       },
       "availability": {
-        "predicate": "always",
-        "refusalKey": null
+        "predicate": "targetOrSelection",
+        "refusalKey": "status.gridEdit.selectGrid"
       },
       "refusals": [
-        "status.gridEdit.notGrid"
+        "status.gridEdit.notGrid",
+        "status.gridEdit.selectGrid"
       ],
       "confirmation": null,
       "history": {
@@ -10666,7 +10667,7 @@
           "labelKey": "command.grid.enterEdit",
           "faceLabelKey": null,
           "icon": null,
-          "disabledReasonKey": "status.gridEdit.unavailable",
+          "disabledReasonKey": "status.gridEdit.selectGrid",
           "placement": "none",
           "adapter": {
             "selection": "single",
@@ -10685,7 +10686,7 @@
           "labelKey": "command.grid.enterEdit",
           "faceLabelKey": null,
           "icon": "pencil-ruler",
-          "disabledReasonKey": "status.gridEdit.unavailable",
+          "disabledReasonKey": "status.gridEdit.selectGrid",
           "placement": {
             "region": "menu:arrange",
             "order": 23

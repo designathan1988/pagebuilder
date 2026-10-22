@@ -2268,6 +2268,7 @@
   "command.grid.trackSize": "Redimensionar esta coluna",
   "keyContext.gridEdit": "Editor de grade",
   "status.gridEdit.unavailable": "Abra o editor de grade num contêiner de grade primeiro.",
+  "status.gridEdit.selectGrid": "Selecione antes uma grade ou um item dentro dela.",
   "status.gridEdit.notGrid": "{name} não é uma grade nem está dentro de uma.",
   "status.gridEdit.cellTaken": "A próxima célula contém {name}.",
   "status.gridEdit.nothingToSplit": "{name} cobre uma célula só.",
