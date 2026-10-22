@@ -471,3 +471,7 @@
 ## DCS-096 — Variável em uso não se apaga
 - **Origem:** uso real de 2026-10-22: apagar uma variável usada por elementos é recusado ("color-3 is used by 4 elements."), e o painel Estilos não oferece outro caminho para desfazer a variável.
 - **Decidido (2026-10-22):** mantém-se a recusa (comportamento atual). "Criar variável desta cor" passa a usar a variável que já tem a mesma cor, em vez de criar uma gêmea (`src/core/design/site-colours.ts`). **Para o dono:** a alternativa é apagar escrevendo o valor da variável em cada uso (como "desvincular"), em `deleteToken` (`src/core/design/tokens.ts`).
+
+## DCS-097 — Destino do formulário de contato do projeto de exemplo
+- **Origem:** a verificação nova (2026-10-22) acusa o formulário da página Sobre do projeto Bluebird: envio do navegador sem "Ação do formulário", o botão só recarrega a página.
+- **Decidido (2026-10-22):** fica como está e acusado. O destino é dado do negócio (endereço de serviço, e-mail ou webhook do dono); inventar um endereço mandaria as mensagens dos visitantes a um lugar que ninguém lê. **Para o dono:** em Configurações › Envio › Destino, escolher o serviço e o endereço reais.
