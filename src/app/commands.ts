@@ -36,6 +36,7 @@ import { openFile, startRenameFile } from '../editor/explorer/explorer.ts';
 import { closeFileTab } from '../editor/explorer/file-tabs.ts';
 import { setInputTypeCommand, setLabelTargetCommand } from '../core/elements/inputs.ts';
 import { addPartCommand, movePartCommand, removePartCommand, togglePartCommand } from '../core/elements/parts.ts';
+import { mapSelected, setMapPlaceCommand } from '../core/elements/map.ts';
 import { addColumnAfterCommand, addColumnEndCommand, addRowAfterCommand, addRowEndCommand, cellSelected, inTable, removeColumnCommand, removeRowCommand } from '../core/elements/table.ts';
 import { setTagCommand } from '../core/elements/tag.ts';
 import { canRedo, canUndo, redoCommand, undoCommand } from '../core/history/history.ts';
@@ -264,6 +265,7 @@ export const COMMANDS = {
   'element.setInputType': setInputTypeCommand,
   'element.setLabelTarget': setLabelTargetCommand,
   'element.setCustomAttribute': setCustomAttributeCommand,
+  'element.setMapPlace': setMapPlaceCommand,
   'element.removeCustomAttribute': removeCustomAttributeCommand,
   'element.setSvgMarkup': setSvgMarkupCommand,
   'element.setEmbedMarkup': setEmbedMarkupCommand,
@@ -551,6 +553,7 @@ export const PREDICATES = {
   canPromote,
   cellSelected,
   inTable,
+  mapSelected,
   hasNaturalChild,
   flexOrGridContainer,
   instanceSelected,

@@ -1232,6 +1232,11 @@
     },
     {
       "kind": "predicate",
+      "id": "mapSelected",
+      "status": "registered"
+    },
+    {
+      "kind": "predicate",
       "id": "positionedSelection",
       "status": "registered"
     },

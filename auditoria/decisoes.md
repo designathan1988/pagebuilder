@@ -455,3 +455,7 @@
 ## DCS-092 — Filtro, ordem e páginas do painel Dados valem para a lista no próximo Preencher
 - **Origem:** uso real de 2026-10-22 (CMS): com a lista ligada já preenchida, trocar "Próximas páginas" para "Links de páginas" no painel não mudou a lista (a exportação seguiu com "Carregar mais"); só um novo Preencher aplicou.
 - **Decidido (preserva o comportamento atual):** a consulta do painel (filtro, ordem, pular, máximo, itens por página, próximas páginas) é o rascunho do que o Preencher repete; a lista guarda a consulta do último Preencher. **Para o dono:** fazer a consulta da lista selecionada ser editada direto (sem novo Preencher) muda o modelo do painel.
+
+## DCS-093 — Lugar no mapa: endereço pelo Google Maps, coordenadas pelo OpenStreetMap
+- **Origem:** uso real de 2026-10-22: o "Mapa com endereço" fixava um ponto em São Paulo, e mudar o lugar exigia escrever à mão o endereço de incorporação no campo Fonte.
+- **Decidido (2026-10-22):** o campo "Lugar no mapa" (Ajustes do quadro do mapa, `src/core/elements/map.ts`) aceita um endereço ou "latitude, longitude". Coordenadas mantêm o OpenStreetMap (a incorporação dele pede uma caixa em volta do marcador); um endereço vai para a incorporação por busca do Google Maps, a única que acha um endereço sem chave. O link de rota do mesmo bloco acompanha, no mesmo passo de desfazer. Na pré-visualização do editor, isolada sem mesma origem, o cartão do Google aparece vazio; no site publicado ele aparece. **Para o dono:** preferir outro provedor (ou exigir coordenadas) muda só `mapAddresses`.

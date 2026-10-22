@@ -4476,5 +4476,13 @@
   "template.form.choice": "Opção",
   "table.headerCellText": "Título",
   "table.cellText": "Célula",
-  "command.table.addRowEnd": "Adicionar uma linha no fim"
+  "command.table.addRowEnd": "Adicionar uma linha no fim",
+  "command.setMapPlace": "Definir o lugar no mapa",
+  "inspector.map.place": "Lugar no mapa",
+  "inspector.map.placePlaceholder": "Um endereço, ou latitude, longitude",
+  "inspector.map.placeHelp": "O mapa e o link de rota mostram este lugar. Coordenadas usam o OpenStreetMap; um endereço usa o Google Maps.",
+  "settings.map": "Mapa",
+  "status.map.selectMap": "Selecione um mapa para definir o lugar.",
+  "status.map.emptyPlace": "Escreva um endereço, ou uma latitude e uma longitude.",
+  "status.map.placed": "O mapa mostra {place}."
 }

@@ -21,6 +21,7 @@ import { ID_REF, KeptTextField, TextField, keepAfterGesture, keptTextOf } from '
 import './settings.css';
 import { FormsInspector } from '../forms/inspector.tsx';
 import { PanelField } from './panel-field.tsx';
+import { isMapFrame, mapPlaceOf } from '../../core/elements/map.ts';
 import { variantBase, variantsOf } from '../../core/design/components.ts';
 import { instanceRootOf } from '../../core/design/instances.ts';
 
@@ -398,6 +399,22 @@ function CartSettings({ node }: { readonly node: DocNode }) {
   );
 }
 
+// a map's place (core/elements/map.ts): drawn for a frame that shows a map, the place it shows now in the field
+const MAP_PLACE = doorSlots('inspector-settings').find((d) => d.door.kind === 'panel-control' && d.door.control === 'map-place');
+function MapSettings({ node }: { readonly node: DocNode }) {
+  const t = useT();
+  if (MAP_PLACE === undefined || !isMapFrame(node)) return null;
+  return (
+    <section className="settings-section" data-settings-section="map" aria-label={t('settings.map')}>
+      <div className="settings-section__header">
+        <h3>{t('settings.map')}</h3>
+      </div>
+      <PanelField key={node.id} entry={MAP_PLACE} value={mapPlaceOf(node)} label={t(MAP_PLACE.door.labelKey as MessageId)} placeholder={t('inspector.map.placePlaceholder')} />
+      <p className="settings-section__note">{t('inspector.map.placeHelp')}</p>
+    </section>
+  );
+}
+
 export function SettingsTab({ head = null }: { readonly head?: ReactNode } = {}) {
   const t = useT();
   const count = useEditorState((s) => s.selection.length);
@@ -467,6 +484,7 @@ export function SettingsTab({ head = null }: { readonly head?: ReactNode } = {})
               </section>
             );
           })}
+          {node !== null ? <MapSettings node={node} /> : null}
           {node !== null ? <CartSettings node={node} /> : null}
           {node !== null ? <FormsInspector node={node} /> : null}
           {node !== null ? <ComponentSettings node={node} /> : null}

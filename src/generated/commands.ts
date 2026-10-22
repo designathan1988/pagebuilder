@@ -146,6 +146,7 @@ export interface CommandArgs {
   "element.setInputType": { readonly type: string };
   "element.setLabelTarget": { readonly control: NodeId };
   "element.setCustomAttribute": { readonly name: string; readonly value: string };
+  "element.setMapPlace": { readonly value: string };
   "element.removeCustomAttribute": { readonly name: string };
   "element.setSvgMarkup": { readonly markup: string };
   "element.setEmbedMarkup": { readonly markup: string; readonly target?: NodeId };

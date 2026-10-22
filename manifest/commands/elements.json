@@ -4588,6 +4588,63 @@
       ]
     },
     {
+      "id": "element.setMapPlace",
+      "labelKey": "command.setMapPlace",
+      "owner": "src/core/elements/map.ts",
+      "introducedBy": "templates-sections",
+      "args": {
+        "value": {
+          "type": "string",
+          "values": [],
+          "optional": false
+        }
+      },
+      "availability": {
+        "predicate": "mapSelected",
+        "refusalKey": "status.map.selectMap"
+      },
+      "refusals": [
+        "status.locked.edit",
+        "status.map.emptyPlace"
+      ],
+      "confirmation": null,
+      "history": {
+        "undoable": true,
+        "coalesce": "none",
+        "undoRestoresSelection": "before-command",
+        "transaction": "per-dispatch",
+        "noChange": "no-entry"
+      },
+      "entryPoints": [
+        {
+          "id": "inspector-map-place",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "templates-sections",
+          "panel": "inspector",
+          "control": "map-place",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "inspector.map.place",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "status.map.selectMap",
+          "placement": {
+            "region": "inspector-settings",
+            "order": 2082
+          },
+          "adapter": {
+            "selection": "single",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        }
+      ]
+    },
+    {
       "id": "element.removeCustomAttribute",
       "labelKey": "command.removeCustomAttribute",
       "owner": "src/core/elements/attributes.ts",

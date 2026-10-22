@@ -4476,5 +4476,13 @@
   "template.form.choice": "Option",
   "table.headerCellText": "Heading",
   "table.cellText": "Cell",
-  "command.table.addRowEnd": "Add a row at the end"
+  "command.table.addRowEnd": "Add a row at the end",
+  "command.setMapPlace": "Set the place on the map",
+  "inspector.map.place": "Place on the map",
+  "inspector.map.placePlaceholder": "An address, or latitude, longitude",
+  "inspector.map.placeHelp": "The map and its directions link show this place. Coordinates use OpenStreetMap; an address uses Google Maps.",
+  "settings.map": "Map",
+  "status.map.selectMap": "Select a map to set its place.",
+  "status.map.emptyPlace": "Write an address, or a latitude and a longitude.",
+  "status.map.placed": "The map shows {place}."
 }
