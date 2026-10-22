@@ -15,7 +15,7 @@ import { GLYPHS, doorSlots, menuOf } from '../doors/placement.ts';
 import { setActiveOption } from '../focus/focus.ts';
 import { chordCap, chordHint } from '../input/keymap.ts';
 import { useEditorState, useStore } from '../store.ts';
-import { useLocale, useT } from '../text.ts';
+import { messageText, useLocale, useT } from '../text.ts';
 import { alsoNamed, tagOfElement } from '../palette/palette.ts';
 import { PANELS, panelName, type Panel } from '../workspace/panel-catalogue.ts';
 import { PanelBodies } from './bodies.ts';
@@ -94,7 +94,7 @@ function CommandBarDialog() {
         // "alin" found no property and "cor" no colour, since the CSS names are English words (DEF-0589)
         return named.flatMap((property: NamedProperty): BarEntry[] => {
           const args = { property: property.id };
-          return !isDoorBuilt(entry) || !appliesNow(entry, args, store) ? [] : [{ entry, args, label: t(entry.door.labelKey as MessageId, { property: property.id }), key: entryKey(entry, args), also: [t(property.labelKey as MessageId)] }];
+          return !isDoorBuilt(entry) || !appliesNow(entry, args, store) ? [] : [{ entry, args, label: t(entry.door.labelKey as MessageId, { property: `${t(property.labelKey as MessageId)} (${property.id})` }), key: entryKey(entry, args), also: [t(property.labelKey as MessageId)] }];
         });
       }
       if (kind === 'set-property') {
@@ -144,8 +144,16 @@ function CommandBarDialog() {
     const plain = BAR_DOORS.filter((entry) => kindOf(entry) === 'command' && isDoorBuilt(entry) && !appliesNow(entry, {}, store));
     const named = plain.map((entry) => ({ entry, args: {}, label: t(entry.door.labelKey as MessageId, labelParamsOf(entry, state)), key: entryKey(entry, {}) }));
     const first = shownEntries(query, named, [])[0];
-    return first === undefined ? null : { label: first.label, reason: t(first.entry.door.disabledReasonKey as MessageId) };
-  }, [query, shown, store, t]);
+    if (first !== undefined) return { label: first.label, reason: t(first.entry.door.disabledReasonKey as MessageId) };
+    // a property the query names that the selection's layout does not take (Wrap on a block): its field is not drawn,
+    // and the bar said only that nothing matched; it says why, in the refusal of the command that would show it
+    const wanted = query.trim().toLowerCase();
+    const edit = BAR_DOORS.find((entry) => kindOf(entry) === 'edit-property' && isDoorBuilt(entry));
+    const property = edit === undefined ? undefined : namedProperties().find((one) => one.id === wanted || t(one.labelKey as MessageId).toLowerCase() === wanted);
+    if (edit === undefined || property === undefined) return null;
+    const refused = store.refusal(edit.command.id, { ...edit.door.args, property: property.id } as never);
+    return refused === null ? null : { label: t(edit.door.labelKey as MessageId, { property: `${t(property.labelKey as MessageId)} (${property.id})` }), reason: messageText(locale, refused) };
+  }, [query, shown, store, t, locale]);
 
   // the field takes the focus while the bar is open, and gives it back to what had it
   useLayoutEffect(() => {

@@ -12,10 +12,11 @@
 // come from the catalogue.
 import { message, registerHandler, type RegisteredHandler } from '../../core/commands/registry.ts';
 import { classesOf } from '../../core/design/classes.ts';
-import { locate, type DocNode, type DocumentJson } from '../../core/document/model.ts';
+import { locate, type DocNode, type DocumentJson, type NodeId } from '../../core/document/model.ts';
 import type { ModelRules } from '../../core/document/validate.ts';
 import type { StoreState } from '../../core/store/store.ts';
 import { shownText } from '../../core/style/set.ts';
+import { appliesToOf, contextPredicate } from '../../core/style/applies.ts';
 import { fold } from '../../core/text/fold.ts';
 import type { CommandArgs } from '../../generated/commands.ts';
 import { LOCALES, SECTION_IDS, type MessageId, type SectionId } from '../../generated/ids.ts';
@@ -310,12 +311,25 @@ export interface Revealed {
   readonly count: number;
 }
 
-export const revealField = registerHandler<'inspector.reveal', EditorUi>('inspector.reveal', ({ state }, { property, attribute }) => {
+export const revealField = registerHandler<'inspector.reveal', EditorUi>('inspector.reveal', ({ state, rules, layout }, { property, attribute }) => {
   const field = attribute ?? property;
   if (field === undefined) return { kind: 'change' };
+  // a property the Style tab draws only for some layouts (Wrap for a flex container, Columns for a grid) is not drawn
+  // for this element: the command bar's "Edit property Wrap" opened the tab on nothing. It says what the field needs.
+  const only = state.selection.length === 1 ? state.selection[0] : undefined;
+  const found = only === undefined ? null : locate(state.document, only);
+  const display = only === undefined ? null : layout.computed(only, 'display');
+  const parentDisplay = found?.parent == null ? null : layout.computed(found.parent.id as NodeId, 'display');
+  const predicate = property === undefined ? null : appliesToOf(property, rules);
+  if (predicate !== null && display !== null && found !== null && contextPredicate(predicate, { box: true, own: { display }, parent: parentDisplay === null ? null : { display: parentDisplay } }) === false && LAYOUT_NEEDS[predicate] !== undefined) {
+    return { kind: 'refused', message: message('status.inspector.fieldNeedsLayout', { name: found.node.name, need: { key: LAYOUT_NEEDS[predicate] as MessageId } }) };
+  }
   const shown = withInspectorTab(withInspector(state.ui, true), attribute !== undefined ? SETTINGS_TAB : STYLE_TAB);
   return { kind: 'change', ui: { ...shown, revealed: { field, count: (state.ui.revealed?.count ?? 0) + 1 } } };
 });
+
+// what a layout predicate asks of the element, in the person's words (status.inspector.fieldNeedsLayout)
+const LAYOUT_NEEDS: Readonly<Record<string, MessageId>> = { flexContainer: 'inspector.needs.flex', gridContainer: 'inspector.needs.grid', flexOrGridContainer: 'inspector.needs.flexOrGrid', flexItem: 'inspector.needs.flexItem', gridItem: 'inspector.needs.gridItem', flexOrGridItem: 'inspector.needs.flexOrGridItem' };
 
 // Find a property (spec inspector-property-search): inspector.search keeps the Style tab's query in the editor state
 // (ui.inspectorSearch, as typed; absent once nothing but spaces is left), never in the document; the tab draws only

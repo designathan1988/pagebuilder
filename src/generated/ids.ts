@@ -7710,5 +7710,12 @@ export const MESSAGE_IDS = [
   "checks.linkTemplate.fix",
   "checks.fix.fieldName",
   "data.queryPending",
+  "status.inspector.fieldNeedsLayout",
+  "inspector.needs.flex",
+  "inspector.needs.grid",
+  "inspector.needs.flexOrGrid",
+  "inspector.needs.flexItem",
+  "inspector.needs.gridItem",
+  "inspector.needs.flexOrGridItem",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];

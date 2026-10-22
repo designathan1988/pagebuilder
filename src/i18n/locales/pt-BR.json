@@ -4500,5 +4500,12 @@
   "checks.linkTemplate": "{category} · Link para uma página modelo em {name}: o site tem uma página por item, não esta",
   "checks.linkTemplate.fix": "Aponte para uma das páginas dos itens em Link para › Uma página",
   "checks.fix.fieldName": "Escrever o Nome acessível",
-  "data.queryPending": "{name} na página ainda mostra o último filtro e ordem. Aperte Preencher para mostrar este."
+  "data.queryPending": "{name} na página ainda mostra o último filtro e ordem. Aperte Preencher para mostrar este.",
+  "status.inspector.fieldNeedsLayout": "Esse campo é para {need}; {name} não é. Defina o Display antes.",
+  "inspector.needs.flex": "um contêiner flex",
+  "inspector.needs.grid": "uma grade",
+  "inspector.needs.flexOrGrid": "um contêiner flex ou uma grade",
+  "inspector.needs.flexItem": "um item de contêiner flex",
+  "inspector.needs.gridItem": "um item de grade",
+  "inspector.needs.flexOrGridItem": "um item de contêiner flex ou de grade"
 }

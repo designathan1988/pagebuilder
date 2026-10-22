@@ -4500,5 +4500,12 @@
   "checks.linkTemplate": "{category} · Link to a template page in {name}: the site has one page per item, not this one",
   "checks.linkTemplate.fix": "Link to one of its item pages in Link to › A page",
   "checks.fix.fieldName": "Write the Accessible name",
-  "data.queryPending": "{name} on the page still shows its last filter and sort. Press Fill to show this one."
+  "data.queryPending": "{name} on the page still shows its last filter and sort. Press Fill to show this one.",
+  "status.inspector.fieldNeedsLayout": "That field is for {need}; {name} is not one. Set its Display first.",
+  "inspector.needs.flex": "a flex container",
+  "inspector.needs.grid": "a grid",
+  "inspector.needs.flexOrGrid": "a flex container or a grid",
+  "inspector.needs.flexItem": "an item of a flex container",
+  "inspector.needs.gridItem": "an item of a grid",
+  "inspector.needs.flexOrGridItem": "an item of a flex container or a grid"
 }
