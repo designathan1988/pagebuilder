@@ -3683,6 +3683,8 @@
   "quickPanel.key.image": "Image",
   "interactions.section.events": "Events",
   "interactions.none": "No event on this element yet.",
+  "interactions.logicEvents.one": "This element has {count} event in the Logic tab.",
+  "interactions.logicEvents.other": "This element has {count} events in the Logic tab.",
   "motion.section.title": "Motion",
   "motion.field.condition": "Runs only if",
   "motion.field.conditionName": "What it checks",

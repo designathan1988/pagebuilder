@@ -10,6 +10,8 @@
 import { isFeatureBuilt } from '../../core/commands/registry.ts';
 import { useEffect, useState } from 'react';
 import { locate, type DocNode, type Interaction } from '../../core/document/model.ts';
+import { logicOf } from '../../core/logic/model.ts';
+import { pluralForm } from '../../i18n/index.ts';
 import { actionLabel, applicableActions, applicableTriggers, firesOnce, interactionsOf, needsAddress, needsAnimation, needsClassName, needsTarget, primaryNodeOf, readOptions, triggerLabel } from '../../core/events/interactions.ts';
 import { animationsOf } from '../../core/animation/animation.ts';
 import { classesOf } from '../../core/design/classes.ts';
@@ -17,7 +19,7 @@ import { elementIcon, type DoorEntry, manifest } from '../../manifest/runtime.ts
 import { Icon } from '../doors/door.tsx';
 import { PanelButton, PanelField } from './panel-field.tsx';
 import { useEditorState, useStore } from '../store.ts';
-import { useT } from '../text.ts';
+import { useLocale, useT } from '../text.ts';
 import { pickingTarget } from '../inspector/pick-target.ts';
 import { MotionInteractions } from '../motion/ui/interactions.tsx';
 import type { DispatchResult } from '../../core/store/store.ts';
@@ -205,6 +207,7 @@ type DocumentJsonLike = { readonly pages: readonly { readonly tree: DocNode }[] 
 
 export function InteractionsTab() {
   const t = useT();
+  const locale = useLocale();
   const state = useEditorState((s) => s);
   const node = primaryNodeOf(state.document, state.selection);
   const interactions = node === null ? [] : interactionsOf(node);
@@ -245,8 +248,11 @@ export function InteractionsTab() {
         </button>
       </div>
       {node === null ? null : <p className="interactions__title">{t('interactions.section.events')}</p>}
-      {node === null ? null : interactions.length === 0 ? <p className="interactions__none">{t('interactions.none')}</p> : null}
+      {node === null ? null : interactions.length === 0 && (logicOf(node).on ?? []).length === 0 ? <p className="interactions__none">{t('interactions.none')}</p> : null}
       {node === null ? null : interactions.map((interaction, index) => <Card key={index} node={node} interaction={interaction} index={index} />)}
+      {/* the element's events of the Logic tab (state changes: add 1, set a variable…) are said here too, so the two
+          lists of what happens on a click are never read as one alone */}
+      {node === null || (logicOf(node).on ?? []).length === 0 ? null : <p className="interactions__note">{t(`interactions.logicEvents.${pluralForm(locale, (logicOf(node).on ?? []).length)}` as MessageId, { count: (logicOf(node).on ?? []).length })}</p>}
       <MotionInteractions node={node} />
       <p className="interactions__note">{t('interactions.runNote')}</p>
     </div>

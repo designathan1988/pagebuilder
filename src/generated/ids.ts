@@ -6870,6 +6870,8 @@ export const MESSAGE_IDS = [
   "quickPanel.key.image",
   "interactions.section.events",
   "interactions.none",
+  "interactions.logicEvents.one",
+  "interactions.logicEvents.other",
   "motion.section.title",
   "motion.field.condition",
   "motion.field.conditionName",

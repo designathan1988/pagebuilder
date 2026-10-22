@@ -3683,6 +3683,8 @@
   "quickPanel.key.image": "Imagem",
   "interactions.section.events": "Eventos",
   "interactions.none": "Este elemento ainda não tem evento.",
+  "interactions.logicEvents.one": "Este elemento tem {count} evento na aba Lógica.",
+  "interactions.logicEvents.other": "Este elemento tem {count} eventos na aba Lógica.",
   "motion.section.title": "Movimento",
   "motion.field.condition": "Só executa se",
   "motion.field.conditionName": "O que confere",
