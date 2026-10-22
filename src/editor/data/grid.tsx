@@ -99,8 +99,9 @@ function QueryBar({ collection, query }: { readonly collection: Collection; read
   const sortOptions: Option[] = [
     none,
     ...collection.fields.flatMap((f) => [
-      { value: `${f.key}:asc`, label: t('data.sortAscending', { label: f.label }) },
-      { value: `${f.key}:desc`, label: t('data.sortDescending', { label: f.label }) },
+      // the order in the words of the field's kind: a price lowest first, a date oldest first, a text A to Z
+      { value: `${f.key}:asc`, label: t(f.type === 'number' ? 'data.sortLowest' : f.type === 'date' ? 'data.sortOldest' : 'data.sortAscending', { label: f.label }) },
+      { value: `${f.key}:desc`, label: t(f.type === 'number' ? 'data.sortHighest' : f.type === 'date' ? 'data.sortNewest' : 'data.sortDescending', { label: f.label }) },
     ]),
   ];
   const sortValue = (i: number) => (order[i] === undefined ? '' : `${order[i].field}:${order[i].direction}`);
