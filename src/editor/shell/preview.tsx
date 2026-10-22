@@ -134,6 +134,10 @@ export function PreviewPage() {
         if (go.item !== undefined && go.page.tree.dataItem?.item !== go.item) dispatch(PREVIEW_ITEM.command.id as CommandId, { ...PREVIEW_ITEM.door.args, item: go.item });
         return;
       }
+      if ((event.data as { builderPreviewForm?: unknown } | null)?.builderPreviewForm === true) {
+        store.notice(message('status.preview.formUnsent'));
+        return;
+      }
       const key = relayedKey((event.data as { builderPreviewKey?: unknown } | null)?.builderPreviewKey);
       const bar = window.document.querySelector('[data-region="preview-bar"]');
       if (key === null || bar === null) return;
@@ -219,7 +223,16 @@ export function pageAt(pages: readonly Page[], from: string, address: string): P
   return pages.find((page) => new URL(page.file, root).pathname === resolved.pathname);
 }
 
-const withKeyRelay = (html: string): string => (html.includes('</body>') ? html.replace('</body>', `${KEY_RELAY}</body>`) : html + KEY_RELAY);
+// A form with nowhere to go (no Submission set: no action, and no script of the site that took the submit) is not sent
+// from the preview: the preview opens what the page sends in a new tab (its <base target="_blank">), and such a form
+// opened a broken one (about:srcdoc?name=…). The editor says why instead (status.preview.formUnsent).
+const FORM_GUARD = `<script>addEventListener('submit', function (e) {
+  var form = e.target;
+  if (e.defaultPrevented || !form || form.getAttribute('action')) return;
+  e.preventDefault();
+  parent.postMessage({ builderPreviewForm: true }, '*');
+});</script>`;
+const withKeyRelay = (html: string): string => (html.includes('</body>') ? html.replace('</body>', `${KEY_RELAY}${FORM_GUARD}</body>`) : html + KEY_RELAY + FORM_GUARD);
 
 // The store the preview lends its page (the user's final-use audit, USE-8): the page runs sandboxed in an opaque
 // origin, where localStorage throws, so the site's runtimes (js/widgets.js, js/app-layer/runtime.js) logged that this

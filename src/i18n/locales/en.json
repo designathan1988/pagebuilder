@@ -1940,6 +1940,7 @@
   "status.preview.off": "Back to editing.",
   "status.preview.on": "Preview: use the page as a visitor would. Press Esc to return to editing.",
   "status.preview.noPage": "The page {address} is not in this project, so the preview stays on this page.",
+  "status.preview.formUnsent": "The form was not sent: it has no destination yet. Select the form and set its Submission in Settings.",
   "status.project.blankPage": "Started a new blank page.",
   "status.project.saved": "Saved the project as {file}.",
   "status.project.tooLarge": "The project was not saved: it takes {megabytes} MB, and a project file holds at most {limit} MB. Remove or shrink some of its files, then save again.",
