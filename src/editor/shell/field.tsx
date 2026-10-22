@@ -1775,6 +1775,8 @@ const keywordsOf = (attribute: AttributeId): readonly string[] => ATTRIBUTES.get
 // an image's Source picks the file it draws with, the media library of the Explorer's Files list being the other way to
 // see them (spec explorer-assets-use).
 const filePickerOf = (node: DocNode): string | null => MODEL_RULES.elements.get(node.type)?.filePicker ?? null;
+// the page settings that name an image (its sharing image, its favicon): their list offers the project's image files
+const IMAGE_SETTINGS: ReadonlySet<string> = new Set([...ATTRIBUTES.values()].filter((one) => one.head === 'meta:og:image' || one.head === 'link:icon').map((one) => one.id));
 // the attribute whose field a link's choose button follows (elements.json: the link's href)
 const HREF_ATTRIBUTE = ATTRIBUTES.get('href')?.id ?? 'href';
 // the choose button of a field that names a file (layout.json region "field", control "source-choose")
@@ -1848,7 +1850,8 @@ export function KeptTextField({ entry, node, kept, label, attribute, keepOnLeave
   // an image's Source also suggests the images the project holds (spec explorer-assets-use): the library the Explorer
   // lists, offered right where the source is written
   const picksFiles = attribute !== undefined && filePickerOf(node) === attribute;
-  const projectFiles = useEditorState((s) => (picksFiles ? JSON.stringify(imageFiles(s.document).map((file) => file.path)) : '[]'));
+  const listsImages = picksFiles || (attribute !== undefined && IMAGE_SETTINGS.has(attribute));
+  const projectFiles = useEditorState((s) => (listsImages ? JSON.stringify(imageFiles(s.document).map((file) => file.path)) : '[]'));
   const keptSuggestions = useMemo(() => (JSON.parse(projectFiles) as readonly string[]).length === 0 ? kept.suggestions : [...new Set([...kept.suggestions, ...(JSON.parse(projectFiles) as readonly string[])])], [kept.suggestions, projectFiles]);
   const { filled, stored } = kept;
   const suggestions = keptSuggestions;
