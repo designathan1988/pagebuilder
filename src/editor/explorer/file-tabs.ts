@@ -53,3 +53,14 @@ export const closeFileTab = registerHandler<'files.closeTab', EditorUi>(
   },
   (state, { path }) => typeof path === 'string' && isFileShown(state.ui, path),
 );
+
+// The tabs of the project files a command took away (a file deleted, a folder with it): closed with them. The tab of a
+// deleted file stayed open, naming a file that was gone and offering to save it.
+export function tabsFollowFiles(after: { readonly document: { readonly files?: readonly { readonly path: string }[] }; readonly ui: EditorUi }, before: { readonly document: { readonly files?: readonly { readonly path: string }[] } }): EditorUi {
+  const tabs = codeTabs(after.ui);
+  if (tabs === null || after.document.files === before.document.files) return after.ui;
+  const now = new Set((after.document.files ?? []).map((file) => file.path));
+  const gone = (before.document.files ?? []).map((file) => file.path).filter((path) => !now.has(path) && tabs.open.includes(path));
+  const ui = gone.reduce(closedFile, after.ui);
+  return ui.code === undefined && editorView(ui) === 'code' ? { ...ui, editorView: undefined } : ui;
+}

@@ -163,8 +163,8 @@ export function CodePane() {
       )}
       <footer className="code-pane__foot">
         {info?.generated === true ? <span className="code-pane__note">{t('codePanel.locked')}</span> : null}
-        {kind === 'css' && shown !== null && PART('css-apply') !== undefined ? <DoorControl entry={PART('css-apply') as DoorEntry} args={{ css: shown }} className="code-pane__apply" /> : null}
-        {kind === 'html' && ownText !== null && PART('html-apply') !== undefined ? <DoorControl entry={PART('html-apply') as DoorEntry} args={{ html: shown ?? ownText }} className="code-pane__apply" /> : null}
+        {fileText === null && kind === 'css' && shown !== null && PART('css-apply') !== undefined ? <DoorControl entry={PART('css-apply') as DoorEntry} args={{ css: shown }} className="code-pane__apply" /> : null}
+        {fileText === null && kind === 'html' && ownText !== null && PART('html-apply') !== undefined ? <DoorControl entry={PART('html-apply') as DoorEntry} args={{ html: shown ?? ownText }} className="code-pane__apply" /> : null}
         {info === null || info.generated || PART('save') === undefined ? null : <DoorControl entry={PART('save') as DoorEntry} args={{ path: info.path, content: shown ?? info.text ?? '' }} className="code-pane__apply" />}
       </footer>
     </section>
