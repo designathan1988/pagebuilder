@@ -2301,6 +2301,7 @@
   "import.hint.inside": "Add each imported page’s contents inside the selected container.",
   "import.hint.replace": "Remove the current pages and project resources. A confirmation follows.",
   "status.import.insideRefused": "Choose a container that can hold the imported page contents.",
+  "status.import.insideNeedsSelection": "Select the container on the canvas first, then import again.",
   "perf.title": "Large-page performance",
   "perf.scope": "641 elements · serial Chrome run",
   "perf.runs": "runs",

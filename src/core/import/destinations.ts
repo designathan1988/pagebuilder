@@ -8,7 +8,18 @@ import { addressAttributes, followPaths } from '../files/references.ts';
 import { applyPatches, type Patch } from '../history/transaction.ts';
 import { placementRefusal } from '../elements/content-model.ts';
 import { lockRefusal } from '../nodes/flags.ts';
-import { message, type HandlerContext } from '../commands/registry.ts';
+import { message, registerPredicate, type HandlerContext } from '../commands/registry.ts';
+
+// Import inside the selected element needs one element to hold the pages: the Import HTML dialog drew the choice
+// enabled with nothing selected, and said why only once pressed. Every other destination is always available.
+export const importDestinationReady = registerPredicate(
+  'importDestinationReady',
+  (state, _rules, args) => {
+    const given = (args ?? {}) as { readonly destination?: unknown; readonly target?: unknown };
+    return given.destination !== 'inside' || given.target !== undefined || state.selection.length === 1;
+  },
+  () => message('status.import.insideNeedsSelection'),
+);
 
 export function importDestination(context: HandlerContext<never>, parsed: DocumentJson, destination: 'page' | 'inside' | 'replace', target?: NodeId): { patches: Patch[]; selection: NodeId[] } | { refused: ReturnType<typeof message> } {
   const current = context.state.document;

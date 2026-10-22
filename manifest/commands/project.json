@@ -501,13 +501,14 @@
         }
       },
       "availability": {
-        "predicate": "always",
-        "refusalKey": null
+        "predicate": "importDestinationReady",
+        "refusalKey": "status.import.insideNeedsSelection"
       },
       "refusals": [
         "status.import.noPage",
         "status.import.invalidArchive",
-        "status.import.insideRefused"
+        "status.import.insideRefused",
+        "status.import.insideNeedsSelection"
       ],
       "confirmation": {
         "messageKey": "dialog.importHtml.message",
@@ -630,7 +631,7 @@
           "labelKey": "import.destination.inside",
           "faceLabelKey": null,
           "icon": null,
-          "disabledReasonKey": "common.notAvailableYet",
+          "disabledReasonKey": "status.import.insideNeedsSelection",
           "placement": {
             "region": "html-import",
             "order": 2

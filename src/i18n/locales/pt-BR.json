@@ -2301,6 +2301,7 @@
   "import.hint.inside": "Adicionar o conteúdo de cada página importada dentro do contêiner selecionado.",
   "import.hint.replace": "Remover as páginas e os recursos atuais do projeto. Será pedida uma confirmação.",
   "status.import.insideRefused": "Escolha um contêiner que possa receber o conteúdo das páginas importadas.",
+  "status.import.insideNeedsSelection": "Selecione antes o contêiner no canvas e importe de novo.",
   "perf.title": "Desempenho da página grande",
   "perf.scope": "641 elementos · Chrome, uma execução por vez",
   "perf.runs": "execuções",

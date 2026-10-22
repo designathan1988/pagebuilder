@@ -37,6 +37,7 @@ import { closeFileTab } from '../editor/explorer/file-tabs.ts';
 import { setInputTypeCommand, setLabelTargetCommand } from '../core/elements/inputs.ts';
 import { addPartCommand, movePartCommand, removePartCommand, togglePartCommand } from '../core/elements/parts.ts';
 import { mapSelected, setMapPlaceCommand } from '../core/elements/map.ts';
+import { importDestinationReady } from '../core/import/destinations.ts';
 import { addColumnAfterCommand, addColumnEndCommand, addRowAfterCommand, addRowEndCommand, cellSelected, inTable, removeColumnCommand, removeRowCommand } from '../core/elements/table.ts';
 import { setTagCommand } from '../core/elements/tag.ts';
 import { canRedo, canUndo, redoCommand, undoCommand } from '../core/history/history.ts';
@@ -554,6 +555,7 @@ export const PREDICATES = {
   cellSelected,
   inTable,
   mapSelected,
+  importDestinationReady,
   hasNaturalChild,
   flexOrGridContainer,
   instanceSelected,
