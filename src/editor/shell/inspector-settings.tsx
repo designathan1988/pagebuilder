@@ -37,7 +37,7 @@ const ADD_PART_DOORS = doorSlots('inspector-settings').filter((d) => d.door.kind
 const PART_DOORS = doorSlots('inspector-settings').filter((d) => d.door.kind === 'panel-control' && d.door.drawnAs === 'icon-button' && d.command.args.target?.type === 'node');
 // a part's name opens it: selected, the part shows its own settings (an option's text and value, a source's file); the
 // row named a part the person could not reach from it
-const PART_OPEN = doorSlots('inspector-settings').find((d) => d.command.id === 'selection.select');
+const PART_OPEN = doorSlots('inspector-settings').find((d) => d.door.kind === 'panel-control' && d.door.control === 'part-open');
 // the person's own attributes (feature element-attributes-aria): the doors whose command takes an attribute's name
 // (and its value): in the manifest's order, the name field that adds one and the value field of each, both fields of
 // the command that sets a value; then the remove button
@@ -399,6 +399,40 @@ function CartSettings({ node }: { readonly node: DocNode }) {
   );
 }
 
+// The countdown (the Components' countdown, data-wc="countdown", read by src/editor/widgets/widgets.js): the moment it
+// counts down to, its data-wc-date, picked in the browser's date and time field. It was a raw attribute holding an
+// ISO timestamp ("2026-11-21T21:46:25.6…Z") the person had to rewrite by hand. The field shows that moment in the
+// person's own time and writes what they pick as the same absolute moment.
+const COUNTDOWN_END = doorSlots('inspector-settings').find((d) => d.door.kind === 'panel-control' && d.door.control === 'countdown-end');
+const COUNTDOWN_KIND = { attribute: 'data-wc', value: 'countdown' } as const;
+const pad = (n: number): string => String(n).padStart(2, '0');
+// an ISO moment as the datetime-local field holds it, in local time ("2026-11-21T18:46"); '' for no valid moment
+function localMoment(iso: string): string {
+  const at = new Date(iso);
+  if (Number.isNaN(at.getTime())) return '';
+  return `${String(at.getFullYear())}-${pad(at.getMonth() + 1)}-${pad(at.getDate())}T${pad(at.getHours())}:${pad(at.getMinutes())}`;
+}
+// the field's local time as the absolute moment the countdown reads; what it cannot read is handed on as typed, for
+// the command to keep or refuse
+function isoMoment(local: string): string {
+  const at = new Date(local);
+  return Number.isNaN(at.getTime()) ? local : at.toISOString();
+}
+function CountdownSettings({ node }: { readonly node: DocNode }) {
+  const t = useT();
+  if (COUNTDOWN_END === undefined || node.customAttributes?.[COUNTDOWN_KIND.attribute] !== COUNTDOWN_KIND.value) return null;
+  const attribute = String(COUNTDOWN_END.door.args.name);
+  return (
+    <section className="settings-section" data-settings-section="countdown" aria-label={t('settings.countdown')}>
+      <div className="settings-section__header">
+        <h3>{t('settings.countdown')}</h3>
+      </div>
+      <PanelField key={node.id} entry={COUNTDOWN_END} value={node.customAttributes[attribute] ?? ''} label={t(COUNTDOWN_END.door.labelKey as MessageId)} inputType="datetime-local" display={localMoment} accept={isoMoment} />
+      <p className="settings-section__note">{t('inspector.countdown.help')}</p>
+    </section>
+  );
+}
+
 // a map's place (core/elements/map.ts): drawn for a frame that shows a map, the place it shows now in the field
 const MAP_PLACE = doorSlots('inspector-settings').find((d) => d.door.kind === 'panel-control' && d.door.control === 'map-place');
 function MapSettings({ node }: { readonly node: DocNode }) {
@@ -486,6 +520,7 @@ export function SettingsTab({ head = null }: { readonly head?: ReactNode } = {})
           })}
           {node !== null ? <MapSettings node={node} /> : null}
           {node !== null ? <CartSettings node={node} /> : null}
+          {node !== null ? <CountdownSettings node={node} /> : null}
           {node !== null ? <FormsInspector node={node} /> : null}
           {node !== null ? <ComponentSettings node={node} /> : null}
           {node !== null ? <ProjectSettings node={node} /> : null}

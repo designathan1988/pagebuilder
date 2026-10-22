@@ -3,10 +3,10 @@
     "features": 218,
     "built": 218,
     "commands": 396,
-    "doors": 1459,
+    "doors": 1460,
     "scenarios": 1909,
     "modules": 534,
-    "lines": 99733,
+    "lines": 99775,
     "fields": 207,
     "interactive": 313
   },
@@ -1027,7 +1027,7 @@
         "element.removeCustomAttribute",
         "element.setAttribute"
       ],
-      "doors": 137,
+      "doors": 138,
       "scenarios": 8
     },
     {
@@ -1149,7 +1149,7 @@
         "classes.rename",
         "classes.delete"
       ],
-      "doors": 7,
+      "doors": 8,
       "scenarios": 6
     },
     {
@@ -1166,7 +1166,7 @@
         "classes.rename",
         "classes.delete"
       ],
-      "doors": 147,
+      "doors": 148,
       "scenarios": 26
     },
     {
@@ -1214,7 +1214,7 @@
         "element.insert",
         "element.setCustomAttribute"
       ],
-      "doors": 8,
+      "doors": 9,
       "scenarios": 6
     },
     {

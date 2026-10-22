@@ -51,6 +51,7 @@ export function PanelField({
   accept,
   onDone,
   curve = false,
+  inputType = 'text',
 }: {
   readonly entry: DoorEntry;
   readonly args?: Readonly<Record<string, unknown>>;
@@ -69,6 +70,9 @@ export function PanelField({
   readonly onDone?: () => void;
   // the field holds an easing: a button beside it draws the easing's curve and chooses another (easing-curve.tsx)
   readonly curve?: boolean;
+  // the browser's own input for the value: a date and time is picked from its calendar (a countdown's end), not
+  // typed in a format
+  readonly inputType?: 'text' | 'datetime-local';
 }) {
   const door = useDoor(entry, args, label);
   const store = useStore();
@@ -200,7 +204,7 @@ export function PanelField({
           id={`${id}-input`}
           ref={input}
           className="panel-field__text"
-          type="text"
+          type={inputType}
           // a value (a class, an address, a duration), never prose: the browser's spelling marks are noise on it, as on
           // the inspector's fields
           spellCheck={false}

@@ -4584,6 +4584,34 @@
           "args": {
             "name": "data-wc-whatsapp"
           }
+        },
+        {
+          "id": "inspector-countdown-end",
+          "kind": "panel-control",
+          "drawnAs": "field",
+          "pressed": false,
+          "feature": "templates-sections",
+          "panel": "inspector",
+          "control": "countdown-end",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "inspector.countdown.end",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-settings",
+            "order": 2082
+          },
+          "adapter": {
+            "selection": "single",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "name": "data-wc-date"
+          }
         }
       ]
     },
