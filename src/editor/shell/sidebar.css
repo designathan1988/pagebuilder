@@ -471,10 +471,16 @@
   padding: 0;
   opacity: 0;
 }
-.file-maker:focus-within { z-index: 5; }
+/* the path field opens under the Files heading, across it: anchored at the icon's right edge it grew leftwards past
+   the panel's edge, its words cut ("ile: js/main.js") */
+.section-title:has(> .section-title__actions > .file-maker) { position: relative; }
+.file-maker:focus-within { position: static; }
 .file-maker:focus-within .file-maker__input.input {
+  z-index: 5;
   top: 100%;
-  width: calc(var(--size-sidebar) - var(--space-6) * 2);
+  left: var(--space-3);
+  right: var(--space-3);
+  width: auto;
   padding: 0 var(--space-3);
   border-color: var(--color-focus);
   background: var(--color-surface-raised);
