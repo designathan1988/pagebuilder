@@ -24,6 +24,9 @@ import { isCurrent, labelParamsOf } from './current.ts';
 import { GLYPHS } from './placement.ts';
 import { readPickedDataFile } from '../data/read-file.ts';
 import { manifest } from '../../manifest/runtime.ts';
+// Undo and Redo, found by their names in the catalogue (the manifest's commands: no command is named here by hand)
+const UNDO = manifest.doors.find((one) => one.command.labelKey === 'command.undo')?.command.id ?? null;
+const REDO = manifest.doors.find((one) => one.command.labelKey === 'command.redo')?.command.id ?? null;
 import { describeText } from '../../i18n/index.ts';
 
 // a step named by its command's own label (manifest labelKey), when the command has one
@@ -105,13 +108,23 @@ export function useDoor(entry: DoorEntry, args: Readonly<Record<string, unknown>
   // Undo and Redo say in their title which step they take back or do again (the command that made it): the person
   // read "Undo" and pressed it not knowing what it would change
   const step = useEditorState((s) => {
-    if (entry.command.id !== 'history.undo' && entry.command.id !== 'history.redo') return null;
-    const entries = entry.command.id === 'history.undo' ? s.history.past : s.history.future;
+    if (entry.command.id !== UNDO && entry.command.id !== REDO) return null;
+    const entries = entry.command.id === UNDO ? s.history.past : s.history.future;
     const last = entries[entries.length - 1];
     return last === undefined ? null : last.command;
   });
-  const named = !hasCommandWords(step) || step === null ? label : t('common.historyStep', { label, step: { key: (COMMAND_LABELS.get(step as CommandId) ?? 'command.undo') as MessageId, params: {} } });
-  const shown = hasCommandWords(step) ? named : label;
+  // a command whose name needs words it does not hold (Set {property} of the keyframe…) is named by what it said when
+  // it ran, its status message: the title read only "Undo" for a keyframe's value
+  const stepSaid = useEditorState((s) => {
+    if (step === null || hasCommandWords(step)) return null;
+    const entries = entry.command.id === UNDO ? s.history.past : s.history.future;
+    const message = entries[entries.length - 1]?.message ?? null;
+    return message === null ? null : JSON.stringify(message);
+  });
+  const stepMessage = stepSaid === null ? null : (JSON.parse(stepSaid) as Message);
+  const saidText = stepMessage === null ? null : t(stepMessage.key, stepMessage.params).replace(/\.$/u, '');
+  const named = step !== null && hasCommandWords(step) ? t('common.historyStep', { label, step: { key: (COMMAND_LABELS.get(step as CommandId) ?? 'command.undo') as MessageId, params: {} } }) : saidText !== null ? t('common.historyStep', { label, step: saidText }) : label;
+  const shown = named;
   const title = reason !== null ? t('common.disabledTitle', { label, reason: { key: reason, params: said?.params ?? {} } }) : chord !== null ? t('common.withShortcut', { label: shown, shortcut: chord }) : shown;
   const run = () => {
     if (!built || !available) return;
