@@ -43,13 +43,19 @@
   align-items: stretch;
   flex: none;
   height: var(--size-file-tabs);
-  overflow: hidden;
+  /* with more tabs than fit, each gives up its file name first (it ends in an ellipsis) and the row then scrolls
+     sideways: hidden, the last tabs were cut and out of reach (five pages cut "Contact contac") */
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
   background: var(--color-bg-app);
   border-bottom: 1px solid var(--color-border);
 }
 
 .file-tab {
   display: inline-flex;
+  flex: 0 1 auto;
+  min-width: 0;
   align-items: center;
   padding: 0 var(--space-2) 0 var(--space-1);
   border-right: 1px solid var(--color-border);
@@ -64,6 +70,7 @@
 
 /* the tab's main door is the whole tab, as the canonical .ft: the bar's height, square, the tab's own background */
 .file-tab__main {
+  min-width: 0;
   align-self: stretch;
   height: auto;
   gap: var(--space-3);
@@ -74,6 +81,10 @@
 }
 
 .file-tab__file {
+  min-width: var(--space-9);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font: var(--fw-caption) var(--fs-caption) / var(--lh-caption) var(--font-mono);
   color: var(--color-text-subtle);
 }
