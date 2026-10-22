@@ -7704,5 +7704,6 @@ export const MESSAGE_IDS = [
   "common.historyStep",
   "interactions.classOverridden",
   "interactions.classOverridden.one",
+  "logic.bind.example",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];

@@ -6,7 +6,7 @@
     "doors": 1455,
     "scenarios": 1909,
     "modules": 534,
-    "lines": 99361,
+    "lines": 99382,
     "fields": 207,
     "interactive": 312
   },
@@ -4196,7 +4196,7 @@
         "owner": "none"
       },
       {
-        "key": "src/editor/app-panel/logic-binds.tsx|input|className,onChange,spellCheck,value|1",
+        "key": "src/editor/app-panel/logic-binds.tsx|input|className,onChange,placeholder,spellCheck,value|1",
         "tag": "input",
         "role": null,
         "handlers": [

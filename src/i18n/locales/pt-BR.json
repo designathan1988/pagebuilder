@@ -4495,5 +4495,6 @@
   "checks.rowNoWrap.fix": "Defina Quebra como wrap em Estilo › Layout, ou a Direção como coluna no breakpoint Celular",
   "common.historyStep": "{label}: {step}",
   "interactions.classOverridden": "{name} tem valores próprios para {properties}, e eles valem mais que esta classe. Limpe-os em Estilo para a classe decidir.",
-  "interactions.classOverridden.one": "{name} tem valor próprio para {properties}, e ele vale mais que esta classe. Limpe-o em Estilo para a classe decidir."
+  "interactions.classOverridden.one": "{name} tem valor próprio para {properties}, e ele vale mais que esta classe. Limpe-o em Estilo para a classe decidir.",
+  "logic.bind.example": "Por exemplo {value}"
 }

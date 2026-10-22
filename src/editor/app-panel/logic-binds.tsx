@@ -24,6 +24,10 @@ const STRING = `(?:"(?:[^"\\\\]|\\\\.)*"|'(?:[^'\\\\]|\\\\.)*')`;
 const unquote = (literal: string): string => (literal.startsWith("'") ? literal.slice(1, -1).replace(/\\'/gu, "'") : (JSON.parse(literal) as string));
 
 // "condition ? 'value' : ''" — a style that holds a value while a condition holds
+// what the To field takes, by the property chosen: the field stood empty, and a person who picked Opacity did not know
+// whether it took 50%, 0.5 or "half"
+const BIND_EXAMPLES: Readonly<Record<string, string>> = { 'background-color': '#2563eb', color: '#2563eb', 'border-color': '#2563eb', 'text-decoration': 'underline', opacity: '0.5', 'font-weight': '700', display: 'none', visibility: 'hidden' };
+
 export function readStyleBinding(code: string): { readonly condition: string; readonly value: string } | null {
   const m = new RegExp(`^(.+?) \\? (${STRING}) : (?:''|"")$`, 'u').exec(code.trim());
   return m === null ? null : { condition: (m[1] as string).trim(), value: unquote(m[2] as string) };
@@ -102,7 +106,7 @@ export function BindingRows({ document, nodeId, binds, door, codeRow, codeForm }
         {property !== '' && !isClass ? (
           <label className="logic-pick__field">
             <span className="logic-pick__label">{t('logic.bind.value')}</span>
-            <input className="input" value={value} onChange={(event) => setValue(event.currentTarget.value)} spellCheck={false} />
+            <input className="input" value={value} onChange={(event) => setValue(event.currentTarget.value)} spellCheck={false} placeholder={t('logic.bind.example', { value: BIND_EXAMPLES[property.slice('style:'.length)] ?? '' })} />
           </label>
         ) : null}
         {property !== '' ? (
