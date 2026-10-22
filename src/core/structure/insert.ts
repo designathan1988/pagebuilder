@@ -411,13 +411,14 @@ export const insertCommand = registerHandler('element.insert', (context, { entry
 // A Navigation placed empty was a dashed box: it starts with a link to each page of the project, by the page's name,
 // side by side (a row with its gap), as the link picker writes a page's address; the person removes or reorders them
 function withPageLinks(make: NodeMaker, document: DocumentJson, node: DocNode): DocNode {
-  if (node.type !== 'nav' || node.children.length > 0 || document.pages.length === 0) return node;
+  if (node.type !== 'nav' || node.children.length > 0 || !document.pages.some((page) => page.tree.dataItem?.template !== true)) return node;
   const breakpoint = make.rules.baseLayer.breakpoint as BreakpointId;
   const state = make.rules.baseLayer.state as StateKey;
   const atBreakpoint = node.styles[breakpoint] ?? {};
   const row = { ...atBreakpoint[state], display: 'flex', 'flex-wrap': 'wrap', 'column-gap': '24px', 'row-gap': '8px' };
   const styles: Styles = { ...node.styles, [breakpoint]: { ...atBreakpoint, [state]: row } };
-  const links = document.pages.map((page) => {
+  // a template page has no file of its own on the site (it is written once per item): no link goes to it
+  const links = document.pages.filter((page) => page.tree.dataItem?.template !== true).map((page) => {
     const link = newElement(make, 'link');
     return { ...link, text: page.name, attributes: { ...link.attributes, href: page.file } };
   });

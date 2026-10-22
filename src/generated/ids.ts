@@ -7705,5 +7705,7 @@ export const MESSAGE_IDS = [
   "interactions.classOverridden",
   "interactions.classOverridden.one",
   "logic.bind.example",
+  "checks.linkTemplate",
+  "checks.linkTemplate.fix",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];

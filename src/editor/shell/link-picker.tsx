@@ -10,6 +10,7 @@
 import { useEffect, useRef } from 'react';
 import { locate, walk, type DocumentJson } from '../../core/document/model.ts';
 import { openedPage } from '../../core/project/pages.ts';
+import { templatePaths } from '../../core/data/bindings.ts';
 import { canvasValue } from '../../core/files/values.ts';
 import { DoorControl } from '../doors/door.tsx';
 import { doorSlots } from '../doors/placement.ts';
@@ -107,8 +108,14 @@ export function LinkPicker() {
             <input className="input" type={INPUT_TYPES[kind] ?? 'text'} aria-label={t('linkPicker.address')} defaultValue={stored.startsWith('#') ? '' : stored} spellCheck={false} />
           </form>
         )}
+        {/* a template page is written once per item, never at its own file (core/data/bindings.ts templatePaths): its
+            items' pages are offered in its place; "About · about.html" linked to a page the site never had */}
         {kind === 'page' && PAGE_ITEM !== null
-          ? document.pages.map((page) => <DoorControl key={page.id} entry={PAGE_ITEM} args={{ target: node.node.id, page: page.file }} label={`${page.name} · ${page.file}`} current={stored === page.file} />)
+          ? document.pages.flatMap((page) =>
+              page.tree.dataItem?.template === true
+                ? [...(templatePaths(document).get(page.tree.dataItem.collection)?.values() ?? [])].map((path) => <DoorControl key={`${page.id}:${path}`} entry={PAGE_ITEM} args={{ target: node.node.id, href: path }} label={`${page.name} · ${path}`} current={stored === path} />)
+                : [<DoorControl key={page.id} entry={PAGE_ITEM} args={{ target: node.node.id, page: page.file }} label={`${page.name} · ${page.file}`} current={stored === page.file} />],
+            )
           : null}
         {kind === 'anchor' && ANCHOR_ITEM !== null
           ? idElements(document, page).map((element) => (

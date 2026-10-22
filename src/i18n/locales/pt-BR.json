@@ -4496,5 +4496,7 @@
   "common.historyStep": "{label}: {step}",
   "interactions.classOverridden": "{name} tem valores próprios para {properties}, e eles valem mais que esta classe. Limpe-os em Estilo para a classe decidir.",
   "interactions.classOverridden.one": "{name} tem valor próprio para {properties}, e ele vale mais que esta classe. Limpe-o em Estilo para a classe decidir.",
-  "logic.bind.example": "Por exemplo {value}"
+  "logic.bind.example": "Por exemplo {value}",
+  "checks.linkTemplate": "{category} · Link para uma página modelo em {name}: o site tem uma página por item, não esta",
+  "checks.linkTemplate.fix": "Aponte para uma das páginas dos itens em Link para › Uma página"
 }

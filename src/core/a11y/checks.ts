@@ -149,6 +149,7 @@ export function checksOf(document: DocumentJson, properties: CheckProperties): r
   };
   document.pages.forEach((page) => collectLabels(page.tree));
   const tokens = document.tokens ?? [];
+  const templateFiles = new Set(document.pages.filter((page) => page.tree.dataItem?.template === true).map((page) => page.file));
   // a colour value as the page paints it: its variables resolved, then read; null when either cannot be done
   const colourOf = (text: string, under: readonly [number, number, number] | null = null) => {
     const resolved = resolvedVariables(text, tokens);
@@ -181,6 +182,8 @@ export function checksOf(document: DocumentJson, properties: CheckProperties): r
     if (node.tag === 'form' && !submitsWithin(node)) issues.push({ node: node.id, category: 'accessibility', rule: 'checks.formSubmit', fix: 'checks.formSubmit.fix' });
     if (node.tag === 'a') {
       if (node.attributes.href === undefined || String(node.attributes.href) === '') issues.push({ node: node.id, category: 'links', rule: 'checks.linkHref', fix: 'checks.linkHref.fix' });
+      // a template page is written once per item and never at its own file: a link to it is broken on the site
+      else if (templateFiles.has(String(node.attributes.href))) issues.push({ node: node.id, category: 'links', rule: 'checks.linkTemplate', fix: 'checks.linkTemplate.fix' });
       if (textWithin(node) === '') issues.push({ node: node.id, category: 'links', rule: 'checks.linkText', fix: 'checks.linkText.fix' });
       if (WHATSAPP_WITHOUT_NUMBER.test(String(node.attributes.href ?? ''))) issues.push({ node: node.id, category: 'links', rule: 'checks.whatsappLink', fix: 'checks.whatsappLink.fix' });
     }

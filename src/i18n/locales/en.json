@@ -4496,5 +4496,7 @@
   "common.historyStep": "{label}: {step}",
   "interactions.classOverridden": "{name} has its own values for {properties}, and they win over this class. Clear them in Style to let the class decide.",
   "interactions.classOverridden.one": "{name} has its own value for {properties}, and it wins over this class. Clear it in Style to let the class decide.",
-  "logic.bind.example": "For example {value}"
+  "logic.bind.example": "For example {value}",
+  "checks.linkTemplate": "{category} · Link to a template page in {name}: the site has one page per item, not this one",
+  "checks.linkTemplate.fix": "Link to one of its item pages in Link to › A page"
 }
