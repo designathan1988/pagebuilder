@@ -289,6 +289,33 @@
   line-height: var(--lh-body);
 }
 
+/* a project file with no text (an image, a font): the image whole in the pane, what the file is under it */
+.code-pane__file-view {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 0;
+  padding: var(--space-4);
+  overflow: auto;
+}
+
+.code-pane__file-view .code-pane__empty {
+  flex: none;
+  padding: var(--space-3) 0 0;
+}
+
+/* a small image (an icon, a 4 px swatch) is drawn at least as large as a thumbnail, its pixels kept sharp */
+.code-pane__image {
+  min-width: calc(var(--size-tile) * 2);
+  max-width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  image-rendering: pixelated;
+  border: 1px solid var(--color-border);
+  background: repeating-conic-gradient(var(--color-surface-raised) 0 25%, var(--color-surface) 0 50%) 0 0 / 16px 16px;
+}
+
 .code-pane__code {
   margin: 0;
   font-family: var(--font-mono);

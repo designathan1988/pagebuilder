@@ -231,6 +231,8 @@
   "codePanel.copyPane": "Copy this pane",
   "codePanel.downloadPane": "Download this pane",
   "codePanel.empty": "No code file is open. Open one from the Explorer.",
+  "codePanel.imageShown": "{width} × {height} px · {type} · {size}",
+  "codePanel.fileShown": "{type} · {size}. This file is kept as it is: the pane shows the text of code files only.",
   "codePanel.noInteractions": "No element has an interaction yet, so the site has no interactions script. Add one in the Interactions tab.",
   "codePanel.fileAria": "The text of {name}",
   "codePanel.locked": "Generated: applying turns the edit into commands on the document.",

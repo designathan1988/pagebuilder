@@ -3446,6 +3446,8 @@ export const MESSAGE_IDS = [
   "codePanel.copyPane",
   "codePanel.downloadPane",
   "codePanel.empty",
+  "codePanel.imageShown",
+  "codePanel.fileShown",
   "codePanel.noInteractions",
   "codePanel.fileAria",
   "codePanel.locked",

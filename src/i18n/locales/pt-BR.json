@@ -231,6 +231,8 @@
   "codePanel.copyPane": "Copiar este painel",
   "codePanel.downloadPane": "Baixar este painel",
   "codePanel.empty": "Nenhum arquivo de código aberto. Abra um no Explorador.",
+  "codePanel.imageShown": "{width} × {height} px · {type} · {size}",
+  "codePanel.fileShown": "{type} · {size}. Este arquivo fica como está: o painel mostra só o texto de arquivos de código.",
   "codePanel.noInteractions": "Nenhum elemento tem interação ainda, então o site não tem script de interações. Crie uma na aba Interações.",
   "codePanel.fileAria": "O texto de {name}",
   "codePanel.locked": "Gerado: aplicar transforma a edição em comandos no documento.",

@@ -12,6 +12,7 @@ import { doorSlots } from '../doors/placement.ts';
 import { useT } from '../text.ts';
 import { elementLines, paneKind, paneLines, ruleText, shownPane, type PaneKind } from '../code-panel/code-panel.ts';
 import type { CodeLine } from '../../core/export/export.ts';
+import { fileAt, objectUrl, sizeLabel } from '../../core/files/files.ts';
 import { highlight, type Token } from '../code-panel/highlight.ts';
 
 const PARTS = doorSlots('code-view');
@@ -110,6 +111,10 @@ export function CodePane() {
   // a project file the person opened (a script, a stylesheet of their own) is edited whole: its own text is what Save
   // writes back (files.saveContent); an element's rule (CSS) or its markup (HTML) while one element is selected
   const fileText = info === null || info.generated ? null : info.text;
+  // the project file the pane shows when it holds no text (an image, a font): drawn as what it is, with no Apply or
+  // Save
+  const stored = info === null || info.generated ? null : fileAt(document, info.path);
+  const textShown = info === null || info.text !== null;
   const edited = fileText ?? (kind === 'css' ? rule : kind === 'html' ? ownText : null);
   const shown = draft !== null && draft.over === edited ? draft.text : edited;
   const editable = edited !== null;
@@ -136,7 +141,18 @@ export function CodePane() {
           {PART('download') !== undefined ? <DoorControl entry={PART('download') as DoorEntry} /> : null}
         </div>
       </header>
-      {info?.text === null || info?.text === undefined ? (
+      {info !== null && info.text === null && stored !== null ? (
+        // a project file that holds no text (an image, a font): the image itself, or what the file is; it said "No code
+        // file is open" with the file's tab open
+        <div className="code-pane__file-view">
+          {info.kind === 'image' ? <img className="code-pane__image" src={objectUrl(stored)} alt={info.path} /> : null}
+          <p className="code-pane__empty">
+            {stored.width !== undefined && stored.height !== undefined
+              ? t('codePanel.imageShown', { width: stored.width, height: stored.height, type: stored.type, size: sizeLabel(stored) })
+              : t('codePanel.fileShown', { type: stored.type, size: sizeLabel(stored) })}
+          </p>
+        </div>
+      ) : info?.text === null || info?.text === undefined ? (
         // the JS tab before any interaction: why there is no script, and where one starts
         <p className="code-pane__empty">{t(info === null && kind === 'js' ? 'codePanel.noInteractions' : 'codePanel.empty')}</p>
       ) : editable ? (
@@ -165,9 +181,9 @@ export function CodePane() {
       <footer className="code-pane__foot">
         {/* a generated page or stylesheet is edited through its elements (Apply); a generated script is only read */}
         {info?.generated === true ? <span className="code-pane__note">{t(info.kind === 'html' || info.kind === 'css' ? 'codePanel.locked' : 'codePanel.lockedScript')}</span> : null}
-        {fileText === null && kind === 'css' && shown !== null && PART('css-apply') !== undefined ? <DoorControl entry={PART('css-apply') as DoorEntry} args={{ css: shown }} className="code-pane__apply" /> : null}
-        {fileText === null && kind === 'html' && ownText !== null && PART('html-apply') !== undefined ? <DoorControl entry={PART('html-apply') as DoorEntry} args={{ html: shown ?? ownText }} className="code-pane__apply" /> : null}
-        {info === null || info.generated || PART('save') === undefined ? null : <DoorControl entry={PART('save') as DoorEntry} args={{ path: info.path, content: shown ?? info.text ?? '' }} className="code-pane__apply" />}
+        {textShown && fileText === null && kind === 'css' && shown !== null && PART('css-apply') !== undefined ? <DoorControl entry={PART('css-apply') as DoorEntry} args={{ css: shown }} className="code-pane__apply" /> : null}
+        {textShown && fileText === null && kind === 'html' && ownText !== null && PART('html-apply') !== undefined ? <DoorControl entry={PART('html-apply') as DoorEntry} args={{ html: shown ?? ownText }} className="code-pane__apply" /> : null}
+        {info === null || info.generated || info.text === null || PART('save') === undefined ? null : <DoorControl entry={PART('save') as DoorEntry} args={{ path: info.path, content: shown ?? info.text ?? '' }} className="code-pane__apply" />}
       </footer>
     </section>
   );
