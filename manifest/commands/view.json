@@ -1094,7 +1094,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 12
+            "order": 15
           },
           "adapter": {
             "selection": "none",
@@ -3352,7 +3352,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 15
+            "order": 18
           },
           "adapter": {
             "selection": "none",
@@ -3400,7 +3400,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 16
+            "order": 19
           },
           "adapter": {
             "selection": "none",
@@ -3589,7 +3589,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 13
+            "order": 16
           },
           "adapter": {
             "selection": "none",

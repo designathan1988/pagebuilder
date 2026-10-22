@@ -476,11 +476,11 @@
         }
       ],
       "breaks": [
-        12,
-        16,
-        18,
-        27,
-        29
+        15,
+        19,
+        21,
+        30,
+        32
       ]
     },
     {
@@ -501,7 +501,7 @@
       "anchors": [
         {
           "region": "menu:view",
-          "order": 27,
+          "order": 30,
           "drawnAs": "item",
           "icon": null
         }
@@ -513,7 +513,7 @@
       "anchors": [
         {
           "region": "menu:view",
-          "order": 28,
+          "order": 31,
           "drawnAs": "item",
           "icon": null
         },

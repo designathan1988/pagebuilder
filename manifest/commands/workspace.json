@@ -92,7 +92,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 5
+            "order": 8
           },
           "adapter": {
             "selection": "none",
@@ -117,7 +117,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 6
+            "order": 9
           },
           "adapter": {
             "selection": "none",
@@ -167,7 +167,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 9
+            "order": 12
           },
           "adapter": {
             "selection": "none",
@@ -192,7 +192,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 10
+            "order": 13
           },
           "adapter": {
             "selection": "none",
@@ -231,6 +231,81 @@
           }
         },
         {
+          "id": "menu-view-data",
+          "kind": "menu",
+          "feature": "data-collections",
+          "menu": "view",
+          "checked": "checkbox",
+          "labelKey": "panel.data",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "menu:view",
+            "order": 5
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "panel": "data",
+            "open": "toggle"
+          }
+        },
+        {
+          "id": "menu-view-assistant",
+          "kind": "menu",
+          "feature": "assistant-chat",
+          "menu": "view",
+          "checked": "checkbox",
+          "labelKey": "panel.assistant",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "menu:view",
+            "order": 6
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "panel": "assistant",
+            "open": "toggle"
+          }
+        },
+        {
+          "id": "menu-view-app",
+          "kind": "menu",
+          "feature": "app-logic",
+          "menu": "view",
+          "checked": "checkbox",
+          "labelKey": "panel.app",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "menu:view",
+            "order": 7
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {
+            "panel": "app",
+            "open": "toggle"
+          }
+        },
+        {
           "id": "menu-view-checks",
           "kind": "menu",
           "feature": "accessibility-checks",
@@ -242,7 +317,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 11
+            "order": 14
           },
           "adapter": {
             "selection": "none",
@@ -267,7 +342,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 8
+            "order": 11
           },
           "adapter": {
             "selection": "none",
@@ -292,7 +367,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 7
+            "order": 10
           },
           "adapter": {
             "selection": "none",
@@ -815,7 +890,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 18
+            "order": 21
           },
           "adapter": {
             "selection": "none",
@@ -895,7 +970,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 19
+            "order": 22
           },
           "adapter": {
             "selection": "none",
@@ -975,7 +1050,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 20
+            "order": 23
           },
           "adapter": {
             "selection": "none",
@@ -1015,7 +1090,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 29
+            "order": 32
           },
           "adapter": {
             "selection": "none",
@@ -1055,7 +1130,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 30
+            "order": 33
           },
           "adapter": {
             "selection": "none",
@@ -1529,7 +1604,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 21
+            "order": 24
           },
           "adapter": {
             "selection": "none",
@@ -1554,7 +1629,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 22
+            "order": 25
           },
           "adapter": {
             "selection": "none",
@@ -1579,7 +1654,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 23
+            "order": 26
           },
           "adapter": {
             "selection": "none",
@@ -1604,7 +1679,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 24
+            "order": 27
           },
           "adapter": {
             "selection": "none",
@@ -1629,7 +1704,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 25
+            "order": 28
           },
           "adapter": {
             "selection": "none",
@@ -1654,7 +1729,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 26
+            "order": 29
           },
           "adapter": {
             "selection": "none",

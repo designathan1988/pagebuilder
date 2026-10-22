@@ -3429,7 +3429,7 @@
           "disabledReasonKey": "common.notAvailableYet",
           "placement": {
             "region": "menu:view",
-            "order": 14
+            "order": 17
           },
           "adapter": {
             "selection": "none",

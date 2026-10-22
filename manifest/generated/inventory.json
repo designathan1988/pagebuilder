@@ -3,10 +3,10 @@
     "features": 218,
     "built": 218,
     "commands": 394,
-    "doors": 1439,
+    "doors": 1442,
     "scenarios": 1909,
     "modules": 531,
-    "lines": 98074,
+    "lines": 98158,
     "fields": 207,
     "interactive": 307
   },
@@ -17,7 +17,7 @@
       "commands": [
         "workspace.setPanelOpen"
       ],
-      "doors": 27,
+      "doors": 30,
       "scenarios": 3
     },
     {
@@ -34,7 +34,7 @@
         "element.insert",
         "workspace.setPanelOpen"
       ],
-      "doors": 32,
+      "doors": 35,
       "scenarios": 7
     },
     {
@@ -56,7 +56,7 @@
         "layers.setExpanded",
         "workspace.setPanelOpen"
       ],
-      "doors": 36,
+      "doors": 39,
       "scenarios": 5
     },
     {
@@ -392,7 +392,7 @@
         "focus.nextMenu",
         "focus.previousMenu"
       ],
-      "doors": 112,
+      "doors": 115,
       "scenarios": 21
     },
     {
@@ -884,7 +884,7 @@
         "focus.activate",
         "ui.dismiss"
       ],
-      "doors": 64,
+      "doors": 67,
       "scenarios": 16
     },
     {
@@ -1383,7 +1383,7 @@
         "view.toggleZones",
         "workspace.setPanelOpen"
       ],
-      "doors": 29,
+      "doors": 32,
       "scenarios": 3
     },
     {
@@ -1570,7 +1570,7 @@
         "workspace.toggleInspector",
         "workspace.collapseDocks"
       ],
-      "doors": 36,
+      "doors": 39,
       "scenarios": 15
     },
     {
@@ -1628,7 +1628,7 @@
         "components.startCreate",
         "selection.range"
       ],
-      "doors": 242,
+      "doors": 245,
       "scenarios": 56
     },
     {
@@ -1655,7 +1655,7 @@
       "commands": [
         "workspace.setPanelOpen"
       ],
-      "doors": 27,
+      "doors": 30,
       "scenarios": 2
     },
     {
@@ -1667,7 +1667,7 @@
         "workspace.setWorkbenchState",
         "workspace.setActiveTab"
       ],
-      "doors": 36,
+      "doors": 39,
       "scenarios": 10
     },
     {
@@ -1730,7 +1730,7 @@
         "workspace.setPanelOpen",
         "checks.applyFix"
       ],
-      "doors": 40,
+      "doors": 43,
       "scenarios": 8
     },
     {
@@ -1873,7 +1873,7 @@
         "view.setEditorView",
         "codePanel.setPane"
       ],
-      "doors": 34,
+      "doors": 37,
       "scenarios": 5
     },
     {
@@ -1923,7 +1923,7 @@
         "animation.delete",
         "timeline.show"
       ],
-      "doors": 31,
+      "doors": 34,
       "scenarios": 3
     },
     {
@@ -2002,7 +2002,7 @@
         "pages.switch",
         "workspace.setPanelOpen"
       ],
-      "doors": 35,
+      "doors": 38,
       "scenarios": 11
     },
     {
@@ -2209,7 +2209,7 @@
         "assistant.update",
         "workspace.setPanelOpen"
       ],
-      "doors": 44,
+      "doors": 47,
       "scenarios": 15
     },
     {
@@ -2233,7 +2233,7 @@
         "layout.trace",
         "workspace.setPanelOpen"
       ],
-      "doors": 71,
+      "doors": 74,
       "scenarios": 40
     },
     {
@@ -2271,7 +2271,7 @@
         "motion.removeMarker",
         "workspace.setPanelOpen"
       ],
-      "doors": 64,
+      "doors": 67,
       "scenarios": 57
     },
     {
@@ -2349,7 +2349,7 @@
         "data.moveItem",
         "workspace.setPanelOpen"
       ],
-      "doors": 54,
+      "doors": 57,
       "scenarios": 33
     },
     {
@@ -2365,7 +2365,7 @@
         "data.select",
         "workspace.setPanelOpen"
       ],
-      "doors": 36,
+      "doors": 39,
       "scenarios": 10
     },
     {
@@ -2381,7 +2381,7 @@
         "data.formatBinding",
         "data.showWhen"
       ],
-      "doors": 39,
+      "doors": 42,
       "scenarios": 13
     },
     {
@@ -2394,7 +2394,7 @@
         "workspace.setPanelOpen",
         "pages.previewItem"
       ],
-      "doors": 31,
+      "doors": 34,
       "scenarios": 4
     },
     {
@@ -2408,7 +2408,7 @@
         "pages.add",
         "workspace.setPanelOpen"
       ],
-      "doors": 37,
+      "doors": 40,
       "scenarios": 5
     },
     {
@@ -2460,7 +2460,7 @@
         "workspace.setActiveTab",
         "project.open"
       ],
-      "doors": 65,
+      "doors": 68,
       "scenarios": 32
     },
     {
@@ -2481,7 +2481,7 @@
         "workspace.setPanelOpen",
         "workspace.startBlank"
       ],
-      "doors": 35,
+      "doors": 38,
       "scenarios": 4
     }
   ],
@@ -4903,7 +4903,7 @@
         "owner": "inside-door"
       },
       {
-        "key": "src/editor/forms/inspector.tsx|input|ref|1",
+        "key": "src/editor/forms/inspector.tsx|input|className,ref|1",
         "tag": "input",
         "role": null,
         "handlers": [],
