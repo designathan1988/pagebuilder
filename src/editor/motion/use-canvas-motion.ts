@@ -12,7 +12,7 @@
 import { useEffect } from 'react';
 import { message } from '../../core/commands/registry.ts';
 import { reportError } from '../../core/incidents.ts';
-import type { MessageId } from '../../generated/ids.ts';
+import type { CommandId, MessageId } from '../../generated/ids.ts';
 import { camel } from './ui/options.ts';
 import { locate, walk } from '../../core/document/model.ts';
 import { motionsOf } from '../../core/motion/document.ts';
@@ -20,9 +20,15 @@ import { systemClock } from '../../core/ports/clock.ts';
 import type { EditorStore } from '../store.ts';
 import { layeredRules, useStore } from '../store.ts';
 import { canvasSelector, previewOnCanvas, runOnCanvas } from './canvas.ts';
+import { runEventsOnCanvas } from './run-events.ts';
+import { visiblePage } from '../canvas/reveal.ts';
+import { manifest } from '../../manifest/runtime.ts';
 import type { MotionController } from './runtime/start.ts';
 import { motionUiOf, nextPreviewTime, shownTimeline } from './state.ts';
 import { MOTION_DOORS, motionDoor } from './ui/doors.ts';
+
+// the canvas's pan, the wheel's command (canvas/reveal-selection.tsx): what moves the page under the stage
+const PAN = manifest.doors.find((d) => d.door.kind === 'canvas-wheel' && 'dx' in d.command.args);
 
 // the runtime's problem that is a defect of the application, not of the page or the browser
 const ACTION_FAILED = 'action-failed';
@@ -63,21 +69,46 @@ export function useCanvasMotion(frameWindow: () => Window | null, page: unknown)
   const store = useStore();
   useEffect(() => {
     let controller: MotionController | null = null;
+    // the Interactions tab's interactions bound while the canvas runs (run-events.ts), let go with the runtime
+    let events: (() => void) | null = null;
     let mode = '';
     const modeOf = (): string => {
       const motion = motionUiOf(store.getState().ui);
       return motion.running === true ? 'run' : motion.previewing === true ? `preview:${shownTimeline(store.getState()) ?? ''}` : '';
     };
+    const bindEvents = (): void => {
+      events?.();
+      events = null;
+      const view = frameWindow();
+      if (view === null || motionUiOf(store.getState().ui).running !== true) return;
+      events = runEventsOnCanvas(view, store.getState().document, {
+        opened: (address) => store.notice(message('status.motion.wouldOpen', { address })),
+        // a scroll-to: the element's top brought to the top of what the stage shows of the page, in screen px (the
+        // frame may be zoomed)
+        scrolled: (to) => {
+          const frame = view.frameElement?.getBoundingClientRect();
+          const seen = visiblePage();
+          if (PAN === undefined || frame === undefined || seen === null || view.innerHeight <= 0) return;
+          const zoom = frame.height / view.innerHeight;
+          const dy = Math.round(seen.top - (frame.top + to.getBoundingClientRect().top * zoom));
+          if (dy !== 0) (store.dispatch as (command: CommandId, args: unknown) => unknown)(PAN.command.id, { dx: 0, dy });
+        },
+        problem: (problem) => store.notice(message(`motion.runtime.${camel(problem.code)}` as MessageId, { detail: problem.detail })),
+      });
+    };
     const restart = (): void => {
       controller?.dispose();
       controller = start(store, frameWindow());
+      bindEvents();
       mode = modeOf();
     };
     // the canvas renders a document change: the runtime lets go first, and starts again on what it rendered
     const stopDocument = store.subscribeDocument(() => {
-      if (controller === null) return;
-      controller.dispose();
+      if (controller === null && events === null) return;
+      controller?.dispose();
       controller = null;
+      events?.();
+      events = null;
       queueMicrotask(restart);
     });
     let time = motionUiOf(store.getState().ui).time;
@@ -115,6 +146,7 @@ export function useCanvasMotion(frameWindow: () => Window | null, page: unknown)
       stopDocument();
       stopState();
       controller?.dispose();
+      events?.();
     };
     // a new page shown is a new runtime
   }, [frameWindow, store, page]);

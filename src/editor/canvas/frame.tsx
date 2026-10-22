@@ -24,6 +24,7 @@ import { activeState } from '../view/style-state.ts';
 import { installPlayingLoop, timelinePreview } from '../timeline/preview.ts';
 import { installKeymap } from '../input/keymap.ts';
 import { useEditorState, useStore } from '../store.ts';
+import { motionUiOf } from '../motion/state.ts';
 import { CanvasChrome } from './chrome.tsx';
 import { Guides } from './guides.tsx';
 import { SnapLines } from './snap-lines.tsx';
@@ -57,6 +58,8 @@ export function CanvasFrame({ width, screen, zoom, onExtent }: { readonly width:
   const shownExtent = useRef(0);
   // while a text is edited in place the frame holds the focus, so assistive technology must reach it
   const editing = useEditorState((s) => s.ui.textEdit.node !== null);
+  // while the canvas runs the interactions, a press is the page's (the overlay steps aside: canvas.css), as a visitor's
+  const running = useEditorState((s) => motionUiOf(s.ui).running === true);
   // the page the editor shows (pages.switch): the renderer is built for it and rebuilt when it changes
   const page = useEditorState((s) => openedPage(s));
   // the page's motion (spec motion-preview): run mode and the Timeline's preview, inside this frame's page; called
@@ -329,7 +332,7 @@ export function CanvasFrame({ width, screen, zoom, onExtent }: { readonly width:
   }, [width, store]);
 
   return (
-    <div className="frame__view">
+    <div className={`frame__view${running ? ' is-running' : ''}`}>
       <iframe ref={iframe} className="frame__page" srcDoc={PAGE} sandbox="allow-same-origin" tabIndex={-1} aria-hidden={editing ? undefined : true} style={{ width, height: extent, zoom }} />
       <div className="frame__overlay" data-canvas-overlay ref={overlay}>
         <CanvasChrome />

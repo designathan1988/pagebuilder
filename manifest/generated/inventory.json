@@ -5,10 +5,10 @@
     "commands": 394,
     "doors": 1445,
     "scenarios": 1909,
-    "modules": 531,
-    "lines": 98236,
+    "modules": 533,
+    "lines": 98891,
     "fields": 207,
-    "interactive": 307
+    "interactive": 309
   },
   "features": [
     {
@@ -4156,9 +4156,9 @@
   "interactive": {
     "owners": {
       "door": 96,
-      "inside-door": 45,
+      "inside-door": 46,
       "local": 20,
-      "none": 116,
+      "none": 117,
       "spread": 6,
       "wraps-door": 24
     },
@@ -4457,6 +4457,13 @@
         "owner": "inside-door"
       },
       {
+        "key": "src/editor/assistant/panel.tsx|input|ref|2",
+        "tag": "input",
+        "role": null,
+        "handlers": [],
+        "owner": "inside-door"
+      },
+      {
         "key": "src/editor/assistant/panel.tsx|input|aria-label,autoComplete,className,disabled,ref,type|1",
         "tag": "input",
         "role": null,
@@ -4621,6 +4628,15 @@
           "onFocus"
         ],
         "owner": "local"
+      },
+      {
+        "key": "src/editor/canvas/text-toolbar.tsx|button|className,key,onClick,title,type|1",
+        "tag": "button",
+        "role": null,
+        "handlers": [
+          "onClick"
+        ],
+        "owner": "none"
       },
       {
         "key": "src/editor/cloud/cloud-bar.tsx|button|className,data-local,onClick,title,type|1",

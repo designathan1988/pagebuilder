@@ -3220,6 +3220,7 @@
   "status.motion.recorded": "Recorded {property} at {time} s in {timeline}.",
   "status.motion.removed": "Removed the interaction \"{name}\" on {element}.",
   "status.motion.running": "The canvas runs the interactions. Turn Run interactions off to edit by pointer again.",
+  "status.motion.wouldOpen": "On the site this goes to {address}. The canvas stays in the editor; Preview follows it.",
   "status.motion.snapOff": "Snapping off.",
   "status.motion.snapOn": "Snapping on.",
   "status.motion.stopped": "The canvas no longer runs the interactions.",
@@ -3753,7 +3754,7 @@
   "status.motion.notALink": "{element} is not a link.",
   "feature.pageTransitions": "Page transitions: fade or slide between the pages of the site",
   "splitter.dockHeight": "Resize the bottom panel",
-  "interactions.runNote": "Run interactions plays the motion on the canvas; Preview runs the events and the motion.",
+  "interactions.runNote": "Run interactions runs the events and the motion on the canvas; Preview also runs the page's logic.",
   "command.design.replaceColour": "Replace this colour everywhere",
   "command.design.colourToVariable": "Make a variable of this colour",
   "styles.siteColours": "Colours in use",
@@ -4465,6 +4466,7 @@
   "logic.bind.remove": "Remove this change",
   "logic.bind.asCode": "Add as code",
   "logic.bind.hideCode": "Hide the code form",
-  "canvas.badge.runsInPreview": "This page has logic and interactions: they run in Preview, not on the canvas.",
+  "canvas.badge.runsInPreview": "This page has logic and interactions: they run in Preview, and the interactions also run on the canvas with View › Run interactions.",
+  "canvas.badge.logicInPreview": "The canvas runs the interactions; the page's logic runs in Preview.",
   "canvas.badge.tryInPreview": "Try it"
 }

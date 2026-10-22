@@ -6413,6 +6413,7 @@ export const MESSAGE_IDS = [
   "status.motion.recorded",
   "status.motion.removed",
   "status.motion.running",
+  "status.motion.wouldOpen",
   "status.motion.snapOff",
   "status.motion.snapOn",
   "status.motion.stopped",
@@ -7659,6 +7660,7 @@ export const MESSAGE_IDS = [
   "logic.bind.asCode",
   "logic.bind.hideCode",
   "canvas.badge.runsInPreview",
+  "canvas.badge.logicInPreview",
   "canvas.badge.tryInPreview",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];

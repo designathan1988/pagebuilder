@@ -1792,3 +1792,13 @@
 .link-prompt__page:focus-visible {
   border-color: var(--color-accent);
 }
+
+/* Run interactions (frame.tsx): the page takes the presses, as the visitor's page does, and the editor's chrome over it
+   steps aside until it is turned off */
+.frame__view.is-running .frame__page {
+  pointer-events: auto;
+}
+
+.frame__view.is-running .frame__overlay {
+  display: none;
+}

@@ -28,6 +28,7 @@ import { breakpointTabSlot } from './breakpoint-tabs.tsx';
 import { breakpointName, breakpointsOf } from '../../core/document/breakpoints.ts';
 import { isPanelOpen } from '../workspace/panels.ts';
 import { useT } from '../text.ts';
+import { motionUiOf } from '../motion/state.ts';
 import { ReportFitZoom, Slots, useFitZoom } from './slots.tsx';
 import { QuickPanel } from '../canvas/quick-panel.tsx';
 import { RevealSelection } from '../canvas/reveal-selection.tsx';
@@ -339,14 +340,16 @@ function BreakpointBadge() {
 function RunsInPreviewBadge() {
   const t = useT();
   const store = useStore();
+  // while the canvas runs the interactions, only the logic is left to Preview
+  const running = useEditorState((s) => motionUiOf(s.ui).running === true);
   const runs = useEditorState((s) => {
     const page = s.document.pages[openedPage(s)];
-    return page !== undefined && [...walk(page.tree)].some((node) => node.logic !== undefined || (node.interactions ?? []).length > 0);
+    return page !== undefined && [...walk(page.tree)].some((node) => node.logic !== undefined || (!running && (node.interactions ?? []).length > 0));
   });
   if (!runs) return null;
   return (
     <div className="canvas-run-badge" data-canvas-badge="runs">
-      <span className="canvas-run-badge__words">{t('canvas.badge.runsInPreview')}</span>
+      <span className="canvas-run-badge__words">{t(running ? 'canvas.badge.logicInPreview' : 'canvas.badge.runsInPreview')}</span>
       <button type="button" className="canvas-run-badge__try" onClick={() => (store.dispatch as (id: CommandId, a: unknown) => DispatchResult)('view.enterPreview' as CommandId, {})}>
         <Icon name="play" size="sm" />
         <span>{t('canvas.badge.tryInPreview')}</span>
@@ -356,6 +359,7 @@ function RunsInPreviewBadge() {
 }
 
 export function CanvasColumn() {
+  const running = useEditorState((s) => motionUiOf(s.ui).running === true);
   const stage = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 0 });
   // whether the stage is drawn: the Code view draws none, and coming back draws a new one, which the measure, the
@@ -448,10 +452,11 @@ export function CanvasColumn() {
                     <FrameEdge width={pageWidth} />
                     <CanvasFrame width={pageWidth} screen={pageHeight} zoom={zoom} onExtent={onExtent} />
                   </div>
-                  {/* the quick panel of the selection, over the stage (canvas/quick-panel.tsx) */}
-                  <QuickPanel stage={stage} />
-                  {/* the anchor tabs of a positioned selection (canvas/anchor-tabs.tsx) */}
-                  <AnchorTabs stage={stage} />
+                  {/* the quick panel of the selection, over the stage (canvas/quick-panel.tsx), and the anchor tabs of a
+                      positioned selection (canvas/anchor-tabs.tsx): editing chrome, aside while the canvas runs the
+                      interactions as the overlay is */}
+                  {running ? null : <QuickPanel stage={stage} />}
+                  {running ? null : <AnchorTabs stage={stage} />}
                   {/* a selection made away from the canvas brings it into view (canvas/reveal-selection.tsx) */}
                   <RevealSelection stage={stage} />
                   {/* the first look at an empty project: a ready page or section to start from (start-screen.tsx) */}

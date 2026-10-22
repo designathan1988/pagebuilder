@@ -3220,6 +3220,7 @@
   "status.motion.recorded": "Gravado {property} em {time} s em {timeline}.",
   "status.motion.removed": "Removida a interação \"{name}\" em {element}.",
   "status.motion.running": "O canvas executa as interações. Desligue Executar interações para voltar a editar com o ponteiro.",
+  "status.motion.wouldOpen": "No site isto vai para {address}. A tela fica no editor; a Pré-visualização segue o link.",
   "status.motion.snapOff": "Encaixe desligado.",
   "status.motion.snapOn": "Encaixe ligado.",
   "status.motion.stopped": "O canvas não executa mais as interações.",
@@ -3753,7 +3754,7 @@
   "status.motion.notALink": "{element} não é um link.",
   "feature.pageTransitions": "Transições de página: esmaecer ou deslizar entre as páginas do site",
   "splitter.dockHeight": "Redimensionar o painel inferior",
-  "interactions.runNote": "Executar interações roda o movimento na tela; Pré-visualizar roda os eventos e o movimento.",
+  "interactions.runNote": "Executar interações roda os eventos e o movimento no canvas; Pré-visualizar também roda a lógica da página.",
   "command.design.replaceColour": "Trocar esta cor em todo o site",
   "command.design.colourToVariable": "Criar uma variável desta cor",
   "styles.siteColours": "Cores em uso",
@@ -4465,6 +4466,7 @@
   "logic.bind.remove": "Remover esta mudança",
   "logic.bind.asCode": "Adicionar como código",
   "logic.bind.hideCode": "Esconder o formulário de código",
-  "canvas.badge.runsInPreview": "Esta página tem lógica e interações: elas rodam na pré-visualização, não no canvas.",
+  "canvas.badge.runsInPreview": "Esta página tem lógica e interações: elas rodam na pré-visualização, e as interações também rodam no canvas com Exibir › Executar interações.",
+  "canvas.badge.logicInPreview": "O canvas roda as interações; a lógica da página roda na pré-visualização.",
   "canvas.badge.tryInPreview": "Testar"
 }
