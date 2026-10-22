@@ -461,11 +461,13 @@
   clip-path: inset(50%);
 }
 
+/* what plays the timeline, in words that may take two lines in the column's width ("Nenhuma interação a reproduz" was
+   cut at its end) */
 .motion-timeline__row > .motion-timeline__uses {
   flex: 1;
   min-width: 0;
   padding: 0;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 /* the open timeline's name under its label, the column's whole width: a name made of the element and its effect

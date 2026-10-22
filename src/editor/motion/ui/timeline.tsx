@@ -103,7 +103,7 @@ function TimelineList({ shown }: { readonly shown: string | null }) {
               <PanelButton entry={motionDoor(MOTION_DOORS.timelineRow)} args={{ timeline: timeline.name }} pressed={timeline.name === shown}>
                 {timeline.name}
               </PanelButton>
-              <span className="motion-timeline__uses">{t('motion.timeline.uses', { count: uses.interactions + uses.actions })}</span>
+              <span className="motion-timeline__uses">{uses.interactions + uses.actions === 0 ? t('motion.timeline.unused') : t('motion.timeline.uses', { count: uses.interactions + uses.actions })}</span>
               <PanelButton entry={motionDoor(MOTION_DOORS.timelineDelete)} args={{ timeline: timeline.name }} label={t('command.motion.deleteTimeline')} icon={<Icon name="trash" size="sm" />} />
             </li>
           );
