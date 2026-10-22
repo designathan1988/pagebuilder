@@ -97,7 +97,8 @@ function AddRow({ entry, door, property, empty, ready, onDone }: { readonly entr
   const appearance = useFieldAppearance([property]);
   return (
     <div className={`field-row shadow__head${ready ? '' : ' is-unavailable'}`} data-origin={appearance.kind}>
-      <span className="field-row__label" title={property}>{t('inspector.shadow.layers')}</span>
+      {/* the shadow's own name (Box shadow, Text shadow): Layers named neither, and a search for shadow showed two Layers */}
+      <span className="field-row__label" title={property}>{propertyWord(t, property)}</span>
       <span className="shadow__add">
         {empty ? <span className="shadow__none">{t('inspector.shadow.none')}</span> : null}
         <button
@@ -130,7 +131,9 @@ function Rows({ property, layers, chosen }: { readonly property: string; readonl
   return (
     <ul className="shadow__rows" data-shadow-rows="">
       {layers.map((layer, i) => {
-        const colour = typeof layer.colour === 'string' ? layer.colour : '';
+        // the colour field is `color` (properties.json's shadow-list structure): read as `colour`, the summary ended in a
+        // bare "·" and the swatch was empty
+        const colour = typeof layer.color === 'string' ? layer.color : '';
         const text = (field: string, fallback: string) => (typeof layer[field] === 'string' ? (layer[field] as string) : fallback);
         const summary = t('inspector.shadow.summary', { x: text('offsetX', '0px'), y: text('offsetY', '0px'), blur: text('blur', '0px'), colour });
         return (

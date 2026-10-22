@@ -4263,7 +4263,6 @@ export const MESSAGE_IDS = [
   "inspector.shadow.colour",
   "inspector.shadow.hide",
   "inspector.shadow.inset",
-  "inspector.shadow.layers",
   "inspector.shadow.lightPad",
   "inspector.shadow.move",
   "inspector.shadow.none",
