@@ -2178,6 +2178,7 @@
   "template.tabs.two": "Segunda aba",
   "textEdit.linkPrompt.hint": "Enter aplica · um endereço vazio remove o link",
   "textEdit.linkPrompt.label": "Endereço do link",
+  "textEdit.linkPrompt.pages": "Ou uma página do site:",
   "textEdit.linkPrompt.placeholder": "https://",
   "textToolbar.label": "Formatação do texto",
   "theme.dark": "Escuro",

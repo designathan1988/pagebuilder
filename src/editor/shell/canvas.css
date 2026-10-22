@@ -1761,3 +1761,34 @@
 .reveal-away.is-above {
   top: calc(var(--size-target-min) * 3);
 }
+
+/* the site's pages under the link prompt's field (text-toolbar.tsx): one press links the selection to that page */
+.link-prompt__pages {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.link-prompt__pages-label {
+  flex-basis: 100%;
+  color: var(--color-text-muted);
+  font: var(--fw-caption) var(--fs-caption) / var(--lh-caption) var(--font-ui);
+}
+
+.link-prompt__page {
+  min-height: var(--size-control);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: var(--fw-label) var(--fs-label) / var(--lh-label, 1.3) var(--font-ui);
+  cursor: pointer;
+}
+
+.link-prompt__page:hover,
+.link-prompt__page:focus-visible {
+  border-color: var(--color-accent);
+}

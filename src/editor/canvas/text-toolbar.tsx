@@ -11,6 +11,7 @@
 // the backdrop door under it (ui.dismiss) closes it. It is drawn over the whole window, never on the canvas overlay.
 import { useId, useRef, useState, type CSSProperties, type FormEvent, type RefObject } from 'react';
 import type { DispatchResult } from '../../core/store/store.ts';
+import { templatePaths } from '../../core/data/bindings.ts';
 import type { CommandId, KeyContextId } from '../../generated/ids.ts';
 import type { DoorEntry } from '../../manifest/runtime.ts';
 import { DoorControl } from '../doors/door.tsx';
@@ -49,10 +50,19 @@ function LinkPrompt({ entry, anchor }: { readonly entry: DoorEntry; readonly anc
   const [address, setAddress] = useState(() => editedLinkAddress() ?? '');
   // the refusal of the address typed last: the store's message while it is one the command declares
   const refusal = useEditorState((s) => (s.message !== null && (entry.command.refusals as readonly string[]).includes(s.message.key) ? s.message : null));
+  const go = (href: string) => (store.dispatch as (command: CommandId, args: unknown) => DispatchResult)(entry.command.id, { ...entry.door.args, href });
   const answer = (event: FormEvent) => {
     event.preventDefault();
-    (store.dispatch as (command: CommandId, args: unknown) => DispatchResult)(entry.command.id, { ...entry.door.args, href: address });
+    go(address);
   };
+  // the pages a link can go to: every page the export writes as its own file (a collection's template is written per
+  // item, under another name)
+  const document = useEditorState((s) => s.document);
+  const pages = [
+    ...document.pages.filter((one) => one.tree.dataItem?.template !== true).map((one) => ({ file: one.file, name: one.name })),
+    // and the pages a collection's template writes, one per item (named by their file)
+    ...[...templatePaths(document).values()].flatMap((paths) => [...paths.values()].map((file) => ({ file, name: file.split('/').at(-1)?.replace(/\.html$/u, '') ?? file }))),
+  ];
   // a popover under the toolbar (popover.tsx): inside the window, over its backdrop; the field takes the focus once it
   // is placed, before the next key arrives, with what it holds selected
   return (
@@ -82,6 +92,18 @@ function LinkPrompt({ entry, anchor }: { readonly entry: DoorEntry; readonly anc
         <p id={`${id}-hint`} className={`link-prompt__hint${refusal !== null ? ' is-refused' : ''}`}>
           {refusal !== null ? t(refusal.key, refusal.params) : t('textEdit.linkPrompt.hint')}
         </p>
+        {/* the site's own pages, one press each: a link to another page of the site is the one most made, and its
+            file name had to be known and typed */}
+        {pages.length === 0 ? null : (
+          <div className="link-prompt__pages" role="group" aria-label={t('textEdit.linkPrompt.pages')}>
+            <span className="link-prompt__pages-label">{t('textEdit.linkPrompt.pages')}</span>
+            {pages.map((one) => (
+              <button key={one.file} type="button" className="link-prompt__page" title={one.file} onClick={() => go(one.file)}>
+                {one.name}
+              </button>
+            ))}
+          </div>
+        )}
     </Popover>
   );
 }

@@ -2178,6 +2178,7 @@
   "template.tabs.two": "Second tab",
   "textEdit.linkPrompt.hint": "Enter applies it · an empty address removes the link",
   "textEdit.linkPrompt.label": "Link address",
+  "textEdit.linkPrompt.pages": "Or a page of the site:",
   "textEdit.linkPrompt.placeholder": "https://",
   "textToolbar.label": "Text formatting",
   "theme.dark": "Dark",

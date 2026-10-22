@@ -5371,6 +5371,7 @@ export const MESSAGE_IDS = [
   "template.tabs.two",
   "textEdit.linkPrompt.hint",
   "textEdit.linkPrompt.label",
+  "textEdit.linkPrompt.pages",
   "textEdit.linkPrompt.placeholder",
   "textToolbar.label",
   "theme.dark",
