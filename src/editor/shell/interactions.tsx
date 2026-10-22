@@ -97,6 +97,18 @@ function optionValue(interaction: Interaction): string {
   return '';
 }
 
+// the properties a class sets that the element sets for itself too, at any breakpoint and state the class sets them
+function ownOverrides(element: DocNode, classStyles: DocNode['styles']): string[] {
+  const own = element.styles as Readonly<Record<string, Readonly<Record<string, Readonly<Record<string, unknown>>>>>>;
+  const named = new Set<string>();
+  for (const [breakpoint, byState] of Object.entries(classStyles as Readonly<Record<string, Readonly<Record<string, Readonly<Record<string, unknown>>>>>>)) {
+    for (const [state, declarations] of Object.entries(byState)) {
+      for (const property of Object.keys(declarations)) if (own[breakpoint]?.[state]?.[property] !== undefined) named.add(property);
+    }
+  }
+  return [...named];
+}
+
 function Card({ node, interaction, index }: { readonly node: DocNode; readonly interaction: Interaction; readonly index: number }) {
   const t = useT();
   const label = useOptionLabel();
@@ -123,6 +135,11 @@ function Card({ node, interaction, index }: { readonly node: DocNode; readonly i
   }, [picking, index, store]);
   const options = useOptionWords();
   const valueKey = valueLabelKey(interaction.action);
+  // A class an event adds, removes or toggles changes nothing the element sets for itself: its own values win over its
+  // classes, on the page as on the canvas. A heading's own colour hid the class's colour, and the person who clicked it
+  // saw no change. The card names what the class cannot change.
+  const classStyles = useEditorState((s) => classesOf(s.document).find((one) => one.name === interaction.className)?.styles);
+  const overridden = !needsClassName(interaction.action) || classStyles === undefined ? [] : ownOverrides(target ?? node, classStyles);
   return (
     <article className={`interaction-card${expanded ? ' is-expanded' : ''}`}>
       <header className="interaction-card__head">
@@ -176,6 +193,7 @@ function Card({ node, interaction, index }: { readonly node: DocNode; readonly i
             </PanelButton>
           ) : null}
         </div> : null}
+        {overridden.length > 0 ? <p className="interaction-card__warning" role="note">{t('interactions.classOverridden', { name: (target ?? node).name, properties: overridden.join(', '), count: overridden.length })}</p> : null}
         {/* the options in the default ink while the event keeps its trigger's own way (the canonical card's o-def) */}
         {OPTIONS_FIELD !== null ? (
           <span className={interaction.once === undefined && interaction.delay === undefined ? 'interaction-card__default' : 'interaction-card__set'}>

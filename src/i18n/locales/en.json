@@ -4493,5 +4493,7 @@
   "assistant.disconnectedAsked": "Disconnected from the Companion.",
   "checks.rowNoWrap": "{category} · Row that never wraps in {name}: on a phone it runs past the screen",
   "checks.rowNoWrap.fix": "Set Wrap to wrap in Style › Layout, or Direction to a column on the Phone breakpoint",
-  "common.historyStep": "{label}: {step}"
+  "common.historyStep": "{label}: {step}",
+  "interactions.classOverridden": "{name} has its own values for {properties}, and they win over this class. Clear them in Style to let the class decide.",
+  "interactions.classOverridden.one": "{name} has its own value for {properties}, and it wins over this class. Clear it in Style to let the class decide."
 }

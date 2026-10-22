@@ -7702,5 +7702,7 @@ export const MESSAGE_IDS = [
   "checks.rowNoWrap",
   "checks.rowNoWrap.fix",
   "common.historyStep",
+  "interactions.classOverridden",
+  "interactions.classOverridden.one",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];
