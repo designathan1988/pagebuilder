@@ -118,8 +118,23 @@ function cartWithoutAddress(node: DocNode): boolean {
   return (custom['data-wc-whatsapp'] ?? '').replace(/\D/gu, '') === '' && (custom['data-wc-email'] ?? '').trim() === '';
 }
 
+// A form field a visitor types into or chooses in (an input but a hidden one or a button, a text area, a list) says what
+// it asks only by a name a screen reader reads: a label around it or pointing at it (its `for`), an accessible name, or a
+// tooltip. A placeholder is no name: it goes as the visitor types (WCAG 1.3.1 and 4.1.2).
+const UNNAMED_INPUTS: ReadonlySet<string> = new Set(['hidden', 'submit', 'button', 'reset', 'image']);
+const needsName = (node: DocNode): boolean =>
+  node.tag === 'textarea' || node.tag === 'select' || (node.tag === 'input' && !UNNAMED_INPUTS.has(String(node.attributes.inputType ?? 'text')));
+const namedByItself = (node: DocNode): boolean => ['ariaLabel', 'title'].some((name) => String(node.attributes[name as keyof DocNode['attributes']] ?? '').trim() !== '');
+
 export function checksOf(document: DocumentJson, properties: CheckProperties): readonly CheckIssue[] {
   const issues: CheckIssue[] = [];
+  // the fields a label points at (its `for` names the field's node)
+  const labelled = new Set<string>();
+  const collectLabels = (node: DocNode): void => {
+    if (node.tag === 'label' && typeof node.attributes.labelFor === 'string') labelled.add(node.attributes.labelFor);
+    node.children.forEach(collectLabels);
+  };
+  document.pages.forEach((page) => collectLabels(page.tree));
   const tokens = document.tokens ?? [];
   // a colour value as the page paints it: its variables resolved, then read; null when either cannot be done
   const colourOf = (text: string, under: readonly [number, number, number] | null = null) => {
@@ -135,9 +150,10 @@ export function checksOf(document: DocumentJson, properties: CheckProperties): r
     if (set === null || resolvedVariables(set, tokens)?.trim().toLowerCase() === 'transparent') return under;
     return colourOf(set, under);
   };
-  const visit = (node: DocNode, hidden: boolean, background: readonly [number, number, number] | null, seenHeading: number): number => {
+  const visit = (node: DocNode, hidden: boolean, background: readonly [number, number, number] | null, seenHeading: number, inLabel = false): number => {
     const isHidden = hiddenWithin(node, hidden);
     if (isHidden || node.tag === null) return seenHeading;
+    if (needsName(node) && !inLabel && !labelled.has(node.id) && !namedByItself(node)) issues.push({ node: node.id, category: 'accessibility', rule: 'checks.fieldName', fix: 'checks.fieldName.fix' });
     const own = backgroundOf(node, background);
     const level = /^h([1-6])$/.exec(node.tag);
     let heading = seenHeading;
@@ -161,7 +177,7 @@ export function checksOf(document: DocumentJson, properties: CheckProperties): r
     if (colour !== null && own !== null && textWithin(node) !== '' && contrast(colour, own) < CONTRAST_MINIMUM) {
       issues.push({ node: node.id, category: 'accessibility', rule: 'checks.contrast', fix: 'checks.contrast.fix' });
     }
-    return node.children.reduce((carried, child) => visit(child, isHidden, own, carried), heading);
+    return node.children.reduce((carried, child) => visit(child, isHidden, own, carried, inLabel || node.tag === 'label'), heading);
   };
   for (const page of document.pages) visit(page.tree, false, null, 0);
   return issues;

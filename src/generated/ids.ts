@@ -3398,6 +3398,8 @@ export const MESSAGE_IDS = [
   "checks.headingLevel.fix",
   "checks.iframeTitle",
   "checks.iframeTitle.fix",
+  "checks.fieldName",
+  "checks.fieldName.fix",
   "checks.imageAlt",
   "checks.imageAlt.fix",
   "checks.imageSource",

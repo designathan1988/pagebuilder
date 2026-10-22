@@ -211,6 +211,8 @@
   "checks.headingLevel.fix": "Use the level right below the heading before it",
   "checks.iframeTitle": "{category} · Embedded frame without a title in {name}",
   "checks.iframeTitle.fix": "Write its Title in Settings",
+  "checks.fieldName": "{category} · Form field without a name in {name}",
+  "checks.fieldName.fix": "Put it in a Label, or write its Accessible name in Settings",
   "checks.imageAlt": "{category} · Image without alt text in {name}",
   "checks.imageAlt.fix": "Write its Alt text in Settings",
   "checks.imageSource": "{category} · Image without a source in {name}: the exported page shows nothing in its place",

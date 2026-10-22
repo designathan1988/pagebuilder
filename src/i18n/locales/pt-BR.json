@@ -211,6 +211,8 @@
   "checks.headingLevel.fix": "Use o nível logo abaixo do título anterior",
   "checks.iframeTitle": "{category} · Quadro incorporado sem título em {name}",
   "checks.iframeTitle.fix": "Escreva o Título nas Configurações",
+  "checks.fieldName": "{category} · Campo de formulário sem nome em {name}",
+  "checks.fieldName.fix": "Coloque-o num Rótulo, ou escreva seu Nome acessível em Configurações",
   "checks.imageAlt": "{category} · Imagem sem texto alternativo em {name}",
   "checks.imageAlt.fix": "Escreva o texto Alt nas Configurações",
   "checks.imageSource": "{category} · Imagem sem origem em {name}: a página exportada não mostra nada no lugar dela",
