@@ -118,10 +118,17 @@ export function controlBoxes(layer: HTMLElement, origin: { readonly x: number; r
 // The selection's label's one place (DEC-70): above the frame, touching it, at its left edge. `frame` is the element's
 // box (or the union of several), `edge` the width of the frame's line drawn outside that box (the selection's outline),
 // so the label touches the line, not the box under it. `covers` says whether it lies over page content.
+// Where that place lies over the page's content (the element just above: a button over a paragraph, the row of a
+// form over the text under it), the label stands under its element touching its frame instead, when that place is
+// free: above, it hid the whole of a small element next to the one selected (a button just inserted could not be seen).
+// Where both lie over content, it keeps its place above (the chrome then draws it faint: `covers`).
 export function selectionLabelBox(frame: Box, size: { readonly width: number; readonly height: number }, edge: number, content: readonly Box[]): { box: Box; placement: Placement; covers: boolean } {
-  const box = { x: frame.x - edge, y: frame.y - edge - size.height, ...size };
-  const inner = { x: box.x + SLACK, y: box.y + SLACK, width: box.width - 2 * SLACK, height: box.height - 2 * SLACK };
-  return { box, placement: 'above', covers: content.some((c) => overlaps(inner, c)) };
+  const lies = (box: Box): boolean => content.some((c) => overlaps({ x: box.x + SLACK, y: box.y + SLACK, width: box.width - 2 * SLACK, height: box.height - 2 * SLACK }, c));
+  const above = { x: frame.x - edge, y: frame.y - edge - size.height, ...size };
+  if (!lies(above)) return { box: above, placement: 'above', covers: false };
+  const below = { x: frame.x - edge, y: frame.y + frame.height + edge, ...size };
+  if (!lies(below)) return { box: below, placement: 'below', covers: false };
+  return { box: above, placement: 'above', covers: true };
 }
 
 // The box the selection's label stands on for an element turned by `degrees` about its centre (its frame drawn turned

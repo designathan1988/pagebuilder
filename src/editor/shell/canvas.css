@@ -1283,6 +1283,12 @@
   cursor: grab;
 }
 
+/* a label that could only stand over the page's content (above and under its element alike) is drawn faint, so the
+   content under it still shows (placement.ts selectionLabelBox) */
+.chrome__label.is-covering {
+  opacity: 0.45;
+}
+
 /* the drop indicator: the receiving parent's outline, and the insertion line across it at the gap */
 .chrome__drop {
   position: absolute;
