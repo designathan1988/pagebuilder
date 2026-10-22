@@ -477,12 +477,15 @@ export function QuickPanel({ stage }: { readonly stage: RefObject<HTMLDivElement
     const drawn = new MutationObserver((records) => {
       if (records.some((record) => !own(record.target))) tick();
     });
-    if (stage.current) drawn.observe(stage.current, { subtree: true, childList: true, attributes: true, attributeFilter: ['style', 'class'] });
+    if (stage.current) drawn.observe(stage.current, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['style', 'class'] });
     // the chip's or the panel's own size, and the window's (both are fixed in it)
     const sized = new ResizeObserver(tick);
     if (panel.current) sized.observe(panel.current);
     if (chip.current) sized.observe(chip.current);
     sized.observe(document.documentElement);
+    // the label's own width: its words grow (a variant's class named in it) with no style of its own changed, and the
+    // chip stood over its words until something else moved
+    for (const label of stage.current?.querySelectorAll('[data-chrome="label"]') ?? []) sized.observe(label);
     return () => {
       stop();
       drawn.disconnect();
