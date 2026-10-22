@@ -16,7 +16,9 @@ import { logicChoices } from './logic-choices.ts';
 
 // the styles a binding offers first: the ones an app changes with its state most
 const STYLES = ['background-color', 'color', 'border-color', 'text-decoration', 'opacity', 'font-weight', 'display', 'visibility'] as const;
-const PROPERTY_WORDS = new Map<string, MessageId>(manifest.properties.properties.map((property) => [property.id, property.labelKey as MessageId] as const));
+// the inspector's name of each property and composite (border-color, text-decoration are composites: read from the
+// properties alone, they showed as CSS among the named ones)
+const PROPERTY_WORDS = new Map<string, MessageId>([...manifest.properties.properties, ...manifest.properties.composites].map((property) => [property.id, property.labelKey as MessageId] as const));
 
 const STRING = `(?:"(?:[^"\\\\]|\\\\.)*"|'(?:[^'\\\\]|\\\\.)*')`;
 const unquote = (literal: string): string => (literal.startsWith("'") ? literal.slice(1, -1).replace(/\\'/gu, "'") : (JSON.parse(literal) as string));

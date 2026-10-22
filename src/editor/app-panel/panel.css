@@ -476,3 +476,12 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+/* the fields of a card (a variable, a script, an event, a binding) are drawn on the card's own sunken surface: with no
+   edge of their own, a variable's empty First value was not seen at all */
+.app-variable .input,
+.app-module .input,
+.logic-handler .input,
+.logic-binding .input {
+  border-color: var(--color-border);
+}
