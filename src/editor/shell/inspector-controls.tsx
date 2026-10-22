@@ -447,7 +447,8 @@ function SpacingField({ entry, box, sides, properties, where, label }: { readonl
       // a side stands for its longhand (its arrows step it: field.step, and Escape names it), the linked box for the
       // box
       data-args={JSON.stringify({ box, sides, property: properties.length === 1 ? properties[0] : box })}
-      title={door.title}
+      // a side's cell holds a few characters: a value longer than it (a variable, "var(--space-lg)") is read whole here
+      title={shown === '' ? door.title : `${door.title}: ${shown}`}
       onSubmit={onSubmit}
     >
       <input

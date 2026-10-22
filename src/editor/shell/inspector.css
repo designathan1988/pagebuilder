@@ -1301,11 +1301,17 @@ textarea.input {
   text-align: center;
 }
 
+/* one line in the side's cell: a value longer than it (a variable's name) ends in an ellipsis, read whole in the side's
+   title, never broken over the cells around it */
 .box__rest-value {
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
+  display: block;
+  align-content: center;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   pointer-events: none;
   color: var(--color-origin-default);
   font: var(--fw-caption) var(--fs-caption) / var(--lh-caption) var(--font-mono);
