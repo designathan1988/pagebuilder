@@ -85,6 +85,19 @@ const textWithin = (node: DocNode): string => `${node.text ?? ''}${node.children
 // whether a node is hidden (its own flag, or one of an ancestor's): a hidden element is nobody's problem
 const hiddenWithin = (node: DocNode, hidden: boolean): boolean => node.hidden === true || hidden;
 
+// A row of three or more elements that never wraps nor turns into a column, at no breakpoint and in no state: on a
+// phone its elements run past the screen's edge and the page scrolls sideways (WCAG 1.4.10, Reflow). A row placed
+// before rows wrapped by default (Wrap in a row) stayed so, and the person saw it only in the Phone preview.
+const ROW_WRAP_MINIMUM = 3;
+function rowNeverWraps(node: DocNode): boolean {
+  if (node.children.length < ROW_WRAP_MINIMUM) return false;
+  const layers = Object.values(node.styles).flatMap((byState) => Object.values(byState ?? {})) as Readonly<Record<string, unknown>>[];
+  const said = (property: string): string[] => layers.flatMap((layer) => (typeof layer[property] === 'string' ? [String(layer[property]).trim()] : []));
+  if (!said('display').some((value) => value === 'flex' || value === 'inline-flex')) return false;
+  if (said('flex-direction').some((value) => value.startsWith('column'))) return false;
+  return !said('flex-wrap').some((value) => value === 'wrap' || value === 'wrap-reverse');
+}
+
 // Every issue the page has, in document order: the checks of the report, each once, over every page of the project.
 // the properties the contrast check reads, named by the manifest (interactions.json checks), never here
 export interface CheckProperties {
@@ -171,6 +184,7 @@ export function checksOf(document: DocumentJson, properties: CheckProperties): r
       if (textWithin(node) === '') issues.push({ node: node.id, category: 'links', rule: 'checks.linkText', fix: 'checks.linkText.fix' });
       if (WHATSAPP_WITHOUT_NUMBER.test(String(node.attributes.href ?? ''))) issues.push({ node: node.id, category: 'links', rule: 'checks.whatsappLink', fix: 'checks.whatsappLink.fix' });
     }
+    if (rowNeverWraps(node)) issues.push({ node: node.id, category: 'accessibility', rule: 'checks.rowNoWrap', fix: 'checks.rowNoWrap.fix' });
     if (cartWithoutAddress(node)) issues.push({ node: node.id, category: 'export', rule: 'checks.cartDestination', fix: 'checks.cartDestination.fix' });
     // text with a colour of its own over a background that is known: below the contrast WCAG asks for is an issue
     const colour = colourOf(baseValue(node, properties.colourProperty) ?? '');

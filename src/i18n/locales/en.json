@@ -4490,5 +4490,7 @@
   "inspector.codeViewNotice": "The Code view draws no page: the values it computes show in Canvas or Split. What is written here is kept.",
   "assistant.configureKey": "The Companion is connected. To start, save your service key in Assistant preferences.",
   "assistant.configureCompanion": "Your key is saved. To start, connect the Companion in Assistant preferences (run npm run assistant beside the editor).",
-  "assistant.disconnectedAsked": "Disconnected from the Companion."
+  "assistant.disconnectedAsked": "Disconnected from the Companion.",
+  "checks.rowNoWrap": "{category} · Row that never wraps in {name}: on a phone it runs past the screen",
+  "checks.rowNoWrap.fix": "Set Wrap to wrap in Style › Layout, or Direction to a column on the Phone breakpoint"
 }

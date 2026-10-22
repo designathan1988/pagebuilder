@@ -4490,5 +4490,7 @@
   "inspector.codeViewNotice": "A vista Código não desenha a página: os valores que ela calcula aparecem em Tela ou Dividido. O que for escrito aqui é mantido.",
   "assistant.configureKey": "O Companion está conectado. Para começar, salve sua chave do serviço nas Preferências do assistente.",
   "assistant.configureCompanion": "Sua chave está salva. Para começar, conecte o Companion nas Preferências do assistente (rode npm run assistant ao lado do editor).",
-  "assistant.disconnectedAsked": "Desconectado do Companion."
+  "assistant.disconnectedAsked": "Desconectado do Companion.",
+  "checks.rowNoWrap": "{category} · Linha que nunca quebra em {name}: no celular passa da tela",
+  "checks.rowNoWrap.fix": "Defina Quebra como wrap em Estilo › Layout, ou a Direção como coluna no breakpoint Celular"
 }

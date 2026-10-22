@@ -7699,5 +7699,7 @@ export const MESSAGE_IDS = [
   "assistant.configureKey",
   "assistant.configureCompanion",
   "assistant.disconnectedAsked",
+  "checks.rowNoWrap",
+  "checks.rowNoWrap.fix",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];
