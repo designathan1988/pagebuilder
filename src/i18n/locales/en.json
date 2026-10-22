@@ -4507,5 +4507,6 @@
   "inspector.needs.flexOrGrid": "a flex container or a grid",
   "inspector.needs.flexItem": "an item of a flex container",
   "inspector.needs.gridItem": "an item of a grid",
-  "inspector.needs.flexOrGridItem": "an item of a flex container or a grid"
+  "inspector.needs.flexOrGridItem": "an item of a flex container or a grid",
+  "status.clipboard.waiting": "Waiting to read the clipboard: allow it in the browser’s question by the address bar."
 }

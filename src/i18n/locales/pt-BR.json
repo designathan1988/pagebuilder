@@ -4507,5 +4507,6 @@
   "inspector.needs.flexOrGrid": "um contêiner flex ou uma grade",
   "inspector.needs.flexItem": "um item de contêiner flex",
   "inspector.needs.gridItem": "um item de grade",
-  "inspector.needs.flexOrGridItem": "um item de contêiner flex ou de grade"
+  "inspector.needs.flexOrGridItem": "um item de contêiner flex ou de grade",
+  "status.clipboard.waiting": "Aguardando para ler a área de transferência: permita na pergunta do navegador ao lado da barra de endereço."
 }
