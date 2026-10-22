@@ -306,6 +306,10 @@ const PROJECT_LANGUAGE = doorSlots('inspector-settings').find((d) => d.door.kind
 const CODE_LANGUAGE = doorSlots('inspector-settings').find((d) => d.door.kind === 'panel-control' && d.door.control === 'code-language');
 // an instance's variant (spec component-variants), drawn with an element of an instance selected
 const COMPONENT_VARIANT = doorSlots('inspector-settings').find((d) => d.door.kind === 'panel-control' && d.door.control === 'component-variant');
+// what an instance does with its component, beside its Variant (they were in the context menu alone): give the component
+// this instance's changes, every other instance following, or leave the component
+const COMPONENT_UPDATE = doorSlots('inspector-settings').find((d) => d.door.kind === 'panel-control' && d.door.control === 'component-update');
+const COMPONENT_DETACH = doorSlots('inspector-settings').find((d) => d.door.kind === 'panel-control' && d.door.control === 'component-detach');
 // the language tags the fields offer (a person may type any other)
 const COMMON_LANGUAGES: readonly string[] = 'en pt-BR pt-PT es fr de it nl ja zh ko ar'.split(' ');
 // the language the code is named in when the project names none (core/export/names.ts)
@@ -347,6 +351,12 @@ function ComponentSettings({ node }: { readonly node: DocNode }) {
         <h3>{t('settings.component', { name: root.component })}</h3>
       </div>
       <PanelField entry={COMPONENT_VARIANT} value={current} label={t('command.components.setVariant')} offered={offered} />
+      {COMPONENT_UPDATE === undefined && COMPONENT_DETACH === undefined ? null : (
+        <div className="settings-section__actions">
+          {COMPONENT_UPDATE === undefined ? null : <DoorControl entry={COMPONENT_UPDATE} />}
+          {COMPONENT_DETACH === undefined ? null : <DoorControl entry={COMPONENT_DETACH} />}
+        </div>
+      )}
     </section>
   );
 }

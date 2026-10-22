@@ -3,10 +3,10 @@
     "features": 218,
     "built": 218,
     "commands": 394,
-    "doors": 1442,
+    "doors": 1444,
     "scenarios": 1909,
     "modules": 531,
-    "lines": 98158,
+    "lines": 98170,
     "fields": 207,
     "interactive": 307
   },
@@ -1227,7 +1227,7 @@
         "components.startCreate",
         "components.closePrompt"
       ],
-      "doors": 9,
+      "doors": 10,
       "scenarios": 10
     },
     {
@@ -1255,7 +1255,7 @@
       "commands": [
         "components.updateFromInstance"
       ],
-      "doors": 1,
+      "doors": 2,
       "scenarios": 2
     },
     {
@@ -1628,7 +1628,7 @@
         "components.startCreate",
         "selection.range"
       ],
-      "doors": 245,
+      "doors": 246,
       "scenarios": 56
     },
     {

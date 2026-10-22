@@ -1093,6 +1093,32 @@
             "fields": []
           },
           "args": {}
+        },
+        {
+          "id": "inspector-component-detach",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "reusable-components",
+          "panel": "inspector",
+          "control": "component-detach",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.components.detach",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-settings",
+            "order": 2084
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
         }
       ]
     },
@@ -1653,6 +1679,32 @@
           },
           "adapter": {
             "selection": "single",
+            "offers": null,
+            "writes": [],
+            "fields": []
+          },
+          "args": {}
+        },
+        {
+          "id": "inspector-component-update",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "component-master-edit",
+          "panel": "inspector",
+          "control": "component-update",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "command.components.updateFromInstance",
+          "faceLabelKey": null,
+          "icon": null,
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "inspector-settings",
+            "order": 2083
+          },
+          "adapter": {
+            "selection": "none",
             "offers": null,
             "writes": [],
             "fields": []
