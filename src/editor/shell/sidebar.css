@@ -518,6 +518,16 @@
   display: none;
 }
 
+/* a Layers row's details give way first: they end in an ellipsis down to a short width before the name is cut (an
+   input's attributes, longer than the row, left the row whole, and name-first.ts then took them away entirely); only
+   past that does the name take their room */
+.row--tree > .row__meta[data-region='layers-row-details'] {
+  flex-shrink: 1000;
+  min-width: min(var(--size-tag-field), max-content);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .row__meta {
   margin-left: auto;
   padding-left: var(--space-3);

@@ -172,7 +172,8 @@ function RowDetails({ node }: { readonly node: DocNode }) {
     }
   }
   return parts.length === 0 ? null : (
-    <span className="row__meta" data-region="layers-row-details">
+    // the details whole in the tooltip: a long one (an input's attributes) ends in an ellipsis in the row
+    <span className="row__meta" data-region="layers-row-details" title={parts.join(' ')}>
       {parts.join(' ')}
     </span>
   );
