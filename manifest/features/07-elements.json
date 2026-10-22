@@ -24783,7 +24783,7 @@
                 {
                   "key": "status.attribute.set",
                   "params": {
-                    "attribute": "Multiple files",
+                    "attribute": "Accepts several",
                     "name": "Input",
                     "value": "✓"
                   }

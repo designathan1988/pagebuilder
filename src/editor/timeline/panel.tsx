@@ -8,7 +8,7 @@
 import { useState, type CSSProperties } from 'react';
 import { animationsOf, defaultSetting, durationMs, SETTINGS, settingLabel } from '../../core/animation/animation.ts';
 import { seconds } from '../../core/motion/view.ts';
-import { locate, type Animation } from '../../core/document/model.ts';
+import { locate, type Animation, type StoredValue } from '../../core/document/model.ts';
 import type { DoorEntry } from '../../manifest/runtime.ts';
 import type { MessageId } from '../../generated/ids.ts';
 import { manifest } from '../../manifest/runtime.ts';
@@ -86,7 +86,7 @@ function FrameDetails({ animation, offset, onKeyframe }: { readonly animation: A
   const t = useT();
   const frame = onKeyframe ? animation.keyframes.find((keyframe) => keyframe.offset === offset) : undefined;
   if (frame === undefined) return <p className="timeline__hint">{t('timeline.frameNone', { offset: String(offset) })}</p>;
-  const set = Object.entries(frame.declarations).filter((entry): entry is [string, string | readonly unknown[]] => entry[1] !== undefined);
+  const set = Object.entries(frame.declarations).filter((entry): entry is [string, StoredValue] => entry[1] !== undefined);
   if (set.length === 0) return <p className="timeline__hint">{t('timeline.frameEmpty', { offset: String(offset) })}</p>;
   return (
     <div className="timeline__frame">

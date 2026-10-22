@@ -61,6 +61,7 @@ import { heldDraft, type HeldDraft } from '../input/held-draft.ts';
 import { followBelow, type Placed } from './float.ts';
 import { onPageChange } from '../canvas/page-clock.ts';
 import { VariableSuggestions } from './variable-suggestions.tsx';
+import { FieldOptions } from './field-options.tsx';
 
 // the key context a number field's input names (interactions.json)
 const NUMBER_FIELD_CONTEXT: KeyContextId = 'number-field';
@@ -1856,7 +1857,6 @@ export function KeptTextField({ entry, node, kept, label, attribute, keepOnLeave
   const door = useDoor(entry, args, label, isFeatureBuilt(entry.door.feature as FeatureId));
   const form = useRef<HTMLFormElement>(null);
   const field = useRef<HTMLInputElement & HTMLTextAreaElement>(null);
-  const listId = useId();
   // the text the field last showed or kept: the field's own draft, never document state
   const draft = useRef({ shown: '' });
   const [typed, setTyped] = useState(stored);
@@ -1951,9 +1951,10 @@ export function KeptTextField({ entry, node, kept, label, attribute, keepOnLeave
         }} />
       ) : (
         <span className="settings-field__value">
-          <input ref={field} className="input" disabled={!door.available} aria-label={label} aria-invalid={refused.text !== null} placeholder={(attribute === 'buttonType' || attribute === 'inputType') && stored === '' ? suggestions[0] : undefined} spellCheck={false} list={suggestions.length > 0 ? listId : undefined} onInput={(event) => { setTyped(event.currentTarget.value);
+          <input ref={field} className="input" disabled={!door.available} aria-label={label} aria-invalid={refused.text !== null} placeholder={(attribute === 'buttonType' || attribute === 'inputType') && stored === '' ? suggestions[0] : undefined} spellCheck={false} onInput={(event) => { setTyped(event.currentTarget.value);
             refused.dismiss();
           }} />
+          {suggestions.length > 0 ? <FieldOptions field={field} options={suggestions} current={stored} label={label} disabled={!door.available} choose={choose} /> : null}
           {pickerType !== null ? (
             <input className="settings-field__picker" type={pickerType} aria-label={t('settings.valuePicker', { attribute: label })} disabled={!door.available} value={pickerValue} onChange={(event) => choose(event.currentTarget.value)} />
           ) : null}
@@ -1964,13 +1965,6 @@ export function KeptTextField({ entry, node, kept, label, attribute, keepOnLeave
         </span>
       )}
       <button type="submit" hidden aria-hidden="true" tabIndex={-1} disabled={!door.available} />
-      {suggestions.length > 0 ? (
-        <datalist id={listId}>
-          {suggestions.map((value) => (
-            <option key={value} value={value} />
-          ))}
-        </datalist>
-      ) : null}
       {droppedLabels.length > 0 ? <span className="field-row__warning" role="status">{t('settings.inputTypeDrops', { attributes: droppedLabels.join(', ') })}</span> : null}
       {attribute !== undefined && holdsExecutableCode(typed) ? <span className="field-row__warning" role="status">{t('settings.embedRunsCode')}</span> : null}
       {refused.text !== null ? <span className="field-row__refusal" role="alert">{refused.text}</span> : null}

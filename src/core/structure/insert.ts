@@ -249,8 +249,23 @@ export function paletteNode(make: NodeMaker, entry: string): DocNode {
   // every door offers an entry of the palette, so an unknown one is a defect of the door
   if (item === undefined || make.rules.elements.get(item.element) === undefined) throw new Error(`the palette has no entry ${entry}`);
   const made = item.template === null ? newElement(make, item.element, startingParts(item.element)) : withFreeHtmlIds(templateElement(make, item.template, item.labelKey), make.htmlIds);
-  return item.inputType === null ? made : { ...made, attributes: { ...made.attributes, inputType: item.inputType } };
+  if (item.inputType === null) return made;
+  // a field placed says what it takes, in the page's language (an empty box asked nothing: the real-use pass of
+  // 2026-10-22, an Email field placed was a blank white box)
+  const hint = INPUT_PLACEHOLDERS[item.inputType];
+  return { ...made, attributes: { ...made.attributes, inputType: item.inputType, ...(hint === undefined ? {} : { placeholder: make.pageWords(hint) }) } };
 }
+
+// the placeholder a new field of a kind starts with (the kinds a visitor types into)
+const INPUT_PLACEHOLDERS: Readonly<Record<string, MessageId>> = {
+  text: 'input.placeholder.text',
+  email: 'input.placeholder.email',
+  password: 'input.placeholder.password',
+  number: 'input.placeholder.number',
+  tel: 'input.placeholder.tel',
+  url: 'input.placeholder.url',
+  search: 'input.placeholder.search',
+};
 
 // A template's HTML ids, each renamed off the ids the document already holds ("features" → "features-2"), and its
 // links to them ("#features") following: a template placed twice (the Full landing page) never makes two elements

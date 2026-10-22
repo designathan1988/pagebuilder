@@ -5,10 +5,10 @@
     "commands": 394,
     "doors": 1439,
     "scenarios": 1909,
-    "modules": 530,
-    "lines": 97800,
+    "modules": 531,
+    "lines": 97967,
     "fields": 207,
-    "interactive": 305
+    "interactive": 306
   },
   "features": [
     {
@@ -4156,9 +4156,9 @@
   "interactive": {
     "owners": {
       "door": 96,
-      "inside-door": 46,
+      "inside-door": 45,
       "local": 20,
-      "none": 113,
+      "none": 115,
       "spread": 6,
       "wraps-door": 24
     },
@@ -4894,15 +4894,15 @@
         "owner": "inside-door"
       },
       {
-        "key": "src/editor/forms/inspector.tsx|input|inputMode,list,ref|1",
+        "key": "src/editor/forms/inspector.tsx|input|ref|1",
         "tag": "input",
         "role": null,
         "handlers": [],
         "owner": "inside-door"
       },
       {
-        "key": "src/editor/forms/inspector.tsx|option|key,value|1",
-        "tag": "option",
+        "key": "src/editor/forms/inspector.tsx|input|inputMode,ref|1",
+        "tag": "input",
         "role": null,
         "handlers": [],
         "owner": "inside-door"
@@ -5528,6 +5528,24 @@
         "owner": "none"
       },
       {
+        "key": "src/editor/shell/field-options.tsx|button|aria-expanded,aria-haspopup,aria-label,className,disabled,onClick,ref,title,type|1",
+        "tag": "button",
+        "role": null,
+        "handlers": [
+          "onClick"
+        ],
+        "owner": "none"
+      },
+      {
+        "key": "src/editor/shell/field-options.tsx|div|aria-selected,className,key,onClick,onMouseEnter,role|1",
+        "tag": "div",
+        "role": "option",
+        "handlers": [
+          "onClick"
+        ],
+        "owner": "none"
+      },
+      {
         "key": "src/editor/shell/field.tsx|div|aria-label,className,data-key-context,id,ref,role,style,tabIndex|1",
         "tag": "div",
         "role": "menu",
@@ -5721,7 +5739,7 @@
         "owner": "inside-door"
       },
       {
-        "key": "src/editor/shell/field.tsx|input|aria-invalid,aria-label,className,disabled,list,onInput,placeholder,ref,spellCheck|1",
+        "key": "src/editor/shell/field.tsx|input|aria-invalid,aria-label,className,disabled,onInput,placeholder,ref,spellCheck|1",
         "tag": "input",
         "role": null,
         "handlers": [
@@ -5741,13 +5759,6 @@
       {
         "key": "src/editor/shell/field.tsx|button|aria-hidden,disabled,hidden,tabIndex,type|1",
         "tag": "button",
-        "role": null,
-        "handlers": [],
-        "owner": "inside-door"
-      },
-      {
-        "key": "src/editor/shell/field.tsx|option|key,value|1",
-        "tag": "option",
         "role": null,
         "handlers": [],
         "owner": "inside-door"

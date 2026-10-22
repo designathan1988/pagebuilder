@@ -22,6 +22,7 @@ import { useEditorState, useStore } from '../store.ts';
 import { useT } from '../text.ts';
 import { markFieldKept, recordFieldInput } from '../input/drafts.ts';
 import { keepAfterGesture } from '../shell/field.tsx';
+import { FieldOptions } from '../shell/field-options.tsx';
 import { FieldFormSettings, FormSubmissionSettings, type FormsSettingsPorts } from './settings.tsx';
 
 const entries = doorSlots('inspector-settings').filter(entry => entry.door.kind === 'inspector-field' && entry.door.control.startsWith('forms-'));
@@ -85,8 +86,16 @@ function ConfigurationField({ control, entry }: { readonly control: FieldControl
     <label className="field-row__label" htmlFor={id}>{label}</label>
     {control.kind === 'textarea'
       ? <textarea {...common} ref={field as React.RefObject<HTMLTextAreaElement>} />
-      : <input {...common} ref={field as React.RefObject<HTMLInputElement>} inputMode={control.kind === 'number' ? 'decimal' : undefined} list={control.options ? `${id}-options` : undefined} />}
-    {control.options && <datalist id={`${id}-options`}>{control.options.map(option => <option key={option.value} value={option.label} />)}</datalist>}
+      : control.options
+        // the values the field takes, behind a button of their own (field-options.tsx): a datalist hid them
+        ? <span className="settings-field__value">
+          <input {...common} ref={field as React.RefObject<HTMLInputElement>} />
+          <FieldOptions field={field} options={control.options.map(option => option.label)} current={shown} label={label} disabled={!door.available} choose={(chosen) => {
+            if (field.current !== null) field.current.value = chosen;
+            keep();
+          }} />
+        </span>
+        : <input {...common} ref={field as React.RefObject<HTMLInputElement>} inputMode={control.kind === 'number' ? 'decimal' : undefined} />}
   </form>;
 }
 
