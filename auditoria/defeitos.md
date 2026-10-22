@@ -2868,3 +2868,9 @@
 - Sintoma: com um arquivo de teste novo, o `verify` reprovou `test-boot.test.ts` com "commit element.rename left a document the model refuses", que nenhum passo dele provoca.
 - Causa: `src/core/store/command-group.test.ts:96` provoca esse incidente de propósito e não o consome; o feed (`src/core/incidents.ts`) é do processo, e o `unit` roda sem isolamento, então a ordem dos arquivos decidia.
 - Prova: o caso do `command-group` agora confere o incidente e limpa o feed; o `test-boot` limpa antes de cada caso. `verify` sem falha com o arquivo novo (`runtime-rich.test.ts`). Defeito de teste, não do app.
+
+## DEF-0865 — O painel Estilos se anunciava como "Variáveis"
+- Status: corrigido (commit deste lote)
+- Sintoma: abrir o painel Estilos pelo trilho (título "ESTILOS") mostrava na barra de status "Painel Variáveis aberto." (pt-BR, 1280×720, foto `floating/06-pt-styles`); a janela flutuante do painel levava o mesmo nome.
+- Causa: `manifest/layout.json:660` dava ao painel `variables` o rótulo `panel.variables`, enquanto trilho e título (`src/editor/shell/sidebar/styles.tsx:21`) usam `activity.styles`; `panelName` (`src/editor/workspace/panel-catalogue.ts:24`) lê o rótulo do catálogo.
+- Prova: o catálogo agora dá `activity.styles`, e todo anúncio, janela e título que nomeia o painel por `panelName` diz "Estilos"/"Styles". O item do menu Exibir tem rótulo próprio (DCS-091).

@@ -447,3 +447,7 @@
 ## DCS-090 — Bibliotecas prontas no lugar de código caseiro frágil
 - **Origem:** pesquisa de 2026-10-22 (`reports/Soluções prontas para os problemas recorrentes.md`), pedido do dono: "Procure por soluções prontas, bibliotecas, frameworks… Quero a solução efetiva."
 - **Decidido (2026-10-22):** adotar só bibliotecas de licença permissiva, cada uma no ponto único que já existe. O DOMPurify 3.4.17 (Apache-2.0) limpa o HTML do campo rico do site exportado (`safeHtml` em `runtime.js`), embutido no runtime por `app-runtime/script.ts`, sem global. A regra própria de endereços (`unsafeAttribute`) segue como gancho. O Floating UI (MIT) é o próximo, no posicionamento dos painéis flutuantes (`float.ts`). Ficam fora: o tldraw (licença paga), o editor do Plasmic (AGPL), o GSAP (a licença pode excluir concorrentes da Webflow) e o Yjs (só compensa com colaboração simultânea). A base própria continua: nenhum construtor pronto cobre breakpoints com estados, quadros-chave e CMS.
+
+## DCS-091 — Nome do painel Estilos no menu Exibir
+- **Origem:** DEF-0865. O painel que o trilho e o título chamam de "Estilos" se anunciava como "Variáveis".
+- **Decidido (2026-10-22):** o painel se nomeia "Estilos"/"Styles" em todo lugar que usa o catálogo (barra de status, janela flutuante, título). O item do menu Exibir que liga e desliga o painel continua "Variáveis"/"Variables", como fixa o requisito 03 do manifesto ("Variables [panel.variables]"), preservando o comportamento atual. **Para o dono:** renomear também o item do menu para "Estilos" exige mudar esse requisito.

@@ -657,7 +657,7 @@
     },
     "variables": {
       "icon": "palette",
-      "labelKey": "panel.variables",
+      "labelKey": "activity.styles",
       "place": "sidebar",
       "in": null,
       "open": false

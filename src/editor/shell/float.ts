@@ -3,6 +3,8 @@
 // above it when there is no room below, and always inside the window with `edge` pixels between it and the window's
 // sides. One answer for every layer that floats next to something: a menu under its button, a popover under its
 // trigger, the link prompt under the text toolbar, the context menu at the pointer (an anchor with no size).
+import { autoUpdate, computePosition, flip, offset, shift, size } from '@floating-ui/dom';
+
 export interface Box {
   readonly left: number;
   readonly top: number;
@@ -62,3 +64,42 @@ export function floatView(): Size {
 
 // the point a layer opens at (the context menu at the pointer), as an anchor of no size
 export const pointAnchor = (x: number, y: number): Box => ({ left: x, top: y, right: x, bottom: y });
+
+const samePlace = (a: Placed | null, b: Placed): boolean => a !== null && a.left === b.left && a.top === b.top && a.maxHeight === b.maxHeight;
+
+// A layer kept under its anchor while it is open, by Floating UI (MIT, @floating-ui/dom): floatBelow's answer (from
+// the anchor's start edge, else ending at its end edge, above when there is no room below, `edge` pixels inside the
+// floatView room) placed again whenever the window resizes, a panel around the anchor scrolls or the anchor or the
+// layer changes size, so a list that grows after it opened or a window made smaller never leaves it off the window
+// or over the status bar. Its height is held to the room on its side (it scrolls then). `placed` hears each new
+// place; the return stops following.
+export function followBelow(anchor: Element, layer: HTMLElement, edge: number, gap: number, placed: (at: Placed) => void): () => void {
+  let last: Placed | null = null;
+  const place = () => {
+    const view = floatView();
+    const boundary = { x: 0, y: 0, width: view.width, height: view.height };
+    let maxHeight = Math.max(0, view.height - 2 * edge);
+    computePosition(anchor, layer, {
+      strategy: 'fixed',
+      placement: 'bottom-start',
+      middleware: [
+        offset(gap),
+        flip({ boundary, padding: edge, fallbackPlacements: ['bottom-end', 'top-start', 'top-end'] }),
+        shift({ boundary, padding: edge }),
+        size({
+          boundary,
+          padding: edge,
+          apply: ({ availableHeight }) => {
+            maxHeight = Math.max(0, Math.floor(availableHeight));
+          },
+        }),
+      ],
+    }).then(({ x, y }) => {
+      const next = { left: Math.round(x), top: Math.round(y), maxHeight };
+      if (samePlace(last, next)) return;
+      last = next;
+      placed(next);
+    });
+  };
+  return autoUpdate(anchor, layer, place);
+}

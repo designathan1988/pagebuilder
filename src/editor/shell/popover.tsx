@@ -1,7 +1,7 @@
 // The popover (the audit's CSS-2 and S-002: seven popups each placed, closed and focused its own way): a layer that
 // floats next to the control that opened it, drawn over the whole window from the document's body so no panel that
 // clips its content cuts it. Its parts are the one answer for every such layer:
-// - where it is drawn: float.ts floatBelow, under its anchor and always inside the window;
+// - where it is drawn: float.ts followBelow, under its anchor and always inside the window, while it is open;
 // - how it closes: outside-layer observes outside presses without consuming them; Escape is a dismissal, except in a
 //   layer opened from a modal dialog, which Escape closes alone (input/inner-layer.ts);
 // - where the focus goes: into the layer once it is placed (the element marked data-autofocus, else its first field or
@@ -12,7 +12,7 @@ import { createPortal } from 'react-dom';
 import type { KeyContextId } from '../../generated/ids.ts';
 import { useEditorState } from '../store.ts';
 import { useOutsideLayer } from './outside-layer.ts';
-import { floatBelow, floatView, type Placed } from './float.ts';
+import { followBelow, type Placed } from './float.ts';
 import { INNER_LAYER, onInnerLayerDismiss } from '../input/inner-layer.ts';
 
 export interface PopoverState {
@@ -64,15 +64,15 @@ export function Popover({ anchor, className, children, role = 'dialog', label, k
   const own = useRef<HTMLElement | null>(null);
   useOutsideLayer(own, true, onDismiss, anchor);
   const [at, setAt] = useState<Placed | null>(null);
+  // placed again while it is open: the window resizes, a panel scrolls, the list grows (float.ts followBelow)
   useLayoutEffect(() => {
-    const from = anchor.current?.getBoundingClientRect();
+    const from = anchor.current;
     const panel = own.current;
     if (!from || !panel) return;
     const style = getComputedStyle(panel);
     const edge = parseFloat(style.getPropertyValue('--space-4')) || 0;
     const space = gap === 'small' ? parseFloat(style.getPropertyValue('--space-2')) || 0 : 0;
-    const { width, height } = panel.getBoundingClientRect();
-    setAt(floatBelow(from, { width, height }, floatView(), edge, space));
+    return followBelow(from, panel, edge, space, setAt);
   }, [anchor, gap]);
   // the focus goes into the layer once it is placed (hidden while it is measured, it could take none): to the control
   // the layer marks data-autofocus, else its first; the first alone put "+ Class" on the list of classes above its
@@ -81,7 +81,7 @@ export function Popover({ anchor, className, children, role = 'dialog', label, k
   useLayoutEffect(() => {
     if (placed && takesFocus) (own.current?.querySelector<HTMLElement>('[data-autofocus]') ?? own.current?.querySelector<HTMLElement>(FOCUSABLE))?.focus();
   }, [placed, takesFocus]);
-  const style: CSSProperties = at === null ? { visibility: 'hidden', left: 0, top: 0 } : { left: at.left, top: at.top };
+  const style: CSSProperties = at === null ? { visibility: 'hidden', left: 0, top: 0 } : { left: at.left, top: at.top, maxHeight: at.maxHeight };
   // a layer opened from a modal dialog floats over it (the Breakpoints dialog's trash menu), else under every dialog
   const overDialog = anchor.current?.closest('[aria-modal="true"]') !== null && anchor.current !== null;
   // there, Escape closes the layer alone and the focus goes back to its anchor (input/inner-layer.ts: the dialog's
