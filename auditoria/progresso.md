@@ -136,7 +136,7 @@ Leia por inteiro antes de começar; atualize ao fim de cada lote. Regras de ritm
 - **Fim da etapa dos lotes 7 a 10 (2026-10-09):** catálogo inteiro de mutantes, 152, com 149 acusados e 3 equivalentes com motivo (M19, M25, M30), 100 % dos não equivalentes, em 294 s. A suíte inteira de navegador não rodou: o pedido do dono desta rodada a proíbe; cada lote rodou os specs da sua área nas duas condições.
 
 ## Próximo passo
-Etapa de 2026-10-21 fechada, sem item aberto: relatório final em `auditoria/relatorio-final-2026-10-21.md` (código no commit 5ab14c67, `verify --all` com a medição em dia, três passadas de uso real com fotos). Próximo: uma rodada de uso real com fotos a cada lote novo.
+Etapa de 2026-10-21 fechada, sem item aberto: relatório final em `auditoria/relatorio-final-2026-10-21.md` (código no commit 5ab14c67, `verify --all` com a medição em dia, três passadas de uso real com fotos; em 2026-10-22, a varredura exaustiva, as plantas do `manifest:check`, os modelos e a sonda completos passaram). Próximo: uma rodada de uso real com fotos a cada lote novo.
 
 ## Para uma próxima rodada (fora dos lotes 1 a 5)
 - O quadro de `onUp` acima de 50 ms só com a CPU disputada: o caminho está em `otimizacoes.md`, "O que fica para uma próxima rodada".

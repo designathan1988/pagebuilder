@@ -34,3 +34,9 @@ Em todas as passadas o feed de incidentes ficou vazio e o console sem erros nem 
 - Defeitos: DEF-0615 a DEF-0801 corrigidos; nenhum aberto (`defeitos.md`).
 - Decisões: até a DCS-067 (`decisoes.md`), inclusive DCS-064 (exceção da DEC-70 estendida às palavras da faixa), DCS-065 (ações de Camadas sob ponteiro e foco de teclado, revista) e DCS-066 (idioma de projeto novo e do texto inserido, provado no uso).
 - Mecanismos: até o MEC-33 (`mecanismos.md`).
+
+## Checagens de fim de etapa (2026-10-22, mesmo código: 5ab14c67)
+Fora do `verify` diário, como manda o `CLAUDE.md`, seção 0:
+- varredura exaustiva de comandos (`tools/runner/fuzz.test.ts`) e as 8 baterias de plantas do `manifest:check` (`tools/manifest/check*.test.ts`): 10 arquivos, 181 testes, todos passaram (45 s);
+- checagens por modelo com o número completo de execuções (`tools/runner/model/`, sem `BUILDER_MODEL_RUNS`): 25 arquivos, 124 testes, todos passaram (13 s);
+- sonda de sequências aleatórias com 200 execuções (`tools/runner/invariants.test.ts`): 3 testes, todos passaram (20 s).
