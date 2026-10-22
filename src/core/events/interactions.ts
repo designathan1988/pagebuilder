@@ -63,9 +63,10 @@ export const applicableActions = (node: DocNode): readonly string[] => (animatio
 
 // What an action needs: an element it acts on, the animation it plays (one of the element's own), the class it
 // toggles, the address it opens.
-export const needsTarget = (action: string): boolean => ['show', 'hide', 'toggle', 'toggle-class', 'scroll-to', 'play-animation'].includes(action);
+export const needsTarget = (action: string): boolean =>
+  ['show', 'hide', 'toggle', 'toggle-class', 'add-class', 'remove-class', 'scroll-to', 'play-animation', 'focus', 'open-dialog', 'close-dialog', 'play-media', 'pause-media'].includes(action);
 export const needsAnimation = (action: string): boolean => action === 'play-animation';
-export const needsClassName = (action: string): boolean => action === 'toggle-class';
+export const needsClassName = (action: string): boolean => action === 'toggle-class' || action === 'add-class' || action === 'remove-class';
 export const needsAddress = (action: string): boolean => action === 'open-link';
 
 // The animations an event plays, per node: the export writes their animation as a class rule (the script adds the

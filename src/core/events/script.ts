@@ -3,7 +3,7 @@
 // archive and links it from the pages that use interactions) and by the preview (previewPage, which runs the same
 // script). No framework, no inline handler, no editor id and no data attribute: every element is addressed by the BEM
 // class the export gives it or by the person's own `id` attribute, the class the exporter wrote for the element.
-//  - A trigger: click; hover (pointerenter, and pointerleave for the actions that reverse: show and hide); entering
+//  - A trigger: click; double click; hover; the pointer leaving; the focus in or out; a field changed; (pointerenter, and pointerleave for the actions that reverse: show and hide); entering
 //    the screen (an IntersectionObserver, once); the page loading (the script runs deferred, so the page is parsed); a
 //    form's submit (the browser's own submit, never navigated away).
 //  - An action: show, hide and toggle (the hidden property the editor's eye and a hidden element's export agree on); toggle a
@@ -41,6 +41,15 @@ function actionJs(node: DocNode, interaction: Interaction, selectorOf: SelectorO
     if (interaction.action === 'toggle') return `if (target) target.hidden = !target.hidden;`;
     if (interaction.action === 'toggle-class')
       return interaction.className === undefined ? null : `if (target) target.classList.toggle(${quoted(interaction.className)});`;
+    if (interaction.action === 'add-class') return interaction.className === undefined ? null : `if (target) target.classList.add(${quoted(interaction.className)});`;
+    if (interaction.action === 'remove-class') return interaction.className === undefined ? null : `if (target) target.classList.remove(${quoted(interaction.className)});`;
+    if (interaction.action === 'focus') return `if (target) target.focus();`;
+    // a dialog element opens as a modal (its backdrop, Escape closes it); any other element is shown and hidden
+    if (interaction.action === 'open-dialog') return `if (target) { if (typeof target.showModal === 'function') { if (!target.open) target.showModal(); } else target.hidden = false; }`;
+    if (interaction.action === 'close-dialog') return `if (target) { if (typeof target.close === 'function') target.close(); else target.hidden = true; }`;
+    // a video or an audio plays or pauses; the element may hold one (a video's frame)
+    if (interaction.action === 'play-media') return `if (target) { var media = target.play ? target : target.querySelector('video, audio'); if (media) { var playing = media.play(); if (playing && playing.catch) playing.catch(function () {}); } }`;
+    if (interaction.action === 'pause-media') return `if (target) { var media = target.pause ? target : target.querySelector('video, audio'); if (media) media.pause(); }`;
     if (needsAnimation(interaction.action)) {
       if (interaction.animation === undefined) return null;
       // the class rule the export writes next to the @keyframes; taken off and on again so a second firing plays anew
@@ -96,6 +105,11 @@ function wiringJs(node: DocNode, interaction: Interaction, triggerSelectorOf: Se
     return `each(${quoted(selector)}, function (el) {\n    var inside = false;\n    var observer = new IntersectionObserver(function (entries) {\n      for (var i = 0; i < entries.length; i += 1) {\n        var now = entries[i].isIntersecting;\n        if (now && !inside) { ${act} }\n        inside = now;\n      }\n    }, { threshold: 0.5 });\n    observer.observe(el);\n  });`;
   }
   if (interaction.trigger === 'page-load') return `each(${quoted(selector)}, function (el) { ${act} });`;
+  // the other events of the element, each the browser's own: a double click, the pointer leaving, the focus coming in
+  // or going out (within the element too, so a form's fields count), a field's value changed
+  const events: Readonly<Record<string, string>> = { 'double-click': 'dblclick', 'mouse-leave': 'pointerleave', focus: 'focusin', blur: 'focusout', change: 'change' };
+  const event = events[interaction.trigger];
+  if (event !== undefined) return `each(${quoted(selector)}, function (el) { ${flag}el.addEventListener(${quoted(event)}, function () { ${guard}${act} }); });`;
   if (interaction.trigger === 'form-submit') return `each(${quoted(selector)}, function (el) { ${flag}el.addEventListener('submit', function (event) { event.preventDefault(); ${guard}${act} }); });`;
   return null;
 }

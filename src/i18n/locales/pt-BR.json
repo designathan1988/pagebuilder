@@ -4333,5 +4333,17 @@
   "interactions.action.toggle": "Mostrar ou ocultar",
   "timeline.frameSets": "Em {offset}%, este quadro-chave define:",
   "timeline.frameEmpty": "Em {offset}%, este quadro-chave ainda não muda nada. Com o cursor de tempo sobre ele, defina na aba Estilo o que o elemento mostra neste momento (opacidade, cor, mover, escala…): cada mudança vai para este quadro-chave.",
-  "timeline.frameNone": "Em {offset}%. Leve o cursor de tempo até um quadro-chave (◆), ou clique em Adicionar quadro-chave, para definir o que o elemento mostra neste momento."
+  "timeline.frameNone": "Em {offset}%. Leve o cursor de tempo até um quadro-chave (◆), ou clique em Adicionar quadro-chave, para definir o que o elemento mostra neste momento.",
+  "interactions.trigger.doubleClick": "Ao clicar duas vezes",
+  "interactions.trigger.mouseLeave": "Ao tirar o mouse",
+  "interactions.trigger.focus": "Ao receber o foco",
+  "interactions.trigger.blur": "Ao sair do campo",
+  "interactions.trigger.change": "Ao mudar o valor",
+  "interactions.action.addClass": "Adicionar uma classe",
+  "interactions.action.removeClass": "Remover uma classe",
+  "interactions.action.focus": "Dar foco",
+  "interactions.action.openDialog": "Abrir uma janela",
+  "interactions.action.closeDialog": "Fechar uma janela",
+  "interactions.action.playMedia": "Tocar vídeo ou áudio",
+  "interactions.action.pauseMedia": "Pausar vídeo ou áudio"
 }

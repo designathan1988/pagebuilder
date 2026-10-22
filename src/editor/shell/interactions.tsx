@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { locate, type DocNode, type Interaction } from '../../core/document/model.ts';
 import { actionLabel, applicableActions, applicableTriggers, firesOnce, interactionsOf, needsAddress, needsAnimation, needsClassName, needsTarget, primaryNodeOf, readOptions, triggerLabel } from '../../core/events/interactions.ts';
 import { animationsOf } from '../../core/animation/animation.ts';
+import { classesOf } from '../../core/design/classes.ts';
 import { elementIcon, type DoorEntry, manifest } from '../../manifest/runtime.ts';
 import { Icon } from '../doors/door.tsx';
 import { PanelButton, PanelField } from './panel-field.tsx';
@@ -102,6 +103,7 @@ function Card({ node, interaction, index }: { readonly node: DocNode; readonly i
   const target = interaction.target === undefined ? null : (locate(store.getState().document, interaction.target)?.node ?? null);
   const animations = animationsOf(node).map((animation) => animation.name);
   const classes = [...node.classes];
+  const projectClasses = useEditorState((s) => classesOf(s.document)).map((one) => one.name);
   const [expanded, setExpanded] = useState(index === 0);
   const options = useOptionWords();
   const valueKey = valueLabelKey(interaction.action);
@@ -131,7 +133,9 @@ function Card({ node, interaction, index }: { readonly node: DocNode; readonly i
             args={{ interaction: index }}
             value={optionValue(interaction)}
             label={t(valueKey)}
-            offered={needsClassName(interaction.action) ? classes : needsAnimation(interaction.action) ? animations : undefined}
+            // a class to add, remove or toggle is any class of the project (the element's own classes alone left out the
+            // class the action is for: one the target does not hold yet)
+            offered={needsClassName(interaction.action) ? projectClasses : needsAnimation(interaction.action) ? animations : undefined}
           />
         ) : null}
         {NEW_TAB !== null && needsAddress(interaction.action) ? (

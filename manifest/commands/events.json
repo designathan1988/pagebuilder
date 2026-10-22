@@ -14,7 +14,12 @@
             "hover",
             "scroll-into-view",
             "page-load",
-            "form-submit"
+            "form-submit",
+            "double-click",
+            "mouse-leave",
+            "focus",
+            "blur",
+            "change"
           ],
           "optional": true
         },
@@ -27,7 +32,14 @@
             "toggle-class",
             "play-animation",
             "scroll-to",
-            "open-link"
+            "open-link",
+            "add-class",
+            "remove-class",
+            "focus",
+            "open-dialog",
+            "close-dialog",
+            "play-media",
+            "pause-media"
           ],
           "optional": true
         },

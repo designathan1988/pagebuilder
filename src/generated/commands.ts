@@ -159,7 +159,7 @@ export interface CommandArgs {
   "table.removeColumn": Record<string, never>;
   "table.addRowAfter": Record<string, never>;
   "table.removeRow": Record<string, never>;
-  "interactions.add": { readonly trigger?: "click" | "hover" | "scroll-into-view" | "page-load" | "form-submit"; readonly action?: "show" | "hide" | "toggle" | "toggle-class" | "play-animation" | "scroll-to" | "open-link"; readonly target?: NodeId; readonly options?: JsonValue };
+  "interactions.add": { readonly trigger?: "click" | "hover" | "scroll-into-view" | "page-load" | "form-submit" | "double-click" | "mouse-leave" | "focus" | "blur" | "change"; readonly action?: "show" | "hide" | "toggle" | "toggle-class" | "play-animation" | "scroll-to" | "open-link" | "add-class" | "remove-class" | "focus" | "open-dialog" | "close-dialog" | "play-media" | "pause-media"; readonly target?: NodeId; readonly options?: JsonValue };
   "interactions.update": { readonly interaction?: number; readonly field?: "trigger" | "action" | "target" | "value" | "options" | "scope" | "newTab"; readonly changes?: JsonValue };
   "interactions.remove": { readonly interaction?: number };
   "pages.add": { readonly name: string };

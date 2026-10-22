@@ -7521,5 +7521,17 @@ export const MESSAGE_IDS = [
   "timeline.frameSets",
   "timeline.frameEmpty",
   "timeline.frameNone",
+  "interactions.trigger.doubleClick",
+  "interactions.trigger.mouseLeave",
+  "interactions.trigger.focus",
+  "interactions.trigger.blur",
+  "interactions.trigger.change",
+  "interactions.action.addClass",
+  "interactions.action.removeClass",
+  "interactions.action.focus",
+  "interactions.action.openDialog",
+  "interactions.action.closeDialog",
+  "interactions.action.playMedia",
+  "interactions.action.pauseMedia",
 ] as const;
 export type MessageId = (typeof MESSAGE_IDS)[number];

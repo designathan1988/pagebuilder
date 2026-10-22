@@ -4333,5 +4333,17 @@
   "interactions.action.toggle": "Show or hide",
   "timeline.frameSets": "At {offset}%, this keyframe sets:",
   "timeline.frameEmpty": "At {offset}%, this keyframe changes nothing yet. With the playhead on it, set in the Style tab what the element shows at this moment (opacity, colour, move, scale…): each change goes into this keyframe.",
-  "timeline.frameNone": "At {offset}%. Move the playhead onto a keyframe (◆), or press Add keyframe, to set what the element shows at this moment."
+  "timeline.frameNone": "At {offset}%. Move the playhead onto a keyframe (◆), or press Add keyframe, to set what the element shows at this moment.",
+  "interactions.trigger.doubleClick": "On double click",
+  "interactions.trigger.mouseLeave": "On mouse leave",
+  "interactions.trigger.focus": "On focus",
+  "interactions.trigger.blur": "On leaving the field",
+  "interactions.trigger.change": "On value change",
+  "interactions.action.addClass": "Add a class",
+  "interactions.action.removeClass": "Remove a class",
+  "interactions.action.focus": "Focus",
+  "interactions.action.openDialog": "Open a dialog",
+  "interactions.action.closeDialog": "Close a dialog",
+  "interactions.action.playMedia": "Play video or audio",
+  "interactions.action.pauseMedia": "Pause video or audio"
 }

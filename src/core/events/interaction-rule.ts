@@ -9,9 +9,11 @@ import { IDENTIFIER_SOURCE } from '../text/identifier.ts';
 type AddArgs = CommandArgs['interactions.add'];
 const TRIGGERS: Readonly<Record<NonNullable<AddArgs['trigger']>, true>> = {
   click: true, hover: true, 'scroll-into-view': true, 'page-load': true, 'form-submit': true,
+  'double-click': true, 'mouse-leave': true, focus: true, blur: true, change: true,
 };
 const ACTIONS: Readonly<Record<NonNullable<AddArgs['action']>, true>> = {
   show: true, hide: true, toggle: true, 'toggle-class': true, 'play-animation': true, 'scroll-to': true, 'open-link': true,
+  'add-class': true, 'remove-class': true, focus: true, 'open-dialog': true, 'close-dialog': true, 'play-media': true, 'pause-media': true,
 };
 
 // the longest wait an action takes (10 s): a longer one reads as a site that does not answer
