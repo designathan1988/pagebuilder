@@ -22,6 +22,8 @@ const NO_FILES: readonly ProjectFile[] = [];
 const PARTS = doorSlots('asset-picker');
 const CHOOSE = PARTS.find((p) => p.door.kind === 'panel-control' && p.door.control === 'choose') ?? null;
 const CLOSE = PARTS.find((p) => p.door.kind === 'panel-control' && p.door.control === 'close') ?? null;
+// Upload an image, from the picker itself: an image not in the project yet sent the person to the Explorer first
+const UPLOAD = PARTS.find((p) => p.door.kind === 'panel-control' && p.door.control === 'upload') ?? null;
 // the key context the open picker names, so Escape is the keymap's (interactions.json keyContexts)
 const PICKER_CONTEXT = 'asset-picker';
 
@@ -39,6 +41,18 @@ export function AssetPicker() {
     return wanted === '' ? files : files.filter((file) => fold(file.path).includes(wanted));
   }, [files, query]);
   const panel = useRef<HTMLDivElement>(null);
+  // the images the project held when Upload was pressed: an image that arrives after it is the one uploaded, and the
+  // field takes it at once (the person chose it by uploading it)
+  const before = useRef<ReadonlySet<string> | null>(null);
+  useEffect(() => {
+    const held = before.current;
+    const target = selection[0];
+    if (held === null || open === null || CHOOSE === null || target === undefined) return;
+    const arrived = files.find((file) => !held.has(file.path));
+    if (arrived === undefined) return;
+    before.current = null;
+    (store.dispatch as (id: string, args: unknown) => DispatchResult)(CHOOSE.command.id, { ...CHOOSE.door.args, target, [open.attribute]: arrived.path, value: arrived.path });
+  }, [files, open, selection, store]);
   const close = () => {
     if (CLOSE) (store.dispatch as (id: string, args: unknown) => DispatchResult)(CLOSE.command.id, {});
   };
@@ -69,6 +83,11 @@ export function AssetPicker() {
         {files.length === 0 ? <p className="picker__warning" role="note">{t('assetPicker.empty')}</p> : null}
         {/* a search over the project's images by their path, the picker's own view (not a command; M4) */}
         {files.length > 1 ? <input className="search" type="search" placeholder={t('assetPicker.search')} aria-label={t('assetPicker.search')} data-local="asset-search" value={query} onChange={(event) => setQuery(event.target.value)} /> : null}
+        {UPLOAD === null ? null : (
+          <span className="picker__upload" onClickCapture={() => { before.current = new Set(files.map((file) => file.path)); }}>
+            <DoorControl entry={UPLOAD} />
+          </span>
+        )}
         <div className="picker__thumbs" role="group" aria-label={t('assetPicker.title')} data-region="asset-picker-files">
           {CHOOSE === null || target === undefined
             ? null

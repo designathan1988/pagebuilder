@@ -3,10 +3,10 @@
     "features": 218,
     "built": 218,
     "commands": 394,
-    "doors": 1444,
+    "doors": 1445,
     "scenarios": 1909,
     "modules": 531,
-    "lines": 98170,
+    "lines": 98220,
     "fields": 207,
     "interactive": 307
   },
@@ -2051,7 +2051,7 @@
       "commands": [
         "files.upload"
       ],
-      "doors": 2,
+      "doors": 3,
       "scenarios": 2
     },
     {
@@ -2083,7 +2083,7 @@
         "project.export",
         "files.upload"
       ],
-      "doors": 9,
+      "doors": 10,
       "scenarios": 2
     },
     {
@@ -2104,7 +2104,7 @@
         "project.export",
         "files.upload"
       ],
-      "doors": 181,
+      "doors": 182,
       "scenarios": 2
     },
     {

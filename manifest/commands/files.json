@@ -976,6 +976,33 @@
             "fileReading": "upload"
           },
           "args": {}
+        },
+        {
+          "id": "asset-picker-upload",
+          "kind": "panel-control",
+          "drawnAs": "button",
+          "pressed": false,
+          "feature": "explorer-assets",
+          "panel": "asset-picker",
+          "control": "upload",
+          "modifier": null,
+          "gesture": null,
+          "labelKey": "assetPicker.upload",
+          "faceLabelKey": null,
+          "icon": "arrow-up-to-line",
+          "disabledReasonKey": "common.notAvailableYet",
+          "placement": {
+            "region": "asset-picker",
+            "order": 3
+          },
+          "adapter": {
+            "selection": "none",
+            "offers": null,
+            "writes": [],
+            "fields": [],
+            "fileReading": "upload"
+          },
+          "args": {}
         }
       ]
     },
