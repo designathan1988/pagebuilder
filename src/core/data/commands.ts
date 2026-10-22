@@ -570,6 +570,33 @@ export const unbindCommand = registerHandler('data.unbind', (context, { node }):
 
 const withPageAfter = (document: DocumentJson, after: number, made: readonly Page[]): DocumentJson => ({ ...document, pages: [...document.pages.slice(0, after + 1), ...made, ...document.pages.slice(after + 1)] });
 
+// Every navigation of the site that links to its pages (a nav holding a link whose address is a page's file) takes a
+// link to each page made, at its end, made as its last page link is: pages made from names went into no menu, and the
+// person added a link to each on every page by hand.
+function linkedInNavigations(document: DocumentJson, made: readonly Page[], nextId: () => NodeId): DocumentJson {
+  const files = new Set(document.pages.filter((page) => !made.includes(page) && page.tree.dataItem?.template !== true).map((page) => page.file));
+  const taken = new Set(document.pages.flatMap((page) => [...walk(page.tree)].map((node) => node.name)));
+  const named = (base: string): string => {
+    let name = base;
+    for (let n = 2; taken.has(name); n += 1) name = `${base} ${String(n)}`;
+    taken.add(name);
+    return name;
+  };
+  const visit = (node: DocNode): DocNode => {
+    const children = node.children.map(visit);
+    const pageLinks = node.tag === 'nav' ? children.filter((child) => typeof child.attributes.href === 'string' && files.has(child.attributes.href)) : [];
+    const model = pageLinks.at(-1);
+    if (model === undefined) return children.every((child, i) => child === node.children[i]) ? node : { ...node, children };
+    const added = made.map((page): DocNode => {
+      const { inline: _inline, ...plain } = model;
+      void _inline;
+      return { ...plain, id: nextId(), name: named(page.name), text: page.name, attributes: { ...model.attributes, href: page.file }, children: [] };
+    });
+    return { ...node, children: [...children, ...added] };
+  };
+  return { ...document, pages: document.pages.map((page) => ({ ...page, tree: visit(page.tree) })) };
+}
+
 // pages.fromNames: one page per name (one per line), each a copy of the open page, named and filed as a duplicate is;
 // the first opens. Pages made later receive the shared regions that ask for it.
 export function pagesFromNamesCommand<Ui extends WithPage>() {
@@ -584,7 +611,7 @@ export function pagesFromNamesCommand<Ui extends WithPage>() {
       const first = made[0] as Page;
       // a captured page's copies take its residual stylesheet too (files.ts copiedCaptureSheet, the audit's CP1)
       const sheets = made.flatMap((page) => copiedCaptureSheet(document, source, page) ?? []);
-      const withPages = withPageAfter(document, at, made);
+      const withPages = linkedInNavigations(withPageAfter(document, at, made), made, () => data.ids.next() as NodeId);
       return {
         document: sheets.length === 0 ? withPages : { ...withPages, files: [...(withPages.files ?? []), ...sheets] },
         message: message('status.pages.madeFromNames', { name: source.name, count: { plural: 'data.pages', count: made.length } }),
